@@ -1,0 +1,395 @@
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const { EventEmitter } = require('events');
+
+class GuiServer extends EventEmitter {
+  constructor(options = {}) {
+    super();
+    this.port = options.port || 3000;
+    this.config = options.config || {};
+    this.logFile = path.join(process.cwd(), 'log.txt');
+    this.clients = new Set();
+    this.sessions = new Map();
+    this.server = null;
+    this.shutdownTimer = null;
+    this.logWatcher = null;
+  }
+
+  start() {
+    this.server = http.createServer((req, res) => {
+      const url = new URL(req.url, `http://localhost:${this.port}`);
+
+      // 1. Static Files
+      if (req.method === 'GET' && (url.pathname === '/' || url.pathname.startsWith('/public/'))) {
+        let filePath = url.pathname === '/' ? 'index.html' : url.pathname.replace('/public/', '');
+        const fullPath = path.join(__dirname, 'public', filePath);
+
+        if (fs.existsSync(fullPath)) {
+          const ext = path.extname(fullPath);
+          const contentType = {
+            '.html': 'text/html',
+            '.js': 'application/javascript',
+            '.css': 'text/css',
+            '.json': 'application/json',
+            '.png': 'image/png'
+          }[ext] || 'text/plain';
+
+          res.writeHead(200, { 'Content-Type': contentType });
+          const stream = fs.createReadStream(fullPath);
+          stream.pipe(res);
+          // Guard against early client disconnect (Tab switch / reload mid-stream).
+          req.on('close', () => { try { stream.destroy(); } catch (e) {} });
+          stream.on('error', (err) => { try { res.destroy(err); } catch (e) {} });
+          return;
+        }
+      }
+
+      if (url.pathname === '/api/session' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+          let sessionId = '';
+          try {
+            sessionId = JSON.parse(body || '{}').sessionId || '';
+          } catch (e) {}
+          if (sessionId) this.touchSession(sessionId);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true, sessions: this.sessions.size }));
+        });
+        return;
+      }
+
+      if (url.pathname === '/api/session/close' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+          let sessionId = '';
+          try {
+            sessionId = JSON.parse(body || '{}').sessionId || '';
+          } catch (e) {}
+          if (sessionId) this.closeSession(sessionId);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true }));
+        });
+        return;
+      }
+
+      // 2. API: Config
+      if (url.pathname === '/api/config') {
+        if (req.method === 'GET') {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(this.config));
+          return;
+        }
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', chunk => body += chunk);
+          req.on('end', () => {
+            try {
+              const newConfig = JSON.parse(body);
+              this.emit('update-config', newConfig);
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ ok: true }));
+            } catch (e) {
+              res.writeHead(400);
+              res.end('Invalid JSON');
+            }
+          });
+          return;
+        }
+      }
+
+      // API: System Health
+      if (url.pathname === '/api/system-health' && req.method === 'GET') {
+        let handled = false;
+        const timeout = setTimeout(() => {
+          if (!handled) {
+            handled = true;
+            res.writeHead(504);
+            res.end(JSON.stringify({ error: 'Health check timeout' }));
+          }
+        }, 10000);
+
+        this.emit('get-health', (health) => {
+          if (handled) return;
+          handled = true;
+          clearTimeout(timeout);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(health));
+        });
+        return;
+      }
+
+      // API: Models
+      if (url.pathname.startsWith('/api/models/')) {
+        const provider = url.pathname.split('/').pop();
+        let handled = false;
+        this.emit('get-models', provider, (models) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(models));
+        });
+        return;
+      }
+
+      // API: Glossary
+      if (url.pathname === '/api/glossary/guarded' && req.method === 'GET') {
+        this.emit('get-guarded-terms', (terms) => {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(terms));
+        });
+        return;
+      }
+
+      if (url.pathname === '/api/glossary/guard' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+          try {
+            const data = JSON.parse(body);
+            this.emit('guard-term', data);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ ok: true }));
+          } catch (e) {
+            res.writeHead(400);
+            res.end('Invalid JSON');
+          }
+        });
+        return;
+      }
+
+      // 3. API: Action
+      if (url.pathname.startsWith('/api/action/')) {
+        const action = url.pathname.split('/').pop();
+        this.emit('action', action);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, action }));
+        return;
+      }
+
+      // 4. SSE: Logs
+      if (url.pathname === '/api/logs') {
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+          'X-Accel-Buffering': 'no'
+        });
+
+        const client = { res };
+        this.clients.add(client);
+
+        // Send initial last 50 lines
+        try {
+          if (fs.existsSync(this.logFile)) {
+            const content = fs.readFileSync(this.logFile, 'utf-8');
+            const lines = content.split('\n').slice(-50);
+            for (const line of lines) {
+              if (line.trim()) res.write(`data: ${JSON.stringify({ type: 'log', text: line })}\n\n`);
+            }
+          }
+        } catch (e) {}
+
+        // Keep-alive comment frame so proxies/browsers keep the connection open.
+        const keepAlive = setInterval(() => {
+          try { res.write(': keep-alive\n\n'); } catch (e) {}
+        }, 25000);
+        if (typeof keepAlive.unref === 'function') keepAlive.unref();
+
+        req.on('close', () => {
+          clearInterval(keepAlive);
+          this.clients.delete(client);
+        });
+        return;
+      }
+
+      res.writeHead(404);
+      res.end('Not Found');
+    });
+
+    this.server.listen(this.port, () => {
+      console.log(`\n[GUI] Server gestartet: http://localhost:${this.port}`);
+      this.setupLogWatcher();
+    });
+  }
+
+  stop() {
+    this.clearShutdownTimer();
+    if (this.logWatcherInterval) {
+      clearInterval(this.logWatcherInterval);
+      this.logWatcherInterval = null;
+    }
+    if (this.logWatcher && typeof this.logWatcher.destroy === 'function') {
+      try { this.logWatcher.destroy(); } catch (e) {}
+    } else if (this.logWatcher && typeof this.logWatcher.close === 'function') {
+      try { this.logWatcher.close(); } catch (e) {}
+    }
+    this.logWatcher = null;
+    this._logReadPos = 0;
+    this._logLineBuf = '';
+    this._logReading = false;
+    return new Promise((resolve) => {
+      if (!this.server) return resolve();
+      for (const client of this.clients) {
+        try { client.res.end(); } catch (e) {}
+      }
+      this.clients.clear();
+      this.server.close(() => {
+        this.server = null;
+        resolve();
+      });
+    });
+  }
+
+  setupLogWatcher() {
+    if (this.logWatcherInterval) {
+      clearInterval(this.logWatcherInterval);
+      this.logWatcherInterval = null;
+    }
+    if (this.logWatcher) {
+      try { this.logWatcher.close(); } catch (e) {}
+      this.logWatcher = null;
+    }
+
+    if (!fs.existsSync(this.logFile)) {
+      fs.writeFileSync(this.logFile, '');
+    }
+
+    // Persistent read position + partial-line buffer across ticks so we
+    // never double-emit a line and never lose a line at chunk boundaries.
+    this._logReadPos = fs.statSync(this.logFile).size;
+    this._logLineBuf = '';
+    this._logReading = false;
+
+    this.logWatcherInterval = setInterval(() => {
+      // Re-entrancy guard: if a previous read is still streaming, wait for it.
+      if (this._logReading) return;
+      let stat;
+      try {
+        if (!fs.existsSync(this.logFile)) {
+          this._logReadPos = 0;
+          this._logLineBuf = '';
+          return;
+        }
+        stat = fs.statSync(this.logFile);
+      } catch (e) { return; }
+
+      // Truncate/rotation -> restart from zero.
+      if (stat.size < this._logReadPos) {
+        this._logReadPos = 0;
+        this._logLineBuf = '';
+      }
+      if (stat.size === this._logReadPos) return;
+
+      const start = this._logReadPos;
+      const end = stat.size - 1;
+      this._logReading = true;
+
+      const stream = fs.createReadStream(this.logFile, { start, end });
+      this.logWatcher = stream;
+      let buffer = this._logLineBuf;
+      let emittedBytes = start;
+
+      stream.on('data', chunk => {
+        buffer += chunk.toString();
+        let nl;
+        while ((nl = buffer.indexOf('\n')) !== -1) {
+          const line = buffer.slice(0, nl);
+          buffer = buffer.slice(nl + 1);
+          if (line.trim()) this.broadcast({ type: 'log', text: line.trim() });
+          emittedBytes += Buffer.byteLength(line, 'utf-8') + 1;
+        }
+      });
+
+      stream.on('end', () => {
+        this._logLineBuf = buffer;
+        this._logReadPos = emittedBytes;
+        this._logReading = false;
+        this.logWatcher = null;
+      });
+
+      stream.on('error', () => {
+        // On error, jump to current size to avoid getting stuck.
+        this._logReadPos = stat.size;
+        this._logLineBuf = '';
+        this._logReading = false;
+        this.logWatcher = null;
+      });
+    }, 1000);
+
+    if (typeof this.logWatcherInterval.unref === 'function') {
+      this.logWatcherInterval.unref();
+    }
+  }
+
+  touchSession(sessionId) {
+    if (!sessionId) return;
+    this.sessions.set(sessionId, Date.now());
+    this.clearShutdownTimer();
+  }
+
+  closeSession(sessionId) {
+    if (!sessionId) return;
+    this.sessions.delete(sessionId);
+    if (this.sessions.size === 0) {
+      this.scheduleShutdown();
+    }
+  }
+
+  scheduleShutdown() {
+    this.clearShutdownTimer();
+    this.shutdownTimer = setTimeout(() => {
+      if (this.sessions.size === 0) {
+        this.emit('idle');
+      }
+    }, 1500);
+    if (typeof this.shutdownTimer.unref === 'function') {
+      this.shutdownTimer.unref();
+    }
+  }
+
+  clearShutdownTimer() {
+    if (this.shutdownTimer) {
+      clearTimeout(this.shutdownTimer);
+      this.shutdownTimer = null;
+    }
+  }
+
+  broadcast(data) {
+    const message = `data: ${JSON.stringify(data)}\n\n`;
+    for (const client of this.clients) {
+      // Drop dead sockets so one stuck client can't block others.
+      const w = client.res.write(message);
+      if (w === false) {
+        // Backpressure: mark for removal; client will reconnect if needed.
+        try { client.res.end(); } catch (e) {}
+        this.clients.delete(client);
+      }
+    }
+  }
+
+  broadcastPayload(provider, type, content) {
+    this.broadcast({ 
+      type: 'payload', 
+      provider, 
+      payloadType: type, // 'REQUEST' or 'RESPONSE'
+      content: typeof content === 'string' ? content : JSON.stringify(content, null, 2)
+    });
+  }
+
+  broadcastDbSample(source, target) {
+    this.broadcast({
+      type: 'db-sample',
+      source,
+      target
+    });
+  }
+
+  updateStatus(stats) {
+    this.broadcast({ type: 'status', stats });
+  }
+}
+
+module.exports = GuiServer;

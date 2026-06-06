@@ -1,0 +1,521 @@
+Alle Daten gesammelt. Jetzt die vollständige Forensik-Analyse.
+
+---
+
+## PHASE 1: INVENTAR
+
+**Vollständige Dateiliste**
+
+| Datei | Größe | Kategorie |
+|---|---|---|
+| `index.js` | 27.160 B | Produktion – Einstiegspunkt |
+| `src/translation-runtime.js` | 46.575 B | Produktion – Kern |
+| `src/config-runtime.js` | 26.354 B | Produktion |
+| `src/gui/public/index.html` | 18.316 B | Produktion |
+| `src/gui/public/app.js` | 15.676 B | Produktion |
+| `src/gui/server.js` | 12.560 B | Produktion |
+| `src/text-core.js` | 10.942 B | Produktion |
+| `src/db.js` | 7.495 B | Produktion |
+| `src/runtime-ops.js` | 7.284 B | Produktion |
+| `src/planner.js` | 6.705 B | Produktion |
+| `src/router.js` | 6.566 B | Produktion |
+| `src/context-packets.js` | 3.876 B | Produktion |
+| `src/logger.js` | 3.086 B | Produktion |
+| `src/validator.js` | 2.938 B | Produktion |
+| `src/exporter.js` | 2.583 B | Produktion (teilweise Stub) |
+| `src/sos-runtime.js` | 2.528 B | Produktion |
+| `src/scanner.js` | 2.528 B | **DEAD in Runtime** |
+| `src/ui.js` | 1.796 B | Produktion (teilweise Stub) |
+| `src/extractor.js` | 2.409 B | Produktion |
+| `src/dispatcher.js` | 4.672 B | Produktion |
+| `src/diagnostics.js` | 1.734 B | Produktion |
+| `src/glossary.js` | 1.826 B | Produktion |
+| `scripts/check_argos.js` | 2.052 B | Hilfsskript |
+| `scripts/start_ollama.js` | 1.568 B | Hilfsskript |
+| `scripts/reconstruct.js` | 6.854 B | Tool |
+| `scripts/redteam_baseline.js` | 2.129 B | Test |
+| `scripts/audit_db.js` | 1.131 B | Tool |
+| `scripts/check_syntax.js` | 1.216 B | Test |
+| `scripts/package.js` | 2.508 B | Tool |
+| `scripts/check_workshop_damage.ps1` | 2.302 B | PowerShell-Tool |
+| `scripts/start.bat` | 2.095 B | Launcher |
+| `test_placeholder_fix.js` | 1.386 B | **Stray-Testfile im Root** |
+| `package.json` | 868 B | Config |
+| `package-lock.json` | 86.137 B | Config |
+| `eslint.config.mjs` | 780 B | Config |
+| `.env.example` | 552 B | Config |
+| `grammar_context.txt` | 4.078 B | Datendatei |
+| `README.md` | 4.719 B | Doku |
+| `CHANGELOG.md` | 865 B | Doku |
+| `GEMINI.md` | 3.493 B | Doku |
+| `TODO.md` | 1.817 B | Doku |
+| `docs/README.md` | 3.493 B | Doku |
+| `docs/RELEASE-0.11.0a.md` | 780 B | Doku |
+| `plans/system-health-api.md` | 811 B | Doku |
+| `stdout.log` | 110 B | **Committed Artifact** |
+| `stderr.log` | 0 B | **Committed Artifact** |
+| `.DB backups/` | (leer) | **Committed Artifact** |
+
+**Einstiegspunkt:** `package.json → "main": "index.js"` — verifiziert. `start.bat` führt `node index.js --gui` aus. Kein Shebang. Echter Einstieg: `if (require.main === module) main().catch(console.error)` am Ende von `index.js`.
+
+---
+
+## PHASE 2: ABHÄNGIGKEITSGRAPH
+
+**Import-Graph (wer importiert wen)**
+
+```
+index.js
+├── src/router.js
+├── src/planner.js
+│   ├── src/db.js
+│   ├── src/scanner.js        ← importiert aber DEAD PATH
+│   ├── src/extractor.js
+│   ├── src/validator.js      ← importiert aber DEAD PATH
+│   ├── src/exporter.js       ← importiert aber DEAD PATH
+│   └── src/logger.js
+├── src/exporter.js
+│   ├── src/extractor.js
+│   └── src/text-core.js      (dynamisch via require() innerhalb writeTranslatedFile)
+├── src/ui.js
+│   └── inquirer
+├── src/db.js
+│   └── sqlite3
+├── src/runtime-ops.js        (keine eigenen Imports, alles injiziert)
+├── src/translation-runtime.js
+│   ├── src/context-packets.js
+│   ├── src/dispatcher.js
+│   │   └── src/text-core.js
+│   └── src/glossary.js
+├── src/config-runtime.js
+│   ├── fs, path, axios, inquirer
+├── src/logger.js
+├── src/extractor.js
+├── src/text-core.js
+│   ├── src/extractor.js
+│   └── src/validator.js
+├── src/sos-runtime.js
+├── src/gui/server.js
+├── scripts/check_argos.js
+└── scripts/start_ollama.js
+```
+
+**Zirkuläre Abhängigkeiten:** Keine festgestellt.
+
+**Fehlende Imports:** Keine — alle `require()`-Ziele existieren.
+
+**Toter Import-Pfad in `planner.js`:** `scanner`, `validator`, `exporter` werden auf Module-Level importiert, aber ausschließlich im `processMod`-Zweig verwendet, der durch den frühzeitigen `return` nach dem `hooks.translateMod`-Aufruf niemals erreicht wird. Da der Hook in `main()` immer gesetzt ist, sind `scanner.collectFiles`, `validator.*` und `exporter.*` in planner.js funktional toter Code.
+
+**Ungenutzter Export `getDefaultModelForProvider` aus `config-runtime.js`:** wird in `index.js` importiert aber ausschließlich intern als Übergabe an `translation-runtime` genutzt — formell korrekt.
+
+---
+
+## PHASE 3: FUNKTIONSANALYSE
+
+Nur die relevanten / auffälligen Funktionen mit Anruf-Herkunft. Vollständige Trivialfunktionen (getter/setter) werden komprimiert aufgeführt.
+
+**`index.js`**
+
+| Funktion | Signatur | Was sie tut | Aufgerufen von |
+|---|---|---|---|
+| `envFirst(...names)` | `(...string) → string` | Erste nicht-leere ENV-Variable | CONFIG-Initialisierung, `applyEnvToConfig` |
+| `stopOllama()` | `() → Promise` | Sendet keep_alive:0 an Ollama | SIGINT-Handler, `guiServer.on('idle')` |
+| `initDb()` | `() → Promise` | Initialisiert DB-Manager | `main()` |
+| `getGrammarContext()` | `() → string` | Liest grammar_context.txt | Injiziert in `translationRuntime` |
+| `applyEnvToConfig()` | `() → void` | Überschreibt CONFIG-Felder aus ENV | `guiServer.on('reload_config')` |
+| `persistConfig(config)` | `(Object) → Promise` | Schreibt CONFIG als `.env`-Datei | `guiServer.on('update-config')` |
+| `getGeminiModelName(name)` | `(string) → string` | Normalisiert `models/`-Prefix | Injiziert in `translationRuntime` |
+| `getModelForProvider(provider, override)` | `(string, string) → string` | Wählt Modell für Provider | Injiziert in `translationRuntime` |
+| `extractErrorMessage(e)` | `(Error) → string` | Extrahiert lesbaren Fehlertext | Injiziert in mehrere Module |
+| `collectTextFiles(dir, baseDir)` | `(string, string) → Promise<Array>` | Rekursiv .txt-Dateien sammeln | Injiziert in `runtimeOps` |
+| `readFileJob(job)` | `(Object) → Promise<Object>` | Liest Datei + extrahiert Replacements | Injiziert in `runtimeOps` |
+| `mapLimit(items, limit, mapper)` | `(Array, number, fn) → Promise<Array>` | Paralleles Mapping mit Limit | Injiziert in `runtimeOps` |
+| `shouldSkipFile(filePath, outPath)` | `(string, string) → Promise<bool>` | Prüft ob Datei bereits übersetzt | `writeTranslatedFile` |
+| `markProcessed(filePath, outPath)` | `(string, string) → Promise` | Schreibt processed_files-Eintrag | `writeTranslatedFile` |
+| `writeTranslatedFile(job, modOutputPath, translations)` | `(Object, string, Map) → Promise<Object>` | Schreibt übersetzte Datei | Injiziert in `runtimeOps` |
+| `ensureTranslations(texts, options)` | `(Array, Object) → Promise<Map>` | Delegiert an `translationRuntime` | Injiziert in `runtimeOps` |
+| `synchronize(planner, options)` | `(Planner, Object) → Promise` | Haupt-Sync-Workflow | `main()`, GUI-Action-Handler |
+| `managePatches()` | `() → Promise` | Patch-Auswahl + BridgeCore-Merge | `main()` Menu-Handler |
+| `fullReset()` | `() → Promise` | Löscht alle Patches, setzt DB zurück | `main()` Menu-Handler |
+| `cleanupLegacyFolders()` | `() → Promise` | Verschiebt alte Patches nach PATCH_ROOT | `main()` beim Start |
+| `broadcastStats()` | `() → void` | Sendet Statistiken an GUI per SSE | `setInterval(..., 500)` |
+| `main()` | `() → Promise` | Initialisiert alles, startet Modus-Logik | `require.main`-Guard |
+
+**`broadcastStats` — KRITISCH:** Arrow-Funktion innerhalb `main()`. Referenziert `this._cpuPrevTotal` und `this._cpuPrevIdle`. Da Arrow-Funktionen das `this` des umgebenden Kontexts erben und `main()` ohne Receiver aufgerufen wird, zeigt `this` im CommonJS-Sloppy-Mode auf das globale Objekt (`global`). Die CPU-Delta-Berechnung "funktioniert" durch globale Namespace-Verschmutzung. Im Strict-Mode wäre `this === undefined` → `TypeError` bei Zuweisung.
+
+**Nicht aufgerufene Funktionen:**
+- `startSingleManual` — **nie definiert**, aber dreifach auskommentiert referenziert
+- `UI.selectMod`, `UI.confirm` — exportiert aus `ui.js`, nirgends importiert/verwendet
+
+**`src/translation-runtime.js`**
+
+| Funktion | Signatur | Was sie tut | Aufgerufen von |
+|---|---|---|---|
+| `parseBatchResponseWithMaps(text, expectedCount, shieldMaps)` | → `Array<string>` | Delegiert an `parseBatchResponse` (shieldMaps ungenutzt!) | alle `callXxxBatch`-Funktionen |
+| `isLikelyGermanText(text)` | → `bool` | Heuristik via Umlaut/Morphem-Check | `classifyNativeDecision`, `translateBatch`, `flagPotentialErrors` |
+| `buildGeminiRequest(prompt, mode, expectedCount)` | → `Object` | Baut Gemini API Payload | `callGeminiBatch`, `executeStageRequest` |
+| `getBatchProfile(provider, model, mode)` | → `{maxItems, maxChars}` | Größenlimits pro Provider | `ensureTranslations`, `fixGrammarBatch` |
+| `getGuardedTerminology(items)` | → `Promise<Array>` | Lädt geschützte Glossar-Terme aus DB | `buildBatchPromptForCurrentConfig`, `fixGrammarBatch` |
+| `callGeminiBatch(items, modelOverride, attemptCount)` | → `Promise<Array<string>>` | Sendet Batch an Gemini API, Key-Rotation | `translateBatch` |
+| `callGroqBatch`, `callOpenRouterBatch`, `callOllamaBatch`, `callPlayer2Batch` | analog | Analog für ihre Provider | `translateBatch` |
+| `callArgosBatch(texts)` | → `Promise<Array<string>>` | Übersetzt via Python/Argos (spawnSync) | `translateBatch` |
+| `callGoogleTranslateFree(texts)` | → `Promise<Array<string>>` | Übersetzt via undokumentiertes Google-Endpoint | `translateBatch` |
+| `executeStageRequest(stage, route, prompt, options, attemptCount)` | → `Promise<Array>` | Multi-Provider Stage-Request für Audit/Polish | `fixGrammarBatch`, `flagPotentialErrors` |
+| `translateBatch(items, provider, modelOverride)` | → `Promise<Array<string>>` | Wählt Provider, sendet Batch, validiert Ergebnis | `translateBatchWithRouting` |
+| `translateBatchWithRouting(items)` | → `Promise<{provider, model, translations}>` | Fügt Routing ein | `ensureTranslations` |
+| `getCachedTranslations(items)` | → `Promise<Map>` | **SERIELLER N+1-LOOP** über DB | `ensureTranslations` |
+| `saveTranslation(entry, translation, polishLevel, meta)` | → `Promise` | UPSERT in translations-Tabelle | `ensureTranslations`, native Reuse |
+| `fixGrammarBatch(items, stage, attemptCount)` | → `Promise<Array<string>>` | Proofread-Runde via LLM | `ensureTranslations` QA-Phase |
+| `flagPotentialErrors(items)` | → `Promise<Array<bool>>` | LLM-basiertes Fehler-Flagging | `ensureTranslations` QA-Phase |
+| `ensureTranslations(texts, options)` | → `Promise<Map>` | Haupt-Übersetzungs-Orchestrator | injiziert in `index.js` |
+| `learnGlossary(source, translation, context)` | → `Promise` | Lernt Glossar-Term aus erfolgreicher Übersetzung | `ensureTranslations` |
+| `checkTerminologyViolations(source, translation, strictTerms)` | → `string\|null` | Prüft geschützte Terme | `fixGrammarBatch`, `ensureTranslations` |
+| `scoreTranslationQuality(source, translation)` | → `number` | Grobe Qualitätsbewertung (0–90) | `saveTranslation`-Meta |
+| `inferFlagReason(source, translation, provider, options)` | → `string` | Bestimmt Flag-Grund | `ensureTranslations` |
+
+**`src/text-core.js`**
+
+| Funktion | Signatur | Was sie tut | Aufgerufen von |
+|---|---|---|---|
+| `parseBatchResponse(text, options)` | → `Array<string>` | JSON-Parse + Line-Fallback; strippt `"` | `parseBatchResponseWithMaps`, `index.js` module.exports |
+| `buildBatchPrompt(items, targetLang, grammarContext, strictTerms)` | → `{prompt, shieldMaps}` | Baut nummerierten Prompt mit Shields | `buildBatchPromptForCurrentConfig` |
+| `buildProofreadPrompt(items, targetLang, ...)` | → `{prompt, shieldMaps}` | Baut Proofread-Prompt | `fixGrammarBatch` |
+| `extractReplacements(content, relativePath)` | → `Array<Object>` | Extrahiert alle `"..."` ohne Key-Kontext | `readFileJob` |
+| `applyTranslations(content, replacements, translations)` | → `string` | Re-scannt Datei mit Regex; **`replacements`-Parameter ist dead** | `exporter.writeTranslatedFile` |
+| `placeholdersValid(sourceOrPlaceholders, target)` | → `bool` | Validiert Placeholder-Erhalt | intern via `translationLooksSafe` |
+| `translationLooksSafe(source, target, placeholders)` | → `bool` | Kombinierte Validierung | `restoreAndValidateTranslation` |
+| `restoreAndValidateTranslation(source, rawTranslation, placeholders)` | → `{clean, restored, valid}` | Restore + Validate in einem | `translateBatch`, `executeStageRequest` |
+
+---
+
+## PHASE 4: DATENFLUSS
+
+**Primärer Übersetzungs-Datenfluss**
+
+```
+Steam Workshop .txt-Dateien
+    → collectTextFiles() → readFileJob()
+    → extractReplacements()                     [Regex über alle "..." ohne Key]
+    → allTexts[] = { source, relativePath, ... }
+
+allTexts
+    → ensureTranslations()
+        → enrichWithContext()                   [Glossar-Lookup, Risk-Score]
+        → getCachedTranslations()               [⚠️ N+1 seriell]
+        → classifyNativeDecision()              [Proper Noun / Already German?]
+        → missing = nicht gecachte Texte
+        → while loop: translateBatchWithRouting()
+            → dispatcher.runRoute()
+                → translateBatch(items, provider)
+                    → buildBatchPromptForCurrentConfig()
+                        → shieldPlaceholders()  [Round 1: <x> → [[0]]]
+                        → Prompt-Text mit [[0]] etc.
+                    → inline: protectPlaceholders()
+                        → shieldPlaceholders()  [Round 2: gleicher Input, gleiche Map]
+                    → call[Provider]Batch(entries)
+                        → API-Call mit Round-1-Prompt
+                        → parseBatchResponseWithMaps()
+                            → parseBatchResponse()  [shieldMaps-Parameter ignoriert]
+                            → returned Strings mit [[0]] tokens drin
+                    → rawTranslations[i] hat [[0]] tokens
+                    → restoreAndValidateTranslation(source, rawTranslation, Round2.placeholders)
+                        → restorePlaceholders()     [[[0]] → <x>]
+                        → translationLooksSafe()
+                    → falls invalid: Fallback auf Original-Text (Quelle)
+                → result.translations[]
+        → saveTranslation()                     [UPSERT in DB]
+        → learnGlossary()                       [Glossar-Update]
+        
+        [Optional GRAMMAR_CHECK-Phase]
+        → flagPotentialErrors()                 [Audit-LLM: bool[]]
+        → fixGrammarBatch()                     [Polish-LLM]
+            → buildProofreadPrompt()            [shieldMaps korrekt genutzt]
+            → executeStageRequest()
+                → parseBatchResponseWithMaps()
+                    → shieldMaps HIER genutzt   [Restore im parseRaw()]
+        → saveTranslation(..., polishLevel=2)
+
+translations (Map)
+    → writeTranslatedFile()
+        → applyTranslations(content, replacements, translations)
+            → replacements ignoriert, Datei erneut per Regex gescannt
+        → fs.writeFile(outPath)
+    → markProcessed()                           [processed_files UPSERT]
+
+Datei-Output → PATCH_ROOT/[ModName]_German/
+    → bundleBridgeCore() → GAME_MOD_ROOT/BridgeCore/
+    → syncLauncherSettings() → LauncherSettings.txt
+```
+
+**Wo werden Daten still verworfen:**
+
+1. **`parseBatchResponse` ignoriert `shieldMaps`** (options.shieldMaps wird übergeben, nie gelesen). Round-1-ShieldMaps von `buildBatchPromptForCurrentConfig` gehen verloren. Funktioniert nur, weil Round 2 (inline `protectPlaceholders`) identische Maps erzeugt.
+
+2. **`applyTranslations(content, replacements, translations)`** — Parameter `replacements` wird nie gelesen. Die Funktion re-scannt `content` mit einem eigenen Regex. Alle vorberechneten `replacements` aus `readFileJob` sind bei Schreibzeit wertlos.
+
+3. **`translateBatch` Fallback bei invalider Translation:** `return item.source` — das Original wird verwendet und als Translation gespeichert, mit `flagReason: ''` wenn der Validation-Pfad schlägt. Erst der N+1-Weg via `inferFlagReason` setzt korrekte Flags, aber `restoreAndValidateTranslation`-Fallback setzt keinen separaten Flag-Grund.
+
+4. **Fehlerbehandlung in `ensureTranslations` catch-Block:** Fehlgeschlagene Batches werden mit `provider: 'native_fallback', flagReason: 'all_routes_failed', qualityScore: 20` in der DB gespeichert. Das Original wird als Translation verwendet. Das ist korrekt dokumentiert, aber `console.error` geht in `log.txt` — bei `--gui` wird kein extra Event gefeuert.
+
+**Fehlerbehandlungspfade:**
+
+- `callXxxBatch` 429/401: Key-Rotation + Retry → wenn alle Keys erschöpft: Exception nach oben
+- `dispatcher.runRoute`: iteriert routePlan, bei Fehler `routingEngine.handleFailure()` → Cooldown → nächste Route
+- Alle Routen fehlgeschlagen: `throw new Error("Alle ... Routen fehlgeschlagen")` → `ensureTranslations` catch → Original gespeichert
+- `callArgosBatch` bei Python-Fehler: `return texts.map(t => t)` → Silent Fallback auf Originale, kein Flag
+- `callGoogleTranslateFree` Einzel-Fehler: `results.push(text)` → Original ohne Flag
+
+---
+
+## PHASE 5: CLAIM-VERIFIKATION
+
+**CLAIM: "Platzhalter wie `__VAR0__` überleben die Übersetzung"**
+→ **STATUS: TEILWEISE VERIFIZIERT**
+→ **BEWEIS:** `shieldPlaceholders` regex deckt `<[^>]+>|__VAR\d+__|{[^}]+}|\$[A-Za-z0-9_]+|%[^%\s]+%` ab. Restoration passiert via `restoreAndValidateTranslation`. Problem: `parseBatchResponse` in `text-core.js` strippe `replace(/^"|"$/g, '')` — wenn ein LLM die Übersetzung in Anführungszeichen wrapped (`"[[0]] Hallo"`), würde das führende `"` korrekt entfernt. Aber wenn ein Ergebnis mit `"` endet aus einem legitimen Grund (Zitat), wird es gekürzt. Placeholder-Protection selbst: verifiziert funktionsfähig.
+
+**CLAIM: "Bekannte Wörter kommen aus dem Glossar direkt ohne API-Aufruf"**
+→ **STATUS: VERIFIZIERT**
+→ **BEWEIS:** `classifyNativeDecision()` in `translation-runtime.js` prüft `glossaryMap.get(source)` und setzt `reuse: true, reason: 'glossary_exact'` ohne API-Call. Cache-Hit-Pfad ebenfalls via `getCachedTranslations` vor API-Calls.
+
+**CLAIM: "Qualitätsprüfung läuft über einen separaten Schritt"**
+→ **STATUS: VERIFIZIERT**
+→ **BEWEIS:** Nach Batch-Translation in `ensureTranslations` läuft eine explizite `if (config.GRAMMAR_CHECK)` QA-Phase mit `flagPotentialErrors()` + `fixGrammarBatch()`. Ist standardmäßig DEAKTIVIERT (`GRAMMAR_CHECK=true` muss explizit gesetzt sein).
+
+**CLAIM: "Mehrere Keys pro Provider werden automatisch rotiert"**
+→ **STATUS: VERIFIZIERT**
+→ **BEWEIS:** `ConfigRuntime.rotateApiKey(provider)` inkrementiert `KEY_INDICES[provider]`, `getApiKey` verwendet `keys[index % keys.length]`. Rotation wird bei 429/401 in allen `callXxxBatch`-Funktionen ausgelöst.
+
+**CLAIM: "CPU und RAM Auslastung siehst du live im Dashboard"**
+→ **STATUS: TEILWEISE FALSCH**
+→ **BEWEIS:** RAM korrekt via `os.freemem()/os.totalmem()`. CPU: `broadcastStats` ist Arrow-Funktion in `main()`, nutzt `this._cpuPrevTotal`. In CommonJS-Sloppy-Mode persistiert `this` auf `global` zwischen Interval-Calls — das **zufällig** funktioniert, ist aber kein stabiles Design. Ohne vorherigen State gibt der erste Call immer `cpuPct = 0`. Gemessen wird CPU-Zeit-Delta über OS-Ticks — kein echter `loadavg`-Ersatz.
+
+**CLAIM: "Texte die sich nicht verändert haben werden nicht nochmal übersetzt"**
+→ **STATUS: VERIFIZIERT**
+→ **BEWEIS:** `shouldSkipFile()` prüft Hash + mtime gegen `processed_files`-Tabelle. `getCachedTranslations()` cached auf `source_text`-Ebene. Beide Ebenen funktionieren korrekt.
+
+**CLAIM: "Das Tool findet deine Mod-Ordner automatisch über den Steam Workshop Pfad"**
+→ **STATUS: TEILWEISE — Windows-Only**
+→ **BEWEIS:** `CONFIG.MOD_ROOT` default ist `C:\Program Files (x86)\Steam\...` (Hardcoded Windows-Pfad). `SETTINGS_PATH` in `sos-runtime.js` nutzt `process.env.APPDATA` → undefined auf Linux/Mac → Pfad wird zu `/songsofsyx/settings/LauncherSettings.txt`. Guard `if (!fs.existsSync(SETTINGS_PATH)) return []` fängt das still ab.
+
+---
+
+## PHASE 6: AUFFÄLLIGKEITEN
+
+### KRITISCH
+
+**C1 — N+1 Serieller DB-Loop in `getCachedTranslations`**
+Datei: `src/translation-runtime.js`, Funktion `getCachedTranslations`, ca. Zeile 659–670.
+```js
+for (const entry of entries) {  // N Iterationen
+    const row = sourceHash
+        ? await dbGet('SELECT ... WHERE target_lang = ? AND (source_text = ? OR source_hash = ?) ...')
+        : await dbGet('SELECT ... WHERE source_text = ? ...');
+}
+```
+Für jeden einzelnen Entry ein separater `await dbGet`-Aufruf, seriell geblockt. Bei einem Mod mit 500 eindeutigen Strings = 500 sequenzielle SQLite-Queries. Korrekt wäre ein einzelnes `WHERE source_text IN (...)` mit `dbAll`.
+
+**C2 — `this._cpuPrevTotal` in Arrow-Funktion: Globaler Namespace-Pollutant**
+Datei: `index.js`, Funktion `broadcastStats`, ca. Zeile 556–571.
+```js
+const broadcastStats = () => {  // Arrow: this = outer this
+    if (this._cpuPrevTotal != null && ...) { ... }  // this = global in sloppy mode
+    this._cpuPrevTotal = total;  // Setzt global._cpuPrevTotal
+};
+```
+Im Strict-Mode: `TypeError: Cannot set properties of undefined`. In Non-Strict: stille globale Namespace-Verschmutzung. Die CPU-Berechnung ist per Design gebrochen weil der erste Call immer `cpuPct=0` liefert.
+
+**C3 — Race Condition: `guiIdleResolver` vor Deklaration referenziert**
+Datei: `index.js`, Zeile 545 (`on('idle')` Handler) vs. Zeile 554 (Deklaration) vs. Zeile 592 (Zuweisung).
+```js
+global.guiServer.on('idle', async () => {
+    if (guiIdleResolver) await guiIdleResolver();  // Zeile 545
+});
+// ...
+let guiIdleResolver = null;  // Zeile 554 — TDZ-sicher, aber...
+// ...
+return new Promise((resolve) => {
+    guiIdleResolver = async () => { ... resolve(); };  // Zeile 592
+});
+```
+Die `guiIdleResolver`-Zuweisung (Zeile 592) passiert NACH dem Start des GUI-Servers (Zeile ~500). Wenn `idle` vor Zeile 592 feuert (Browser-Tab bereits geschlossen während Start-Sequenz), bleibt `guiIdleResolver === null`, der Handler tut nichts, und die Promise resolvet nie → Prozess hängt.
+
+**C4 — Menü-Option `'single'` und `'workshop'` sind Dead UI**
+Datei: `index.js` + `src/ui.js`.
+- `mainMenu()` in `ui.js` bietet `{ value: 'single' }` und `{ value: 'workshop' }` an.
+- `'single'`-Handler ist dreifach auskommentiert; `startSingleManual` ist nie definiert. Selektion → `menu.action === 'single'` matcht auf keinen `else if` → Loop-Iteration ohne Aktion.
+- `'workshop'`-Handler fehlt vollständig in der while-Schleife. Gleiche Konsequenz: stille No-Op.
+
+---
+
+### MITTEL
+
+**M1 — Doppeltes Shielding in `translateBatch`**
+Datei: `src/translation-runtime.js`, Funktion `translateBatch`, ca. Zeile 610–635.
+```js
+const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
+// shieldMaps von Round 1 werden an parseBatchResponseWithMaps übergeben
+// aber parseBatchResponse() liest options.shieldMaps NIE
+
+const protectedItems = texts.map(text => ({ source: text, ...protectPlaceholders(text) }));
+// Round 2: gleicher Input → identische Maps
+
+// Restoration verwendet Round 2:
+restoreAndValidateTranslation(item.source, translation, item.placeholders)
+```
+Round-1-ShieldMaps werden erzeugt, übergeben, und stillschweigend ignoriert. Das System funktioniert nur weil `protectPlaceholders` deterministisch ist. Falls sich die Inputs jemals unterscheiden, entsteht stille Korruption ohne Fehlermeldung.
+
+**M2 — `parseBatchResponse` strippe führende/schließende Anführungszeichen**
+Datei: `src/text-core.js`, Funktion `parseBatchResponse`, letzte Zeile des `results.map`:
+```js
+return results.map(entry => String(entry || '').trim().replace(/^"|"$/g, ''));
+```
+Wenn ein LLM eine Übersetzung als korrekten deutschen Satz mit öffnendem Anführungszeichen liefert (`"Hallo, Bürger"` → Zitat im Text), wird das erste/letzte `"` abgeschnitten. Für Songs of Syx-Texte mit Game-Dialogue-Zitaten potenziell fehler­trächtig.
+
+**M3 — `applyTranslations` — `replacements`-Parameter ist Dead**
+Datei: `src/text-core.js`, Funktion `applyTranslations`, Zeile 320–329.
+```js
+function applyTranslations(content, replacements, translations) {
+    const regex = /\"((?:\\.|[^\"\\])*)\"/g;
+    return content.replace(regex, (match, captured) => { ... });
+    // replacements wird nie verwendet
+}
+```
+Das vorberechnete `replacements`-Array aus `readFileJob` wird an die Funktion übergeben, aber ignoriert. Die Datei wird erneut mit Regex gescannt. Wasted computation + misleading Signatur.
+
+**M4 — `fixGrammarBatch` catch-Pfad verliert `attemptCount`**
+Datei: `src/translation-runtime.js`, Funktion `fixGrammarBatch`, catch-Block.
+```js
+} catch (e) {
+    consecutiveGrammarFailures++;
+    // ...
+    return fixGrammarBatch(items, stage);  // attemptCount fehlt → reset auf 0
+}
+```
+`attemptCount` wird beim Error-Retry nicht inkrementiert → der `if (attemptCount >= 2) return` Guard greift nicht. Nur `consecutiveGrammarFailures >= 3` verhindert Endlosrekursion. Im Erfolgs-Retry (Terminologie-Verletzung) wird korrekt `attemptCount + 1` übergeben. Inkonsistenz.
+
+**M5 — Gemini `responseFormat`-Struktur falsch**
+Datei: `src/translation-runtime.js`, Funktion `buildGeminiRequest`.
+```js
+generationConfig.responseFormat = {
+    text: { mimeType: 'application/json', schema }
+};
+```
+Die Gemini API erwartet `generationConfig.responseMimeType` und `generationConfig.responseSchema` auf Top-Level, nicht unter `responseFormat.text`. Das Schema-Enforcement schlägt still fehl (API ignoriert unbekannte Felder), JSON-Antworten kommen trotzdem, aber ohne Schema-Enforcement — Batch-Size-Garantien entfallen.
+
+**M6 — Dead Code-Pfad in `planner.js`**
+Datei: `src/planner.js`, `processMod`-Methode.
+```js
+if (this.hooks.translateMod) {
+    await this.hooks.translateMod(mod, ...);
+    return;  // IMMER genommen
+}
+// Alles darunter ist dead:
+const dbMod = await this.syncModToDb(mod);
+const files = await scanner.collectFiles(mod.path);
+for (const file of files) { await this.processFile(dbMod, ...); }
+```
+`hooks.translateMod` ist in `createRuntimePlanner()` immer gesetzt. `syncModToDb`, `processFile`, `scanner.collectFiles`, `validator.*` und `exporter.*` aus Planner-Imports werden nie aufgerufen.
+
+**M7 — Doppelte `const key`-Deklaration in `executeStageRequest`**
+Datei: `src/translation-runtime.js`, Funktion `executeStageRequest`.
+```js
+const key = getApiKey(provider);  // Outer scope
+// ...
+if (provider === 'ollama') {
+    const key = getApiKey('ollama');  // Shadows outer! Funktional identisch aber verwirrend
+    const headers = key ? { Authorization: `Bearer ${key}` } : {};
+    ...
+}
+```
+Kein Bug da `provider === 'ollama'` impliziert `getApiKey(provider) === getApiKey('ollama')`, aber der äußere `key` wird im Ollama-Block nie genutzt.
+
+---
+
+### MINOR
+
+**Mi1 — Dead Exports ohne externen Konsumenten**
+
+| Export | Datei | Status |
+|---|---|---|
+| `getQaScore` | `validator.js` | Nirgends importiert — Dead Export |
+| `exportWorkshopPatch` | `exporter.js` | Nirgends importiert; Body ist Stub (nur `if`-Guards, keine Logik) |
+| `clearCache` | `diagnostics.js` | Nirgends importiert — Dead Export |
+| `normalizeGlossaryRows` | `glossary.js` | Nur intern in `glossary.js` genutzt, unnötig exportiert |
+| `originalConsole` | `logger.js` | Nirgends extern genutzt — Dead Export |
+| `placeholdersValid` | `text-core.js` | Nur intern via `translationLooksSafe` — Dead Export |
+| `translationLooksSafe` | `text-core.js` | Nur intern via `restoreAndValidateTranslation` — Dead Export |
+| `selectMod`, `confirm` | `ui.js` | Nirgends importiert — Dead Exports |
+
+**Mi2 — Committed Runtime-Artefakte**
+`stdout.log`, `stderr.log`, `.DB backups/` (leeres Verzeichnis) im Archiv. Sollten in `.gitignore` stehen.
+
+**Mi3 — `test_placeholder_fix.js` im Root**
+Stray-Testdatei im Projekt-Root statt `scripts/` oder `test/`. Wird von `package.json test`-Script nicht ausgeführt.
+
+**Mi4 — `DB_PATH` via `process.cwd()`**
+Datei: `src/db.js`, Zeile 4.
+```js
+const DB_PATH = path.join(process.cwd(), 'translations.db');
+```
+Wenn das Tool nicht aus dem Projektverzeichnis gestartet wird (z.B. via absolutem Pfad), landet die DB im falschen Verzeichnis. `__dirname` wäre korrekt.
+
+**Mi5 — `ensureDir` schluckt alle Fehler**
+Datei: `src/exporter.js`, Funktion `ensureDir`.
+```js
+async function ensureDir(dir) {
+    try { await fs.mkdir(dir, { recursive: true }); } catch (e) {}
+}
+```
+Permissions-Fehler, volle Disks, oder andere kritische IO-Fehler werden still ignoriert. Nachfolgende `fs.writeFile`-Fehler erscheinen dann mit irreführendem ENOENT.
+
+**Mi6 — `isSingleAuto` — Dead Variable**
+Datei: `index.js`, Zeile ~585.
+```js
+const isSingleAuto = process.argv.includes('--single-auto');
+// if (isSingleAuto) { await startSingleManual(planner); process.exit(0); }  // Auskommentiert
+```
+Variable deklariert, Handler auskommentiert, `startSingleManual` nie definiert.
+
+**Mi7 — `SETTINGS_PATH` Windows-Only**
+Datei: `src/sos-runtime.js`, Zeile 5.
+```js
+const SETTINGS_PATH = path.join(process.env.APPDATA || '', 'songsofsyx', 'settings', 'LauncherSettings.txt');
+```
+Auf Linux/Mac: APPDATA undefined → Pfad beginnt mit `/songsofsyx/...` → existiert nicht → `getActiveMods()` gibt `[]` zurück, kein Fehler, keine Warnung.
+
+---
+
+## PRIORISIERTE BUGLIST
+
+### KRITISCH
+
+| Prio | ID | Problem | Datei | Auswirkung |
+|---|---|---|---|---|
+| 1 | C1 | N+1 serieller DB-Loop in `getCachedTranslations` | `translation-runtime.js:659` | Massive Performance-Degradation bei großen Mods — blockiert Event-Loop für Hunderte sequenzieller Queries |
+| 2 | C3 | Race Condition: `guiIdleResolver` wird gesetzt nach dem Event-Handler der ihn konsumiert | `index.js:545/592` | Prozess hängt ewig wenn `idle`-Event während Startup feuert |
+| 3 | C4 | Menü-Optionen `single`/`workshop` in UI sichtbar, keine Handler vorhanden | `index.js:609`, `ui.js` | Benutzer sieht Option, Aktion tut nichts — kein Fehler, kein Feedback |
+| 4 | C2 | `this._cpuPrevTotal` in Arrow-Funktion: globaler Namespace; Strict-Mode crash | `index.js:564` | Potenzieller `TypeError` in stricten Umgebungen; im Normalbetrieb stille globale Pollution |
+
+### MITTEL
+
+| Prio | ID | Problem | Datei | Auswirkung |
+|---|---|---|---|---|
+| 5 | M1 | Doppeltes Shielding — Round-1-Maps discarded, Korrektheit nur durch Determinismus | `translation-runtime.js:610–635` | Latente Korruptionsgefahr bei Refactoring; doppelte CPU-Last |
+| 6 | M5 | Gemini `responseFormat`-Struktur falsch — Schema-Enforcement schlägt still fehl | `translation-runtime.js:buildGeminiRequest` | Keine Batch-Size-Garantien von Gemini; mehr fehlerhafte Antworten ohne Erkennung |
+| 7 | M2 | `parseBatchResponse` strippe führende/schließende `"` — kann Dialogue-Texte korrumpieren | `text-core.js:parseBatchResponse` | Stille Datenbeschädigung bei übersetzten Zitaten |
+| 8 | M4 | `fixGrammarBatch` catch-Pfad setzt `attemptCount` zurück auf 0 | `translation-runtime.js:fixGrammarBatch` | Mehr Retry-Runden als beabsichtigt bei Fehler; `consecutiveGrammarFailures`-Cap als einziger Schutz |
+| 9 | M3 | `applyTranslations` ignoriert `replacements`-Parameter — Pre-Computation wertlos | `text-core.js:320` | Irreführende API; Datei wird doppelt gescannt |
+| 10 | M6 | Dead Code-Pfad in `planner.processMod` — `scanner`, `validator`, `exporter`-Imports nie ausgeführt | `planner.js:3–6` | Toter Import-Ballast, Wartungsirreführung |
+
+### MINOR
+
+| Prio | ID | Problem | Datei |
+|---|---|---|---|
+| 11 | Mi4 | `DB_PATH` via `process.cwd()` statt `__dirname` | `db.js:4` |
+| 12 | Mi1 | 8 Dead Exports (`getQaScore`, `exportWorkshopPatch`, etc.) | Diverse |
+| 13 | Mi5 | `ensureDir` schluckt alle mkdir-Fehler | `exporter.js` |
+| 14 | Mi6 | Dead Variable `isSingleAuto` + auskommentierter Handler | `index.js` |
+| 15 | M7 | Doppelte `const key`-Deklaration im Ollama-Block | `translation-runtime.js:executeStageRequest` |
+| 16 | Mi2 | `stdout.log`, `stderr.log`, `.DB backups/` committed | Root |
+| 17 | Mi3 | `test_placeholder_fix.js` stray im Root | Root |
+| 18 | Mi7 | `SETTINGS_PATH` Windows-Only, silent No-Op auf Linux/Mac | `sos-runtime.js:5` |

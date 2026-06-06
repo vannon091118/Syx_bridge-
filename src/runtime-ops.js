@@ -1,0 +1,191 @@
+function createRuntimeOps(options) {
+  const {
+    config,
+    fs,
+    fsp,
+    path,
+    inquirer,
+    exporter,
+    ensureTranslations,
+    mapLimit,
+    readFileJob,
+    collectTextFiles,
+    writeTranslatedFile,
+    getMajorVersion,
+    getHasConfirmedNative,
+    setHasConfirmedNative
+  } = options;
+
+  function formatModInfo(infoObj) {
+    const lines = [];
+    if (infoObj.VERSION) lines.push(`VERSION: "${infoObj.VERSION}",`);
+    if (infoObj.GAME_VERSION_MAJOR) lines.push(`GAME_VERSION_MAJOR: ${infoObj.GAME_VERSION_MAJOR},`);
+    if (infoObj.GAME_VERSION_MINOR !== undefined) lines.push(`GAME_VERSION_MINOR: ${infoObj.GAME_VERSION_MINOR},`);
+    if (infoObj.NAME) lines.push(`NAME: "${infoObj.NAME}",`);
+    if (infoObj.DESC) lines.push(`DESC: "${infoObj.DESC}",`);
+    if (infoObj.AUTHOR) lines.push(`AUTHOR: "${infoObj.AUTHOR}",`);
+    if (infoObj.INFO) lines.push(`INFO: "${infoObj.INFO}",`);
+    return lines.join('\n') + '\n';
+  }
+
+  function appendPatchNotice(baseText, notice) {
+    const source = String(baseText || '');
+    return source.includes(notice) ? source : `${source}${notice}`;
+  }
+
+  function parseModInfo(content) {
+    const info = {};
+    const lines = content.split('\n');
+    for (const line of lines) {
+      const match = line.match(/^\s*([A-Z_]+):\s*"?(.*?)"?,?\s*$/i);
+      if (match) {
+        let value = match[2].trim();
+        if (['GAME_VERSION_MAJOR', 'GAME_VERSION_MINOR'].includes(match[1])) {
+          value = parseInt(value, 10);
+        }
+        info[match[1]] = value;
+      }
+    }
+    return info;
+  }
+
+  async function ensureCoreMod() {
+    const coreModPath = path.join(config.GAME_MOD_ROOT, 'BridgeCore');
+    const majorVersion = await getMajorVersion(config.MOD_ROOT);
+
+    const info = {
+      VERSION: '1.0.0',
+      GAME_VERSION_MAJOR: majorVersion,
+      GAME_VERSION_MINOR: 0,
+      NAME: 'BridgeCore',
+      DESC: 'Zentraler Mod-Manager fuer alle KI-Uebersetzungen. Enthaelt alle aktiven Patches.',
+      AUTHOR: 'syx-bridge',
+      INFO: 'Buendelt alle Uebersetzungen in einer einzigen Mod.'
+    };
+
+    await fsp.mkdir(coreModPath, { recursive: true });
+    await fsp.writeFile(path.join(coreModPath, '_Info.txt'), formatModInfo(info), 'utf-8');
+    return coreModPath;
+  }
+
+  async function mergePatchesToCore(selectedPatches) {
+    const coreModPath = await ensureCoreMod();
+    console.log('[INFO] Bereite BridgeCore vor (Rekursives Mergen der Patches)...');
+    await exporter.bundleBridgeCore(selectedPatches, config.PATCH_ROOT, coreModPath);
+  }
+
+  async function translateMod(modDir, options = {}) {
+    const mode = typeof options === 'string' ? options : (options.mode || 'basis');
+    const dryRun = !!options.dryRun;
+        
+    const infoPath = path.join(modDir, '_Info.txt');
+    if (!fs.existsSync(infoPath)) return null;
+
+    const infoContent = await fsp.readFile(infoPath, 'utf-8');
+    const info = parseModInfo(infoContent);
+    const modName = info.NAME || path.basename(modDir);
+    console.log(`\n>>> Uebersetze: ${modName}${dryRun ? ' [DRY RUN]' : ''}`);
+
+    if (config.NATIVE_MODE && !getHasConfirmedNative() && !dryRun) {
+      // ... (Native mode confirmation logic stays same)
+      console.log('\n' + '!'.repeat(50));
+      console.log('  WARNUNG: NATIVE MODE AKTIVIERT');
+      console.log('  Originaldateien werden ueberschrieben!');
+      console.log('  Steam-Updates koennten dies rueckgaengig machen.');
+      console.log('!'.repeat(50));
+
+      const confirm = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'proceed',
+          message: 'Moechtest du wirklich fortfahren? (Backup wird erstellt)',
+          default: false
+        }
+      ]);
+
+      if (!confirm.proceed) {
+        console.log('[ABBRUCH] Native Mode abgebrochen.');
+        return null;
+      }
+      setHasConfirmedNative(true);
+    }
+
+    const modFolderName = `${modName.replace(/[^a-z0-9]/gi, '_')}_${config.TARGET_LANG}`;
+    const modOutputPath = config.NATIVE_MODE ? modDir : path.join(config.PATCH_ROOT, modFolderName);
+    const notice = `\\n\\n--- ${config.TARGET_LANG.toUpperCase()} PATCH ---\\nDiese Mod wurde automatisch auf ${config.TARGET_LANG} uebersetzt.`;
+
+    if (!config.NATIVE_MODE && !dryRun) {
+      await fsp.mkdir(modOutputPath, { recursive: true });
+      await fsp.mkdir(config.PATCH_ROOT, { recursive: true });
+      console.log('[INFO] Kopiere Mod-Dateien...');
+      await fsp.cp(modDir, modOutputPath, { recursive: true });
+    }
+
+    const sourceIsBackup = modDir.startsWith(config.BACKUP_ROOT) || path.basename(modDir).startsWith('.backup_');
+    if (!sourceIsBackup && !dryRun) {
+      await fsp.mkdir(config.BACKUP_ROOT, { recursive: true });
+      const backupId = path.basename(modDir).replace(/[^a-z0-9_.-]/gi, '_');
+      const backupPath = path.join(config.BACKUP_ROOT, `.backup_${backupId}_ORIGINAL`);
+      if (!fs.existsSync(backupPath)) {
+        console.log('[INFO] Erstelle Sicherheits-Backup...');
+        await fsp.cp(modDir, backupPath, { recursive: true });
+        console.log(`[INFO] Backup gespeichert: ${backupPath}`);
+      }
+    }
+
+    const updatedInfo = { ...info };
+    if (!config.NATIVE_MODE) {
+      const patchSuffix = ` (${config.TARGET_LANG} Patch)`;
+      const currentName = info.NAME || modName;
+      updatedInfo.NAME = currentName.endsWith(patchSuffix) ? currentName : `${currentName}${patchSuffix}`;
+    }
+    updatedInfo.DESC = appendPatchNotice(info.DESC || '', notice);
+    updatedInfo.AUTHOR = info.AUTHOR || 'syx-bridge';
+    if (!updatedInfo.VERSION) updatedInfo.VERSION = '1.0.0';
+    if (!updatedInfo.GAME_VERSION_MAJOR) updatedInfo.GAME_VERSION_MAJOR = 70;
+    if (updatedInfo.GAME_VERSION_MINOR === undefined) updatedInfo.GAME_VERSION_MINOR = 0;
+
+    if (!dryRun) {
+      await fsp.writeFile(path.join(modOutputPath, '_Info.txt'), formatModInfo(updatedInfo), 'utf-8');
+    }
+
+    const files = (await collectTextFiles(modDir, modDir)).filter(f => f.relativePath !== '_Info.txt');
+    const jobs = await mapLimit(files, options.maxParallelFiles || 8, readFileJob);
+    const allTexts = jobs.flatMap(job => job.replacements.map(r => ({
+      source: r.value,
+      key: r.key,
+      type: r.type,
+      sourceHash: r.hash,
+      relativePath: job.relativePath,
+      modName
+    })));
+    const translations = await ensureTranslations(allTexts, options);
+    const translationStats = translations.__stats || {};
+        
+    if (!dryRun) {
+      const results = await mapLimit(jobs, options.maxParallelFiles || 8, job => writeTranslatedFile(job, modOutputPath, translations));
+      const skippedCount = results.filter(result => result.skipped).length;
+      console.log(`[INFO] Dateien: ${jobs.length}, uebersprungen: ${skippedCount}, geschrieben: ${jobs.length - skippedCount}`);
+    } else {
+      console.log(`[DRY RUN] ${jobs.length} Dateien verarbeitet (${allTexts.length} Strings), keine Änderungen gespeichert.`);
+    }
+
+    return {
+      filesScanned: jobs.length,
+      totalFiles: jobs.length,
+      stringsExtracted: allTexts.length,
+      cacheHits: Number(translationStats.cacheHits || 0),
+      newTranslations: Number(translationStats.missing || 0),
+      qaFailures: 0
+    };
+  }
+
+  return {
+    translateMod,
+    mergePatchesToCore
+  };
+}
+
+module.exports = {
+  createRuntimeOps
+};
