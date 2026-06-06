@@ -36,6 +36,8 @@ try {
     'translations.db-journal',
     'log.txt',
     'runs.jsonl',
+    'stdout.log',
+    'stderr.log',
     'debug_payloads.txt',
     'patches'
   ];

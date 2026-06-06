@@ -2,20 +2,21 @@
 
 ## Handshake-Vermerk
 
-Version: `0.9.6 Beta`
+Version: `0.13.0a`
 
-Diese Dokumentation beschreibt den produktiven Builder-Zwischenstand nach mehreren abgebrochenen und danach bereinigten Umbauphasen. Der alte Monolith ist nicht verschwunden, aber er ist weiter in produktive Module aufgeteilt worden.
+Diese Dokumentation beschreibt den produktiven Stand der Bridge nach dem "Deep Polish" Release. Das System wurde von einem monolithischen Ansatz in eine modulare Architektur überführt, die nun auch eine flüssige Web-GUI (Dashboard) beinhaltet.
 
-## Produktiver Stand In `0.9.6 Beta`
+## Produktiver Stand In `0.13.0a`
 
-- `index.js` ist weiterhin der operative Einstiegspunkt.
-- `runtime-ops.js` traegt Mod-Laufoperationen, `_Info.txt`-Pflege und BridgeCore-Ausgabe.
-- `translation-runtime.js` traegt Batch-Uebersetzung, Audit, Polish, Cache und Glossar-Lernen.
-- `text-core.js` ist die zentrale Textlogik fuer Shielding, Promptbau, Parsing und Replacement.
-- `context-packets.js` liefert Risiko-Scores und Prompt-Kontext.
-- `glossary.js` liefert Terminologie-Memory-Helfer.
-- `dispatcher.js` harmonisiert jetzt die Stage-Entscheidungen und die Stage-Ausfuehrung fuer `translate`, `audit` und `polish`.
-- `planner.js` steuert die produktiven `single`- und `sync`-Laeufe.
+- `index.js`: Operativer Einstiegspunkt und Starter für CLI/GUI.
+- `src/gui/`: Neuer Web-Dashboard Kern (Express + Socket.io).
+- `runtime-ops.js`: Mod-Laufoperationen, `_Info.txt`-Pflege und BridgeCore-Ausgabe.
+- `translation-runtime.js`: Batch-Uebersetzung, Audit, Polish, Cache und Glossar-Lernen.
+- `text-core.js`: Zentrale Textlogik für Shielding, Promptbau, Parsing und Replacement.
+- `context-packets.js`: Risiko-Scores und Prompt-Kontext.
+- `dispatcher.js`: Harmonisiert Stage-Entscheidungen (translate, audit, polish).
+- `planner.js`: Steuert die produktiven `single`- und `sync`-Läufe.
+- `exporter.js`: Dateiausgabe und Bündelung (Native vs. Patch Mode).
 
 ## Was Der Dispatcher Vorbereitet
 
