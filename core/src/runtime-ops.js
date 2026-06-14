@@ -58,7 +58,7 @@ function createRuntimeOps(options) {
       GAME_VERSION_MAJOR: majorVersion,
       GAME_VERSION_MINOR: 0,
       NAME: 'AI Bridge Core',
-      DESC: 'Zentraler Mod-Manager fuer KI-Uebersetzungen (v0.14.0).',
+      DESC: 'Zentraler Mod-Manager fuer KI-Uebersetzungen (v0.15.0-alpha).',
       AUTHOR: 'Vannon / AI Bridge',
       INFO: 'ANLEITUNG: Diese Mod muss im Launcher AKTIVIERT sein, damit Uebersetzungen funktionieren. Die Bridge bündelt alle Patches hier. Falls Texte fehlen, starte die syx-bridge.exe erneut.'
     };
