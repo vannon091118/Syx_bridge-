@@ -11,6 +11,9 @@ This repository has been **re-initialized from scratch (git init)** to establish
 **[DE] Warum der GitHub-Relaunch?**  
 Dieses Repository wurde **komplett neu aufgesetzt (git init)**. Bei einer Prüfung wurden kritische Schwachstellen in der NPM-Abhängigkeitskette (Dependency Chain) entdeckt. Um diese Sicherheitsrisiken restlos zu beseitigen und sicherzustellen, dass sich keine kompromittierten Pakete in der Versionshistorie befinden, haben wir einen sauberen Relaunch durchgeführt. Alle Abhängigkeiten wurden aktualisiert und das Projekt auf einen sicheren Stand gebracht.
 
+**🔒 Strict Versioning Policy (Internal Standard)**  
+To prevent future "dependency chain" vulnerabilities and automatic, unverified updates, this project enforces **Strict Versioning** in `package.json`. The use of carets (`^`) or tildes (`~`) is strictly prohibited. All dependencies must be pinned to exact versions (e.g., `"axios": "1.17.0"`). Any new dependency or version bump must be manually audited before being committed.
+
 ---
 
 ## 📢 Project Status: The Current Reality (v0.14.1)
