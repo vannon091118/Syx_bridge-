@@ -1,0 +1,13 @@
+node_modules/
+.env
+core/.env
+*.db
+*.db-shm
+*.db-wal
+*.log
+log.txt
+runs.jsonl
+core/backups/
+core/patches/
+core/translations.db*
+debug_payloads.txt

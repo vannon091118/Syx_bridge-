@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syx-Bridge AI Dashboard</title>
+    <style>
+        :root { 
+            --bg: #0d0b0a; 
+            --bg-native: #1a0b0b;
+            --bg-patch: #0b0b1a;
+            --panel-bg: #1a1715;
+            --accent: #d8973c; 
+            --accent-glow: rgba(216, 151, 60, 0.2);
+            --text: #f1e7da; 
+            --muted: #a99b87; 
+            --border: #332d29;
+            --success: #64d5c4;
+            --danger: #ef6b60;
+            --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: var(--font); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 1.5s ease;
+        }
+
+        body.mode-native { background-color: var(--bg-native); }
+        body.mode-patch { background-color: var(--bg-patch); }
+
+        /* Status States Backgrounds */
+        body.state-running { background-color: #2b2205 !important; }
+        body.state-success { background-color: #052b14 !important; }
+        body.state-error { animation: blink-red 1.5s infinite !important; }
+
+        @keyframes blink-red {
+            0% { background-color: var(--bg); }
+            50% { background-color: #3b0a0a; }
+            100% { background-color: var(--bg); }
+        }
+
+        header { 
+            background: rgba(0,0,0,0.5); 
+            backdrop-filter: blur(5px);
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .brand { font-weight: bold; color: var(--accent); letter-spacing: 1px; font-size: 1.2rem; }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Panels */
+        .sidebar { 
+            background: var(--panel-bg); 
+            border-right: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .panel { 
+            background: rgba(0,0,0,0.2); 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 15px;
+        }
+
+        .panel h3 { margin: 0 0 12px 0; font-size: 0.9rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Status & Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-item { background: rgba(255,255,255,0.03); padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; margin-top: 2px; }
+
+        /* Pipeline Visualizer */
+        .pipeline-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; position: relative; }
+        .pipeline-stage { 
+            width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--border); 
+            display: flex; align-items: center; justify-content: center; font-size: 0.7rem; 
+            background: var(--bg); color: var(--muted); transition: all 0.3s;
+            position: relative; z-index: 2;
+        }
+        .pipeline-stage.active { 
+            border-color: var(--accent); 
+            color: var(--accent); 
+            box-shadow: 0 0 15px var(--accent-glow); 
+            background: rgba(216, 151, 60, 0.1); 
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px var(--accent-glow); }
+            50% { box-shadow: 0 0 20px var(--accent-glow); }
+            100% { box-shadow: 0 0 5px var(--accent-glow); }
+        }
+        .pipeline-stage.done { border-color: var(--success); color: var(--success); }
+        .pipeline-connector { flex: 1; height: 2px; background: var(--border); margin: 0 -5px; position: relative; z-index: 1; }
+        .pipeline-connector.active { background: var(--accent); }
+
+        /* LLM Interaction Terminal */
+        .center-stack { display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border); }
+        
+        .interaction-viewer { height: 28%; display: grid; grid-template-rows: 1fr 1fr; gap: 6px; padding: 10px; overflow: hidden; }
+        .terminal-box { 
+            background: #050505; 
+            border: 1px solid #222; 
+            border-radius: 4px; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .terminal-header { background: #111; padding: 3px 8px; font-size: 0.65rem; display: flex; justify-content: space-between; border-bottom: 1px solid #222; }
+        .terminal-content { flex: 1; padding: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.75rem; overflow-y: auto; white-space: pre-wrap; color: #ccc; }
+        
+        .log-panel { flex: 1; border-top: 1px solid var(--border); background: #000; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: var(--muted); }
+
+        /* DB Browser Styles */
+        .db-table-container { max-height: 400px; overflow-y: auto; margin-top: 10px; border: 1px solid var(--border); }
+        .db-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .db-table th { background: #111; color: var(--accent); padding: 8px; text-align: left; position: sticky; top: 0; }
+        .db-table td { border-bottom: 1px solid var(--border); padding: 6px; }
+        .db-table tr:hover { background: rgba(255,255,255,0.02); }
+        .db-edit-input { background: transparent; border: 1px solid transparent; color: var(--text); width: 100%; padding: 4px; }
+        .db-edit-input:focus { background: #000; border-color: var(--accent); outline: none; }
+
+        /* DB Sample Stream */
+        .right-sidebar { background: var(--panel-bg); display: flex; flex-direction: column; padding: 15px; overflow: hidden; }
+        .sample-list { display: flex; flex-direction: column; gap: 8px; }
+        .sample-card { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-size: 0.8rem; }
+        .sample-source { color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; margin-bottom: 4px; font-style: italic; }
+        .sample-target { color: var(--success); font-weight: 500; }
+
+        /* UI Controls */
+        button { background: var(--accent); color: #000; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; transition: all 0.2s; position: relative; overflow: hidden; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        button.secondary { background: #332d29; color: var(--text); border: 1px solid #444; }
+        button.stop-btn { background: var(--danger); color: #fff; }
+        
+        select, input { background: #000; color: var(--text); border: 1px solid #444; padding: 6px; width: 100%; border-radius: 4px; margin-bottom: 10px; font-size: 0.85rem; }
+
+        .progress-bar { width: 100%; height: 6px; background: #222; border-radius: 3px; margin-top: 5px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s; position: relative; }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+            z-index: 1;
+            background-size: 50px 50px;
+            animation: move 2s linear infinite;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            overflow: hidden;
+        }
+
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .status-badge {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: #333;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-badge.active {
+            background: rgba(100, 213, 196, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(100, 213, 196, 0.3);
+        }
+        .status-badge.active::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            display: block;
+            box-shadow: 0 0 5px var(--success);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">SONGS OF SYX <span style="color:white">AI BRIDGE</span> <span style="font-family: 'Brush Script MT', cursive; font-size: 0.9rem; color: #ef6b60; margin-left: 10px; text-transform: none; text-shadow: 0 0 5px rgba(239, 107, 96, 0.3);">by Vannon</span></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div id="bridge-status-badge" class="status-badge">Idle</div>
+                <div id="health-argos" class="stat-label"><span class="status-dot" id="dot-argos"></span>Argos</div>
+                <div id="health-ollama" class="stat-label"><span class="status-dot" id="dot-ollama"></span>Ollama</div>
+            </div>
+            <div id="mode-warning" style="font-size: 0.6rem; color: var(--accent); margin-top: 4px; letter-spacing: 0.5px; font-weight: bold;">
+                AKTUELL GETESTET: <span style="color:var(--success)">NATIV</span> | EXPERIMENTELL: <span style="color:var(--danger)">PATCH</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+
+        <!-- LEFT SIDEBAR: CONFIG & ACTIONS -->
+        <div class="sidebar">
+            <div class="panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="margin:0;">System-Status</h3>
+                    <div id="run-control-box">
+                        <button id="main-run-btn" onclick="toggleBridge()" style="padding: 4px 12px; font-size: 0.7rem; width: auto;">START</button>
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-item"><div class="stat-label">Phase</div><div id="ui-phase" class="stat-value" style="font-size: 0.85rem; color: var(--accent);">Idle</div></div>
+                    <div class="stat-item"><div class="stat-label">Threads</div><div id="ui-threads" class="stat-value">0</div></div>
+                </div>
+                <div id="ui-mod-name" class="stat-label" style="margin-top: 10px; color: var(--success); font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bereit</div>
+                <div class="progress-bar"><div id="ui-progress" class="progress-fill"></div></div>
+            </div>
+
+            <div class="panel">
+                <h3>Bridge Mode</h3>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button id="mode-toggle-btn" onclick="toggleMode()" style="flex:1;">Wechsle zu NATIVE</button>
+                </div>
+                <div id="mode-status" class="stat-label" style="text-align:center; font-weight:bold;">Aktuell: PATCH MODE</div>
+            </div>
+
+            <div class="panel">
+                <h3>Live Config</h3>
+                <label class="stat-label">Primärer Provider</label>
+                <select id="cfg-provider" onchange="onProviderChange()">
+                    <option value="ollama">Ollama (Lokal)</option>
+                    <option value="gemini">Gemini (Cloud)</option>
+                    <option value="groq">Groq (Fast Cloud)</option>
+                    <option value="openrouter">OpenRouter (Free/Paid)</option>
+                </select>
+
+                <label class="stat-label">Aktives Modell</label>
+                <select id="cfg-model">
+                    <option value="">Lade Modelle...</option>
+                </select>
+                
+                <div style="margin-bottom:10px;">
+                    <label class="stat-label">Batch Größe (Rec: <span id="batch-rec" style="color:var(--accent)">-</span>)</label>
+                    <input type="number" id="cfg-batch-size" value="24" min="1" max="100" style="margin:0;">
+                </div>
+
+                <button onclick="openKeyModal()" style="margin-bottom: 5px; background: #332d29; border: 1px solid #444; color: var(--text); font-size: 0.7rem;">Manage API Keys</button>
+                <label class="stat-label">Zielsprache <span style="font-size: 0.5rem; background: var(--accent); color: #000; padding: 1px 3px; border-radius: 2px; font-weight: bold; margin-left: 5px;">BETA</span></label>
+                <select id="cfg-lang" style="margin-bottom: 5px;">
+                    <option value="German">German</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Polish">Polish</option>
+                    <option value="Russian">Russian</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Portuguese">Portuguese</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Ukrainian">Ukrainian</option>
+                    <option value="Turkish">Turkish</option>
+                    <option value="Dutch">Dutch</option>
+                    <option value="Swedish">Swedish</option>
+                </select>
+                <button onclick="saveConfig()">Apply Changes</button>
+            </div>
+
+            <div class="panel">
+                <h3>Provider Stats</h3>
+                <div id="provider-stats-container" style="font-size: 0.7rem; font-family: monospace;">
+                    <!-- Dynamic Stats -->
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Pipeline</h3>
+                <div class="pipeline-container">
+                    <div id="stage-scan" class="pipeline-stage">SCAN</div>
+                    <div id="conn-1" class="pipeline-connector"></div>
+                    <div id="stage-trans" class="pipeline-stage">LLM</div>
+                    <div id="conn-2" class="pipeline-connector"></div>
+                    <div id="stage-polish" class="pipeline-stage">QA</div>
+                    <div id="conn-3" class="pipeline-connector"></div>
+                    <div id="stage-export" class="pipeline-stage">SAVE</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Statistiken</h3>
+                <div class="stat-grid">
+                    <div class="stat-item"><div class="stat-label">Gelesen</div><div id="stat-scanned" class="stat-value">0</div></div>
+                    <div class="stat-item"><div class="stat-label">Cache</div><div id="stat-cached" class="stat-value">0</div></div>
+                    <div class="stat-item"><div class="stat-label">Neu</div><div id="stat-translated" class="stat-value">0</div></div>
+                    <div class="stat-item"><div class="stat-label">Fehler</div><div id="stat-failed" class="stat-value">0</div></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Aktionen</h3>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <!-- Haupt-Workflow -->
+                    <div style="background: rgba(100, 213, 196, 0.05); padding: 8px; border-radius: 4px; border: 1px solid rgba(100, 213, 196, 0.1);">
+                        <div class="stat-label" style="margin-bottom:5px; color:var(--success)">Workflow</div>
+                        <button onclick="triggerAction('sync')" style="background: var(--success); color: #000; font-weight: bold;">VOLL-AUTO SYNC</button>
+                        <button onclick="triggerAction('dry-run')" class="secondary" style="margin-top: 5px; font-size: 0.7rem;">SIMULATION (DRY RUN)</button>
+                    </div>
+
+                    <!-- Wartung & Qualität -->
+                    <div style="background: rgba(216, 151, 60, 0.05); padding: 8px; border-radius: 4px; border: 1px solid rgba(216, 151, 60, 0.1);">
+                        <div class="stat-label" style="margin-bottom:5px; color:var(--accent)">Datenbank & Qualitaet</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                            <button onclick="openDbBrowser()" class="secondary" style="border-color:var(--accent); color:var(--accent); font-size: 0.65rem;">BROWSER</button>
+                            <button onclick="triggerAction('check-db')" class="secondary" style="border-color:var(--accent); color:var(--accent); font-size: 0.65rem;">DEEP POLISH</button>
+                        </div>
+                        <button onclick="triggerAction('audit-integrity')" class="secondary" style="margin-top: 5px; font-size: 0.65rem;">INTEGRITAETS-CHECK</button>
+                    </div>
+
+                    <!-- Spezial-Aktionen -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                        <button onclick="triggerAction('manage-patches')" class="secondary" style="font-size:0.6rem;">MERGE CORE</button>
+                        <button onclick="triggerAction('workshop')" class="secondary" style="font-size:0.6rem; border-color:#5a9fd4; color:#5a9fd4;">STEAM UPLOAD</button>
+                    </div>
+
+                    <button onclick="triggerAction('full_reset')" style="background: #4a1a1a; color: #ff9999; margin-top: 10px; font-size:0.65rem; border: 1px solid #632525;">WERKSEINSTELLUNG (RESET)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KEY MODAL -->
+        <div id="key-modal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+            <div class="modal-content panel" style="width: 600px; max-height: 80vh; overflow-y: auto; background: var(--panel-bg);">
+                <h3>API Keys Verwalten</h3>
+                
+                <div id="key-sections">
+                    <!-- Dynamic Sections -->
+                </div>
+
+                <div style="display:flex; gap:10px; margin-top: 20px;">
+                    <button onclick="closeKeyModal()" class="secondary">Schließen</button>
+                    <button onclick="saveKeysFromModal()">Änderungen Übernehmen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB BROWSER MODAL -->
+        <div id="db-modal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+            <div class="modal-content panel" style="width: 90%; max-height: 90vh; background: var(--panel-bg); display: flex; flex-direction: column;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Datenbank Browser</h3>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="text" id="db-search" placeholder="Suchen..." style="width: 250px; margin:0;" oninput="searchDb()">
+                        <button onclick="closeDbBrowser()" class="secondary" style="width: auto; padding: 4px 15px;">Schließen</button>
+                    </div>
+                </div>
+                
+                <div class="db-table-container">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Original</th>
+                                <th style="width: 40%;">Übersetzung</th>
+                                <th style="width: 10%;">Sprache</th>
+                                <th style="width: 10%;">Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="db-table-body">
+                            <!-- Rows via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 15px; font-size: 0.7rem; color: var(--muted); display:flex; justify-content:space-between;">
+                    <div>Klicke auf eine Übersetzung zum Editieren. Änderungen werden beim Speichern übernommen.</div>
+                    <div id="db-count">0 Einträge</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER: LLM INTERACTION & LOGS -->
+        <div class="center-stack">
+            <div class="interaction-viewer">
+                <div class="terminal-box">
+                    <div class="terminal-header"><span>LETZTER LLM REQUEST</span><span id="req-provider" style="color:var(--accent)">-</span></div>
+                    <div id="term-req" class="terminal-content">Warte auf Daten...</div>
+                </div>
+                <div class="terminal-box">
+                    <div class="terminal-header"><span>LETZTE LLM ANTWORT</span><span id="res-time">-</span></div>
+                    <div id="term-res" class="terminal-content" style="color: var(--success);">...</div>
+                </div>
+            </div>
+            <div id="log" class="log-panel"></div>
+        </div>
+
+        <!-- RIGHT SIDEBAR: DB SAMPLES -->
+        <div class="right-sidebar">
+            <div class="panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <h3>DB Translation Stream</h3>
+                <div id="db-samples" class="sample-list" style="overflow-y: auto; flex: 1;">
+                    <div class="stat-label" style="text-align:center; padding: 20px;">Noch keine neuen Übersetzungen in dieser Sitzung.</div>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Bridge Diagnostics</h3>
+                <div class="stat-label">System Health: <span id="sys-load">Normal</span></div>
+                <div class="stat-label">DB Einträge: <span id="stat-db-total">-</span></div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: rgba(0,0,0,0.8); padding: 5px 20px; font-size: 0.7rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); z-index: 100;">
+        <div>Syx-Bridge v0.14.0 - V71 Ready</div>
+        <div>Kontakt & Bug-Reports: <span style="color: var(--accent);">vannon858@gmail.com</span></div>
+    </footer>
+
+    <script src="/public/app.js"></script>
+</body>
+</html>
