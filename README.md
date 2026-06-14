@@ -1,131 +1,72 @@
-# Syx-Bridge - The Slaver's Translator (DE/EN)
+# Syx-Bridge - The Slaver's Translator (v0.14.0)
 
 ![Banner](Banner.png)
 
 ---
 
-## 📢 English
+## 🛡️ Security & Integrity Update / Sicherheits-Update
+**[EN] Why the Clean Slate?**  
+This repository has been **re-initialized** as a clean baseline. During a routine check, several NPM security vulnerabilities were flagged. Upon investigation, further architectural defects were found that compromised the tool's long-term stability. To provide a safe and professional environment, the history was reset to this verified, "Deep-Cleaned" v0.14.0 baseline.
 
-### 📢 Hey Guys
-**First of all: I am not a developer, not a genius like most modders, and also... not Russian or Chinese.**
-
-Why am I telling you this? It's simple: most of the mods I like for *Songs of Syx* are originally in Russian or Chinese. While they often have English translations, managing my slave empire in a foreign language makes my head explode. 
-
-So I looked for a solution to translate mods. I found tools from 2020, but they were static, had no ambiance, and were hard to use. So I thought: **I'll do it myself!** As a non-dev, it was a wild ride, and I often had no idea what I was doing... but after a week of "Satury days," here is my **"sweet little tool."**
-
-**DISCLAIMER:** This is a one-man hobby project in Alpha state! It's built on sweat, caffeine, and AI. Use it at your own risk, keep backups, and be kind to the bugs.
+**[DE] Warum der Neustart?**  
+Dieses Repository wurde als sauberer Baseline-Stand **neu aufgesetzt**. Bei einer Prüfung wurden kritische NPM-Sicherheitslücken gemeldet. Eine tiefergehende Analyse deckte weitere strukturelle Mängel auf, die die Stabilität gefährdeten. Um eine sichere und saubere Umgebung zu garantieren, wurde die Historie gelöscht und mit dieser verifizierten v0.14.0 "Deep-Clean" Baseline neu gestartet.
 
 ---
 
-### 🚀 Features (v0.13.0 "Deep Polish")
+## 📢 Project Status: The Current Reality (v0.14.0)
 
-**1. 60fps Dashboard**
-A smooth web-based GUI (localhost:3000) that shows live CPU/RAM stats, translation progress, and a real-time stream of what the AI is currently thinking.
+![Preview](preview.webp)
 
-**2. Argos-Turbo (Local & Fast)**
-Integrates *Argos Translate* for free, local pre-translations. The "Turbo" engine bundles texts into Base64 packets, making it up to 10x faster than traditional methods by reducing process overhead.
+### 🚀 Key Features & V71 Optimization (EN)
+- **V71 Native Support:** Optimized for the latest *Songs of Syx* V71 update. The engine now handles new text structures and mod formats natively.
+- **60fps Web-GUI:** A fluid dashboard (localhost:3000) for real-time monitoring of translation progress, CPU/RAM usage, and AI "thinking" streams.
+- **Argos-Turbo:** Local, free translations using Base64-packet-batching. Up to 10x faster than traditional local methods.
+- **DB Auditor (Tier A):** High-level AI audits the SQLite database to repair damaged technical markers (like `__VAR0__`) automatically.
+- **Variable Shielding:** Game variables `{NAME}` or `<tag>` are protected by tokens `[[0]]` during translation to prevent game crashes.
 
-**3. Deep Polish & DB Auditor**
-A smart hierarchy system. After the "Worker" AI (Tier B) finishes, a "Smart" AI (Tier A) audits the database to ensure technical markers like `__VAR0__` aren't damaged. If something looks broken, it fixes it automatically.
-
-**4. Variable Shielding (The Heartbeat)**
-Game variables like `{NAME}` or `<tag>` are shielded using temporary tokens `[[0]]` during translation and perfectly restored afterwards. If validation fails, it reverts to the original text rather than breaking your game.
-
-**5. Bridge-Mode (Safe & Clean)**
-Instead of overwriting original mod files, the Bridge creates a separate patch mod (e.g., `MyMod_German`) in your `%APPDATA%` folder. Your original mods stay untouched!
-
----
-
-### 💻 OS Support
-
-- **Windows:** Full support with `start.bat` and automatic `%APPDATA%` detection.
-- **Linux / Steam Deck:** Automatic path detection under `~/.local/share/songsofsyx/`. Start via `node index.js`.
-- **macOS:** Experimental. Requires manual `.env` configuration.
+### 🚀 Highlights & V71 Optimierung (DE)
+- **V71 Native Support:** Optimiert für das neueste *Songs of Syx* V71 Update. Die Engine versteht die neuen Textstrukturen und Mod-Formate nativ.
+- **60fps Web-GUI:** Ein flüssiges Dashboard (localhost:3000) zur Echtzeit-Überwachung von Fortschritt, CPU/RAM-Last und dem KI-"Live-Stream".
+- **Argos-Turbo:** Kostenlose, lokale Übersetzungen via Base64-Paket-Bündelung. Bis zu 10x schneller als herkömmliche lokale Methoden.
+- **DB Auditor (Tier A):** Eine Elite-KI prüft die SQLite-Datenbank und repariert beschädigte Platzhalter (`__VAR0__`) automatisch.
+- **Variable Shielding:** Spiel-Variablen `{NAME}` oder `<tag>` werden durch Token `[[0]]` geschützt, um Spielabstürze zu verhindern.
 
 ---
 
-### 🛠️ Setup in 5 Steps
+## 🖥️ GUI Instructions / GUI Anleitung
 
-1. Install [Node.js](https://nodejs.org/) (v18 or higher).
-2. Extract the folder and run `npm install` in your terminal.
-3. Rename `.env.example` to `.env`.
-4. Add your API Key — Gemini is recommended (free at [aistudio.google.com](https://aistudio.google.com)).
-5. Double-click `start.bat`. The dashboard opens automatically.
+### English
+1. **Launch:** Run `start.bat`. The bridge will initialize and automatically open your default browser.
+2. **Dashboard:** Monitor the "Heartbeat" (CPU/RAM) and see exactly which file is currently being processed.
+3. **Inspector:** Use the built-in Inspector to review translations in the SQLite database before they are deployed as a patch.
+4. **Bridge-Mode:** By default, it creates a "Patch Mod" in your `%APPDATA%`, keeping your original files untouched.
 
----
-
-### 📋 Changelog Highlights (v0.13.0a)
-- **60fps UI:** Completely refactored dashboard for fluid performance.
-- **Native vs. Patch:** Defaulted to "Bridge Mode" for maximum safety.
-- **Argos-Turbo:** Massively improved local translation speed.
-- **Auto-Browser:** Now opens the GUI automatically on startup.
+### Deutsch
+1. **Start:** `start.bat` ausführen. Die Bridge initialisiert sich und öffnet automatisch den Browser.
+2. **Dashboard:** Überwache den "Heartbeat" (CPU/RAM) und sieh live, welche Datei gerade übersetzt wird.
+3. **Inspector:** Nutze den integrierten Inspector, um Übersetzungen in der SQLite-Datenbank zu prüfen, bevor sie als Patch ausgespielt werden.
+4. **Bridge-Mode:** Standardmäßig wird ein "Patch Mod" in deinem `%APPDATA%` erstellt – deine Original-Mods bleiben sauber.
 
 ---
 
-### 💬 Support
-Bugs, logs, or just a "thanks": **vannon858@gmail.com** — please include your `stdout.log` and `stderr.log` if things explode.
+## 📂 Repository Structure
+- `core/`: The translation engine (Node.js, SQLite, AI Dispatcher).
+- `V70/` & `V71/`: Version-specific mapping and reference data for Songs of Syx versions.
+- `scripts/`: Maintenance tools for database auditing, syntax checks, and "Redteam" baseline testing.
 
 ---
 
-## 📢 Deutsch
+## 🛠️ Setup (Quickstart)
 
-### 📢 Hey Guys
-**Erstmal vorab: Ich bin kein Entwickler, kein Genie wie die meisten Modder hier und auch kein Russe oder Chinese.**
-
-Warum ich euch das erzähle? Ganz einfach: Die meisten Mods, die ich feier, sind ursprünglich auf Russisch oder Chinesisch. Die sind zwar oft echt gut ins Englische übersetzt, aber ich sitz dann da und denke mir: *"Mh, Songs of Syx ist so schon anspruchsvoll genug... aber dann auch noch auf Englisch meine Sklaven managen?"* Da raucht mir der Kopf ab.
-
-Also hab ich mich nach einer Lösung umgesehen, um Mods zu übersetzen. Die Tools, die ich fand, waren alt, statisch und unhandlich. Also dachte ich mir: **Ich mach’s selbst!** Als Non-Dev war das ein echtes Abenteuer (ich hatte phasenweise keine Ahnung, was ich da tue), aber nach einer Woche voller "Satury-Days" präsentiere ich euch mein **"sweet little tool."**
-
-**DISCLAIMER:** Das hier ist ein Ein-Mann-Hobbyprojekt im Alpha-Status! Es basiert auf Schweiß, Kaffee und KI. Nutzung auf eigene Gefahr, macht Backups und seid gnädig mit den Bugs.
+1. **Install:** [Node.js](https://nodejs.org/) (v18+).
+2. **Prepare:** Run `npm install` in the `core` folder.
+3. **Config:** Rename `.env.example` to `.env` and add your **Gemini API Key**.
+4. **Run:** Double-click `start.bat` in the root directory.
 
 ---
 
-### 🚀 Features (v0.13.0 "Deep Polish")
+### 💬 Support & Feedback
+Bugs or logs: **vannon858@gmail.com**  
+Please always attach `stdout.log` and `stderr.log` from the `core` directory.
 
-**1. 60fps Dashboard**
-Eine flüssige Web-Oberfläche (localhost:3000), die CPU/RAM-Last, den Fortschritt und den Live-Stream der KI-Übersetzungen in Echtzeit anzeigt.
-
-**2. Argos-Turbo (Lokal & Schnell)**
-Integriert *Argos Translate* für kostenlose, lokale Vor-Übersetzungen. Der "Turbo"-Modus bündelt Texte in Base64-Pakete und ist dadurch bis zu 10x schneller als herkömmliche Methoden.
-
-**3. Deep Polish & DB Auditor**
-Ein intelligentes Hierarchie-System. Nachdem die "Arbeiter-KI" (Tier B) fertig ist, prüft eine "Elite-KI" (Tier A) die Datenbank auf beschädigte Platzhalter wie `__VAR0__` und repariert diese automatisch.
-
-**4. Variable Shielding (Der Herzschlag)**
-Spiel-Variablen wie `{NAME}` oder `<tag>` werden während der Übersetzung durch neutrale Token `[[0]]` geschützt und danach exakt wiederhergestellt. Schlägt die Validierung fehl, wird das Original verwendet, statt das Spiel zu crashen.
-
-**5. Bridge-Mode (Sicher & Sauber)**
-Anstatt Original-Dateien zu überschreiben, erstellt die Bridge eine Kopie deiner Mods (z.B. `MeinMod_German`) unter `%APPDATA%`. Deine Original-Dateien bleiben unangetastet!
-
----
-
-### 💻 OS-Support
-
-- **Windows:** Voller Support mit `start.bat` und automatischer Pfaderkennung.
-- **Linux / Steam Deck:** Automatische Pfaderkennung unter `~/.local/share/songsofsyx/`. Start via `node index.js`.
-- **macOS:** Experimentell. Erfordert manuelle Konfiguration in der `.env`.
-
----
-
-### 🛠️ Setup in 5 Schritten
-
-1. [Node.js](https://nodejs.org/) installieren (v18 oder höher).
-2. Ordner entpacken und `npm install` im Terminal ausführen.
-3. `.env.example` in `.env` umbenennen.
-4. API-Key eintragen — Gemini wird empfohlen (kostenlos unter [aistudio.google.com](https://aistudio.google.com)).
-5. `start.bat` doppelklicken. Das Dashboard öffnet sich automatisch.
-
----
-
-### 📋 Changelog Highlights (v0.13.0a)
-- **60fps UI:** Komplett überarbeitetes Dashboard für flüssige Bedienung.
-- **Native vs. Patch:** Bridge-Mode ist jetzt Standard für maximale Sicherheit.
-- **Argos-Turbo:** Massive Geschwindigkeitsvorteile bei lokaler Übersetzung.
-- **Auto-Browser:** Die GUI öffnet sich jetzt direkt beim Start.
-
----
-
-### 💬 Support
-Bugs, Logs oder einfach nur Feedback: **vannon858@gmail.com** — am besten direkt die `stdout.log` und `stderr.log` mitschicken.
-
-*Viel Spaß beim Sklavenmanagen auf Deutsch!*
+*Happy Slaver-Management! / Viel Spaß beim Sklaven-Managen!*
