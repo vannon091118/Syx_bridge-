@@ -24,20 +24,20 @@ Here is a visual walk-through of the UI, featuring the newly minted v0.14.2 setu
 
 ---
 
-#### 1. 🔍 Inline Database Inspector & Home - `Screenshot 2026-06-14 060657.png`
-![Inline DB Inspector](Screenshot%202026-06-14%20060657.png)
-> **DE:** **Der "Kein-Bock-auf-Code"-Modus.** Wenn die Engine idlet, schläft sie nicht, sondern serviert dir direkt den Datenbank-Browser. Suchbegriffe eintippen und die DB filtert in Echtzeit. Ideal, um fehlerhafte Übersetzungen aufzuspüren, bevor sie ins Spiel gerollt werden.
-> **EN:** **The Microscope of Truth / Lazy Modder's Dream.** When the engine is idle, it displays the Database Browser directly in the center stack. Search, click, edit, save—no SQL degree required. Type search queries and watch the DB filter lines on the fly.
+#### 1. ⚡ Live Sync / GUI im Run (The Main Battlefield) - `Screenshot 2026-06-14 060657.png`
+![GUI in Run](Screenshot%202026-06-14%20060657.png)
+> **DE:** **Die Action-Phase live im Run.** Sobald das System arbeitet, erwacht das Terminal zum Leben. Hier siehst du die Live-Anfragen an die LLM-Modelle, aktive Threads und den animierten Fortschrittsbalken mit Neon-Border. Zero Blindflug!
+> **EN:** **The Action Phase live in Run.** As soon as the sync starts, the terminal comes alive. Watch LLM requests stream in real-time, monitor active threads, and follow the animated neon progress border. No guess work here!
 
-#### 2. ⚙️ Settings Dropdown Overlay - `Screenshot 2026-06-14 060726.png`
-![Settings Dropdown](Screenshot%202026-06-14%20060726.png)
-> **DE:** **Das versteckte Arsenal.** Ein Klick auf "API & EINSTELLUNGEN" und die Configs (Bridge-Mode, API Keys, Provider-Auswahl) klappen clean herunter. Das HUD bleibt sauber, bis du die Regler für maximale AI-Power aufdrehen willst.
-> **EN:** **The Hidden Arsenal.** Click "API & EINSTELLUNGEN" and watch the configuration drawer drop down like a tactical supply package. API Keys, Bridge-modes, and models, all tucked away until you need them.
+#### 2. 📊 Live-Statistiken & Diagnostics (Live Stats Hub) - `Screenshot 2026-06-14 060726.png`
+![Live Stats](Screenshot%202026-06-14%20060726.png)
+> **DE:** **Die Live-Stats-Zentrale.** Hier siehst du die echten Leistungsdaten: Gelesene Dateien, Cache-Hits (sparen dir bares API-Budget!), neu übersetzte Zeilen und Systemauslastung (System Health) auf einen Blick.
+> **EN:** **The Live Stats Hub.** Get real-time feedback on your performance: Files read, Cache hits (saving your actual wallet from API charges), new translations, and System Health.
 
-#### 3. 📝 Database Entry Detail Editor - `Screenshot 2026-06-14 060738.png`
-![Entry Editor](Screenshot%202026-06-14%20060738.png)
-> **DE:** **Der Text-Changer.** Klicke auf eine Zeile und bearbeite direkt den Inhalt. Bestätigen, speichern und die Übersetzung ist live geupdatet. Simpel, direkt, effektiv.
-> **EN:** **The Text Manipulator.** Just click on any table row to modify the translation. Hit save, and it's instantly patched in the database. Boom. Done.
+#### 3. ⚙️ API & Einstellungen / DB Browser (Setup & Database) - `Screenshot 2026-06-14 060738.png`
+![Settings and DB](Screenshot%202026-06-14%20060738.png)
+> **DE:** **Das Kontrollzentrum.** Über den Top-Button klappst du das Einstellungs-Dropdown für API-Keys und Bridge-Modes aus. Wenn das System idlet, dient die Mitte als DB-Browser zum direkten Editieren von Übersetzungen.
+> **EN:** **The Control Room.** Expand the Settings Dropdown via the top header button to configure API keys and Bridge modes. When idle, the center panel serves as your DB Browser to modify translations directly.
 
 ---
 
