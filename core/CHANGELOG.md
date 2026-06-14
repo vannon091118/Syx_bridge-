@@ -1,12 +1,24 @@
 # CHANGELOG
 
-## [Unreleased]
+## [0.15.0-alpha] - 2026-06-14
+
 ### Added
 - **GUI Layout Overhaul:** Reorganized the Dashboard for better space utilization and clarity.
 - **Top Settings Dropdown:** API, Model configuration, and provider stats are now housed in a top-center dropdown menu (only accessible during idle).
 - **Dynamic Center Stack:** The central screen area now automatically toggles between the DB Browser (when idle) and the LLM Terminal View (during active runs).
 - **Neon Progress Border:** Implemented a glowing, animated progress line running along the screen edge during active sync processes.
 - **Streamlined Sidebars:** Consolidated all statistics and diagnostics to the right sidebar, while keeping the left sidebar focused exclusively on workflow controls.
+- **Initial DB Stats on Launch:** Dashboard now displays real database statistics on startup instead of showing zeros.
+- **GUI State Restore:** Dashboard state survives browser reloads.
+
+### Fixed
+- **Patch Mode Directory Structure:** Translated files now correctly preserve the original mod's folder structure within BridgeCore.
+- **GUI Action Stability:** Actions like "Reset", "Integrity Check", and "Steam Upload" no longer freeze the GUI or wait for hidden console prompts.
+- **Progress Indicator Visibility:** Enhanced progress bar visibility and added active thread counts and phase tracking.
+
+### Security
+- **Repository Re-Initialization:** Complete git init to eliminate NPM dependency chain vulnerabilities from version history.
+- **Strict Versioning Policy:** All dependencies pinned to exact versions. No carets, no tildes.
 
 ## [0.13.0a] - 2026-06-06
 ### Added

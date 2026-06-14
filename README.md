@@ -1,10 +1,15 @@
-# Syx-Bridge - The Slaver's Translator (v0.14.0)
+# Syx-Bridge — AI Translation Engine for Songs of Syx
 
 ![Banner](Banner.png)
+
+> **Solo-Dev-Projekt von Vannon** · Built with mass amounts of caffeine, mass amounts of AI and mass amounts of stubbornness.
+> 
+> *"Ich wollte nur meine Mods auf Deutsch spielen. Jetzt hab ich eine KI-Pipeline mit Web-Dashboard gebaut. Tja."*
 
 ---
 
 ## 🛡️ Security & Integrity Update / Sicherheits-Update
+
 **[EN] Why the Clean Slate?**  
 This repository has been **re-initialized from scratch (git init)** to establish a clean baseline. During a routine audit, several critical NPM dependency chain vulnerabilities were flagged. To thoroughly eliminate these risks—and ensure no compromised packages remain in the project's history—we performed a complete GitHub relaunch. The code has been deep-cleaned and all dependencies have been updated to secure versions.
 
@@ -16,88 +21,137 @@ To prevent future "dependency chain" vulnerabilities and automatic, unverified u
 
 ---
 
-## 📢 Project Status: The Current Reality (v0.14.1)
+## 🎮 Was ist die Syx-Bridge? / What is this?
 
-### 📸 Dashboard Showcase (v0.14.2 GUI Overhaul & Features in Gamer-Ton 🎮)
+**DE:**  
+Die Syx-Bridge ist ein KI-gestütztes Übersetzungstool für [Songs of Syx](https://store.steampowered.com/app/1162750/Songs_of_Syx/) Mods. Du startest eine `.bat`, ein Dashboard öffnet sich im Browser, und die Engine übersetzt deine Workshop-Mods automatisch in deine Sprache. Kein Copy-Paste, kein Google Translate – echte kontextbasierte KI-Übersetzung mit Qualitätskontrolle und Glossar-Learning.
 
-Here is a visual walk-through of the UI, featuring the newly minted v0.14.2 setup. No boring corporate stuff here—just raw power, ready to translate your favorite mods!
+**EN:**  
+Syx-Bridge is an AI-powered translation engine for [Songs of Syx](https://store.steampowered.com/app/1162750/Songs_of_Syx/) mods. You run a `.bat` file, a dashboard opens in your browser, and the engine translates your subscribed Workshop mods automatically. No copy-paste, no Google Translate—real context-aware AI translation with quality control and glossary learning.
 
----
-
-#### 1. ⚡ Live Sync / GUI im Run (The Main Battlefield) - `Screenshot 2026-06-14 060657.png`
-![GUI in Run](Screenshot%202026-06-14%20060657.png)
-> **DE:** **Die Action-Phase live im Run.** Sobald das System arbeitet, erwacht das Terminal zum Leben. Hier siehst du die Live-Anfragen an die LLM-Modelle, aktive Threads und den animierten Fortschrittsbalken mit Neon-Border. Zero Blindflug!
-> **EN:** **The Action Phase live in Run.** As soon as the sync starts, the terminal comes alive. Watch LLM requests stream in real-time, monitor active threads, and follow the animated neon progress border. No guess work here!
-
-#### 2. ⚙️ API & Einstellungen / DB Browser (Setup & Database) - `Screenshot 2026-06-14 060738.png`
-![Settings and DB](Screenshot%202026-06-14%20060738.png)
-> **DE:** **Das Kontrollzentrum.** Über den Top-Button klappst du das Einstellungs-Dropdown für API-Keys und Bridge-Modes aus. Wenn das System idlet, dient die Mitte als DB-Browser zum direkten Editieren von Übersetzungen.
-> **EN:** **The Control Room.** Expand the Settings Dropdown via the top header button to configure API keys and Bridge modes. When idle, the center panel serves as your DB Browser to modify translations directly.
-
-#### 3. 📊 Live-Statistiken & Diagnostics (Live Stats Hub) - `Screenshot 2026-06-14 060726.png`
-![Live Stats](Screenshot%202026-06-14%20060726.png)
-> **DE:** **Die Live-Stats-Zentrale.** Hier siehst du die echten Leistungsdaten: Gelesene Dateien, Cache-Hits (sparen dir bares API-Budget!), neu übersetzte Zeilen und Systemauslastung (System Health) auf einen Blick.
-> **EN:** **The Live Stats Hub.** Get real-time feedback on your performance: Files read, Cache hits (saving your actual wallet from API charges), new translations, and System Health.
+**Das Ding ist ein Solo-Projekt.** Ich (Vannon) baue das in meiner Freizeit, weil ich meine Lieblings-Mods auf Deutsch zocken will und kein Tool existiert hat, das das vernünftig kann. Es ist noch Alpha – aber es funktioniert, und es wird besser mit jedem Commit.
 
 ---
 
-### 🚀 Recent Changelog (Since Git Init)
-- **GUI Layout Overhaul (v0.14.2):** Moved configuration panels into a collapsible settings overlay, cleaned up the main layout, and integrated the Database Browser natively into the idle screen.
-- **Improved Progress & Heartbeat:** Enhanced visibility of the progress indicator, added active thread counts, phase tracking, and resolved UI state restore issues on page reloads.
-- **Mod Directory Structure in Patches:** Fixed path generation for "Patch Mode" so translated files preserve the correct mod subdirectory structure inside `BridgeCore`.
-- **Strict Versioning Policy:** Enforced exact version pins across dependencies in `package.json` to shield against upstream supply chain exploits.
-- **Refactoring & Helpers:** Added `rewrite.py` and `rewrite.js` to handle HTML modifications and cleaned up core process exits for workshop exports.
+## 📸 Dashboard — Live-Screenshots (v0.14.2)
 
-### 🚀 Key Features & V71 Optimization (EN)
-- **V71 Native Support:** Optimized for the latest *Songs of Syx* V71 update. The engine now handles new text structures and mod formats natively.
-- **60fps Web-GUI:** A fluid dashboard (localhost:3000) for real-time monitoring of translation progress, CPU/RAM usage, and AI "thinking" streams.
-- **Argos-Turbo:** Local, free translations using Base64-packet-batching. Up to 10x faster than traditional local methods.
-- **DB Auditor (Tier A):** High-level AI audits the SQLite database to repair damaged technical markers (like `__VAR0__`) automatically.
-- **Variable Shielding:** Game variables `{NAME}` or `<tag>` are protected by tokens `[[0]]` during translation to prevent game crashes.
-
-### 🚀 Highlights & V71 Optimierung (DE)
-- **V71 Native Support:** Optimiert für das neueste *Songs of Syx* V71 Update. Die Engine versteht die neuen Textstrukturen und Mod-Formate nativ.
-- **60fps Web-GUI:** Ein flüssiges Dashboard (localhost:3000) zur Echtzeit-Überwachung von Fortschritt, CPU/RAM-Last und dem KI-"Live-Stream".
-- **Argos-Turbo:** Kostenlose, lokale Übersetzungen via Base64-Paket-Bündelung. Bis zu 10x schneller als herkömmliche lokale Methoden.
-- **DB Auditor (Tier A):** Eine Elite-KI prüft die SQLite-Datenbank und repariert beschädigte Platzhalter (`__VAR0__`) automatisch.
-- **Variable Shielding:** Spiel-Variablen `{NAME}` oder `<tag>` werden durch Token `[[0]]` geschützt, um Spielabstürze zu verhindern.
+Keine Mock-ups, keine Photoshop-Tricks. Das hier sind echte Screenshots, direkt vom laufenden System.
 
 ---
 
-## 🖥️ GUI Instructions / GUI Anleitung
-
-### English
-1. **Launch:** Run `start.bat`. The bridge will initialize and automatically open your default browser.
-2. **Dashboard:** Monitor the "Heartbeat" (CPU/RAM) and see exactly which file is currently being processed.
-3. **Inspector:** Use the built-in Inspector to review translations in the SQLite database before they are deployed as a patch.
-4. **Bridge-Mode:** By default, it creates a "Patch Mod" in your `%APPDATA%`, keeping your original files untouched.
-
-### Deutsch
-1. **Start:** `start.bat` ausführen. Die Bridge initialisiert sich und öffnet automatisch den Browser.
-2. **Dashboard:** Überwache den "Heartbeat" (CPU/RAM) und sieh live, welche Datei gerade übersetzt wird.
-3. **Inspector:** Nutze den integrierten Inspector, um Übersetzungen in der SQLite-Datenbank zu prüfen, bevor sie als Patch ausgespielt werden.
-4. **Bridge-Mode:** Standardmäßig wird ein "Patch Mod" in deinem `%APPDATA%` erstellt – deine Original-Mods bleiben sauber.
+### 1. ⚡ Die Engine im Run — Live Terminal
+![GUI in Run](Übersicht.png)
+> **DE:** Sobald du auf **SYNC** drückst, wechselt das Dashboard in den Terminal-Modus. Hier siehst du live, was die KI gerade macht: Welcher Prompt rausgeht, was zurückkommt, welche Datei gerade dran ist. Der Neon-Fortschrittsbalken links zeigt dir Phase, aktive Threads und den aktuellen Mod-Namen. Kein Blindflug.
+>
+> **EN:** Hit **SYNC** and the dashboard switches to terminal mode. Watch the AI work in real-time: outgoing prompts, incoming responses, current file. The neon progress bar on the left tracks phase, active threads, and the mod currently being processed. No guesswork.
 
 ---
 
-## 📂 Repository Structure
-- `core/`: The translation engine (Node.js, SQLite, AI Dispatcher).
-- `V70/` & `V71/`: Version-specific mapping and reference data for Songs of Syx versions.
-- `scripts/`: Maintenance tools for database auditing, syntax checks, and "Redteam" baseline testing.
+### 2. ⚙️ Einstellungen & DB Browser — Das Kontrollzentrum
+![Settings and DB](Statistiken.png)
+> **DE:** Über den **"API & EINSTELLUNGEN"**-Button klappst du das Config-Menü auf: API-Keys, Bridge-Mode (Patch vs. Overwrite), Provider-Auswahl. Im Idle-Zustand zeigt die Mitte den **Datenbank-Browser** – klick auf eine Übersetzung, ändere sie, speichere. Fertig. Kein SQL nötig.
+>
+> **EN:** The **"API & EINSTELLUNGEN"** button opens the config overlay: API keys, Bridge mode (Patch vs. Overwrite), provider selection. When idle, the center panel becomes a **Database Browser**—click any translation, edit inline, save. Done.
 
 ---
 
-## 🛠️ Setup (Quickstart)
-
-1. **Install:** [Node.js](https://nodejs.org/) (v18+).
-2. **Prepare:** Run `npm install` in the `core` folder.
-3. **Config:** Rename `.env.example` to `.env` and add your **Gemini API Key**.
-4. **Run:** Double-click `start.bat` in the root directory.
+### 3. 📊 Live Stats & System Health
+![Live Stats](Provider.png)
+> **DE:** Die Diagnostics-Sektion zeigt dir die harten Fakten: Wie viele Dateien gelesen, wie viele Übersetzungen aus dem Cache kamen (spart API-Kosten!), wie viele neu übersetzt wurden und ob Fehler aufgetreten sind. Dazu CPU/RAM-Auslastung in Echtzeit.
+>
+> **EN:** The diagnostics section shows the hard numbers: files scanned, cache hits (saving API costs!), new translations, and errors. Plus real-time CPU/RAM monitoring.
 
 ---
 
-### 💬 Support & Feedback
-Bugs or logs: **vannon858@gmail.com**  
-Please always attach `stdout.log` and `stderr.log` from the `core` directory.
+## 🔧 Was kann die Bridge? / Core Features
 
-*Happy Slaver-Management! / Viel Spaß beim Sklaven-Managen!*
+| Feature | Beschreibung / Description |
+|---|---|
+| **Multi-Provider AI** | Gemini, Groq, Ollama (lokal), Argos (offline) — automatisches Fallback zwischen Providern |
+| **3-Stufen-Pipeline** | `Translate → Verify → Deep Polish` — jede Übersetzung durchläuft bis zu 3 Qualitätsstufen |
+| **Variable Shielding** | Spiel-Variablen wie `{NAME}` oder `<tag>` werden durch sichere Tokens geschützt, damit nichts kaputtgeht |
+| **Glossar-Learning** | Die Engine merkt sich Terminologie und wendet sie konsistent an |
+| **SQLite Cache** | Einmal übersetzt = gespeichert. Kein doppeltes API-Budget für denselben Text |
+| **Patch Mode** | Erstellt einen separaten Patch-Mod in `%APPDATA%` — deine Original-Mods bleiben unberührt |
+| **Web-Dashboard** | Echtzeit-Monitoring auf `localhost:3000` mit Live-Terminal, DB-Browser und System-Diagnostics |
+| **Deep Polish** | KI-gestützte Nachbearbeitung: Grammatik, Stil und Terminologie werden nochmal durchgecheckt |
+| **Steam Workshop Export** | Direkt-Upload des fertigen Übersetzungs-Patches in den Steam Workshop |
+
+---
+
+## 🛠️ Setup — In 4 Schritten loslegen
+
+```
+1. Node.js installieren  →  https://nodejs.org/ (v18+)
+2. Repository klonen      →  git clone https://github.com/vannon091118/Syx_bridge-
+3. .env konfigurieren     →  GEMINI_KEY=dein_api_key  (im Root-Ordner)
+4. Starten                →  start.bat doppelklicken
+```
+
+> **Das war's.** Die `start.bat` installiert beim ersten Start automatisch alle Dependencies, prüft Argos, erstellt eine `.env`-Vorlage falls nötig, und öffnet das Dashboard im Browser.
+>
+> **That's it.** On first run, `start.bat` auto-installs dependencies, checks Argos, creates a `.env` template if needed, and opens the dashboard in your browser.
+
+---
+
+## 📂 Projekt-Struktur
+
+```
+Syx_bridge-/
+├── start.bat              # One-Click Launcher
+├── .env                   # API Keys & Konfiguration (nicht in Git)
+├── Banner.png             # Repo Banner
+│
+├── core/                  # Die Translation Engine
+│   ├── index.js           # Einstiegspunkt (CLI + GUI)
+│   ├── src/
+│   │   ├── gui/           # Web-Dashboard (Express + WebSocket)
+│   │   ├── translation-runtime.js   # Batch-Übersetzung, Cache, Polish
+│   │   ├── dispatcher.js  # Stage-Routing (translate/audit/polish)
+│   │   ├── text-core.js   # Shielding, Prompts, Parsing
+│   │   ├── glossary.js    # Terminologie-Memory
+│   │   ├── planner.js     # Lauf-Orchestrierung
+│   │   ├── exporter.js    # Dateiausgabe (Patch/Native Mode)
+│   │   └── ...            # Scanner, Router, Validator, Logger
+│   └── scripts/           # Wartungstools (Audit, Syntax-Check, Workshop)
+│
+├── V70/ & V71/            # Versions-spezifische Referenzdaten
+└── rewrite.py / .js       # Interne GUI-Restrukturierungs-Helfer
+```
+
+---
+
+## 📋 Changelog — Was seit dem Relaunch passiert ist
+
+### Alpha Release `v0.15.0-alpha` (2026-06-14)
+- **GUI Layout Overhaul:** Dashboard komplett umgebaut — Settings in ein Dropdown verlagert, DB-Browser nativ in den Idle-Screen integriert, Terminal-View für aktive Runs
+- **Live Progress Indicators:** Fortschrittsbalken mit Phase-Tracking, Thread-Zähler und aktuellem Mod-Namen
+- **GUI State Restore:** Dashboard-Zustand überlebt jetzt Browser-Reloads
+- **Initiale DB-Stats:** Dashboard zeigt beim Start echte Datenbankstatistiken statt Nullen
+- **Patch Mode Fix:** Übersetzte Dateien behalten die korrekte Mod-Ordnerstruktur bei
+- **Strict Versioning Policy:** Alle Dependencies auf exakte Versionen gepinnt
+- **Security Relaunch:** Kompletter Git-Reset wegen NPM-Dependency-Chain-Schwachstellen
+
+### Frühere Versionen (Pre-Relaunch)
+- `v0.13.0a` — Linux-Support, Native GUI Dashboard, Gemini-API-Fixes
+- `v0.13.0` — Erstes Web-Dashboard, Glass-Morphism UI, Echtzeit-Telemetrie
+- `v0.9.6 Beta` — Dispatcher-Architektur, Risiko-Scores, Glossar-Learning
+
+---
+
+## ⚠️ Status: Alpha
+
+**Klartext:** Die Bridge funktioniert und ich nutze sie selbst täglich. Aber es ist ein Solo-Projekt in aktiver Entwicklung. Dinge können brechen, APIs können sich ändern, und manche Features sind "works on my machine"-getestet. Wenn du damit klarkommst — willkommen an Bord.
+
+**Honest take:** The bridge works and I use it daily. But it's a solo project in active development. Things may break, APIs may change, and some features are "works on my machine"-tested. If you're cool with that — welcome aboard.
+
+---
+
+### 💬 Feedback & Bugs
+
+**Email:** vannon858@gmail.com  
+Bitte immer `log.txt` und die Konsolenausgabe mitsenden. / Please always include `log.txt` and the console output.
+
+---
+
+*Happy Slaver-Management! / Viel Spaß beim Sklaven-Managen!* 🎮
