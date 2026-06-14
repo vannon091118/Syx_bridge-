@@ -11,3 +11,6 @@ core/backups/
 core/patches/
 core/translations.db*
 debug_payloads.txt
+Gemini.md
+TODO.md
+backups/

@@ -177,11 +177,6 @@ function createRuntimeOps(options) {
         // But only if the original file was also a text file in a similar structure 
         // OR if we want to enforce the new structure for all translations.
         let targetRelPath = job.relativePath;
-        if (!config.NATIVE_MODE) {
-          // For Patch mode, we ensure it lands in the correct language subfolder
-          const fileName = path.basename(job.relativePath);
-          targetRelPath = path.join(syxPathPart, fileName);
-        }
         
         return writeTranslatedFile({ ...job, relativePath: targetRelPath }, modOutputPath, translations);
       });

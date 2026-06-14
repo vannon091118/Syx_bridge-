@@ -34,7 +34,8 @@ async function exportToWorkshop() {
   
   if (!fs.existsSync(corePath)) {
     console.error('[ERROR] BridgeCore nicht gefunden. Bitte starte die Brücke zuerst.');
-    process.exit(1);
+    if (require.main === module) process.exit(1);
+    else throw new Error('BridgeCore nicht gefunden.');
   }
 
   // Use AI Bridge Core as the name in uploader
@@ -55,8 +56,13 @@ async function exportToWorkshop() {
     console.log('Du kannst nun den Steam Workshop Manager öffnen und den Ordner \'AI_Bridge_Core\' hochladen.');
   } catch (e) {
     console.error(`[!] Export fehlgeschlagen: ${e.message}`);
-    process.exit(1);
+    if (require.main === module) process.exit(1);
+    else throw e;
   }
 }
 
-exportToWorkshop();
+if (require.main === module) {
+  exportToWorkshop();
+}
+
+module.exports = exportToWorkshop;

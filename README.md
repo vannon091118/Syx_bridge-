@@ -6,16 +6,20 @@
 
 ## 🛡️ Security & Integrity Update / Sicherheits-Update
 **[EN] Why the Clean Slate?**  
-This repository has been **re-initialized** as a clean baseline. During a routine check, several NPM security vulnerabilities were flagged. Upon investigation, further architectural defects were found that compromised the tool's long-term stability. To provide a safe and professional environment, the history was reset to this verified, "Deep-Cleaned" v0.14.0 baseline.
+This repository has been **re-initialized from scratch (git init)** to establish a clean baseline. During a routine audit, several critical NPM dependency chain vulnerabilities were flagged. To thoroughly eliminate these risks—and ensure no compromised packages remain in the project's history—we performed a complete GitHub relaunch. The code has been deep-cleaned and all dependencies have been updated to secure versions.
 
-**[DE] Warum der Neustart?**  
-Dieses Repository wurde als sauberer Baseline-Stand **neu aufgesetzt**. Bei einer Prüfung wurden kritische NPM-Sicherheitslücken gemeldet. Eine tiefergehende Analyse deckte weitere strukturelle Mängel auf, die die Stabilität gefährdeten. Um eine sichere und saubere Umgebung zu garantieren, wurde die Historie gelöscht und mit dieser verifizierten v0.14.0 "Deep-Clean" Baseline neu gestartet.
+**[DE] Warum der GitHub-Relaunch?**  
+Dieses Repository wurde **komplett neu aufgesetzt (git init)**. Bei einer Prüfung wurden kritische Schwachstellen in der NPM-Abhängigkeitskette (Dependency Chain) entdeckt. Um diese Sicherheitsrisiken restlos zu beseitigen und sicherzustellen, dass sich keine kompromittierten Pakete in der Versionshistorie befinden, haben wir einen sauberen Relaunch durchgeführt. Alle Abhängigkeiten wurden aktualisiert und das Projekt auf einen sicheren Stand gebracht.
 
 ---
 
-## 📢 Project Status: The Current Reality (v0.14.0)
+## 📢 Project Status: The Current Reality (v0.14.1)
 
 ![Preview](preview.webp)
+
+### 🚀 Recent Hotfixes (v0.14.1)
+- **Patch Mode Architecture:** Fixed an issue where "Patch Mode" flattened directory structures. Translated files now perfectly mimic their original mod's folder structure within `BridgeCore`, allowing seamless overlaying by the game engine.
+- **GUI Stability (No Freezes):** Actions like "Werkseinstellung (Reset)", "Integritäts-Check", and "Steam Upload" now correctly interface with the backend in GUI mode without waiting for hidden console prompts or crashing the node server.
 
 ### 🚀 Key Features & V71 Optimization (EN)
 - **V71 Native Support:** Optimized for the latest *Songs of Syx* V71 update. The engine now handles new text structures and mod formats natively.

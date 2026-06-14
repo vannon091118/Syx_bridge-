@@ -397,8 +397,14 @@ async function managePatches() {
 
 async function fullReset() {
   printHeader('Vollständiger Reset');
-  const confirm = await inquirer.prompt([{ type: 'confirm', name: 'sure', message: 'Bist du sicher? Alle lokalen Patches werden gelöscht.', default: false }]);
-  if (!confirm.sure) return;
+  let isSure = false;
+  if (process.argv.includes('--gui')) {
+    isSure = true;
+  } else {
+    const confirm = await inquirer.prompt([{ type: 'confirm', name: 'sure', message: 'Bist du sicher? Alle lokalen Patches werden gelöscht.', default: false }]);
+    isSure = confirm.sure;
+  }
+  if (!isSure) return;
   try {
     if (fs.existsSync(CONFIG.GAME_MOD_ROOT)) {
       const mods = await fsp.readdir(CONFIG.GAME_MOD_ROOT, { withFileTypes: true });
@@ -467,7 +473,12 @@ async function runIntegrityAudit() {
   console.log(`  Korrupt:  ${corruptedCount}`);
   
   if (corruptedCount > 0) {
-    const startRepair = await UI.confirm(`${corruptedCount} fehlerhafte Eintraege gefunden. Reparatur mit Tier-A KI starten?`, true);
+    let startRepair = false;
+    if (process.argv.includes('--gui')) {
+      startRepair = true;
+    } else {
+      startRepair = await UI.confirm(`${corruptedCount} fehlerhafte Eintraege gefunden. Reparatur mit Tier-A KI starten?`, true);
+    }
     if (startRepair) {
       const corrupted = await dbAll('SELECT source_text as source FROM translations WHERE target_lang = ? AND flag_reason = ?', [CONFIG.TARGET_LANG, 'integrity_failure']);
       await ensureTranslations(corrupted, { forcePolish: true });
@@ -643,9 +654,9 @@ async function main() {
       // else if (type === 'single') await startSingleManual(planner, options);
       else if (type === 'full_reset') await fullReset();
       else if (type === 'workshop') {
-        const { exec } = require('child_process');
         console.log('[GUI] Starte Steam Workshop Export...');
-        require('./scripts/workshop_export'); // This triggers the script logic
+        const exportToWorkshop = require('./scripts/workshop_export');
+        await exportToWorkshop().catch(e => console.error(e.message));
       }
       else if (type === 'install-argos') await ensureArgos();
       else if (type === 'start-ollama') await startOllama();
