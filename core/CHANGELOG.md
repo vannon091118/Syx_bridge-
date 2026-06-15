@@ -25,11 +25,6 @@
 - **[M6] Architecture Cleanup:** Tote Imports (`validator`, `exporter`) aus `planner.js` entfernt.
 - **[Task-4] System-Prompt Konsistenz:** OpenRouter-Batch-Prompt auf `Keep placeholders unchanged. Output only JSON.` vereinheitlicht (war zuvor kürzer als Groq/Ollama/Player2).
 
-### Identified (Audit 2026-06-14, fix folgt in v0.15.2)
-- **[BUG-1] PLAYER2_KEYS Datenverlust:** Im GUI eingetragene Player2-Keys werden nicht in `.env` persistiert → gehen bei Neustart verloren.
-- **[BUG-4] persistConfig-Divergenz:** `index.js` und `config-runtime.js` haben separate `persistConfig`-Implementierungen, die auseinanderlaufen (`OLLAMA_KEY`, `GRAMMAR_CHECK` fehlen in CLI-Version).
-- **[WARN-2] Ollama/Player2 in Stage-Requests:** `executeStageRequest` unterstützt Ollama und Player2 nicht als `POLISHER_PROVIDER`/`AUDITOR_PROVIDER` → Absturz bei entsprechender Config.
-
 ## [0.15.0-alpha] - 2026-06-14
 
 

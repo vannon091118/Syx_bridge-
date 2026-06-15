@@ -121,38 +121,19 @@ Syx_bridge-/
 
 ---
 
-## 📋 Changelog — Was seit dem Relaunch passiert ist
+## 📋 Changelog
 
-### Patch `v0.15.4-patch` (2026-06-15)
-- **[BUG-5] Native Mode Fix:** Backup jetzt bei jedem Lauf frisch, Polish läuft immer (auch ohne GRAMMAR_CHECK), _Info.txt bleibt im Workshop-Ordner unberührt. Reihenfolge garantiert: Backup → Translate → Polish → Overwrite.
+→ Vollständiges, detailliertes Changelog: **[core/CHANGELOG.md](core/CHANGELOG.md)**
 
-### Patch `v0.15.3-patch` (2026-06-14)
-- **[WARN-2] Ollama/Player2 in Stage-Requests:** `executeStageRequest` unterstützt jetzt Ollama/Player2 als Polisher/Auditor-Provider. API-Keys und automatische Key-Rotation für Player2 integriert.
-
-### Patch `v0.15.2-patch` (2026-06-14)
-- **[BUG-1] PLAYER2_KEYS Datenverlust behoben:** Player2-Schlüssel werden jetzt ordnungsgemäß persistiert und beim Hot-Reload neu eingelesen.
-- **[BUG-4] persistConfig-Divergenz behoben:** CLI-Wizard und GUI erzeugen nun identische `.env`-Dateien.
-
-### Patch `v0.15.1-patch` (2026-06-14)
-- **[M1] Shielding Konsolidierung:** Doppeltes Shielding in `translateBatch` beseitigt — Placeholder-Maps werden jetzt einmalig und korrekt pro Entry gesetzt
-- **[M2] Quote Preservation:** Dialog-Anführungszeichen bleiben erhalten; Outer-Quote-Strip nur noch wenn Quelltext selbst keine Quotes hat
-- **[M3] Text-Core Cleanup:** Redundante Replacement-Logik entfernt, `applyTranslations` bereinigt
-- **[M6] Architecture Cleanup:** Tote Imports (`validator`, `exporter`) aus `planner.js` entfernt
-- **System-Prompt Konsistenz:** Alle Provider (Gemini/Groq/OpenRouter/Ollama/Player2) nutzen jetzt denselben Batch-System-Prompt
-
-### Alpha Release `v0.15.0-alpha` (2026-06-14)
-- **GUI Layout Overhaul:** Dashboard komplett umgebaut — Settings in ein Dropdown verlagert, DB-Browser nativ in den Idle-Screen integriert, Terminal-View für aktive Runs
-- **Live Progress Indicators:** Fortschrittsbalken mit Phase-Tracking, Thread-Zähler und aktuellem Mod-Namen
-- **GUI State Restore:** Dashboard-Zustand überlebt jetzt Browser-Reloads
-- **Initiale DB-Stats:** Dashboard zeigt beim Start echte Datenbankstatistiken statt Nullen
-- **Patch Mode Fix:** Übersetzte Dateien behalten die korrekte Mod-Ordnerstruktur bei
-- **Strict Versioning Policy:** Alle Dependencies auf exakte Versionen gepinnt
-- **Security Relaunch:** Kompletter Git-Reset wegen NPM-Dependency-Chain-Schwachstellen
-
-### Frühere Versionen (Pre-Relaunch)
-- `v0.13.0a` — Linux-Support, Native GUI Dashboard, Gemini-API-Fixes
-- `v0.13.0` — Erstes Web-Dashboard, Glass-Morphism UI, Echtzeit-Telemetrie
-- `v0.9.6 Beta` — Dispatcher-Architektur, Risiko-Scores, Glossar-Learning
+| Version | Datum | Highlights |
+|---|---|---|
+| `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer, _Info.txt geschützt |
+| `v0.15.3` | 2026-06-14 | Ollama/Player2 in Stage-Requests |
+| `v0.15.2` | 2026-06-14 | PLAYER2-Keys persistiert, Config-Divergenz behoben |
+| `v0.15.1` | 2026-06-14 | Shielding, Quotes, Cleanup, Imports, Prompt-Konsistenz |
+| `v0.15.0` | 2026-06-14 | GUI Overhaul, DB-Browser, Live-Terminal, Strict Versioning |
+| `v0.13.0a`| 2026-06-06 | Linux-Support, Gemini-API-Fixes |
+| `v0.9.6β` | Pre-Rel. | Dispatcher, Risiko-Scores, Glossar-Learning |
 
 ---
 

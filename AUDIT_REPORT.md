@@ -77,21 +77,6 @@ Mit gelöschtem Cache wurde der Testlauf wiederholt:
 
 ---
 
-## 📋 Changelog-Historie (Seit Relaunch)
+## 📋 Changelog-Historie
 
-### Patch `v0.15.4-patch` (2026-06-15)
-* **[BUG-5] Native Mode Backup/Polish:** Backup wird jetzt bei jedem Lauf frisch erstellt (nicht nur Erstlauf). Polish läuft immer (forcePolish=true), auch ohne GRAMMAR_CHECK. _Info.txt bleibt im Workshop-Ordner unberührt.
-
-### Patch `v0.15.3-patch` (2026-06-14)
-* **[WARN-2] Ollama/Player2 in Stage-Requests:** `executeStageRequest` unterstützt jetzt Ollama/Player2 als Polisher/Auditor-Provider. API-Keys und automatische Key-Rotation für Player2 integriert.
-
-### Patch `v0.15.2-patch` (2026-06-14)
-* **[BUG-1] PLAYER2_KEYS Datenverlust behoben:** Player2-Schlüssel werden jetzt ordnungsgemäß persistiert und beim Hot-Reload neu eingelesen.
-* **[BUG-4] persistConfig-Divergenz behoben:** CLI-Wizard und GUI erzeugen nun identische `.env`-Dateien.
-
-### Patch `v0.15.1-patch` (2026-06-14)
-* **[M1] Shielding Konsolidierung:** Doppeltes Shielding in `translateBatch` beseitigt — Placeholder-Maps werden jetzt einmalig und korrekt pro Entry gesetzt.
-* **[M2] Quote Preservation:** Dialog-Anführungszeichen bleiben erhalten; Outer-Quote-Strip nur noch wenn Quelltext selbst keine Quotes hat.
-* **[M3] Text-Core Cleanup:** Redundante Replacement-Logik entfernt, `applyTranslations` bereinigt.
-* **[M6] Architecture Cleanup:** Tote Imports (`validator`, `exporter`) aus `planner.js` entfernt.
-* **System-Prompt Konsistenz:** Alle Provider nutzen denselben Batch-System-Prompt.
+→ Vollständiges Changelog siehe **[core/CHANGELOG.md](core/CHANGELOG.md)** (Single Source of Truth). Hier nur Zusammenfassung der Audit-Relevanz.
