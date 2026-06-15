@@ -196,6 +196,10 @@
             color: var(--success);
             border: 1px solid rgba(100, 213, 196, 0.3);
         }
+        /* Kontrollfeld Danger Zone */
+        .kontrollfeld { border: 1px solid rgba(239, 107, 96, 0.3) !important; background: rgba(239, 107, 96, 0.03) !important; }
+        .kontrollfeld button:hover { background: rgba(239, 107, 96, 0.15) !important; }
+
         .status-badge.active::before {
             content: '';
             width: 6px; height: 6px;
@@ -231,11 +235,26 @@
             <button id="settings-toggle-btn" onclick="toggleSettings()" style="background: rgba(0,0,0,0.8); border: 1px solid var(--accent); font-size: 0.75rem; padding: 6px 25px; color: var(--accent); border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.3s; width: auto; box-shadow: 0 0 10px rgba(0,0,0,0.5);">⚙️ API & EINSTELLUNGEN</button>
             <div id="settings-dropdown" style="display: none; position: absolute; top: 40px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); border: 1px solid var(--accent); padding: 20px; border-radius: 8px; z-index: 1000; width: 450px; box-shadow: 0 10px 50px rgba(0,0,0,0.9); max-height: 80vh; overflow-y: auto;">
                 <div class="panel" style="margin-bottom: 10px;">
-                    <h3>Bridge Mode</h3>
+                    <h3>Bridge Mode <span id="patch-badge-header" style="font-size:0.6rem; font-weight:normal; color:var(--muted);">⛔ DEAKTIVIERT (Standard)</span></h3>
                     <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <button id="mode-toggle-btn" onclick="toggleMode()" style="flex:1;">Wechsle zu NATIVE</button>
+                        <button id="mode-toggle-btn" onclick="toggleMode()" style="flex:1;">Wechsle zu PATCH</button>
                     </div>
-                    <div id="mode-status" class="stat-label" style="text-align:center; font-weight:bold;">Aktuell: PATCH MODE</div>
+                    <div id="mode-status" class="stat-label" style="text-align:center; font-weight:bold;">Aktuell: NATIVE MODE (Inplace)</div>
+                </div>
+
+                <!-- KONTROLLFELD: Patch Mode nur hier aktivierbar -->
+                <div class="panel kontrollfeld" style="margin-bottom: 10px; border-color: var(--danger);">
+                    <h3 style="color: var(--danger);">⚠️ Kontrollfeld</h3>
+                    <div style="background: rgba(239, 107, 96, 0.08); border: 1px solid rgba(239, 107, 96, 0.25); border-radius: 4px; padding: 10px; margin-bottom: 10px; font-size: 0.7rem; line-height: 1.5;">
+                        <strong style="color: var(--danger);">Patch Mode wurde deaktiviert.</strong><br>
+                        Der Patch-Modus funktioniert derzeit <strong>nicht zuverlässig</strong> und kann
+                        zu unvollständigen Übersetzungen oder beschädigten Mod-Strukturen führen.<br><br>
+                        Die Aktivierung ist nur für <strong>Testzwecke</strong> gedacht.
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="stat-label">Status: <span id="patch-override-active" style="color:var(--muted);">⛔ DEAKTIVIERT (Standard)</span></span>
+                        <button id="patch-toggle-kf" onclick="togglePatchOverride()" style="width: auto; padding: 6px 16px; font-size: 0.7rem; background: transparent; border: 1px solid var(--danger); color: var(--danger);">PATCH MODE AKTIVIEREN</button>
+                    </div>
                 </div>
 
                 <div class="panel" style="margin-bottom: 10px;">
@@ -296,7 +315,7 @@
                 <div id="health-ollama" class="stat-label"><span class="status-dot" id="dot-ollama"></span>Ollama</div>
             </div>
             <div id="mode-warning" style="font-size: 0.6rem; color: var(--accent); margin-top: 4px; letter-spacing: 0.5px; font-weight: bold;">
-                AKTUELL GETESTET: <span style="color:var(--success)">NATIV</span> | EXPERIMENTELL: <span style="color:var(--danger)">PATCH</span>
+                NATIV: <span style="color:var(--success)">AKTIV</span> | PATCH: <span style="color:var(--danger)">DEAKTIVIERT</span>
             </div>
         </div>
     </header>

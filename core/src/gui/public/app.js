@@ -50,6 +50,7 @@ let liveStats = {
 };
 let lastRunningState = false;
 let statusTimeout = null;
+let patchOverrideEnabled = false;
 let _fps = 60;
 let lastFrameTime = performance.now();
 let frameCount = 0;
@@ -205,6 +206,35 @@ function updateBackgroundStatus() {
   lastRunningState = isRunning;
 }
 
+function togglePatchOverride() {
+  if (!patchOverrideEnabled) {
+    const confirmed = confirm(
+      '⚠️  ACHTUNG!  ⚠️\n\n' +
+      'Der PATCH MODE ist derzeit deaktiviert, weil er NICHT ZUVERLÄSSIG funktioniert.\n\n' +
+      'Aktivierung nur für TESTZWECKE empfohlen:\n' +
+      '• Übersetzungen könnten unvollständig sein\n' +
+      '• Mod-Struktur könnte beschädigt werden\n' +
+      '• Backup wird empfohlen\n\n' +
+      'Trotzdem aktivieren?'
+    );
+    if (!confirmed) return;
+    patchOverrideEnabled = true;
+  } else {
+    // Deactivate: force switch back to Native mode first
+    if (!currentConfig.NATIVE_MODE) {
+      currentConfig.NATIVE_MODE = true;
+    }
+    patchOverrideEnabled = false;
+  }
+  updateModeUI();
+  // Nur NATIVE_MODE an Server senden, ohne andere Formularfelder zu überschreiben
+  fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...currentConfig, NATIVE_MODE: currentConfig.NATIVE_MODE })
+  }).catch(() => {});
+}
+
 async function _toggleBridge() {
   const action = liveStats.isRunning ? 'stop' : 'sync';
   if (action === 'sync') {
@@ -215,6 +245,11 @@ async function _toggleBridge() {
 }
 
 async function _toggleMode() {
+  // Switching to Patch (= setting NATIVE_MODE to false) is blocked unless override is active
+  if (currentConfig.NATIVE_MODE && !patchOverrideEnabled) {
+    alert('⚠️ PATCH MODE IST DEAKTIVIERT.\n\nDer Patch-Modus funktioniert derzeit nicht zuverlässig und wurde vorübergehend deaktiviert.\n\nNutze das KONTROLLFELD in den Einstellungen, um ihn zu aktivieren — nur für Testzwecke.');
+    return;
+  }
   currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
   updateModeUI();
   await saveConfig(true);
@@ -224,11 +259,26 @@ function updateModeUI() {
   const btn = document.getElementById('mode-toggle-btn');
   const status = document.getElementById('mode-status');
   const isNative = !!currentConfig.NATIVE_MODE;
+  const overrideActive = document.getElementById('patch-override-active');
+
+  // Reset button state
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
 
   if (isNative) {
     document.body.classList.add('mode-native');
     document.body.classList.remove('mode-patch');
-    if (btn) btn.textContent = 'Wechsle zu PATCH';
+    if (btn) {
+      if (patchOverrideEnabled) {
+        btn.textContent = 'Wechsle zu PATCH';
+        btn.title = 'Patch Mode ist via Kontrollfeld freigeschaltet';
+      } else {
+        btn.textContent = 'Wechsle zu PATCH';
+        btn.title = 'Patch Mode ist deaktiviert — öffne das Kontrollfeld zum Aktivieren';
+      }
+    }
     if (status) {
       status.textContent = 'Aktuell: NATIVE MODE (Inplace)';
       status.style.color = 'var(--accent)';
@@ -236,11 +286,37 @@ function updateModeUI() {
   } else {
     document.body.classList.add('mode-patch');
     document.body.classList.remove('mode-native');
-    if (btn) btn.textContent = 'Wechsle zu NATIVE';
-    if (status) {
-      status.textContent = 'Aktuell: PATCH MODE';
-      status.style.color = 'var(--success)';
+    if (btn) {
+      btn.textContent = 'Wechsle zu NATIVE';
     }
+    if (status) {
+      status.textContent = 'Aktuell: PATCH MODE (⚠️ EXPERIMENTELL)';
+      status.style.color = 'var(--danger)';
+    }
+  }
+
+  // Update Kontrollfeld status indicator
+  const kfButton = document.getElementById('patch-toggle-kf');
+  if (kfButton) {
+    if (patchOverrideEnabled) {
+      kfButton.textContent = 'PATCH MODE DEAKTIVIEREN';
+      kfButton.style.borderColor = 'var(--success)';
+      kfButton.style.color = 'var(--success)';
+    } else {
+      kfButton.textContent = 'PATCH MODE AKTIVIEREN';
+      kfButton.style.borderColor = 'var(--danger)';
+      kfButton.style.color = 'var(--danger)';
+    }
+  }
+  if (overrideActive) {
+    overrideActive.textContent = patchOverrideEnabled ? '⚠️ AKTIV (nur zu Testzwecken)' : '⛔ DEAKTIVIERT (Standard)';
+    overrideActive.style.color = patchOverrideEnabled ? 'var(--danger)' : 'var(--muted)';
+  }
+  // Also update the header badge
+  const headerBadge = document.getElementById('patch-badge-header');
+  if (headerBadge) {
+    headerBadge.textContent = patchOverrideEnabled ? '⚠️ AKTIV' : '⛔ DEAKTIVIERT (Standard)';
+    headerBadge.style.color = patchOverrideEnabled ? 'var(--danger)' : 'var(--muted)';
   }
 }
 
@@ -651,6 +727,18 @@ async function loadInitialConfig() {
     const res = await fetch('/api/config');
     currentConfig = await res.json();
     
+    // PATCH MODE DEAKTIVIERT — Force Native mode on every load & persist
+    if (!currentConfig.NATIVE_MODE) {
+      console.warn('[GUI] Patch Mode ist deaktiviert — wechsle zu Native Mode.');
+      currentConfig.NATIVE_MODE = true;
+      // Auch Server-seitig persistieren, damit kein Sync im Patch-Mode startet
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentConfig)
+      }).catch(() => {});
+    }
+    
     updateModeUI();
         
     if (document.getElementById('cfg-provider')) {
@@ -764,8 +852,14 @@ async function restoreBackup(modId) {
   }
 }
 
-// Global exposure
+// Global exposure (HTML onclick handlers refer to these names)
 window.restoreBackup = restoreBackup;
+window.togglePatchOverride = togglePatchOverride;
+window.toggleMode = _toggleMode;
+window.toggleBridge = _toggleBridge;
+window.saveDbEntry = _saveDbEntry;
+window.addKeyRow = _addKeyRow;
+window.saveKeysFromModal = _saveKeysFromModal;
 
 // Initialize backups loading
 loadBackups();
