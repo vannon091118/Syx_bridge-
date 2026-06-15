@@ -12,7 +12,9 @@ core/patches/
 core/translations.db*
 debug_payloads.txt
 server_output.txt
-vannon_test_run.js
+# Personal test scripts (Vannon)
+**/*_test_run.js
+**/*vannon*
 Gemini.md
 TODO.md
 backups/
