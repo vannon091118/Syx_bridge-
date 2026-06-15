@@ -13,9 +13,9 @@ Dieses Dokument dient als persistente Dokumentation des Code-Audits, der durchge
 | **BUG-4** | 🔴 P0 | `persistConfig`-Divergenzen (CLI vs. GUI) | `index.js`, `config-runtime.js` | **Behoben** ✅ |
 | **WARN-2**| 🟠 P1 | Ollama/Player2 fehlen in `executeStageRequest` | `translation-runtime.js` | **Behoben** ✅ |
 | **BUG-5** | 🔴 P0 | Native Mode: Backup nur beim Erstlauf, kein Polish, _Info.txt überschrieben | `runtime-ops.js`, `translation-runtime.js` | **Behoben** ✅ |
-| **WARN-1**| 🟠 P1 | Zwei separate `persistConfig`-Implementierungen | `index.js`, `config-runtime.js` | ⏳ PENDING |
-| **BUG-2** | 🟡 P2 | Irreführender Kommentar-Stub in `runtime-ops` | `runtime-ops.js` | ⏳ PENDING |
-| **BUG-3** | 🟡 P2 | String-Level-Planung Platzhalter in `planner` | `planner.js` | ⏳ PENDING |
+| **WARN-1**| 🟠 P1 | Zwei separate `persistConfig`-Implementierungen | `index.js`, `config-runtime.js` | **Behoben** ✅ |
+| **BUG-2** | 🟡 P2 | Irreführender Kommentar-Stub in `runtime-ops` | `runtime-ops.js` | **Behoben** ✅ |
+| **BUG-3** | 🟡 P2 | String-Level-Planung Platzhalter in `planner` | `planner.js` | **Behoben** ✅ |
 
 ---
 

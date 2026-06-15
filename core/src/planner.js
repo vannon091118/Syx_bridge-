@@ -180,7 +180,7 @@ class Planner {
         [mod.id, file.relativePath, file.type, fileHash]);
     }
 
-    // Potential for more granular string-level planning here
+    // Per-file strings extracted and stored; per-string risk-routing handled in translation-runtime
   }
 
   printSummary() {

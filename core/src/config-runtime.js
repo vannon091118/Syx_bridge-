@@ -586,31 +586,7 @@ class ConfigRuntime {
     this.config.TARGET_LANG = extraSetup.target_lang;
     this.config.NATIVE_MODE = extraSetup.native_mode;
 
-    const envRows = [
-      ['MOD_PATH', firstDefined(this.config.MOD_ROOT)],
-      ['OUTPUT_PATH', firstDefined(this.config.GAME_MOD_ROOT)],
-      ['TARGET_LANG', firstDefined(this.config.TARGET_LANG)],
-      ['NATIVE_MODE', String(!!this.config.NATIVE_MODE)],
-      ['GRAMMAR_CHECK', String(!!this.config.GRAMMAR_CHECK)],
-      ['PRIMARY_PROVIDER', firstDefined(this.config.PRIMARY_PROVIDER)],
-      ['PRIMARY_MODEL', firstDefined(this.config.PRIMARY_MODEL)],
-      ['POLISHER_PROVIDER', firstDefined(this.config.POLISHER_PROVIDER)],
-      ['POLISHER_MODEL', firstDefined(this.config.POLISHER_MODEL)],
-      ['REPOLISH_BUDGET', firstDefined(this.config.REPOLISH_BUDGET)],
-      ['AUDITOR_PROVIDER', firstDefined(this.config.AUDITOR_PROVIDER)],
-      ['AUDITOR_MODEL', firstDefined(this.config.AUDITOR_MODEL)],
-      ['GEMINI_KEY', (this.config.GEMINI_KEYS || []).join(',')],
-      ['GROQ_KEY', (this.config.GROQ_KEYS || []).join(',')],
-      ['OPENROUTER_KEY', (this.config.OPENROUTER_KEYS || []).join(',')],
-      ['OLLAMA_KEY', (this.config.OLLAMA_KEYS || []).join(',')],
-      ['OLLAMA_URL', firstDefined(this.config.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
-      ['PLAYER2_KEY', (this.config.PLAYER2_KEYS || []).join(',')],
-      ['PLAYER2_ENABLED', String(!!this.config.PLAYER2_ENABLED)],
-      ['PLAYER2_URL', firstDefined(this.config.PLAYER2_URL, PLAYER2_DEFAULT_URL)]
-    ];
-    const envContent = envRows.map(([k, v]) => `${k}="${v}"`).join('\n');
-
-    fs.writeFileSync(path.join(process.cwd(), '.env'), envContent);
+    await persistConfigToEnv(this.config);
     console.log('\n[FERTIG] Konfiguration gespeichert.\n');
   }
 
@@ -661,8 +637,42 @@ class ConfigRuntime {
   }
 }
 
+/**
+ * Single source of truth for writing .env files.
+ * Used by CLI (index.js) and config-wizard (ConfigRuntime.configure).
+ */
+async function persistConfigToEnv(config) {
+  const envPath = path.join(process.cwd(), '.env');
+  const rows = [
+    ['MOD_PATH', firstDefined(config.MOD_ROOT)],
+    ['OUTPUT_PATH', firstDefined(config.GAME_MOD_ROOT)],
+    ['TARGET_LANG', firstDefined(config.TARGET_LANG)],
+    ['NATIVE_MODE', String(!!config.NATIVE_MODE)],
+    ['GRAMMAR_CHECK', String(!!config.GRAMMAR_CHECK)],
+    ['PRIMARY_PROVIDER', firstDefined(config.PRIMARY_PROVIDER)],
+    ['PRIMARY_MODEL', firstDefined(config.PRIMARY_MODEL)],
+    ['POLISHER_PROVIDER', firstDefined(config.POLISHER_PROVIDER)],
+    ['POLISHER_MODEL', firstDefined(config.POLISHER_MODEL)],
+    ['REPOLISH_BUDGET', firstDefined(config.REPOLISH_BUDGET)],
+    ['AUDITOR_PROVIDER', firstDefined(config.AUDITOR_PROVIDER)],
+    ['AUDITOR_MODEL', firstDefined(config.AUDITOR_MODEL)],
+    ['GEMINI_KEY', (config.GEMINI_KEYS || []).join(',')],
+    ['GROQ_KEY', (config.GROQ_KEYS || []).join(',')],
+    ['OPENROUTER_KEY', (config.OPENROUTER_KEYS || []).join(',')],
+    ['OLLAMA_KEY', (config.OLLAMA_KEYS || []).join(',')],
+    ['OLLAMA_URL', firstDefined(config.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
+    ['PLAYER2_KEY', (config.PLAYER2_KEYS || []).join(',')],
+    ['PLAYER2_ENABLED', String(!!config.PLAYER2_ENABLED)],
+    ['PLAYER2_URL', firstDefined(config.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
+    ['BATCH_SIZE', firstDefined(config.BATCH_SIZE)]
+  ];
+  const lines = rows.map(([key, value]) => `${key}="${String(value ?? '').replace(/"/g, '\\"')}"`);
+  await fs.promises.writeFile(envPath, `${lines.join('\n')}\n`, 'utf-8');
+}
+
 module.exports = {
   ConfigRuntime,
+  persistConfigToEnv,
   parseEnvFlag,
   parseKeys,
   isUsableTextModel,

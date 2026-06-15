@@ -86,7 +86,7 @@ function createRuntimeOps(options) {
     console.log(`\n>>> Uebersetze: ${modName}${dryRun ? ' [DRY RUN]' : ''}`);
 
     if (config.NATIVE_MODE && !getHasConfirmedNative() && !dryRun && !process.argv.includes('--gui')) {
-      // ... (Native mode confirmation logic stays same)
+      // Native Mode: User bestätigt In-Place-Überschreibung mit Backup-Garantie
       console.log('\n[INFO] Native Mode aktiv: Originaldateien werden überschrieben.');
 
       const confirm = await inquirer.prompt([

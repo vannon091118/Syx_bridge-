@@ -14,6 +14,7 @@ const { createRuntimeOps } = require('./src/runtime-ops');
 const { createTranslationRuntime } = require('./src/translation-runtime');
 const { 
   ConfigRuntime, 
+  persistConfigToEnv,
   parseEnvFlag, 
   parseKeys, 
   isUsableTextModel, 
@@ -205,32 +206,7 @@ function applyEnvToConfig() {
 }
 
 async function persistConfig(config) {
-  const envPath = path.join(process.cwd(), '.env');
-  const rows = [
-    ['PRIMARY_PROVIDER', config.PRIMARY_PROVIDER],
-    ['PRIMARY_MODEL', config.PRIMARY_MODEL],
-    ['POLISHER_PROVIDER', config.POLISHER_PROVIDER],
-    ['POLISHER_MODEL', config.POLISHER_MODEL],
-    ['REPOLISH_BUDGET', config.REPOLISH_BUDGET],
-    ['AUDITOR_PROVIDER', config.AUDITOR_PROVIDER],
-    ['AUDITOR_MODEL', config.AUDITOR_MODEL],
-    ['GEMINI_KEY', (config.GEMINI_KEYS || []).join(',')],
-    ['GROQ_KEY', (config.GROQ_KEYS || []).join(',')],
-    ['OPENROUTER_KEY', (config.OPENROUTER_KEYS || []).join(',')],
-    ['OLLAMA_KEY', (config.OLLAMA_KEYS || []).join(',')],
-    ['OLLAMA_URL', config.OLLAMA_URL],
-    ['PLAYER2_KEY', (config.PLAYER2_KEYS || []).join(',')],
-    ['PLAYER2_ENABLED', String(!!config.PLAYER2_ENABLED)],
-    ['PLAYER2_URL', config.PLAYER2_URL],
-    ['BATCH_SIZE', config.BATCH_SIZE],
-    ['MOD_PATH', config.MOD_ROOT],
-    ['OUTPUT_PATH', config.GAME_MOD_ROOT],
-    ['TARGET_LANG', config.TARGET_LANG],
-    ['NATIVE_MODE', String(!!config.NATIVE_MODE)],
-    ['GRAMMAR_CHECK', String(!!config.GRAMMAR_CHECK)]
-  ];
-  const lines = rows.map(([key, value]) => `${key}="${String(value ?? '').replace(/"/g, '\\"')}"`);
-  await fsp.writeFile(envPath, `${lines.join('\n')}\n`, 'utf-8');
+  await persistConfigToEnv(config);
 }
 
 function getGeminiModelName(name) {
