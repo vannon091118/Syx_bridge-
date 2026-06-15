@@ -159,6 +159,62 @@ function createTranslationRuntime(options) {
     return { maxItems: mode === 'polish' ? 14 : 20, maxChars: 2600 };
   }
 
+  /**
+   * Google Free Stress Test: Quick pre-flight to dynamically calibrate risk.
+   * - Sends all entries through Google Translate Free (cheapest/fastest route)
+   * - Compares output quality to determine genuine translation difficulty
+   * - Returns: { translations: Map, stressResults: Map, overallPassRate: number }
+   */
+  async function googleFreePreflight(entries) {
+    console.log(`[STRESS-TEST] Google Free Pre-Flight fuer ${entries.length} Eintraege...`);
+    
+    const texts = entries.map(e => e.protectedText || e.source);
+    const rawResults = await callGoogleTranslateFree(texts);
+    
+    const translations = new Map();
+    const stressResults = new Map();
+    let passedCount = 0;
+
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      const raw = rawResults[i] || '';
+      const source = entry.source;
+      
+      // Quality gates for Google Free output:
+      // 1. Must not be identical to source (unless source is already target language)
+      const isIdentical = normalizeWhitespace(raw) === normalizeWhitespace(source);
+      // 2. Must have reasonable length (not truncated)
+      const lengthRatio = raw.length / Math.max(1, source.length);
+      const hasGoodLength = lengthRatio >= 0.2 && lengthRatio <= 5.0;
+      // 3. Must not contain placeholder leaks
+      const hasPlaceholderLeak = /\[\[|\]\]|__VAR\d+__/.test(raw) && !/\[\[|\]\]|__VAR\d+__/.test(source);
+
+      const passed = !isIdentical && hasGoodLength && !hasPlaceholderLeak;
+      
+      if (passed) {
+        passedCount++;
+        translations.set(source, raw);
+      }
+      
+      stressResults.set(source, {
+        passed,
+        googleFreeOutput: raw,
+        isIdentical,
+        hasGoodLength,
+        hasPlaceholderLeak,
+        originalRisk: entry.riskScore || 0,
+        dynamicRisk: passed ? Math.max(0, (entry.riskScore || 0) - 2) : Math.min(20, (entry.riskScore || 0) + 3),
+        stressTested: true
+      });
+    }
+
+    const passRate = entries.length > 0 ? passedCount / entries.length : 0;
+    console.log(`[STRESS-TEST] Ergebnis: ${passedCount}/${entries.length} bestanden (${(passRate * 100).toFixed(0)}%). Dynamische AvgRisk kalibriert.`);
+
+    return { translations, stressResults, overallPassRate: passRate };
+  }
+
+
   async function getGuardedTerminology(items) {
     try {
       const guarded = await dbAll('SELECT source_term, target_term FROM glossary_terms WHERE target_lang = ? AND is_guarded = 1', [config.TARGET_LANG]);
@@ -697,13 +753,56 @@ except Exception as e:
       entry.placeholders = shield.placeholders;
     });
         
-    // Smart Routing: Override provider if batch is entirely low risk
+    // Smart Routing: Dynamic Risk with Google Free Stress Test
     let activeProvider = provider;
     const avgRisk = entries.reduce((sum, e) => sum + (e.riskScore || 0), 0) / entries.length;
+    
     if (avgRisk < 1.5 && provider !== 'argos' && provider !== 'ollama' && provider !== 'player2') {
+      // Low-Risk: Route directly to cheap providers
       if (isArgosInstalled && isArgosInstalled()) activeProvider = 'argos';
       else activeProvider = 'google_free';
       console.log(`[DISPATCH] Low-Risk Batch erkannt (AvgRisk: ${avgRisk.toFixed(1)}). Nutze schnellen Provider: ${activeProvider}`);
+    } else if (avgRisk >= 1.5 && avgRisk < 4.0 && provider !== 'argos' && provider !== 'ollama' && provider !== 'player2' && provider !== 'google_free') {
+      // Ambiguous-Risk (1.5-4.0): Google Free Stress Test as pre-flight
+      console.log(`[DISPATCH] Ambiguous-Risk Batch (AvgRisk: ${avgRisk.toFixed(1)}). Starte Google Free Stress-Test...`);
+      if (isAborting()) throw new Error('ABORTED');
+      let stressResult;
+      try {
+        stressResult = await googleFreePreflight(entries);
+      } catch (e) {
+        console.warn(`[DISPATCH] Stress-Test fehlgeschlagen: ${e.message}. Fallback auf normale LLM-Route.`);
+        // Fall through to normal LLM routing without dynamic risk scores
+      }
+      
+      if (stressResult && stressResult.overallPassRate > 0.7) {
+        // >70% pass rate: Google Free output is good enough -> use it directly
+        console.log(`[DISPATCH] Stress-Test bestanden (${(stressResult.overallPassRate*100).toFixed(0)}%). Nutze Google Free direkt.`);
+        // Restore placeholders in Google Free output and return
+        const stressTranslations = entries.map((entry, i) => {
+          const translated = stressResult.translations.get(entry.source);
+          if (translated) {
+            const restored = restorePlaceholders(translated, entry.placeholders);
+            saveStressTestResult(entry.source, true).catch(() => {});
+            return restored;
+          }
+          saveStressTestResult(entry.source, false).catch(() => {});
+          return entry.source;
+        });
+        return stressTranslations;
+      }
+      
+      if (stressResult) {
+        // Stress test failed or marginal: escalate to quality model with dynamic risk scores
+      console.log(`[DISPATCH] Stress-Test marginal (${(stressResult.overallPassRate*100).toFixed(0)}%). Eskaliere zu Qualitaets-Modell mit dynamischen Risk-Scores.`);
+      const entryBySource = new Map(entries.map(e => [e.source, e]));
+      for (const [source, result] of stressResult.stressResults) {
+        const entry = entryBySource.get(source);
+        if (entry) {
+          entry.riskScore = result.dynamicRisk;
+          saveStressTestResult(source, result.passed).catch(() => {});
+        }
+      }
+      } // end if(stressResult)
     }
 
     const texts = entries.map(entry => entry.source);

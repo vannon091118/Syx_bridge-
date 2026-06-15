@@ -94,6 +94,8 @@ async function init() {
   try { await run('ALTER TABLE translations ADD COLUMN quality_score INTEGER NOT NULL DEFAULT 0'); } catch (e) {}
   try { await run('ALTER TABLE translations ADD COLUMN last_checked_at TEXT'); } catch (e) {}
   try { await run('ALTER TABLE translations ADD COLUMN review_count INTEGER NOT NULL DEFAULT 0'); } catch (e) {}
+  try { await run('ALTER TABLE translations ADD COLUMN stress_test_passed INTEGER'); } catch (e) {}
+  try { await run('ALTER TABLE translations ADD COLUMN stress_tested_at TEXT'); } catch (e) {}
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_hash ON translations(target_lang, source_hash)');
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_flagged ON translations(target_lang, flagged, audit_stage)');
 

@@ -54,12 +54,15 @@ function countMatches(text, regex) {
   return (String(text || '').match(regex) || []).length;
 }
 
+/**
+ * Static heuristic risk score (0-15). Higher = needs better model.
+ */
 function scoreTranslationRisk(entry) {
   const item = normalizeTranslationEntry(entry);
   const source = item.source;
   let score = 0;
   const length = source.length;
-  const tokenCount = countMatches(source, /<[^>]+>|__VAR\d+__|\{[^}]+\}|\$[A-Za-z0-9_]+|%[^%\s]+%/g);
+  const tokenCount = countMatches(source, /<[^>]+>|__VAR\d+__|{[^}]+}|\$[A-Za-z0-9_]+|%[^%\s]+%/g);
   const sentenceCount = countMatches(source, /[.!?]/g);
 
   if (length >= 180) score += 4;
@@ -74,7 +77,7 @@ function scoreTranslationRisk(entry) {
   if (sentenceCount >= 3) score += 2;
   else if (sentenceCount >= 1) score += 1;
 
-  if (/["“”']/.test(source)) score += 1;
+  if (/["""]/.test(source)) score += 1;
   if (/[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+/.test(source)) score += 1;
 
   if (item.type === 'NAME_STRING') score += 2;
@@ -82,6 +85,26 @@ function scoreTranslationRisk(entry) {
   else if (item.type === 'GENERIC_STRING') score += 1;
 
   return score;
+}
+
+/**
+ * Dynamic risk score that blends static heuristics with DB history.
+ * - stressTestPassed: Google Free produced a good result in the past -> risk drops
+ * - stressTestFailed: Google Free failed -> risk increases
+ * - hasGoodQuality: already has a polished, verified translation -> risk drops
+ * - retryCount: many retries needed in the past -> risk increases
+ */
+function scoreDynamicRisk(entry, dbHistory = {}) {
+  const baseScore = scoreTranslationRisk(entry);
+  let dynamicScore = baseScore;
+
+  if (dbHistory.stressTestPassed) dynamicScore = Math.max(0, dynamicScore - 3);
+  if (dbHistory.stressTestFailed)  dynamicScore += 2;
+  if (dbHistory.hasGoodQuality && dbHistory.flagged === 0) dynamicScore = Math.max(0, dynamicScore - 2);
+  if (dbHistory.retryCount > 0)    dynamicScore += Math.min(dbHistory.retryCount, 3);
+
+  // Clamp to 0-20 range
+  return Math.max(0, Math.min(20, dynamicScore));
 }
 
 function buildContextPacket(entry, glossaryTerms = []) {
@@ -107,5 +130,6 @@ module.exports = {
   normalizeTranslationEntry,
   mergeEntryContexts,
   scoreTranslationRisk,
+  scoreDynamicRisk,
   buildContextPacket
 };
