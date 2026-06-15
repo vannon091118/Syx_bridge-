@@ -1,156 +1,181 @@
-# Syx-Bridge — AI Translation Engine for Songs of Syx
+# SyxBridge — AI Translation Engine for Songs of Syx
 
-![Banner](Banner.png)
+<p align="center">
+  <img src="Banner.png" alt="SyxBridge Banner" width="600">
+</p>
 
-> **Solo-Dev-Projekt von Vannon** · Built with mass amounts of caffeine, mass amounts of AI and mass amounts of stubbornness.
-> 
-> *"Ich wollte nur meine Mods auf Deutsch spielen. Jetzt hab ich eine KI-Pipeline mit Web-Dashboard gebaut. Tja."*
+<p align="center">
+  <strong>v0.19a</strong> · Solo-Dev-Projekt von <strong>Vannon</strong> · Built with mass amounts of caffeine, AI, and stubbornness
+</p>
 
----
+<p align="center">
+  <em>"Ich wollte nur meine Mods auf Deutsch spielen. Jetzt hab ich eine KI-Pipeline mit Web-Dashboard, Key-Rotation, Capability-Matrix und Stress-Test-System gebaut. Irgendwas ist schiefgelaufen."</em>
+</p>
 
-## 🛡️ Security & Integrity Update / Sicherheits-Update
-
-**[EN] Why the Clean Slate?**  
-This repository has been **re-initialized from scratch (git init)** to establish a clean baseline. During a routine audit, several critical NPM dependency chain vulnerabilities were flagged. To thoroughly eliminate these risks—and ensure no compromised packages remain in the project's history—we performed a complete GitHub relaunch. The code has been deep-cleaned and all dependencies have been updated to secure versions.
-
-**[DE] Warum der GitHub-Relaunch?**  
-Dieses Repository wurde **komplett neu aufgesetzt (git init)**. Bei einer Prüfung wurden kritische Schwachstellen in der NPM-Abhängigkeitskette (Dependency Chain) entdeckt. Um diese Sicherheitsrisiken restlos zu beseitigen und sicherzustellen, dass sich keine kompromittierten Pakete in der Versionshistorie befinden, haben wir einen sauberen Relaunch durchgeführt. Alle Abhängigkeiten wurden aktualisiert und das Projekt auf einen sicheren Stand gebracht.
-
-**🔒 Strict Versioning Policy (Internal Standard)**  
-To prevent future "dependency chain" vulnerabilities and automatic, unverified updates, this project enforces **Strict Versioning** in `package.json`. The use of carets (`^`) or tildes (`~`) is strictly prohibited. All dependencies must be pinned to exact versions (e.g., `"axios": "1.17.0"`). Any new dependency or version bump must be manually audited before being committed.
+<p align="center">
+  <em>"I just wanted to play my mods in German. Now I have an AI pipeline with a web dashboard, key rotation, a capability matrix, and a stress test system. Something went wrong somewhere."</em>
+</p>
 
 ---
 
-## 🎮 Was ist die Syx-Bridge? / What is this?
+## 🎮 WTF is this? / Was zum Teufel ist das?
 
-**DE:**  
-Die Syx-Bridge ist ein KI-gestütztes Übersetzungstool für [Songs of Syx](https://store.steampowered.com/app/1162750/Songs_of_Syx/) Mods. Du startest eine `.bat`, ein Dashboard öffnet sich im Browser, und die Engine übersetzt deine Workshop-Mods automatisch in deine Sprache. Kein Copy-Paste, kein Google Translate – echte kontextbasierte KI-Übersetzung mit Qualitätskontrolle und Glossar-Learning.
+**DE:** Du hast Songs of Syx. Du hast 50 Mods. Die sind alle auf Englisch. Du könntest jetzt 3.000 Texte von Hand übersetzen — oder du klickst auf **eine** `.bat`-Datei, öffnest ein Dashboard im Browser und lässt eine KI-Pipeline die Arbeit machen, während du Kaffee trinkst. Rate mal, wofür ich mich entschieden habe.
 
-**EN:**  
-Syx-Bridge is an AI-powered translation engine for [Songs of Syx](https://store.steampowered.com/app/1162750/Songs_of_Syx/) mods. You run a `.bat` file, a dashboard opens in your browser, and the engine translates your subscribed Workshop mods automatically. No copy-paste, no Google Translate—real context-aware AI translation with quality control and glossary learning.
+**EN:** You have Songs of Syx. You have 50 mods. They're all in English. You could manually translate 3,000 strings — or you click **one** `.bat` file, open a dashboard in your browser, and let an AI pipeline do the work while you drink coffee. Guess which one I chose.
 
-**Das Ding ist ein Solo-Projekt.** Ich (Vannon) baue das in meiner Freizeit, weil ich meine Lieblings-Mods auf Deutsch zocken will und kein Tool existiert hat, das das vernünftig kann. Es ist noch Alpha – aber es funktioniert, und es wird besser mit jedem Commit.
+**Das Ding übersetzt deine Workshop-Mods automatisch.** Komplett. Mit Kontext, mit Qualitätskontrolle, mit Backup. Es ist nicht perfekt — aber es ist verdammt nah dran, und es wird besser mit jedem Commit.
 
 ---
 
-## 📸 Dashboard — Live-Screenshots (v0.14.2)
+## 📸 Das Dashboard — Echte Screenshots, kein Photoshop
 
-Keine Mock-ups, keine Photoshop-Tricks. Das hier sind echte Screenshots, direkt vom laufenden System.
+<p align="center">
+  <em>Keine Mock-ups. Live-Screenshots von meinem Schreibtisch. Ja, die Stats sind echt. Nein, ich schäme mich nicht für meine 607 Cache-Hits.</em>
+</p>
 
----
+### ⚡ Run-Modus — Live-Terminal
+![GUI im Run](Übersicht.png)
 
-### 1. ⚡ Die Engine im Run — Live Terminal
-![GUI in Run](Übersicht.png)
-> **DE:** Sobald du auf **SYNC** drückst, wechselt das Dashboard in den Terminal-Modus. Hier siehst du live, was die KI gerade macht: Welcher Prompt rausgeht, was zurückkommt, welche Datei gerade dran ist. Der Neon-Fortschrittsbalken links zeigt dir Phase, aktive Threads und den aktuellen Mod-Namen. Kein Blindflug.
->
-> **EN:** Hit **SYNC** and the dashboard switches to terminal mode. Watch the AI work in real-time: outgoing prompts, incoming responses, current file. The neon progress bar on the left tracks phase, active threads, and the mod currently being processed. No guesswork.
+> Drückst du **SYNC**, wechselt das Dashboard in den Terminal-Modus. Du siehst live jeden Prompt der an die KI geht, jede Antwort die zurückkommt, jede Datei die gerade geschrieben wird. Der Neon-Fortschrittsbalken zeigt Phase, Threads und aktuellen Mod. Kein Blindflug. Kein Ratespiel.
 
----
-
-### 2. ⚙️ Einstellungen & DB Browser — Das Kontrollzentrum
+### ⚙️ Config & DB Browser — Das Kontrollzentrum
 ![Settings and DB](Statistiken.png)
-> **DE:** Über den **"API & EINSTELLUNGEN"**-Button klappst du das Config-Menü auf: API-Keys, Bridge-Mode (Patch vs. Overwrite), Provider-Auswahl. Im Idle-Zustand zeigt die Mitte den **Datenbank-Browser** – klick auf eine Übersetzung, ändere sie, speichere. Fertig. Kein SQL nötig.
->
-> **EN:** The **"API & EINSTELLUNGEN"** button opens the config overlay: API keys, Bridge mode (Patch vs. Overwrite), provider selection. When idle, the center panel becomes a **Database Browser**—click any translation, edit inline, save. Done.
 
----
+> **"API & EINSTELLUNGEN"**-Button → Config-Dropdown mit Provider-Auswahl, Modell-Liste, Batch-Size, Zielsprache. Dazu: **Lokale Modelle Opt-in** (damit deine GPU nicht abfackelt), **Key-Manager** (mehrere API-Keys pro Provider mit automatischer Rotation), **Patch-Mode-Kontrollfeld** (⚠️ deaktiviert, weil er nicht zuverlässig funktioniert — ja, ich bin ehrlich). Im Idle-Zustand wird die Mitte zum **DB-Browser** — Translation anklicken, editieren, speichern. Kein SQL nötig.
 
-### 3. 📊 Live Stats & System Health
+### 📊 Live Stats & Provider-Health
 ![Live Stats](Provider.png)
-> **DE:** Die Diagnostics-Sektion zeigt dir die harten Fakten: Wie viele Dateien gelesen, wie viele Übersetzungen aus dem Cache kamen (spart API-Kosten!), wie viele neu übersetzt wurden und ob Fehler aufgetreten sind. Dazu CPU/RAM-Auslastung in Echtzeit.
->
-> **EN:** The diagnostics section shows the hard numbers: files scanned, cache hits (saving API costs!), new translations, and errors. Plus real-time CPU/RAM monitoring.
+
+> Harte Fakten, kein Bullshit: Dateien gelesen, Cache-Hits (spart API-Kosten!), neue Übersetzungen, Fehler. Dazu CPU/RAM in Echtzeit plus Provider-Status mit Erfolgsrate, Key-Gültigkeit und 429-Limit-Warnungen.
 
 ---
 
-## 🔧 Was kann die Bridge? / Core Features
+## 🔧 Features — Was die Bridge tatsächlich kann
 
-| Feature | Beschreibung / Description |
-|---|---|
-| **Multi-Provider AI** | Gemini, Groq, Ollama (lokal), Argos (offline) — automatisches Fallback zwischen Providern |
-| **3-Stufen-Pipeline** | `Translate → Verify → Deep Polish` — jede Übersetzung durchläuft bis zu 3 Qualitätsstufen |
-| **Variable Shielding** | Spiel-Variablen wie `{NAME}` oder `<tag>` werden durch sichere Tokens geschützt, damit nichts kaputtgeht |
-| **Glossar-Learning** | Die Engine merkt sich Terminologie und wendet sie konsistent an |
-| **SQLite Cache** | Einmal übersetzt = gespeichert. Kein doppeltes API-Budget für denselben Text |
-| **Patch Mode** | Erstellt einen separaten Patch-Mod in `%APPDATA%` — deine Original-Mods bleiben unberührt |
-| **Web-Dashboard** | Echtzeit-Monitoring auf `localhost:3000` mit Live-Terminal, DB-Browser und System-Diagnostics |
-| **Deep Polish** | KI-gestützte Nachbearbeitung: Grammatik, Stil und Terminologie werden nochmal durchgecheckt |
-| **Steam Workshop Export** | Direkt-Upload des fertigen Übersetzungs-Patches in den Steam Workshop |
+| Feature | Ernsthafte Beschreibung | Ironische Übersetzung |
+|---|---|---|
+| **7 Provider** | Gemini, Groq, OpenRouter, Ollama, Player2, Argos (offline), Google Translate Free | Ja, ich hab wirklich sieben APIs eingebaut. Hilfe. |
+| **Provider Capability Matrix** | Jeder Provider hat definierte Fähigkeiten (translate/audit/polish). Kein Google-Free-Polish-Unfall mehr. | google_free kann nicht polishen. Hab's getestet. War hässlich. |
+| **Key-Rotation mit Cooldown** | Mehrere API-Keys pro Provider, automatische Rotation bei Rate-Limits, 30-60s Cooldown | Deine Keys überleben länger als mein Schlafrhythmus. |
+| **Lokale Modelle Opt-in** | Ollama/Player2 standardmäßig gesperrt (Hardware-Schutz). Erst nach explizitem Opt-in verfügbar. | Deine GPU dankt dir. Deine Stromrechnung auch. |
+| **3-Stufen-Pipeline** | Translate → Audit → Polish. Jede Übersetzung durchläuft bis zu 3 Qualitätsstufen. | Weil "gut genug" nicht in meinem Wortschatz vorkommt. |
+| **Dynamic Risk Scoring** | Texte werden nach Risiko bewertet. Ambiguous-Risk-Batches kriegen Stress-Test via Google Free. | Die KI rated deine Texte. Klingt dystopisch, ist aber nützlich. |
+| **JSON-Retry** | Bei Parse-Failure einmaliger Retry mit strikterem Prompt (CRITICAL: ONLY raw JSON) | Weil LLMs manchmal Markdown auskotzen statt JSON. Retry fixt das. |
+| **Placeholder Shielding** | `{NAME}`, `{AGE}`, `<tag>` werden durch Tokens geschützt. Nichts geht kaputt. | Hätte ich beim ersten Build gebraucht. Spoiler: tat ich nicht. |
+| **Glossar-Learning** | Die Engine merkt sich Terminologie und wendet sie konsistent über alle Mods an. | "Schwarm-Königin" bleibt "Schwarm-Königin", nicht "Hive-Queen" auf Seite 3. |
+| **SQLite Cache** | Einmal übersetzt = gespeichert. 607 Einträge in meiner DB. | API-Kosten? Welche API-Kosten? |
+| **Native & Patch Mode** | Native überschreibt Originale (mit Backup). Patch erstellt separaten Mod-Ordner. | Patch Mode ist deaktiviert weil er buggy ist. Ja, ich sag's dir direkt. |
+| **Web-Dashboard** | Echtzeit-Monitoring auf `localhost:3000` | Weil Terminal-only in 2026 peinlich wäre. |
+| **Steam Workshop Export** | Direkt-Upload deines Übersetzungspatches in den Workshop. | Zwei Klicks von "fertig übersetzt" zu "auf Steam". |
+| **Backup-System** | Automatische Sicherung aller Originale vor dem ersten Überschreiben. | Ich hab aus Fehlern gelernt. Genau einmal. |
 
 ---
 
-## 🛠️ Setup — In 4 Schritten loslegen
+## 🛠️ Setup — 4 Schritte, dann Kaffee holen
 
+```bash
+# 1. Node.js installieren (falls nicht vorhanden)
+#    → https://nodejs.org/ (v18+)
+
+# 2. Repository klonen
+git clone https://github.com/vannon091118/Syx_bridge-
+cd Syx_bridge-
+
+# 3. (Optional) .env anpassen
+#    GEMINI_KEY=dein_key,GROQ_KEY=dein_key,OPENROUTER_KEY=dein_key
+#    Ohne Keys läuft die Bridge mit Google Translate Free + Argos
+
+# 4. Starten
+start.bat
 ```
-1. Node.js installieren  →  https://nodejs.org/ (v18+)
-2. Repository klonen      →  git clone https://github.com/vannon091118/Syx_bridge-
-3. .env konfigurieren     →  GEMINI_KEY=dein_api_key  (im Root-Ordner)
-4. Starten                →  start.bat doppelklicken
-```
 
-> **Das war's.** Die `start.bat` installiert beim ersten Start automatisch alle Dependencies, prüft Argos, erstellt eine `.env`-Vorlage falls nötig, und öffnet das Dashboard im Browser.
+> **Das war's.** Die `.bat` installiert beim ersten Start automatisch alle Dependencies (`npm install`), prüft ob Argos installiert ist, erstellt eine `.env`-Vorlage falls keine existiert, und öffnet den Browser auf `localhost:3000`. Du musst nur die API-Keys eintragen — oder auf "Manage API Keys" im Dashboard klicken.
 >
-> **That's it.** On first run, `start.bat` auto-installs dependencies, checks Argos, creates a `.env` template if needed, and opens the dashboard in your browser.
+> **That's it.** On first run, the `.bat` auto-installs dependencies, checks Argos, creates a `.env` template, and opens `localhost:3000` in your browser. Configure your API keys in the dashboard, hit SYNC, done.
 
 ---
 
-## 📂 Projekt-Struktur
+## 📂 Projekt-Struktur — Falls du reinschauen willst
 
 ```
 Syx_bridge-/
-├── start.bat              # One-Click Launcher
-├── .env                   # API Keys & Konfiguration (nicht in Git)
-├── Banner.png             # Repo Banner
+├── start.bat                 # Ein-Klick-Starter. Doppelklick, Browser geht auf.
+├── .env                      # Deine Keys. Nicht committen. Ernsthaft.
+├── README.md                 # Du bist hier.
 │
-├── core/                  # Die Translation Engine
-│   ├── index.js           # Einstiegspunkt (CLI + GUI)
+├── core/                     # Die Engine. Hier passiert die Magie.
+│   ├── index.js              # Einstiegspunkt (CLI + GUI-Mode)
+│   ├── package.json          # v0.19.0-alpha, strict versioning
+│   ├── CHANGELOG.md           # Jede Änderung, peinlich genau dokumentiert
 │   ├── src/
-│   │   ├── gui/           # Web-Dashboard (Express + WebSocket)
-│   │   ├── translation-runtime.js   # Batch-Übersetzung, Cache, Polish
-│   │   ├── dispatcher.js  # Stage-Routing (translate/audit/polish)
-│   │   ├── text-core.js   # Shielding, Prompts, Parsing
-│   │   ├── glossary.js    # Terminologie-Memory
-│   │   ├── planner.js     # Lauf-Orchestrierung
-│   │   ├── exporter.js    # Dateiausgabe (Patch/Native Mode)
-│   │   └── ...            # Scanner, Router, Validator, Logger
-│   └── scripts/           # Wartungstools (Audit, Syntax-Check, Workshop)
+│   │   ├── gui/              # Web-Dashboard (Express + Server-Sent Events)
+│   │   ├── translation-runtime.js  # Batch-Übersetzung, Cache, Polish, Stress-Test
+│   │   ├── dispatcher.js     # Einheitliche Routing-Pipeline (Single Source of Truth)
+│   │   ├── router.js         # Provider-Routing mit Capability-Matrix + Cost-Class
+│   │   ├── config-runtime.js # API-Keys, Key-Rotation, Cooldown, Modell-Discovery
+│   │   ├── text-core.js      # Shielding, Prompt-Bau, JSON-Parsing
+│   │   ├── context-packets.js# Risiko-Scores, statisch + dynamisch
+│   │   ├── glossary.js       # Terminologie-Memory mit Guarded Terms
+│   │   ├── planner.js        # Lauf-Orchestrierung
+│   │   ├── exporter.js       # Dateiausgabe (Native/Patch Mode)
+│   │   └── ...               # Scanner, Extractor, Validator, Logger, Diagnostics
+│   └── scripts/              # Wartungstools (Audit, Syntax-Check, Workshop-Export)
 │
-├── V70/ & V71/            # Versions-spezifische Referenzdaten
-└── rewrite.py / .js       # Interne GUI-Restrukturierungs-Helfer
+├── V70/ & V71/               # Versions-spezifische Asset-Referenzen
+└── TECHNICAL_REVIEW_2026-06-15.md  # Technischer Audit (weil ich Masochist bin)
 ```
 
 ---
 
-## 📋 Changelog
+## 📋 Changelog — Peinlich genau dokumentiert
 
-→ Vollständiges, detailliertes Changelog: **[core/CHANGELOG.md](core/CHANGELOG.md)**
+→ **Vollständiges Changelog:** [`core/CHANGELOG.md`](core/CHANGELOG.md)
 
-| Version | Datum | Highlights |
+| Version | Datum | Was ist passiert? |
 |---|---|---|
-| `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, persistConfig konsolidiert, ESLint 0/0, Audit 7/7 ✅ |
-| `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer, _Info.txt geschützt |
-| `v0.15.3` | 2026-06-14 | Ollama/Player2 in Stage-Requests |
-| `v0.15.2` | 2026-06-14 | PLAYER2-Keys persistiert, Config-Divergenz behoben |
-| `v0.15.1` | 2026-06-14 | Shielding, Quotes, Cleanup, Imports, Prompt-Konsistenz |
-| `v0.15.0` | 2026-06-14 | GUI Overhaul, DB-Browser, Live-Terminal, Strict Versioning |
-| `v0.13.0a`| 2026-06-06 | Linux-Support, Gemini-API-Fixes |
-| `v0.9.6β` | Pre-Rel. | Dispatcher, Risiko-Scores, Glossar-Learning |
+| `v0.19a` | 2026-06-15 | Provider Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown, _Info.txt-Verbesserung |
+| `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, Google-Free Stress-Test, persistConfig konsolidiert, Route-Pipeline |
+| `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer |
+| `v0.15.0` | 2026-06-14 | GUI-Overhaul, Live-Terminal, DB-Browser, Strict Versioning |
+| `v0.13.0a`| 2026-06-06 | Erstes Dashboard, Gemini-API-Fix, Linux-Support |
 
 ---
 
-## ⚠️ Status: Alpha
+## ⚠️ Status: Alpha — Ehrliche Ansage
 
-**Klartext:** Die Bridge funktioniert und ich nutze sie selbst täglich. Aber es ist ein Solo-Projekt in aktiver Entwicklung. Dinge können brechen, APIs können sich ändern, und manche Features sind "works on my machine"-getestet. Wenn du damit klarkommst — willkommen an Bord.
+**DE — Klartext:** Die Bridge funktioniert. Ich übersetze damit täglich meine eigenen Mods. Aber:
+- Es ist ein Solo-Projekt. Ich schlafe gelegentlich.
+- Dinge können brechen. Ich fixe sie dann. Irgendwann.
+- Die GUI ist in Deutsch, der Code in Englisch. Deal with it.
+- Der Patch Mode ist deaktiviert weil er nicht zuverlässig läuft. Steht im Kontrollfeld. Lies es.
+- Wenn du einen Bug findest: `log.txt` + `debug_payloads.txt` an meine Email. Ich bin nicht hellsehend.
 
-**Honest take:** The bridge works and I use it daily. But it's a solo project in active development. Things may break, APIs may change, and some features are "works on my machine"-tested. If you're cool with that — welcome aboard.
+**EN — Honest take:** The bridge works. I use it daily. But:
+- Solo project. I occasionally sleep.
+- Things may break. I'll fix them. Eventually.
+- GUI is German, code is English. It's a feature.
+- Patch Mode is disabled because it's buggy. The control panel tells you this.
+- Bugs: send `log.txt` + `debug_payloads.txt`. I'm not psychic.
 
 ---
 
-### 💬 Feedback & Bugs
+## 💬 Kontakt / Contact
 
-**Email:** vannon858@gmail.com  
-Bitte immer `log.txt` und die Konsolenausgabe mitsenden. / Please always include `log.txt` and the console output.
+**Email:** [vannon858@gmail.com](mailto:vannon858@gmail.com)
+
+**Immer mitsenden / Always include:**
+- `log.txt`
+- `debug_payloads.txt`
+- Deine `.env` (ohne Keys! Ich will die Keys nicht. Ernsthaft. Maskier sie.)
 
 ---
 
-*Happy Slaver-Management! / Viel Spaß beim Sklaven-Managen!* 🎮
+<p align="center">
+  <em>Kein Scrum-Master wurde bei der Entwicklung dieses Projekts verletzt.</em><br>
+  <em>No Scrum Masters were harmed during the development of this project.</em>
+</p>
+
+<p align="center">
+  <em>Happy Slaver-Management! / Viel Spaß beim Sklaven-Managen!</em> 🎮
+</p>
