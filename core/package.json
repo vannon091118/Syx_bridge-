@@ -1,7 +1,7 @@
 {
   "name": "syx-bridge",
-  "version": "0.15.4-patch",
-  "releaseVersion": "0.15.4-patch",
+  "version": "0.16.0",
+  "releaseVersion": "0.16.0",
   "description": "AI-powered translation bridge for Songs of Syx mods. Optimized for V71.",
   "main": "index.js",
   "scripts": {

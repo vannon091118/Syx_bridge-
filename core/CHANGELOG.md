@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [0.16.0] - 2026-06-15
+
+### Added
+- **[P3] Dynamisches Risiko-Scoring mit Google Free Stress-Test:** `googleFreePreflight()` testet ambiguous-risk Batches (AvgRisk 1.5-4.0) via Google Translate Free als Pre-Flight. Bei >70% Pass-Rate werden Google-Free-Ergebnisse direkt verwendet (Placeholder-Restoration inklusive). Bei marginalen Ergebnissen werden dynamische Risk-Scores an die Entries angehängt und die Batch eskaliert zum Qualitäts-Modell. DB-Persistierung via `stress_test_passed` + `stress_tested_at` Spalten für Kalibrierung über Runs hinweg. Betroffene Dateien: `context-packets.js`, `translation-runtime.js`, `db.js`.
+
+### Changed
+- **[WARN-1] persistConfig konsolidiert:** `persistConfigToEnv` als Shared-Funktion in `config-runtime.js` — sowohl CLI (`index.js`) als auch GUI-Wizard (`ConfigRuntime.configure()`) delegieren jetzt dorthin. Keine Divergenz mehr zwischen den Persistenz-Pfaden.
+- **[BUG-2] Kommentar-Stub in `runtime-ops.js`:** Irreführender Kommentar durch klaren Kommentar ersetzt.
+- **[BUG-3] Platzhalter-Kommentar in `planner.js`:** Durch beschreibenden Kommentar ersetzt.
+- **ESLint Cleanup:** 0 Errors, 0 Warnings. Catch-Parameter und leere Catch-Blöcke via ESLint-Config akzeptiert. Ungenutzte Variablen/Imports mit `_`-Präfix versehen.
+
+### Fixed
+- **[BUG-5] Native Mode: Backup, Polish, _Info.txt:** Backup jetzt bei **jedem** Native-Mode-Lauf frisch. `forcePolish: true` immer an `ensureTranslations` übergeben. `_Info.txt` im Workshop-Original bleibt unberührt.
+
 ## [0.15.4-patch] - 2026-06-15
 
 ### Fixed

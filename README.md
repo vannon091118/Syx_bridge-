@@ -127,6 +127,7 @@ Syx_bridge-/
 
 | Version | Datum | Highlights |
 |---|---|---|
+| `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, persistConfig konsolidiert, ESLint 0/0, Audit 7/7 ✅ |
 | `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer, _Info.txt geschützt |
 | `v0.15.3` | 2026-06-14 | Ollama/Player2 in Stage-Requests |
 | `v0.15.2` | 2026-06-14 | PLAYER2-Keys persistiert, Config-Divergenz behoben |
