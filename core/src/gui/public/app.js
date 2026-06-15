@@ -32,7 +32,7 @@ const connectors = {
 };
 
 // State
-let _lastPhase = 'Idle';
+
 let currentConfig = {};
 let providerStats = {}; // { gemini: { pass: 0, fail: 0 }, ... }
 let apiProviderStatus = {}; // { gemini: { valid: 0, total: 0, rateLimited: false }, ... }

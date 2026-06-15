@@ -848,7 +848,7 @@ async function main() {
         const lowQuality = await dbAll('SELECT source_text as source FROM translations WHERE target_lang = ? AND audit_stage < 2 LIMIT 100', [CONFIG.TARGET_LANG]);
         if (lowQuality.length > 0) await ensureTranslations(lowQuality, { ...options, forcePolish: true });
       }
-      // else if (type === 'single') await startSingleManual(planner, options);
+
       else if (type === 'full_reset') await fullReset();
       else if (type === 'workshop') {
         console.log('[GUI] Starte Steam Workshop Export...');
@@ -940,7 +940,7 @@ async function main() {
   if (isGui) return guiIdlePromise;
 
   if (isAuto) { await synchronize(planner); process.exit(0); }
-  // if (isSingleAuto) { await startSingleManual(planner); process.exit(0); }
+
 
   const activeMods = await getActiveMods();
   if (activeMods.length > 0 && activeMods[activeMods.length - 1] === 'BridgeCore') await synchronize(planner);

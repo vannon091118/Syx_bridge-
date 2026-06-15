@@ -11,6 +11,7 @@ core/backups/
 core/patches/
 core/translations.db*
 debug_payloads.txt
+server_output.txt
 Gemini.md
 TODO.md
 backups/
