@@ -32,7 +32,7 @@ const connectors = {
 };
 
 // State
-let lastPhase = 'Idle';
+let _lastPhase = 'Idle';
 let currentConfig = {};
 let providerStats = {}; // { gemini: { pass: 0, fail: 0 }, ... }
 let apiProviderStatus = {}; // { gemini: { valid: 0, total: 0, rateLimited: false }, ... }
@@ -50,7 +50,7 @@ let liveStats = {
 };
 let lastRunningState = false;
 let statusTimeout = null;
-let fps = 60;
+let _fps = 60;
 let lastFrameTime = performance.now();
 let frameCount = 0;
 let lastSampleRotation = 0;
@@ -61,7 +61,7 @@ function tick(now) {
   frameCount++;
   const delta = now - lastFrameTime;
   if (delta >= 1000) {
-    fps = Math.round((frameCount * 1000) / delta);
+    _fps = Math.round((frameCount * 1000) / delta);
     // Removed FPS from side, but keeping logic if needed
     frameCount = 0;
     lastFrameTime = now;
@@ -205,7 +205,7 @@ function updateBackgroundStatus() {
   lastRunningState = isRunning;
 }
 
-async function toggleBridge() {
+async function _toggleBridge() {
   const action = liveStats.isRunning ? 'stop' : 'sync';
   if (action === 'sync') {
     // Clear logs on new run
@@ -214,7 +214,7 @@ async function toggleBridge() {
   await triggerAction(action);
 }
 
-async function toggleMode() {
+async function _toggleMode() {
   currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
   updateModeUI();
   await saveConfig(true);
@@ -495,7 +495,7 @@ function renderKeySections() {
 }
 
 
-function addKeyRow(providerId) {
+function _addKeyRow(providerId) {
   const list = document.getElementById(`keys-list-${providerId}`);
   if (!list) return;
   const rowCount = list.querySelectorAll('.key-row').length;
@@ -510,7 +510,7 @@ function addKeyRow(providerId) {
   list.appendChild(div);
 }
 
-async function saveKeysFromModal() {
+async function _saveKeysFromModal() {
   const getKeys = (id) => {
     const list = document.getElementById(`keys-list-${id}`);
     if(!list) return [];
@@ -569,7 +569,7 @@ function renderDbTable() {
   if (count) count.textContent = `${dbSearchResults.length} Einträge`;
 }
 
-async function saveDbEntry(idx) {
+async function _saveDbEntry(idx) {
   const row = dbSearchResults[idx];
   const input = document.getElementById(`db-edit-${idx}`);
   if (!row || !input) return;
@@ -730,9 +730,9 @@ async function loadBackups() {
         </div>
         <div>
           ${mod.backupExists ? 
-            `<button onclick="restoreBackup('${mod.id}')" style="background: rgba(100, 213, 196, 0.15); color: var(--success); border: 1px solid rgba(100, 213, 196, 0.3); font-size: 0.65rem; padding: 3px 8px; width: auto;">Restore</button>` : 
-            `<span style="font-size: 0.65rem; color: var(--muted); padding: 3px 8px; border: 1px solid transparent; display: inline-block;">Kein Backup</span>`
-          }
+    `<button onclick="restoreBackup('${mod.id}')" style="background: rgba(100, 213, 196, 0.15); color: var(--success); border: 1px solid rgba(100, 213, 196, 0.3); font-size: 0.65rem; padding: 3px 8px; width: auto;">Restore</button>` : 
+    '<span style="font-size: 0.65rem; color: var(--muted); padding: 3px 8px; border: 1px solid transparent; display: inline-block;">Kein Backup</span>'
+}
         </div>
       </div>
     `).join('');

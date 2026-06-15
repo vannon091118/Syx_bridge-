@@ -40,9 +40,9 @@ function cleanup() {
   } catch (e) {
     // If JSON.parse fails, it's likely no processes found or malformed output
     if (e.message.includes('Unexpected token')) {
-        console.log('[INFO] Keine alten Instanzen gefunden.');
+      console.log('[INFO] Keine alten Instanzen gefunden.');
     } else {
-        console.error('[ERROR] Cleanup fehlgeschlagen:', e.message);
+      console.error('[ERROR] Cleanup fehlgeschlagen:', e.message);
     }
   }
 }

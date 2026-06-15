@@ -1,5 +1,5 @@
 const dbManager = require('../src/db');
-const path = require('path');
+const _path = require('path');
 
 async function audit() {
   try {

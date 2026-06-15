@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const { escapeTextValue } = require('./extractor');
+const { _escapeTextValue } = require('./extractor');
 
 /**
  * Ensures a directory exists.
@@ -73,7 +73,7 @@ async function bundleBridgeCore(selectedPatches, patchRoot, coreModPath) {
 /**
  * Exports a Workshop-ready patch (text-only, no assets).
  */
-async function exportWorkshopPatch(files, translations, modOutputPath) {
+async function exportWorkshopPatch(files, _translations, _modOutputPath) {
   for (const file of files) {
     if (file.type === 'ASSET') continue;
     if (file.type === 'UNKNOWN') continue;

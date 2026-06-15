@@ -30,7 +30,7 @@ async function exportToWorkshop() {
   console.log('========================================');
 
   const corePath = path.join(process.env.APPDATA || '', 'songsofsyx', 'mods', 'BridgeCore');
-  const patchesPath = path.join(__dirname, '..', 'patches');
+  const _patchesPath = path.join(__dirname, '..', 'patches');
   
   if (!fs.existsSync(corePath)) {
     console.error('[ERROR] BridgeCore nicht gefunden. Bitte starte die Brücke zuerst.');

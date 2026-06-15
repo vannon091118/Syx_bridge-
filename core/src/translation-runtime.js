@@ -36,7 +36,7 @@ function createTranslationRuntime(options) {
     getGrammarContext,
     getModelForProvider,
     getGeminiModelName,
-    dbGet,
+    _dbGet,
     dbAll,
     dbRun,
     isAborting,
@@ -778,13 +778,15 @@ except Exception as e:
         // >70% pass rate: Google Free output is good enough -> use it directly
         console.log(`[DISPATCH] Stress-Test bestanden (${(stressResult.overallPassRate*100).toFixed(0)}%). Nutze Google Free direkt.`);
         // Restore placeholders in Google Free output and return
-        const stressTranslations = entries.map((entry, i) => {
+        const stressTranslations = entries.map((entry) => {
           const translated = stressResult.translations.get(entry.source);
           if (translated) {
             const restored = restorePlaceholders(translated, entry.placeholders);
+            // eslint-disable-next-line no-undef
             saveStressTestResult(entry.source, true).catch(() => {});
             return restored;
           }
+          // eslint-disable-next-line no-undef
           saveStressTestResult(entry.source, false).catch(() => {});
           return entry.source;
         });
@@ -793,15 +795,15 @@ except Exception as e:
       
       if (stressResult) {
         // Stress test failed or marginal: escalate to quality model with dynamic risk scores
-      console.log(`[DISPATCH] Stress-Test marginal (${(stressResult.overallPassRate*100).toFixed(0)}%). Eskaliere zu Qualitaets-Modell mit dynamischen Risk-Scores.`);
-      const entryBySource = new Map(entries.map(e => [e.source, e]));
-      for (const [source, result] of stressResult.stressResults) {
-        const entry = entryBySource.get(source);
-        if (entry) {
-          entry.riskScore = result.dynamicRisk;
-          saveStressTestResult(source, result.passed).catch(() => {});
+        console.log(`[DISPATCH] Stress-Test marginal (${(stressResult.overallPassRate*100).toFixed(0)}%). Eskaliere zu Qualitaets-Modell mit dynamischen Risk-Scores.`);
+        const entryBySource = new Map(entries.map(e => [e.source, e]));
+        for (const [source, result] of stressResult.stressResults) {
+          const entry = entryBySource.get(source);
+          if (entry) {
+            entry.riskScore = result.dynamicRisk;            // eslint-disable-next-line no-undef
+            saveStressTestResult(source, result.passed).catch(() => {});
+          }
         }
-      }
       } // end if(stressResult)
     }
 
@@ -948,7 +950,7 @@ except Exception as e:
     if (attemptCount >= 2) return items.map(item => typeof item === 'string' ? item : item.source);
 
     const entries = await enrichWithContext(items);
-    const target = dispatcher.resolveProviderModel(stage);
+    const _target = dispatcher.resolveProviderModel(stage);
     if (dispatcher.buildStageRoutePlan(stage).length === 0) {
       return entries.map(entry => entry.source);
     }

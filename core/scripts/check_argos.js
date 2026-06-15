@@ -1,6 +1,6 @@
 const { execSync } = require('child_process');
 const inquirer = require('inquirer');
-const path = require('path');
+const _path = require('path');
 
 // Cache to prevent infinite loops during a session
 let argosInstalledCache = null;

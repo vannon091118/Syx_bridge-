@@ -471,7 +471,7 @@ async function restoreAllBackups() {
 
 async function fullReset() {
   printHeader('Vollständiger Reset');
-  let isSure = false;
+  let isSure;
   if (process.argv.includes('--gui')) {
     isSure = true;
   } else {
@@ -550,7 +550,7 @@ async function runIntegrityAudit() {
   console.log(`  Korrupt:  ${corruptedCount}`);
   
   if (corruptedCount > 0) {
-    let startRepair = false;
+    let startRepair;
     if (process.argv.includes('--gui')) {
       startRepair = true;
     } else {
@@ -660,7 +660,7 @@ async function main() {
         
         // Log to GUI if Argos is missing
         if (!argos && !isAborting) {
-           console.log('[HINWEIS] Argos Translate nicht gefunden. Lokale Uebersetzung deaktiviert.');
+          console.log('[HINWEIS] Argos Translate nicht gefunden. Lokale Uebersetzung deaktiviert.');
         }
 
         callback({ argos, ollama, dbTotal: dbStats.total });
@@ -768,8 +768,8 @@ async function main() {
     global.guiServer.on('db-search', async (query, callback) => {
       try {
         const sql = query 
-          ? `SELECT * FROM translations WHERE source_text LIKE ? OR translation LIKE ? LIMIT 200`
-          : `SELECT * FROM translations ORDER BY updated_at DESC LIMIT 200`;
+          ? 'SELECT * FROM translations WHERE source_text LIKE ? OR translation LIKE ? LIMIT 200'
+          : 'SELECT * FROM translations ORDER BY updated_at DESC LIMIT 200';
         const params = query ? [`%${query}%`, `%${query}%`] : [];
         const results = await dbAll(sql, params);
         callback(results);
@@ -782,7 +782,7 @@ async function main() {
       try {
         const { source_text, target_lang, translation } = data;
         await dbRun(
-          `UPDATE translations SET translation = ?, updated_at = CURRENT_TIMESTAMP WHERE source_text = ? AND target_lang = ?`,
+          'UPDATE translations SET translation = ?, updated_at = CURRENT_TIMESTAMP WHERE source_text = ? AND target_lang = ?',
           [translation, source_text, target_lang]
         );
         callback(true);

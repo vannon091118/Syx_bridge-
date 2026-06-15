@@ -110,7 +110,7 @@ function createRuntimeOps(options) {
     const modOutputPath = config.NATIVE_MODE ? modDir : path.join(config.PATCH_ROOT, modFolderName);
     
     // Syx-Mod Structure: VXX/assets/text/[LANG]/
-    const syxPathPart = path.join(`V${majorVersion}`, 'assets', 'text', config.TARGET_LANG);
+    const _syxPathPart = path.join(`V${majorVersion}`, 'assets', 'text', config.TARGET_LANG);
 
     if (!config.NATIVE_MODE && !dryRun) {
       await fsp.mkdir(modOutputPath, { recursive: true });

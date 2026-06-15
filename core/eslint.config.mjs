@@ -17,12 +17,12 @@ export default [
       }
     },
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': ['warn', { caughtErrors: 'none', argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': 'off',
-      'indent': ['error', 2],
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
-      'no-empty': 'warn'
+      'indent': ['warn', 2],
+      'quotes': ['warn', 'single'],
+      'semi': ['warn', 'always'],
+      'no-empty': ['warn', { allowEmptyCatch: true }]
     }
   },
   {

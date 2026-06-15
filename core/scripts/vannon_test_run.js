@@ -1,6 +1,6 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
-const path = require('path');
+const _path = require('path');
 
 const BACKUP_MOD = 'C:\\Users\\Vannon\\Desktop\\.backup_3133779397_ORIGINAL';
 const OUTPUT_DESKTOP = 'C:\\Users\\Vannon\\Desktop\\SyxBridge_Translated_Test';

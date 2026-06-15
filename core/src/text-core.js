@@ -143,7 +143,7 @@ function summarizeGrammarContext(grammarContext) {
   return result.join('\n');
 }
 
-function parseBatchResponse(text, options = {}) {
+function parseBatchResponse(text, _options = {}) {
   const clean = extractJsonPayload(text);
   let results = [];
 

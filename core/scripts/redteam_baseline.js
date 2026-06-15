@@ -8,7 +8,7 @@ try {
   // Runtime check: Ensure modules are loadable
   const textCore = require('../src/text-core');
   const extractor = require('../src/extractor');
-  const db = require('../src/db');
+  const _db = require('../src/db');
   console.log('  ✅ Runtime Check: Core modules loaded.');
 
   const testCases = [

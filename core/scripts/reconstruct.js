@@ -6,7 +6,7 @@ const {
   buildBatchPrompt,
   buildProofreadPrompt,
   placeholdersValid,
-  translationLooksSafe,
+  _translationLooksSafe,
   restoreAndValidateTranslation,
   extractReplacements,
   applyTranslations
