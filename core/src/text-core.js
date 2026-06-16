@@ -41,9 +41,9 @@ function protectPlaceholders(text) {
 function isProperNoun(text) {
   const value = String(text || '').trim();
   // Kurz + beginnt mit Großbuchstabe + keine Leerzeichen + keine Satzzeichen
-  // Auch Umlaute/Sonderzeichen am Anfang erlaubt
-  return value.length > 0 && value.length < 30 
-        && /^[A-ZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝ]/.test(value)
+  // \p{Lu} = Unicode uppercase, \p{Lt} = titlecase — deckt alle Sprachen ab
+  return value.length > 0 && value.length < 40 
+        && /^[\p{Lu}\p{Lt}]/u.test(value)
         && !/[\s.,!?;:]/.test(value);
 }
 

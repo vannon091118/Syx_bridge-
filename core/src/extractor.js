@@ -67,7 +67,9 @@ function extractStrings(content) {
       raw: rawValue,
       hash: getHash(unescapedValue),
       type: classifyString(key, unescapedValue),
-      fullMatch: match[0]
+      fullMatch: match[0],
+      full: match[0],
+      index: match.index
     });
   }
   return strings;

@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>v0.19a</strong> · Solo-Dev-Projekt von <strong>Vannon</strong> · Built with mass amounts of caffeine, AI, and stubbornness
+  <strong>v0.19.5</strong> · Solo-Dev-Projekt von <strong>Vannon</strong> · Built with mass amounts of caffeine, AI, and stubbornness
 </p>
 
 <p align="center">
@@ -106,7 +106,7 @@ Syx_bridge-/
 │
 ├── core/                     # Die Engine. Hier passiert die Magie.
 │   ├── index.js              # Einstiegspunkt (CLI + GUI-Mode)
-│   ├── package.json          # v0.19.0-alpha, strict versioning
+│   ├── package.json          # v0.19.5, strict versioning
 │   ├── CHANGELOG.md           # Jede Änderung, peinlich genau dokumentiert
 │   ├── src/
 │   │   ├── gui/              # Web-Dashboard (Express + Server-Sent Events)
@@ -134,7 +134,7 @@ Syx_bridge-/
 
 | Version | Datum | Was ist passiert? |
 |---|---|---|
-| `v0.19a` | 2026-06-15 | Provider Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown, _Info.txt-Verbesserung |
+| `v0.19.5` | 2026-06-15 | Provider Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown, _Info.txt-Verbesserung |
 | `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, Google-Free Stress-Test, persistConfig konsolidiert, Route-Pipeline |
 | `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer |
 | `v0.15.0` | 2026-06-14 | GUI-Overhaul, Live-Terminal, DB-Browser, Strict Versioning |
@@ -143,24 +143,33 @@ Syx_bridge-/
 ---
 
 ## ⚠️ Status: Alpha — Ehrliche Ansage
+*(aktualisiert 2026-06-16, nach Recovery aus Session-Abbruch 2026-06-15 23:18:53 UTC)*
 
-**DE — Klartext:** Die Bridge funktioniert. Ich übersetze damit täglich meine eigenen Mods. Aber:
-- Es ist ein Solo-Projekt. Ich schlafe gelegentlich.
-- Dinge können brechen. Ich fixe sie dann. Irgendwann.
-- Die GUI ist in Deutsch, der Code in Englisch. Deal with it.
-- Der Patch Mode ist deaktiviert weil er nicht zuverlässig läuft. Steht im Kontrollfeld. Lies es.
-- Wenn du einen Bug findest: `log.txt` + `debug_payloads.txt` an meine Email. Ich bin nicht hellsehend.
+| Bereich | Stand |
+|---|---|
+| Version (CHANGELOG) | **v0.19.5** |
+| Version (package.json) | v0.19.5 |
+| Reifegrad | Alpha, Solo-Projekt, im Daily-Use |
+| Letzte erfolgreiche Runs | #9 + #10 am 2026-06-15 um 22:44/22:45 UTC |
+| Letzter Abbruch | 2026-06-15 23:18:53 (manual cancel / forced shutdown) |
+| **Live-Limitations UI** | **Patch Mode** im Control-Panel deaktiviert (buggy) — Rest funktioniert |
 
-**EN — Honest take:** The bridge works. I use it daily. But:
-- Solo project. I occasionally sleep.
-- Things may break. I'll fix them. Eventually.
-- GUI is German, code is English. It's a feature.
-- Patch Mode is disabled because it's buggy. The control panel tells you this.
-- Bugs: send `log.txt` + `debug_payloads.txt`. I'm not psychic.
+### Aktive Roadmap
+- **P1 (Architektur):** leer ✅
+- **P2 (Tech-Debt, WARN-1/BUG-2/BUG-3):** alle DONE ✅
+- **P3 (Features):** Dynamisches Risiko-Scoring **IN PROGRESS** (Core in , ,  fertig → Integration/E2E-Live offen)
+- **P3 pending:** Tier-A Optim. (OpenRouter Free), Batch-Historie/Payload-Viewer, Auto-Update DB → Glossar, Workshop-Builder
+- **Parser-Vorbereitung:** noch nicht angelaufen — kein  (grep = 0 Treffer)
 
----
+### Blocker
+- **P5 — Multi-Language-Wizard:**  wählt Sprache ok, aber  schreibt  im Live-E2E nicht zuverlässig (Unit ok, vermutlich cwd/Caching-Mismatch).
 
-## 💬 Kontakt / Contact
+### Bug-Report-Pack
+- , , 
+-  immer mit redigierten Keys ()
+- optional:  + /, falls WAL-Checkpoint nötig
+
+💬 Kontakt / Contact
 
 **Email:** [vannon858@gmail.com](mailto:vannon858@gmail.com)
 

@@ -1,8 +1,22 @@
 # Multi-Language Model Onboarding Dashboard
 
-> **Stand:** 15.06.2026 — Plan für Session 2 (ui-overhaul Branch)
-> **Status:** ⏳ Geplant — Umsetzung in nächster Session
+> **Stand:** 16.06.2026 — Update nach v0.19.5 Session
+> **Status (v0.19.5):** 🟡 Größtenteils umgesetzt. P1a/P1b/P2/P3/P4/P5 alle implementiert oder teils offen — Details siehe **Umsetzungs-Status v0.19.5** unten.
 > **Ollama:** ⚠️ NUR OPT-IN — kein Auto-Start, kein Auto-Check, nur bei expliziter Aktivierung
+
+---
+
+## Umsetzungs-Status v0.19.5
+
+| Phase | Stand | Notizen |
+|-------|-------|---------|
+| **P1a** Argos-Sprachmodell-Prüfung + Auto-Install | ✅ Erledigt | `getAvailableArgosLanguages()`, `checkArgosLanguages(targetLangs)`, `installArgosLanguage(langCode)`, `detectPython()`-Alias alle implementiert in `core/scripts/check_argos.js`. Pre-Check verhindert Python-Fehler bei fehlendem argostranslate-Paket. |
+| **P1b** Ollama OPT-IN | ✅ Erledigt | Policy: `LOCAL_MODELS_ENABLED=false` Default in `config-runtime.js` + GUI Toggle + `hasAccess()`-Gate in `router.js`. **Helper:** `checkOllamaModel()`, `pullOllamaModel(name, options?)` mit 30-min-Timeout + throttled Progress-Logger (250ms / ≥1MB / Status-Transitions bypassen Throttle), `getOllamaAvailableModels()` — alle in `core/scripts/start_ollama.js`. Pre-Check auf `checkOllamaModel()` verhindert Re-Pull bereits installierter Modelle. |
+| **P1c** `model-registry.js` | ✅ Erledigt | Statt eines separaten `model_registry.js` wurde `core/src/model-registry.js` erstellt: `createModelRegistry({ollamaUrl, getTargetLang})` Factory. Wrapper um P1a/P1b-Helper, bietet `getModelStatus()`, `installTargetLanguage()`, `startOllamaPull()`, `getActivePulls()`, `isOllamaModelInstalled()`. Non-throwing Pattern, `_activePulls` Map für GUI-Polling. Re-exportiert `SUPPORTED_LANGS` + `LANG_CODES`. |
+| **P2** Startup-Wizard | ✅ Erledigt | `runStartupWizard()` in `core/index.js` hat 3 Phasen + Sprachauswahl: (0) `inquirer.list` mit 14 Sprachen, (1) Argos-Check + Install, (2) Sprachmodell-Install, (3) Ollama-Setup (nur wenn nicht erreichbar). Persist via `persistSingleEnvVar('TARGET_LANG', …)`. **🚨 Live-E2E-Bug entdeckt:** Unit-Test passt, aber im tmux-getriebenen Live-Test aktualisiert `.env` nicht. Investigation nötig. |
+| **P3** GUI Model Dashboard | ✅ Erledigt | Neuer `Modell-Status`-Panel im Settings-Dropdown (`core/src/gui/public/{index.html,app.js}`). Argos-Sprachauswahl + Install-Button, Ollama-Modell-Pull-Input + Live-Progressbars. `renderModelStatus()` + `installModelLanguage()` + `fetchModelStatus()` mit 10s Auto-Refresh. XSS-Schutz via `textContent` für Error-Display. |
+| **P4** Server-API | ✅ Erledigt | 5 neue Endpoints in `core/src/gui/server.js`: `GET /api/models/status` (10s timeout, 504-guard), `GET /api/models/argos/languages`, `POST /api/models/install` (body: `{type, lang?, model?}`), `POST /api/models/ollama/pull` (body: `{model}`), `GET /api/models/ollama/pulls` (active pull jobs). |
+| **P5** Multi-Language Vorbereitung | 🟡 Teilweise (Unit ✅ / Live 🚨) | `LANG_CODES` in `core/index.js` + `core/src/model-registry.js` (14 Sprachen). `installTargetLanguage(langOverride?)` nutzt Mapping korrekt. Unit-Test `core/tests/e2e_p5_sprachauswahl.js` (31 PASS / 0 FAIL). **Live-E2E via tmux:** Wizard-Flow funktioniert, aber `.env` wird nicht aktualisiert — siehe Bug-Investigation in `TECHNICAL_REVIEW_2026-06-15.md` § Multi-Language Sprachauswahl. |
 
 ---
 
@@ -19,7 +33,7 @@
 
 ---
 
-## P1: Model Validation Engine (`core/scripts/`)
+## P1: Model Validation Engine (`core/scripts/`) — 🟡 P1a teilweise, P1b Policy ✅ / Helper 🟡, P1c offen
 
 ### 1a. `check_argos.js` — Sprachmodell-Prüfung + Installation
 
@@ -85,7 +99,7 @@ const modelRegistry = {
 
 ---
 
-## P2: Startup-Wizard (`core/index.js` + `core/src/ui.js`)
+## P2: Startup-Wizard (`core/index.js` + `core/src/ui.js`) — ❌ Offen
 
 ### Onboarding-Sequenz im CLI
 - Nach `initDb()`: Prüfung ob alle benötigten Komponenten da sind
@@ -102,7 +116,7 @@ const modelRegistry = {
 
 ---
 
-## P3: GUI Model Dashboard (`core/src/gui/public/`)
+## P3: GUI Model Dashboard (`core/src/gui/public/`) — ❌ Offen
 
 ### Modell-Status-Panel im Settings-Dropdown
 - Neuer Abschnitt unter "Provider Stats"
@@ -122,7 +136,7 @@ const modelRegistry = {
 
 ---
 
-## P4: Server-API (`core/index.js`)
+## P4: Server-API (`core/index.js`) — 🟡 Teilweise
 
 ### Neue API-Endpunkte
 | Endpunkt | Methode | Zweck |
@@ -139,7 +153,7 @@ const modelRegistry = {
 
 ---
 
-## P5: Multi-Language Vorbereitung
+## P5: Multi-Language Vorbereitung — 🟡 Teilweise
 
 ### Sprach-Konfiguration
 - `LANG_CODES` erweitern um vollständiges Name→ISO-Code Mapping
@@ -174,3 +188,25 @@ const modelRegistry = {
 3. **P3**: GUI Dashboard: Model-Status-Panel im Settings-Dropdown
 4. **P5**: `callArgosBatch()` robuster machen — fehlende Sprachmodelle erkennen
 5. **P2**: CLI Startup-Wizard (optional, niedrige Priorität)
+
+---
+
+## 🆕 Nächste Schritte (Session 3 — 16.06.2026)
+
+**Status:** P1a/P1b/P1c/P2/P3/P4/P5 sind alle implementiert oder im P2-Fall zu 🟡 „Live-Bug offen" deklassiert.
+
+### 🚨 P0 (v0.19-Freeze-Blocker)
+
+1. **P5 Live-E2E Bug fixen:** `runStartupWizard()` zeigt Sprachwechsel korrekt an, persistiert aber nicht in `.env`. Debug-Logging einbauen (siehe TECHNICAL_REVIEW § Multi-Language Sprachauswahl), dann Live-Test wiederholen. Mögliche Ursachen: `process.cwd()`-Mismatch, Config-Cache, oder `n+Enter`-Schleife bricht Persist ab.
+
+### 🟡 P4 (Offen aus v0.19.5-Audit)
+
+2. **WAL Checkpoint nach Runs automatisieren** (`core/scripts/`) — `PRAGMA wal_checkpoint(TRUNCATE)` nach jedem Run-Abschluss, verhindert wachsende `.db-wal` Files.
+3. **Visuelle Überarbeitung** (Glassmorphism → Gradient Border, Neo-Stripes, Warning/Info-Farben) — Aufwand ~2h.
+4. **Refactoring `index.js`** (1,063 Zeilen → Module) — DI-Vorbereitung für v0.20 Plugin-Controller.
+
+### 🟢 Architektur (für v0.20 Plugin-Controller)
+
+5. **DI-Prep:** `SongsOfSyxAdapter` aus Scanner/Extractor/Runtime-Ops/Text-Core extrahieren, an Planner übergeben.
+6. **Adapter-Registry:** Plugin-Manager der `.js`-Adapter dynamisch lädt.
+7. **Auto-Detect & UI:** Spielauswahl-Dropdown + Auto-Detect-Logik ins Dashboard integrieren.

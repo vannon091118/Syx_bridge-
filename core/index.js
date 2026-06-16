@@ -11,10 +11,12 @@ const exporter = require('./src/exporter');
 const UI = require('./src/ui');
 const dbManager = require('./src/db');
 const { createRuntimeOps } = require('./src/runtime-ops');
+const SongsOfSyxAdapter = require('./src/adapters/SongsOfSyxAdapter');
 const { createTranslationRuntime } = require('./src/translation-runtime');
 const { 
   ConfigRuntime, 
   persistConfigToEnv,
+  persistSingleEnvVar,
   parseEnvFlag, 
   parseKeys, 
   isUsableTextModel, 
@@ -24,6 +26,7 @@ const {
 
 const { setupLogging, setDb, logPayload } = require('./src/logger');
 const { restorePlaceholders, getHash } = require('./src/extractor');
+const parser = require('./src/parser');
 const {
   protectPlaceholders,
   isProperNoun,
@@ -35,7 +38,6 @@ const {
   buildProofreadPrompt,
   restoreAndValidateTranslation,
   translationLooksSafe,
-  extractReplacements
 } = require('./src/text-core');
 
 const { 
@@ -51,6 +53,7 @@ const GuiServer = require('./src/gui/server');
 const { isArgosInstalled, ensureArgos } = require('./scripts/check_argos');
 const cleanupZombies = require('./scripts/cleanup_zombies');
 const { checkOllama, startOllama } = require('./scripts/start_ollama');
+const { createModelRegistry } = require('./src/model-registry');
 
 // Constants & Defaults
 const DEFAULT_BATCH_SIZE = 24;
@@ -67,6 +70,7 @@ let isAborting = false;
 let hasConfirmedNative = false;
 let runtimeOps;
 let translationRuntime;
+let gameAdapter;
 
 function envFirst(...names) {
   for (const name of names) {
@@ -133,6 +137,115 @@ function printHeader(text) {
   console.log(`\n${line}\n  ${text.toUpperCase()}\n${line}`);
 }
 
+/**
+ * P2: Interactive startup wizard for CLI mode.
+ * Checks Argos + target-language model + Ollama status, prompts for missing pieces.
+ * Called once per CLI session from main() if not in --auto and not in --gui.
+ */
+async function runStartupWizard() {
+  const registry = createModelRegistry({
+    ollamaUrl: CONFIG.OLLAMA_URL,
+    // Lazy targetLang so the wizard always reflects the latest config value
+    getTargetLang: () => CONFIG.TARGET_LANG
+  });
+
+  let status;
+  try { status = await registry.getModelStatus(); }
+  catch (e) {
+    console.warn(`[WIZARD] Modell-Status konnte nicht abgerufen werden: ${e.message}`);
+    return;
+  }
+
+  printHeader('Startup-Wizard (Modell-Check)');
+
+  // 0) Sprachauswahl (P5) — User kann die Zielsprache wählen, default = aktueller Wert.
+  //    Wenn etwas anderes gewählt wird, persistieren wir CONFIG.TARGET_LANG in .env
+  //    und lesen den Status neu, damit das richtige Sprachmodell installiert wird.
+  const { SUPPORTED_LANGS } = registry;
+  const currentLang = status.targetLang && SUPPORTED_LANGS.includes(status.targetLang)
+    ? status.targetLang
+    : (SUPPORTED_LANGS.includes(CONFIG.TARGET_LANG) ? CONFIG.TARGET_LANG : SUPPORTED_LANGS[0]);
+  const { targetLang: chosenLang } = await inquirer.prompt([{
+    type: 'list',
+    name: 'targetLang',
+    message: 'Zielsprache für die Übersetzung wählen:',
+    default: currentLang,
+    choices: SUPPORTED_LANGS.map(l => ({ name: `${l} (${LANG_CODES[l]})`, value: l }))
+  }]);
+  if (chosenLang !== CONFIG.TARGET_LANG) {
+    console.log(`  [INFO] Zielsprache: ${CONFIG.TARGET_LANG} → ${chosenLang}`);
+    CONFIG.TARGET_LANG = chosenLang;
+    process.env.TARGET_LANG = chosenLang;
+    // Gezielter Single-Var-Write: schreibt NUR TARGET_LANG in .env und lässt
+    // alle anderen Env-Variablen (Custom-Keys, LOG_LEVEL, etc.) unangetastet.
+    try {
+      await persistSingleEnvVar('TARGET_LANG', chosenLang);
+    } catch (e) {
+      console.warn(`  [WARN] Konnte Zielsprache nicht in .env schreiben: ${e.message}`);
+    }
+    // Status neu lesen, damit das richtige targetLangInstalled-Flag geprüft wird
+    try { status = await registry.getModelStatus(); }
+    catch (e) { /* alter Status reicht für die Folgeschritte */ }
+  }
+  console.log(`Zielsprache: ${status.targetLang} (${status.targetLangCode || '—'})`);
+
+  const needsAnything =
+    !status.argos.installed ||
+    (status.argos.installed && !status.argos.targetLangInstalled) ||
+    !status.ollama.running;
+  if (!needsAnything) return; // alles vorhanden, kein Wizard noetig
+
+  // 1) Argos
+  console.log('\n[1/3] Argos Translate:');
+  if (!status.argos.installed) {
+    const { installArgos } = await inquirer.prompt([{
+      type: 'confirm', name: 'installArgos', default: true,
+      message: 'Argos Translate ist nicht installiert. Jetzt installieren?'
+    }]);
+    if (installArgos) {
+      const ok = await ensureArgos();
+      console.log(ok ? '  [OK] Installiert' : '  [FAIL] Installation fehlgeschlagen');
+    }
+  } else {
+    console.log('  [OK] Installiert');
+  }
+
+  // 2) Target language
+  console.log(`\n[2/3] Sprachmodell (${status.targetLang} / ${status.targetLangCode}):`);
+  const recheck = await registry.getModelStatus().catch(() => status);
+  if (recheck.argos.installed && !recheck.argos.targetLangInstalled) {
+    const { installLang } = await inquirer.prompt([{
+      type: 'confirm', name: 'installLang', default: true,
+      message: `Sprachmodell "${status.targetLang}" jetzt installieren?`
+    }]);
+    if (installLang) {
+      const result = await registry.installTargetLanguage();
+      console.log(`  ${result.ok ? '[OK]' : '[FAIL]'} ${result.message}`);
+    }
+  } else if (recheck.argos.targetLangInstalled) {
+    console.log('  [OK] Sprachmodell vorhanden');
+  } else {
+    console.log('  [SKIP] Argos nicht installiert');
+  }
+
+  // 3) Ollama (optional)
+  console.log('\n[3/3] Ollama (optional, lokale KI):');
+  const recheck2 = await registry.getModelStatus().catch(() => status);
+  if (!recheck2.ollama.running) {
+    const { setupOllama } = await inquirer.prompt([{
+      type: 'confirm', name: 'setupOllama', default: false,
+      message: 'Ollama ist nicht erreichbar. Jetzt starten?'
+    }]);
+    if (setupOllama) {
+      const ok = await startOllama();
+      console.log(ok ? '  [OK] Ollama laeuft' : '  [WARN] Ollama konnte nicht gestartet werden');
+    }
+  } else {
+    console.log(`  [OK] Ollama laeuft (${recheck2.ollama.models.length} Modelle lokal verfuegbar)`);
+  }
+  console.log('');
+}
+
 async function stopOllama() {
   if (CONFIG.PRIMARY_PROVIDER === 'ollama') {
     try {
@@ -165,6 +278,16 @@ async function initDb() {
 const dbRun = (sql, params = []) => dbManager.run(sql, params);
 const dbGet = (sql, params = []) => dbManager.get(sql, params);
 const dbAll = (sql, params = []) => dbManager.all(sql, params);
+const dbAllReadOnly = (sql, params = []) => dbManager.allReadOnly(sql, params);
+
+async function initDbRo() {
+  try {
+    await dbManager.connectReadOnly();
+    console.log('[DB] Read-Only Connection geoeffnet.');
+  } catch (e) {
+    console.warn(`[DB] Read-Only Connection fehlgeschlagen: ${e.message}`);
+  }
+}
 
 function getGrammarContext() {
   if (!CONFIG.GRAMMAR_CHECK) return '';
@@ -251,7 +374,27 @@ async function collectTextFiles(dir, baseDir) {
 
 async function readFileJob(job) {
   const content = await fsp.readFile(job.filePath, 'utf-8');
-  return { ...job, content, replacements: extractReplacements(content, job.relativePath) };
+  // Use parser.parse() with adapter-driven format detection.
+  // The parser entries include full/index/key for write-back compatibility.
+  const adapter = job.adapter || null;
+  const format = adapter ? adapter.getParserFormat(job.filePath) : undefined;
+  const entries = parser.parse(content, { filePath: job.relativePath, format, adapter });
+  // Map parser output to replacement format expected by writeTranslatedFile/applyTranslations
+  // Filter: apply shouldTranslate() like the old extractReplacements did.
+  // The sos parser filters INTERNAL_ID/URL, but shouldTranslate also catches
+  // booleans, filenames, and other non-translatable noise.
+  const filtered = entries.filter(e => shouldTranslate(e.source));
+  const replacements = filtered.map(e => ({
+    full: e.full || e.fullMatch,
+    value: e.source,
+    source: e.source,
+    type: e.type,
+    hash: e.hash,
+    relativePath: e.relativePath || job.relativePath,
+    index: e.index,
+    key: e.key || ''
+  }));
+  return { ...job, content, replacements };
 }
 
 async function mapLimit(items, limit, mapper) {
@@ -308,7 +451,7 @@ function ensureTranslations(texts, options = {}) {
   return translationRuntime.ensureTranslations(texts, options);
 }
 
-const createRuntimePlanner = () => new Planner(CONFIG, { translateMod: async (mod, options = {}) => runtimeOps.translateMod(mod.path, options) });
+const createRuntimePlanner = () => new Planner(CONFIG, { translateMod: async (mod, options = {}) => runtimeOps.translateMod(mod.path, options) }, gameAdapter);
 
 async function synchronize(planner, options = {}) {
   printHeader(options.dryRun ? 'Simulation (Dry Run)' : 'Automatische Synchronisation');
@@ -572,10 +715,16 @@ async function main() {
 
   // 1. Database & Logic Init
   await initDb();
+  await initDbRo();
   await cleanupLegacyFolders();
 
+    gameAdapter = new SongsOfSyxAdapter();
+
+  // readFileJobWithAdapter: wraps readFileJob to inject the adapter
+  const readFileJobWithAdapter = (job) => readFileJob({ ...job, adapter: gameAdapter });
+
   runtimeOps = createRuntimeOps({
-    config: CONFIG, fs, fsp, path, inquirer, exporter, ensureTranslations, mapLimit, readFileJob, collectTextFiles, writeTranslatedFile,
+    config: CONFIG, fs, fsp, path, inquirer, exporter, ensureTranslations, mapLimit, readFileJob: readFileJobWithAdapter, collectTextFiles, writeTranslatedFile,
     getMajorVersion: async (dir) => {
       try {
         const entries = await fsp.readdir(dir);
@@ -586,6 +735,8 @@ async function main() {
     maxParallelFiles: MAX_PARALLEL_FILES,
     getHasConfirmedNative: () => hasConfirmedNative || isGui,
     setHasConfirmedNative: (v) => { hasConfirmedNative = !!v; }
+  ,
+    gameAdapter
   });
 
   translationRuntime = createTranslationRuntime({
@@ -607,7 +758,8 @@ async function main() {
     getGrammarContext, 
     getModelForProvider, 
     getGeminiModelName, 
-    dbGet, 
+    dbGet,
+    _dbGet: dbGet,
     dbAll, 
     dbRun,
     isAborting: () => isAborting,
@@ -774,10 +926,96 @@ async function main() {
           ? 'SELECT * FROM translations WHERE source_text LIKE ? OR translation LIKE ? LIMIT 200'
           : 'SELECT * FROM translations ORDER BY updated_at DESC LIMIT 200';
         const params = query ? [`%${query}%`, `%${query}%`] : [];
-        const results = await dbAll(sql, params);
+        // Use read-only connection to avoid SQLITE_BUSY during writes
+        const results = await dbAllReadOnly(sql, params).catch(() => dbAll(sql, params));
         callback(results);
       } catch (e) {
         callback([]);
+      }
+    });
+
+    global.guiServer.on('get-revisions', async (data, callback) => {
+      try {
+        const { source_text, target_lang } = data || {};
+        if (!source_text || !target_lang) return callback([]);
+        // Include the current version from translations as the "active" entry
+        const current = await dbGet(
+          'SELECT translation, provider, quality_score, flagged, flag_reason, updated_at FROM translations WHERE source_text = ? AND target_lang = ?',
+          [source_text, target_lang]
+        );
+        const history = await dbAll(
+          'SELECT revision_id, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference, created_at FROM translation_revisions WHERE source_text = ? AND target_lang = ? ORDER BY revision_id DESC',
+          [source_text, target_lang]
+        );
+        // Build combined list: current version first, then historical revisions
+        const revisions = [];
+        if (current) {
+          revisions.push({
+            revision_id: -1, // sentinel: current active version
+            translation: current.translation,
+            provider: current.provider,
+            quality_score: current.quality_score,
+            flagged: current.flagged,
+            flag_reason: current.flag_reason,
+            is_active: 1,
+            is_reference: 0,
+            created_at: current.updated_at
+          });
+        }
+        revisions.push(...(history || []));
+        callback(revisions);
+      } catch (e) {
+        callback([]);
+      }
+    });
+
+    global.guiServer.on('restore-revision', async (data, callback) => {
+      try {
+        const { revision_id, source_text, target_lang } = data || {};
+        if (!source_text || !target_lang || revision_id === undefined) {
+          return callback({ success: false, message: 'Fehlende Parameter.' });
+        }
+        if (revision_id === -1) {
+          // Restoring the current version is a no-op
+          return callback({ success: true, message: 'Bereits die aktuelle Version.' });
+        }
+        // Fetch the revision to restore
+        const revision = await dbGet(
+          'SELECT translation, provider, quality_score, flagged, flag_reason FROM translation_revisions WHERE revision_id = ? AND source_text = ? AND target_lang = ?',
+          [revision_id, source_text, target_lang]
+        );
+        if (!revision) {
+          return callback({ success: false, message: 'Revision nicht gefunden.' });
+        }
+        // Archive the CURRENT version before overwriting
+        const current = await dbGet(
+          'SELECT translation, provider, quality_score, flagged, flag_reason FROM translations WHERE source_text = ? AND target_lang = ?',
+          [source_text, target_lang]
+        );
+        if (current && current.translation) {
+          await dbRun(
+            'UPDATE translation_revisions SET is_active = 0 WHERE source_text = ? AND target_lang = ?',
+            [source_text, target_lang]
+          );
+          await dbRun(
+            `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
+             VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)`,
+            [source_text, target_lang, current.translation, current.provider || '', current.quality_score || 0, current.flagged || 0, current.flag_reason || '']
+          );
+        }
+        // Restore the selected revision to the translations table
+        await dbRun(
+          'UPDATE translations SET translation = ?, updated_at = CURRENT_TIMESTAMP WHERE source_text = ? AND target_lang = ?',
+          [revision.translation, source_text, target_lang]
+        );
+        // Mark the restored revision as active
+        await dbRun(
+          'UPDATE translation_revisions SET is_active = 1 WHERE revision_id = ?',
+          [revision_id]
+        );
+        callback({ success: true, message: 'Revision wiederhergestellt.' });
+      } catch (e) {
+        callback({ success: false, message: e.message });
       }
     });
 
@@ -805,6 +1043,63 @@ async function main() {
         const filtered = filterLLMs(models, provider === 'openrouter');
         callback(filtered.length > 0 ? filtered : models);
       } catch (e) { callback([]); }
+    });
+
+    // ── P4: Multi-language model registry handlers ──
+    const modelRegistry = createModelRegistry({
+      ollamaUrl: CONFIG.OLLAMA_URL,
+      // Lazy getter: GUI language changes (via /api/config POST) are picked up
+      // by the next getModelStatus() call without rebuilding the registry.
+      getTargetLang: () => CONFIG.TARGET_LANG
+    });
+
+    global.guiServer.on('get-models-status', async (callback) => {
+      try {
+        const status = await modelRegistry.getModelStatus();
+        callback(status);
+      } catch (e) {
+        callback({ error: e.message, argos: {}, ollama: {} });
+      }
+    });
+
+    global.guiServer.on('get-argos-languages', async (callback) => {
+      try {
+        const languages = argos.isArgosInstalled()
+          ? await argos.getAvailableArgosLanguages()
+          : [];
+        callback(languages);
+      } catch (e) {
+        callback([]);
+      }
+    });
+
+    global.guiServer.on('install-model', async (data, callback) => {
+      try {
+        // Only Argos-language installs go through this unified endpoint;
+        // Ollama pulls use the dedicated `pull-ollama-model` event below.
+        const { type } = data || {};
+        if (type === 'argos-language') {
+          const result = await modelRegistry.installTargetLanguage();
+          callback({ ok: result.ok, message: result.message, type });
+        } else {
+          callback({ ok: false, message: `Unbekannter Install-Typ: ${type}` });
+        }
+      } catch (e) {
+        callback({ ok: false, message: e.message, type: data?.type });
+      }
+    });
+
+    global.guiServer.on('pull-ollama-model', async (data, callback) => {
+      try {
+        const result = await modelRegistry.startOllamaPull(data?.model);
+        callback({ ok: true, ...result });
+      } catch (e) {
+        callback({ ok: false, message: e.message });
+      }
+    });
+
+    global.guiServer.on('get-active-pulls', (callback) => {
+      callback(modelRegistry.getActivePulls());
     });
         
     global.guiServer.on('get-guarded-terms', async (callback) => {
@@ -940,6 +1235,11 @@ async function main() {
   if (isGui) return guiIdlePromise;
 
   if (isAuto) { await synchronize(planner); process.exit(0); }
+
+  // P2: Startup-Wizard nur in interaktivem CLI-Mode (nicht GUI, nicht Auto)
+  if (!isGui) {
+    await runStartupWizard();
+  }
 
 
   const activeMods = await getActiveMods();

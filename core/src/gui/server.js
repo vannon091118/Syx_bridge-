@@ -135,6 +135,76 @@ class GuiServer extends EventEmitter {
         return;
       }
 
+      // API: Model Status (P4 — multi-language model registry)
+      if (url.pathname === '/api/models/status' && req.method === 'GET') {
+        let handled = false;
+        const timeout = setTimeout(() => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(504);
+          res.end(JSON.stringify({ error: 'Status timeout' }));
+        }, 15000);
+        this.emit('get-models-status', (status) => {
+          if (handled) return;
+          handled = true;
+          clearTimeout(timeout);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(status));
+        });
+        return;
+      }
+
+      // API: Argos installed languages (P4)
+      if (url.pathname === '/api/models/argos/languages' && req.method === 'GET') {
+        let handled = false;
+        this.emit('get-argos-languages', (languages) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(languages));
+        });
+        return;
+      }
+
+      // API: Install model/language (P4)
+      if (url.pathname === '/api/models/install' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          let data = {};
+          try { data = JSON.parse(body || '{}'); } catch (e) {}
+          this.emit('install-model', data, (result) => {
+            res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+          });
+        });
+        return;
+      }
+
+      // API: Start Ollama pull (P4)
+      if (url.pathname === '/api/models/ollama/pull' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          let data = {};
+          try { data = JSON.parse(body || '{}'); } catch (e) {}
+          this.emit('pull-ollama-model', data, (result) => {
+            res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+          });
+        });
+        return;
+      }
+
+      // API: Active Ollama pull jobs (P4 — poll for progress)
+      if (url.pathname === '/api/models/ollama/pulls' && req.method === 'GET') {
+        this.emit('get-active-pulls', (pulls) => {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(pulls));
+        });
+        return;
+      }
+
       // API: Provider Status (Keys & Rate Limits)
       if (url.pathname === '/api/provider-status' && req.method === 'GET') {
         let handled = false;

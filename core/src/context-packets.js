@@ -55,7 +55,9 @@ function countMatches(text, regex) {
 }
 
 /**
- * Static heuristic risk score (0-15). Higher = needs better model.
+ * Static heuristic risk score (0-22). Higher = needs better model.
+ * Categories: Length + Placeholders + Sentences + Quotes + ProperNouns + Type
+ *            + Grammar + PlaceholderTypes + Lore + Style
  */
 function scoreTranslationRisk(entry) {
   const item = normalizeTranslationEntry(entry);
@@ -64,25 +66,73 @@ function scoreTranslationRisk(entry) {
   const length = source.length;
   const tokenCount = countMatches(source, /<[^>]+>|__VAR\d+__|{[^}]+}|\$[A-Za-z0-9_]+|%[^%\s]+%/g);
   const sentenceCount = countMatches(source, /[.!?]/g);
+  const lower = String(source || '').toLowerCase();
 
+  // ── Textlänge ──────────────────────────────────────────────────────────
   if (length >= 180) score += 4;
   else if (length >= 100) score += 3;
   else if (length >= 45) score += 2;
   else if (length >= 20) score += 1;
 
+  // ── Tokens / Placeholders (basic count) ─────────────────────────────────
   if (tokenCount >= 4) score += 3;
   else if (tokenCount >= 2) score += 2;
   else if (tokenCount >= 1) score += 1;
 
+  // ── Satzanzahl ──────────────────────────────────────────────────────────
   if (sentenceCount >= 3) score += 2;
   else if (sentenceCount >= 1) score += 1;
 
+  // ── Quotes / Smart-Quotes ───────────────────────────────────────────────
   if (/["""]/.test(source)) score += 1;
+
+  // ── Proper-Noun-Muster ──────────────────────────────────────────────────
   if (/[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+/.test(source)) score += 1;
 
+  // ── String-Typ ──────────────────────────────────────────────────────────
   if (item.type === 'NAME_STRING') score += 2;
   else if (item.type === 'DESC_STRING' || item.type === 'LONG_TEXT') score += 3;
   else if (item.type === 'GENERIC_STRING') score += 1;
+
+  // ── Grammar Risk: komplexe Satzstrukturen ───────────────────────────────
+  let grammarScore = 0;
+  if (/\b(when|while|although|though|because|since|unless|until|after|before|if|whereas)\b/.test(lower))
+    grammarScore += 1;
+  if (/\b(is|are|was|were|been|being)\s+\w+(ed|en)\b/.test(lower))
+    grammarScore += 1;
+  if ((source.match(/,/g) || []).length >= 2)
+    grammarScore += 1;
+  score += Math.min(2, grammarScore);
+
+  // ── Placeholder Risk (detailed): multiple placeholder TYPES ─────────────
+  let phTypeCount = 0;
+  if (/\{[^}]+\}/.test(source)) phTypeCount++;
+  if (/<[^>]+>/.test(source)) phTypeCount++;
+  if (/__VAR\d+__/.test(source)) phTypeCount++;
+  if (/\$[A-Za-z0-9_]+/.test(source)) phTypeCount++;
+  if (/%[^%\s]+%/.test(source)) phTypeCount++;
+  let placeholderDetailScore = 0;
+  if (phTypeCount >= 2) placeholderDetailScore += 2;
+  else if (phTypeCount >= 1 && tokenCount >= 3) placeholderDetailScore += 1;
+  score += placeholderDetailScore;
+
+  // ── Lore Risk: game-specific proper nouns & factions ────────────────────
+  let loreScore = 0;
+  const properNounMatches = source.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3}\b/g) || [];
+  if (properNounMatches.length >= 2) loreScore += 1;
+  if (/\b(kingdom|empire|clan|tribe|guild|order|house|dynasty|legion|court|realm|dominion)\b/i.test(source))
+    loreScore += 1;
+  score += Math.min(2, loreScore);
+
+  // ── Style Risk: imperative mood, emotive language, rhetorical ───────────
+  let styleScore = 0;
+  if (/^(Go|Get|Find|Build|Make|Take|Use|Bring|Keep|Hold|Stand|Fight|March|Rally|Charge|Defend|Attack|Defeat|Conquer|Explore|Establish)\b/.test(source))
+    styleScore += 1;
+  if (/\b(great|mighty|ancient|dark|holy|sacred|cursed|blessed|fearsome|legendary|eternal|glorious|dread|grim|foul|noble|vile)\b/i.test(source))
+    styleScore += 1;
+  if (/\?$/.test(source.trim()))
+    styleScore += 1;
+  score += Math.min(2, styleScore);
 
   return score;
 }
@@ -93,8 +143,11 @@ function scoreTranslationRisk(entry) {
  * - stressTestFailed: Google Free failed -> risk increases
  * - hasGoodQuality: already has a polished, verified translation -> risk drops
  * - retryCount: many retries needed in the past -> risk increases
+ * - consistentHistory: multiple rewrites on previously good translations -> fragility risk
+ * - reviewCount: many revisions -> inconsistency risk across versions
  */
-function scoreDynamicRisk(entry, dbHistory = {}) {
+function scoreDynamicRisk(entry, dbHistory) {
+  if (dbHistory == null) dbHistory = {};
   const baseScore = scoreTranslationRisk(entry);
   let dynamicScore = baseScore;
 
@@ -103,8 +156,12 @@ function scoreDynamicRisk(entry, dbHistory = {}) {
   if (dbHistory.hasGoodQuality && dbHistory.flagged === 0) dynamicScore = Math.max(0, dynamicScore - 2);
   if (dbHistory.retryCount > 0)    dynamicScore += Math.min(dbHistory.retryCount, 3);
 
-  // Clamp to 0-20 range
-  return Math.max(0, Math.min(20, dynamicScore));
+  // ── Consistency Risk: many revisions + retries on good translations ─────
+  if (dbHistory.retryCount > 0 && dbHistory.hasGoodQuality) dynamicScore += 2;
+  if ((dbHistory.reviewCount || 0) >= 3) dynamicScore += 1;
+
+  // Clamp to 0-25 range
+  return Math.max(0, Math.min(25, dynamicScore));
 }
 
 function buildContextPacket(entry, glossaryTerms = []) {

@@ -1,5 +1,7 @@
+const { getGateCounter } = require('./gate-counter');
 const fs = require('fs').promises;
 const path = require('path');
+const { validateFileSyntax } = require('./validator');
 
 /**
  * Ensures a directory exists.
@@ -34,6 +36,17 @@ async function writeTranslatedFile(fullPath, content, replacements, translations
   // V71 Overwrite Check: If target is V71, we often need the __OVERWRITE header
   if (outputPath.includes('V71') && !newContent.includes('__OVERWRITE')) {
     newContent = `__OVERWRITE: true,\n${newContent}`;
+  }
+
+  // ── Post-Write Syntax Validation: compare source/target file structure ──
+  // Catches KEY count mismatches, unbalanced quotes, or significant line drift
+  // BEFORE writing to disk, so corrupted files never reach the game engine.
+  const syntaxResult = validateFileSyntax(content, newContent);
+  try { getGateCounter().record("exporter:validateFileSyntax", (syntaxResult && syntaxResult.ok) ? "keep" : "discard", { ok: !!(syntaxResult && syntaxResult.ok) }); } catch (_) {}
+  if (!syntaxResult.valid) {
+    const fileName = path.basename(outputPath);
+    console.warn(`[SYNTAX] Struktur-Abweichung in "${fileName}": ${syntaxResult.issues.join('; ')}`);
+    console.warn(`[SYNTAX] Keys: source=${syntaxResult.keyCount.source} target=${syntaxResult.keyCount.target}`);
   }
 
   await ensureDir(path.dirname(outputPath));

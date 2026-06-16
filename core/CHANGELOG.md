@@ -1,11 +1,72 @@
 # CHANGELOG
 
+## [0.19.5] - 2026-06-16 — RELEASE
+
+### Added
+- **[v0.20 Prep] Parser-Adapter-Integration (8 Dateien):** `parser.js` wird jetzt vom `GameAdapter`-Interface gesteuert statt hartcodiert. Vollständige DI-Kette: Adapter → Scanner → Planner → Pipeline.
+  - **`GameAdapter.js`** +4 abstrakte Methoden: `getParserFormat(filePath)`, `classifyFile(relativePath)`, `isTranslatableFile(relativePath, fileType)`, `scanMod(modDir)`
+  - **`SongsOfSyxAdapter.js`** Implementiert alle 4 Methoden mit SoS-spezifischer Logik: `KEY: "value"` Format-Erkennung (`getParserFormat` → `'sos'`), `_Info.txt`-basierte Mod-Detection, Version-Dir-Scanning (`VXX`), Translatable-File-Klassifikation (TEXT_FILE, WIKI_TEXT, TECH_LABEL, NAMES, INIT/ROOM/TECH_LOGIC)
+  - **`extractor.js`** `extractStrings()` liefert jetzt `full` (=fullMatch) und `index` (=match.index) für positionale Write-Back-Kompatibilität mit `applyTranslations()`
+  - **`parser.js`** `detectFormat(filePath, adapter)` akzeptiert optionalen Adapter-Parameter; wenn vorhanden wird `adapter.getParserFormat()` als Autorität genutzt, sonst Fallback auf `EXTENSION_MAP`. `parse()` leitet `opts.adapter` an `detectFormat()` weiter.
+  - **`scanner.js`** `classifyFile(relativePath, adapter)`, `scanMod(modDir, adapter)`, `collectFiles(dir, baseDir, adapter)` — alle akzeptieren optionalen Adapter. `_defaultAdapter = new SongsOfSyxAdapter()` als Backward-Compat-Fallback.
+  - **`planner.js`** Constructor akzeptiert `adapter` als 3. Parameter. `scanPhase()` nutzt `scanner.scanMod(path, this.adapter)`. `processFile()` nutzt `parser.parse()` mit `adapter.getParserFormat()` statt direktem `extractor.extractStrings()`. Fallback-Pfad `collectFiles()` gibt Adapter mit.
+  - **`index.js`** `readFileJob()` nutzt `parser.parse()` mit Adapter-getriebener Format-Erkennung + `shouldTranslate()`-Filter (wie zuvor `extractReplacements`). `gameAdapter` auf Module-Scope angehoben. `createRuntimePlanner()` gibt Adapter an Planner. `readFileJobWithAdapter` wrappt `readFileJob` mit Adapter-Injection. `extractReplacements` Import entfernt (nicht mehr genutzt in Pipeline), `parser` Import hinzugefügt.
+  - **`parser_smoke.js`** Test-Daten korrigiert: SoS-Test-Input nutzt jetzt quoted Werte (`NAME: "The Grand Hall"`) statt unquoted — entspricht dem echten SoS `KEY: "value"` Format. "bad JSON" Test angepasst: Regex-basierter JSON-Parser liefert 0 Einträge statt Exception bei Arrays. 26/26 PASS.
+
+### Architecture
+- **DI-Kette vollständig:** `SongsOfSyxAdapter` → `Planner(adapter)` → `scanner.scanMod/collectFiles(adapter)` → `parser.parse(adapter)` → `extractStrings()`
+- **Backward-Compat:** Alle geänderten Funktionen haben Default-Fallbacks (Scanner._defaultAdapter, Parser.EXTENSION_MAP)
+- **Format-Extensibility:** Neues Spiel registriert eigenen Adapter + Parser-Format via `registerFormat()` + GameAdapter-Subclass. Keine Änderung an Planner/Pipeline nötig.
+
+### Fixed (Latenter Bug)
+- **`raw` Parser `index`/`full`/`source`/`hash`:** `parseRaw()` liefert jetzt positionale Felder für Write-Back via `applyTranslations()`. Offset-Tracking nutzt `content.indexOf(line, searchFrom)` statt `offset += length + 1` — funktioniert korrekt mit sowohl `\n` als auch `\r\n` Zeilenumbrüchen (Windows).
+- **`json` Parser `index`/`full`/`source`/`hash`:** `parseJson()` nutzt jetzt Regex (`/"key"\s*:\s*"value"/g`) statt `JSON.parse()` um Positionen im Original-Content zu finden. `valueStart` wird aus `match[0]`-Struktur abgeleitet (`colonOffset + quoteOffset`) — robust auch bei Keys mit `:` (z.B. `"a:b"`). `unescapeTextValue()` für korrekte Escaped-Char-Behandlung.
+
+### Architecture Notes
+- **`shouldTranslate` Filter:** Wird jetzt in `readFileJob` statt im Parser angewendet — bewusste Design-Entscheidung (Filter gehört in die Pipeline, nicht in den Parser).
+
+### Tests
+- Syntax-Check: 39/39 PASS
+- Parser Smoke: 26/26 PASS
+- Gate-Counter Smoke: PASS
+- P5 Sprachauswahl E2E: 31/31 PASS
+- P3 Risk Scoring E2E: 29/29 PASS
+
+## [0.19.1-alpha] - 2026-06-16
+
+### Added
+- **[P5] Sprachauswahl im Startup-Wizard:** Neuer interaktiver `inquirer.list` Prompt am Anfang von `runStartupWizard()` (`core/index.js`). User wählt aus 14 unterstützten Sprachen (German, French, Spanish, Polish, Russian, Italian, Portuguese, Chinese, Japanese, Korean, Ukrainian, Turkish, Dutch, Swedish). Default = aktueller `CONFIG.TARGET_LANG`. Bei Wechsel: `CONFIG.TARGET_LANG` + `process.env.TARGET_LANG` aktualisiert, persistiert via neuer `persistSingleEnvVar()`-Funktion, Status neu geladen damit das richtige Sprachmodell installiert wird.
+- **[P5] `persistSingleEnvVar(key, value)` in `config-runtime.js`:** Targeted Single-Variable .env-Writer. Liest die aktuelle `.env`, ersetzt nur die Ziellinie, strippt kommentierte Duplikate (`#KEY=...`), erhält alle anderen Env-Variablen byte-für-byte. Vermeidet das Risiko von `persistConfigToEnv()`, das 23 Keys rewritet und benutzerdefinierte Variablen clobbern kann. Quote-Escaping für Werte mit Sonderzeichen. Exportiert als Named-Export neben dem bestehenden `persistConfigToEnv`.
+- **[P5] `installTargetLanguage(langOverride?)` in `model-registry.js`:** Akzeptiert optionalen `langOverride`-Parameter für GUI-Override. Nutzt `LANG_CODES[langName]` als Single-Source-of-Truth für Name→Code-Mapping. Fix: vorher undefined `targetLang` Variable in der Unknown-Language Error-Message. Gibt strukturiertes `{ok, message, lang, code}` zurück. Pre-Check auf `isArgosInstalled()` vor dem Install-Aufruf. Kommentierte-Duplikate-Regex `^\s*#\s*KEY\s*=` filtert dead lines.
+- **[P5] Lazy `getTargetLang` in `createModelRegistry`:** Factory akzeptiert `getTargetLang` als Function (statt statischem String). `getModelStatus()` und `installTargetLanguage()` rufen den Getter zur Aufrufzeit auf, sodass GUI-Sprach-Wechsel (via `/api/config POST`) ohne Registry-Rebuild sofort wirksam werden.
+- **[P5] `core/tests/e2e_p5_sprachauswahl.js` (31 Tests, 100% PASS):** Unit-Level E2E-Test über 5 Sections: (1) `persistSingleEnvVar` Preservierung aller anderen Env-Vars, (2) `model-registry` LANG_CODES-Mapping für French→fr, (3) `installTargetLanguage(langOverride)` mit 4 Override-Varianten, (4) Kommentierte-Duplikate-Strip, (5) Quote-Escaping. Synthetic Test-.env wird geschrieben und nach dem Test aus `BACKUP_PATH` wiederhergestellt (oder gelöscht wenn User keine hatte) — IIFE-Finally-Safety-Net garantiert Workspace-Konsistenz auch bei Crash.
+- **[TEST] `core/scripts/check_syntax.js` Update:** `tests/` Verzeichnis vom Auto-Syntax-Check ausgeschlossen via `path.basename(file) !== 'tests'`. Verhindert False-Skips (z.B. auf `core/src/contests/`).
+- **[TEST] Live E2E mit tmux:** `arndawg.tmux-windows` (v3.6a-win32) via winget installiert, in `~/bin/tmux` Symlink + `setx PATH` für persistente Verfügbarkeit. Bridge in tmux-Session gestartet, inquirer-Sprachauswahl-Prompt per `Down` + `Enter` gesteuert. **🚨 Bug entdeckt:** Wizard zeigt zwar `Zielsprache: French (fr)`, aber `.env` wurde nicht aktualisiert — siehe `TECHNICAL_REVIEW_2026-06-15.md` § P5 Live-E2E Bug.
+
+### Changed
+- **[GUI] Settings-Panel erweitert (Modell-Status):** `index.html` + `app.js` haben einen neuen `Modell-Status`-Abschnitt mit Auto-Refresh (10s Polling), Argos-Status, Ollama-Status, Live-Pull-Progressbars. XSS-Schutz via `textContent` für Error-Display (statt `innerHTML`).
+- **[Multilang-Plan] `core/docs/MULTI_LANGUAGE_MODEL_PLAN.md` Status aktualisiert:** P5 von 🟡 Teilweise auf ✅ Erledigt. P2/P3/P4 von ❌ Offen auf 🟡 Teilweise (wizard + GUI panel + 5 API-Endpoints implementiert).
+
+### Open
+- **🚨 P5 Live-E2E Bug:** `runStartupWizard()` zeigt Sprachwechsel korrekt an, aber `persistSingleEnvVar()` aktualisiert `.env` nicht (vermutlich `process.cwd()`-Mismatch oder Config-Cache-Issue). Unit-Test passt, Live-Test failt. Investigation nötig vor v0.19-Freeze.
+
 ## [0.19.0-alpha] - 2026-06-15
 
 ### Added
 - **[P1] Provider Capability Matrix:** `PROVIDER_CAPABILITIES` definiert `translate/audit/polish/compare/review` pro Provider. `supportsRole()` checkt Fähigkeit. `buildRoutePlan()` filtert `google_free`/`argos` aus audit/polish Route-Plans.
 - **[P1] Lokale Modelle Opt-in (Hardware-Schutz):** `LOCAL_MODELS_ENABLED=false` (Default) sperrt Ollama/Player2. Argos immer verfügbar. GUI Toggle-Switch mit Warnhinweis.
 - **[P1] OpenRouter/Groq JSON-Retry:** Bei Parse-Failure einmaliger Retry mit strikterem System-Prompt (`CRITICAL: Respond ONLY with a raw JSON array`). Guarded terminology bleibt erhalten.
+- **[P2] Deep Polish A/B-Vergleich (`polish-arbiter.js`):** Neues Modul ersetzt Single-Provider Polish durch parallelen Multi-Provider A/B-Vergleich. `selectDiverseProviders()` wählt 2-3 Provider aus verschiedenen Familien (gemini/groq/openrouter/ollama/player2), `runAbPolishing()` sendet identische Polish-Prompts via `Promise.allSettled` parallel, `pickBestPerEntry()` wählt pro Eintrag das beste Ergebnis anhand von Platzhalter-Integrität, Längen-Ratio, Zielsprachen-Erkennung und Terminologie-Compliance. Fallback auf `fixGrammarBatch()` wenn <2 Provider verfügbar. Provider-Tag `ab_polish` für A/B-Ergebnisse, `polish_single` für Fallback.
+- **[P2] CLI Progress Indikatoren (`cli-progress.js`):** Neues Singleton-Modul mit ANSI-Cursor-Control. Rendert ASCII-Progress-Box im Non-GUI-Mode mit Mod-Fortschrittsbalken (Unicode-Blöcke + Prozent + X/Y), Batch-Fortschritt + Provider/Modell live, ETA (berechnet aus (total − processed) / throughput), Durchsatz (Items/Sekunde) und OK/ERR/Cache kumulative Stats. 250ms Render-Throttling gegen Flackern. Integriert in `planner.js` (startPhase/updateMod/tick/finish) und `translation-runtime.js` (updateBatch/addOk/addErr/addCache).
+- **[P2] Dynamic Risk Scoring Integration:** `scoreDynamicRisk()` aus `context-packets.js` wird in `enrichWithContext()` aufgerufen. Lädt DB-History (`stress_test_passed`, `flagged`, `quality_score`, `review_count`) pro Eintrag und blendet sie in den Risk-Score ein; ohne History Fallback auf `scoreTranslationRisk()`. Modifier: `stressTestPassed` −3, `stressTestFailed` +2, `hasGoodQuality && !flagged` −2, `retryCount` +1-3, `retryCount + hasGoodQuality` +2 (Consistency), `reviewCount ≥ 3` +1. Score wird auf `[0, 25]` geclamped.
+- **[P2] Revision System:** Neue `translation_revisions` Tabelle mit `revision_id`, `is_active`, `is_reference`. `saveTranslation()` archiviert die aktuelle Version vor jedem UPSERT automatisch. Erste archivierte Version erhält `is_reference=1`. GUI Revision-Modal mit Restore-Button. API-Endpoints: `get-revisions` + `restore-revision` (archiviert vor Restore die aktuelle Version, sodass kein Verlust möglich ist).
+- **[P2] Risk-Kategorien erweitert:** 4 neue statische Kategorien in `scoreTranslationRisk()`: **Grammar Risk** (Subordinate clauses, Passive voice, Komplexität), **Placeholder Risk Detail** (mehrere Placeholder-Typen: `{}`, `<>`, `__VAR__`, `$VAR`, `%VAR%`), **Lore Risk** (mehrwortige Eigennamen, Fraktionsbegriffe), **Style Risk** (Imperativ, Emotive Adjektive, rhetorische Fragen). Max-Score: 14 → 22.
+- **[P2] Dispatcher-Schwellwerte skaliert:** Risk-Tier-Schwellen in `resolveTranslateRoute()` an neue Max-Scores angepasst: UI-Strings >80%, Low-Risk <2.0, Ambiguous 2.0-6.0, High-Risk ≥6.0 oder Long-Text (statt vorher 1.5 / 4.0). Routenwahl verwendet jetzt Polish-Provider als Fallback bei High-Risk-Batches.
+- **[P2] Proper-Noun-Fallback:** Bei `all_routes_failed` für Proper Nouns (via `isProperNoun()` oder `classifyPath() === 'proper_noun'`) wird `flag_reason='proper_noun'` mit `quality_score=90` (statt 20) gesetzt. Vermeidet fälschliches Flagging von Eigennamen wie nordischen Namen.
+- **[P2] review_count in dbHistory-Mapping:** `dbHistory` für Dynamic Risk berücksichtigt jetzt `review_count` aus der `translations`-Tabelle. Bei ≥3 Revisionen wird der Consistency-Risk um +1 erhöht.
+- **[P3] DB Read-Only Connection:** `connectReadOnly()` + `allReadOnly()` in `db.js` öffnen eine zweite `OPEN_READONLY` Connection für nebenläufige Queries (z.B. `/api/db/search`) ohne `SQLITE_BUSY`-Konflikte mit laufenden Writes. Fallback auf Haupt-Connection bei Fehler.
+- **[P3] OLLAMA_FALLBACK_MODELS aktualisiert:** Liste erweitert um aktuelle Modelle: `['llama3.2', 'llama3.1', 'mistral', 'gemma3', 'gemma4', 'phi4']` (statt veraltetem `['llama3', 'llama2', 'mistral', 'gemma']`).
+- **[P3] `reconstruct.js` Bereinigung:** Hartkodiertes `AUDITOR_MODEL: 'llama3'` entfernt — nutzt jetzt `Router`-Defaults (`'auto'`). Tests verwenden generische Provider-Keys und prüfen `Router.buildRoutePlan()` direkt.
 - **Technical Review Report:** Vollständiger Audit (`TECHNICAL_REVIEW_2026-06-15.md`) mit STATUS/PRIORITY/EFFORT/RISK-Ratings für alle 15 Prüfpunkte + Top-10-Listen.
 
 ## [0.16.0] - 2026-06-15

@@ -3,6 +3,7 @@ const path = require('path');
 
 const DB_PATH = path.join(__dirname, '..', 'translations.db');
 let db;
+let dbReadOnly;
 
 /**
  * Connects to the database.
@@ -12,6 +13,32 @@ function connect() {
     db = new sqlite3.Database(DB_PATH, (err) => {
       if (err) reject(err);
       else resolve(db);
+    });
+  });
+}
+
+/**
+ * Opens a second read-only connection for concurrent queries (search, browse)
+ * while the main connection handles writes. SQLITE_BUSY vermeiden.
+ */
+function connectReadOnly() {
+  return new Promise((resolve, reject) => {
+    dbReadOnly = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READONLY, (err) => {
+      if (err) reject(err);
+      else resolve(dbReadOnly);
+    });
+  });
+}
+
+/**
+ * Runs a query on the read-only connection.
+ */
+function allReadOnly(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    if (!dbReadOnly) return reject(new Error('Read-only connection not initialized'));
+    dbReadOnly.all(sql, params, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
     });
   });
 }
@@ -211,6 +238,23 @@ async function init() {
 
   await run(`CREATE INDEX IF NOT EXISTS idx_glossary_terms_lookup
         ON glossary_terms(target_lang, source_term, scope, mod_scope)`);
+
+  // 8. Translation revisions --- preserves every version of a translation
+  await run(`CREATE TABLE IF NOT EXISTS translation_revisions (
+        revision_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        source_text TEXT NOT NULL,
+        target_lang TEXT NOT NULL,
+        translation TEXT NOT NULL,
+        provider TEXT NOT NULL DEFAULT '',
+        quality_score INTEGER NOT NULL DEFAULT 0,
+        flagged INTEGER NOT NULL DEFAULT 0,
+        flag_reason TEXT NOT NULL DEFAULT '',
+        is_active INTEGER NOT NULL DEFAULT 0,
+        is_reference INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(source_text, target_lang) REFERENCES translations(source_text, target_lang)
+    )`);
+  await run('CREATE INDEX IF NOT EXISTS idx_revisions_lookup ON translation_revisions(source_text, target_lang, revision_id)');
 }
 
 module.exports = {
@@ -218,5 +262,7 @@ module.exports = {
   run,
   get,
   all,
+  connectReadOnly,
+  allReadOnly,
   db: () => db
 };

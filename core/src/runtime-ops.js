@@ -1,3 +1,5 @@
+const { getGateCounter, createGateCounter, resetGateCounter } = require('./gate-counter');
+const { isDryRun, getGateCounterOpts } = require('./config-runtime');
 function createRuntimeOps(options) {
   const {
     config,
@@ -14,70 +16,21 @@ function createRuntimeOps(options) {
     getMajorVersion,
     getHasConfirmedNative,
     setHasConfirmedNative
+  ,
+    gameAdapter
   } = options;
 
   // Songs of Syx _Info.txt format: key-value pairs with quoted string values.
   // Required fields: NAME, VERSION, GAME_VERSION_MAJOR, GAME_VERSION_MINOR, AUTHOR
   // Optional but recommended: DESC, INFO
-  function formatModInfo(infoObj) {
-    // Ensure all required Songs of Syx fields are present with sensible defaults
-    const info = {
-      GAME_VERSION_MAJOR: 71,
-      GAME_VERSION_MINOR: 0,
-      VERSION: '1.0.0',
-      NAME: 'BridgePatch',
-      AUTHOR: 'Vannon / SyxBridge',
-      ...infoObj
-    };
-    const lines = [];
-    // Field order matters for Songs of Syx parser: VERSION first, then GAME_VERSION, then NAME
-    if (info.VERSION) lines.push(`VERSION: "${info.VERSION}",`);
-    if (info.GAME_VERSION_MAJOR !== undefined) lines.push(`GAME_VERSION_MAJOR: ${info.GAME_VERSION_MAJOR},`);
-    if (info.GAME_VERSION_MINOR !== undefined) lines.push(`GAME_VERSION_MINOR: ${info.GAME_VERSION_MINOR},`);
-    if (info.NAME) lines.push(`NAME: "${info.NAME}",`);
-    if (info.DESC) lines.push(`DESC: "${info.DESC}",`);
-    if (info.AUTHOR) lines.push(`AUTHOR: "${info.AUTHOR}",`);
-    if (info.INFO) lines.push(`INFO: "${info.INFO}",`);
-    return lines.join('\n') + '\n';
-  }
 
-  function appendPatchNotice(baseText, notice) {
-    const source = String(baseText || '');
-    return source.includes(notice) ? source : `${source}${notice}`;
-  }
-
-  function parseModInfo(content) {
-    const info = {};
-    const lines = content.split('\n');
-    for (const line of lines) {
-      const match = line.match(/^\s*([A-Z_]+):\s*"?(.*?)"?,?\s*$/i);
-      if (match) {
-        let value = match[2].trim();
-        if (['GAME_VERSION_MAJOR', 'GAME_VERSION_MINOR'].includes(match[1])) {
-          value = parseInt(value, 10);
-        }
-        info[match[1]] = value;
-      }
-    }
-    return info;
-  }
 
   async function ensureCoreMod() {
-    const coreModPath = path.join(config.GAME_MOD_ROOT, 'BridgeCore');
+    const coreModPath = path.join(config.GAME_MOD_ROOT, gameAdapter.getCoreModFolderName());
     const majorVersion = await getMajorVersion(config.MOD_ROOT);
-
-    const info = {
-      VERSION: '1.0.0',
-      GAME_VERSION_MAJOR: majorVersion,
-      GAME_VERSION_MINOR: 0,
-      NAME: 'AI Bridge Core',
-      DESC: 'SyxBridge Translation Core (v0.19a). Enthaelt alle KI-uebersetzten Texte fuer Mods. Diese Mod MUSS im Launcher aktiviert sein. Falls Texte fehlen: SyxBridge neu starten und VOLL-AUTO SYNC ausfuehren.',
-      AUTHOR: 'Vannon / SyxBridge',
-      INFO: 'ANLEITUNG: 1) BridgeCore im SoS-Launcher aktivieren. 2) Nur SyxBridge aendert diese Mod - nicht manuell editieren. 3) Bei fehlenden Uebersetzungen: SyxBridge Dashboard oeffnen -> VOLL-AUTO SYNC.'
-    };
-
+    const metadata = gameAdapter.getCoreModMetadata(majorVersion);
     await fsp.mkdir(coreModPath, { recursive: true });
-    await fsp.writeFile(path.join(coreModPath, '_Info.txt'), formatModInfo(info), 'utf-8');
+    await fsp.writeFile(path.join(coreModPath, gameAdapter.getMetadataFileName()), metadata, 'utf-8');
     return coreModPath;
   }
 
@@ -90,32 +43,82 @@ function createRuntimeOps(options) {
   async function translateMod(modDir, options = {}) {
     const dryRun = !!options.dryRun;
         
-    const infoPath = path.join(modDir, '_Info.txt');
+    const infoPath = path.join(modDir, gameAdapter.getMetadataFileName());
     if (!fs.existsSync(infoPath)) return null;
 
     const infoContent = await fsp.readFile(infoPath, 'utf-8');
-    const info = parseModInfo(infoContent);
+    const info = gameAdapter.parseMetadata(infoContent);
     const modName = info.NAME || path.basename(modDir);
     console.log(`\n>>> Uebersetze: ${modName}${dryRun ? ' [DRY RUN]' : ''}`);
 
-    if (config.NATIVE_MODE && !getHasConfirmedNative() && !dryRun && !process.argv.includes('--gui')) {
-      // Native Mode: User bestätigt In-Place-Überschreibung mit Backup-Garantie
-      console.log('\n[INFO] Native Mode aktiv: Originaldateien werden überschrieben.');
+    // ─── P1-FIX: Native-Mode confirm gate ────────────────────────────────
+    // Original bug: the gate only allowed GUI to pass through, leaving all
+    // CLI runs (including tmux send-keys, piped stdin, and any non-interactive
+    // context) at the mercy of inquirer. A buffered `n` from the previous
+    // wizard prompt caused the run to abort and report Files: 0 — looking
+    // like a "reset" after every run. Fix:
+    //   1. Always log the Native Mode status so operators see what's active.
+    //   2. Auto-confirm (and persist) when any of these are true:
+    //        - in-session flag already set (getHasConfirmedNative)
+    //        - --gui flag in argv
+    //        - --auto flag in argv
+    //        - stdin is not a TTY (piped/CI/tmux send-keys)
+    //        - persisted flag file at core/.native_confirmed exists
+    //   3. Only prompt on first-time interactive CLI without prior consent.
+    // ─────────────────────────────────────────────────────────────────────
+    if (config.NATIVE_MODE && !dryRun) {
+      console.log('[INFO] Native Mode aktiv: Originaldateien werden überschrieben.');
 
-      const confirm = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'proceed',
-          message: 'Möchtest du fortfahren? (Sicherheits-Backup wird angelegt)',
-          default: true
+      const persistedFlagPath = path.join(__dirname, '..', '.native_confirmed');
+      // fs.existsSync never throws in Node; no defensive try/catch needed.
+      const persistedExists = fs.existsSync(persistedFlagPath);
+      const isGuiMode = process.argv.includes('--gui');
+      const isAutoMode = process.argv.includes('--auto');
+      const stdinIsTty = process.stdin && process.stdin.isTTY === true;
+      const sessionConfirmed = getHasConfirmedNative();
+
+      // Helper: persist the user's consent so future CLI sessions skip the prompt.
+      // Writes are best-effort with a clear [WARN] on failure so that a
+      // read-only directory does not silently drop the user's intent.
+      const persistConsented = () => {
+        if (persistedExists) return;
+        try {
+          fs.writeFileSync(persistedFlagPath, new Date().toISOString(), 'utf-8');
+        } catch (e) {
+          console.warn(`[WARN] Konnte .native_confirmed nicht schreiben (${e.code || e.message}); nächste CLI-Session fragt erneut.`);
         }
-      ]);
+      };
 
-      if (!confirm.proceed) {
-        console.log('[ABBRUCH] Native Mode abgebrochen.');
-        return null;
+      if (sessionConfirmed) {
+        // Already confirmed in this run — silent.
+      } else if (!isGuiMode && !isAutoMode && stdinIsTty && !persistedExists) {
+        // First-time interactive CLI: ask the user.
+        const confirm = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'proceed',
+            message: 'Möchtest du fortfahren? (Sicherheits-Backup wird angelegt)',
+            default: true
+          }
+        ]);
+
+        if (!confirm.proceed) {
+          console.log('[ABBRUCH] Native Mode abgebrochen.');
+          return null;
+        }
+        setHasConfirmedNative(true);
+        persistConsented();
+        console.log('[NATIVE] Native Mode für diese Session bestätigt.');
+      } else {
+        // Implicit-confirm path (non-interactive / --gui / --auto / persisted).
+        const reason = isGuiMode ? 'GUI-Mode'
+          : isAutoMode ? '--auto Flag'
+          : !stdinIsTty ? 'non-interactive stdin (CI/tmux/pipe)'
+          : 'persistent bestätigt';
+        console.log(`[NATIVE] Keine Rückfrage (${reason}). Backup wird VOR dem Überschreiben angelegt.`);
+        setHasConfirmedNative(true);
+        persistConsented();
       }
-      setHasConfirmedNative(true);
     }
 
     const modFolderName = `${modName.replace(/[^a-z0-9]/gi, '_')}_${config.TARGET_LANG}`;
@@ -135,7 +138,7 @@ function createRuntimeOps(options) {
       });
     }
 
-    const sourceIsBackup = modDir.startsWith(config.BACKUP_ROOT) || path.basename(modDir).startsWith('.backup_');
+    const sourceIsBackup = modDir.startsWith(config.BACKUP_ROOT) || path.basename(modDir).startsWith(gameAdapter.getBackupDirectoryName('').replace('_ORIGINAL', '').replace('.backup_', '.backup_'));
     if (!sourceIsBackup && !dryRun) {
       await fsp.mkdir(config.BACKUP_ROOT, { recursive: true });
       const backupId = path.basename(modDir).replace(/[^a-z0-9_.-]/gi, '_');
@@ -162,22 +165,19 @@ function createRuntimeOps(options) {
     // Native Mode: NEVER touch _Info.txt in the original Workshop folder
     // Patch Mode: add patch suffix and notice to the mod copy
     if (!config.NATIVE_MODE) {
-      const notice = `\\n\\n--- ${config.TARGET_LANG.toUpperCase()} PATCH ---\\nDiese Mod wurde automatisch auf ${config.TARGET_LANG} uebersetzt. Nutze die Syx-Bridge GUI zum Anpassen.`;
-      const patchSuffix = ` (${config.TARGET_LANG} Patch)`;
-      const currentName = info.NAME || modName;
       const updatedInfo = { ...info };
-      updatedInfo.NAME = currentName.endsWith(patchSuffix) ? currentName : `${currentName}${patchSuffix}`;
-      updatedInfo.DESC = appendPatchNotice(info.DESC || '', notice);
+      if (!updatedInfo.NAME) updatedInfo.NAME = modName;
+      gameAdapter.applyPatchModifications(updatedInfo, config.TARGET_LANG);
       updatedInfo.AUTHOR = info.AUTHOR || 'syx-bridge';
       if (!updatedInfo.VERSION) updatedInfo.VERSION = '1.0.0';
       if (!updatedInfo.GAME_VERSION_MAJOR) updatedInfo.GAME_VERSION_MAJOR = 70;
       if (updatedInfo.GAME_VERSION_MINOR === undefined) updatedInfo.GAME_VERSION_MINOR = 0;
       if (!dryRun) {
-        await fsp.writeFile(path.join(modOutputPath, '_Info.txt'), formatModInfo(updatedInfo), 'utf-8');
+        await fsp.writeFile(path.join(modOutputPath, gameAdapter.getMetadataFileName()), gameAdapter.formatMetadata(updatedInfo), 'utf-8');
       }
     }
 
-    const files = (await collectTextFiles(modDir, modDir)).filter(f => f.relativePath !== '_Info.txt');
+    const files = (await collectTextFiles(modDir, modDir)).filter(f => f.relativePath !== gameAdapter.getMetadataFileName());
     const jobs = await mapLimit(files, options.maxParallelFiles || 8, readFileJob);
     const allTexts = jobs.flatMap(job => job.replacements.map(r => ({
       source: r.value,
@@ -228,6 +228,15 @@ function createRuntimeOps(options) {
   };
 }
 
+function setupGateCounter(logger) {
+  resetGateCounter();
+  return createGateCounter(Object.assign({ logger: logger || null }, getGateCounterOpts(logger) || {}));
+}
+function flushGateCounter() {
+  try { return getGateCounter().flush(); } catch (e) { return { error: String((e && e.message) || e) }; }
+}
+module.exports.setupGateCounter = setupGateCounter;
+module.exports.flushGateCounter = flushGateCounter;
 module.exports = {
   createRuntimeOps
 };

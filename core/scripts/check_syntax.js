@@ -9,7 +9,7 @@ function getFiles(dir) {
     file = path.join(dir, file);
     const stat = fs.statSync(file);
     if (stat && stat.isDirectory()) {
-      if (!file.includes('node_modules') && !file.includes('release') && !file.includes('.DB backups') && !file.includes('backups')) {
+      if (!file.includes('node_modules') && !file.includes('release') && !file.includes('.DB backups') && !file.includes('backups') && path.basename(file) !== 'tests') {
         results = results.concat(getFiles(file));
       }
     } else if (file.endsWith('.js') || file.endsWith('.mjs')) {

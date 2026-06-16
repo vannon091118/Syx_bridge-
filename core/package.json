@@ -1,7 +1,7 @@
 {
   "name": "syx-bridge",
-  "version": "0.19.0-alpha",
-  "releaseVersion": "0.19.0a",
+  "version": "0.19.5",
+  "releaseVersion": "0.19.5",
   "description": "AI-powered translation bridge for Songs of Syx mods. Optimized for V71.",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,7 @@
     "axios": "1.17.0",
     "dotenv": "16.3.1",
     "inquirer": "8.2.7",
+    "sql.js": "^1.14.1",
     "sqlite3": "6.0.1"
   },
   "devDependencies": {

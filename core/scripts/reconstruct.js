@@ -129,7 +129,8 @@ async function testRouter() {
     POLISHER_PROVIDER: 'openrouter',
     POLISHER_MODEL: 'openrouter/free',
     AUDITOR_PROVIDER: 'ollama',
-    AUDITOR_MODEL: 'llama3',
+    AUDITOR_MODEL: 'auto',
+    LOCAL_MODELS_ENABLED: true,
     PLAYER2_ENABLED: false
   };
   const router = new Router(config, {

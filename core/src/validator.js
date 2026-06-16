@@ -1,3 +1,5 @@
+const { getGateCounter } = require('./gate-counter');
+function _gcRec(gateId, action, meta) { try { getGateCounter().record(gateId, action, meta || {}); } catch (_) {} }
 /**
  * Validates that placeholders like __VAR0__, {0}, or $VAR are preserved.
  */
@@ -60,6 +62,46 @@ function checkStructure(source, target) {
 }
 
 /**
+ * Validates the structural integrity of a translated file against its source.
+ * Compares KEY count, line count, and quote balance. Does NOT verify content.
+ * @returns {{ valid: boolean, issues: string[], keyCount: {source: number, target: number} }}
+ */
+function validateFileSyntax(sourceContent, targetContent) {
+  _gcRec("validator:validateFileSyntax", "enter");
+  const issues = [];
+  
+  // Count KEY: patterns (Songs of Syx format)
+  const sourceKeys = (sourceContent.match(/^\s*[A-Za-z0-9_]+:\s*/gm) || []).length;
+  const targetKeys = (targetContent.match(/^\s*[A-Za-z0-9_]+:\s*/gm) || []).length;
+  if (sourceKeys !== targetKeys) {
+    issues.push(`KEY_COUNT_MISMATCH: source=${sourceKeys} target=${targetKeys}`);
+  }
+
+  // Count quoted strings
+  const sourceQuotes = (sourceContent.match(/"/g) || []).length;
+  const targetQuotes = (targetContent.match(/"/g) || []).length;
+  if (sourceQuotes % 2 !== targetQuotes % 2) {
+    issues.push(`UNBALANCED_QUOTES: source=${sourceQuotes} target=${targetQuotes}`);
+  } else if (Math.abs(sourceQuotes - targetQuotes) > 4) {
+    issues.push(`QUOTE_COUNT_DIFF: source=${sourceQuotes} target=${targetQuotes}`);
+  }
+
+  // Line count sanity check (should be within 20% or ±5 lines)
+  const sourceLines = sourceContent.split('\n').length;
+  const targetLines = targetContent.split('\n').length;
+  const lineDiff = Math.abs(sourceLines - targetLines);
+  if (lineDiff > Math.max(5, sourceLines * 0.2)) {
+    issues.push(`LINE_COUNT_DIFF: source=${sourceLines} target=${targetLines}`);
+  }
+
+  return {
+    valid: issues.length === 0,
+    issues,
+    keyCount: { source: sourceKeys, target: targetKeys }
+  };
+}
+
+/**
  * Calculates a QA score (0-100) for a translation.
  */
 function getQaScore(source, target) {
@@ -88,6 +130,7 @@ function getQaScore(source, target) {
   const structuralIssues = checkStructure(source, target);
   score -= structuralIssues.length * 15;
 
+  try { _gcRec("validator:getQaScore", (typeof score === "number" && score >= 60) ? "keep" : "discard", { score: typeof score === "number" ? score : null }); } catch (_) {}
   return Math.max(0, score);
 }
 
@@ -95,5 +138,6 @@ module.exports = {
   validatePlaceholders,
   validateTags,
   checkStructure,
-  getQaScore
+  getQaScore,
+  validateFileSyntax
 };

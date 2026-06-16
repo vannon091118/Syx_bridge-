@@ -1,3 +1,4 @@
+const { getGateCounter } = require('./gate-counter');
 const { classifyPath } = require('./text-core');
 
 function createDispatcher(options) {
@@ -61,7 +62,7 @@ function createDispatcher(options) {
     }
 
     // ── Tier 2: Low-risk -> cheap/fast providers ────────────────────────────
-    if (avgRisk < 1.5) {
+    if (avgRisk < 2.0) {
       if (routingEngine.isAvailable('argos')) {
         console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> argos`);
         return { provider: 'argos', model: 'argos-translate-local', reason: 'low_risk', stressTestRequired: false };
@@ -73,13 +74,14 @@ function createDispatcher(options) {
     }
 
     // ── Tier 3: Ambiguous risk -> stress test required ──────────────────────
-    if (avgRisk >= 1.5 && avgRisk < 4.0) {
+    if (avgRisk >= 2.0 && avgRisk < 6.0) {
       console.log(`[DISPATCH] Ambiguous-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> Stress-Test erforderlich`);
+      try { getGateCounter().record("dispatcher:avgRisk_tier3", "keep", { phase: "resolveTranslateRoute" }); } catch (_) {}
       return { provider: preferred.provider, model: preferred.model, reason: 'ambiguous_risk', stressTestRequired: true };
     }
 
     // ── Tier 4: High-risk -> quality model ──────────────────────────────────
-    if (avgRisk >= 4 || hasLongText) {
+    if (avgRisk >= 6.0 || hasLongText) {
       const qualityRoute = resolveProviderModel('polish');
       if (routingEngine.isAvailable(qualityRoute.provider)) {
         const qualityPlan = routingEngine.buildRoutePlan('translate', {
@@ -101,6 +103,7 @@ function createDispatcher(options) {
   }
 
   async function runRoute(stage, executor, items = []) {
+  try { getGateCounter().record("dispatcher:runRoute", "enter", { stage: (stage == null ? "unknown" : String(stage)), items: Array.isArray(items) ? items.length : 0 }); } catch (_) {}
     // Only use translate-specific routing (stress test, UI-string, low-risk)
     // for the translate stage. Polish/audit always use their configured provider.
     const preferred = (items.length > 0 && stage === 'translate')
@@ -116,16 +119,20 @@ function createDispatcher(options) {
       throw new Error(`Keine nutzbare Route fuer ${stage} verfuegbar.`);
     }
 
+    let attemptIdx = 0;
     for (const route of routePlan) {
       try {
+        try { getGateCounter().record("dispatcher:runRoute_attempt", String(attemptIdx), { provider: route && route.provider == null ? "" : String(route.provider), model: route && route.model == null ? "" : String(route.model), stage: stage == null ? "unknown" : String(stage) }); } catch (_) {}
         console.log(`[DISPATCH] ${stage} -> ${route.provider} (${route.model || 'default'})`);
         return await executor(route);
       } catch (e) {
+        try { getGateCounter().record("dispatcher:runRoute_attempt:fails", String(attemptIdx), { provider: route && route.provider == null ? "" : String(route.provider), error: e && e.message ? String(e.message) : String(e) }); } catch (_) {}
         if (e.message === 'ABORTED') throw e;
         routingEngine.handleFailure(route.provider, e);
         lastError = e;
         console.warn(`[DISPATCH] ${stage} ${route.provider} fehlgeschlagen: ${extractErrorMessage(e)}`);
       }
+      attemptIdx++;
     }
 
     throw new Error(`Alle ${stage}-Routen fehlgeschlagen. Letzter Fehler: ${extractErrorMessage(lastError)}`);

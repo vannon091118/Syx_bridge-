@@ -2,9 +2,12 @@ const {
   normalizeTranslationEntry,
   mergeEntryContexts,
   scoreTranslationRisk,
+  scoreDynamicRisk,
   buildContextPacket
 } = require('./context-packets');
 const { createDispatcher } = require('./dispatcher');
+const { createPolishArbiter } = require('./polish-arbiter');
+const cli = require('./cli-progress');
 const {
   shouldLearnGlossaryTerm,
   findRelevantGlossaryTerms
@@ -50,6 +53,21 @@ function createTranslationRuntime(options) {
     routingEngine,
     extractErrorMessage,
     isArgosInstalled
+  });
+
+  // ── A/B Polish Arbiter ───────────────────────────────────────────────
+  const polishArbiter = createPolishArbiter({
+    executeStageRequest,
+    dispatcher,
+    buildProofreadPrompt,
+    getGuardedTerminology,
+    protectPlaceholders,
+    restorePlaceholders,
+    restoreAndValidateTranslation,
+    isLikelyTargetLanguageText,
+    getGrammarContext,
+    config,
+    logPayload
   });
 
   function parseBatchResponseWithMaps(text, expectedCount, shieldMaps = []) {
@@ -249,9 +267,11 @@ function createTranslationRuntime(options) {
     const normalized = normalizeWhitespace(source);
     if (!normalized) return { reuse: true, translation: source, reason: 'empty' };
         
-    // Instant classification based on path and proper noun heuristic
-    if (classifyPath(entry.relativePath) === 'proper_noun' && isProperNoun(source)) {
-      return { reuse: true, translation: source, reason: 'path_proper_noun' };
+    // ── Proper noun heuristic (path-independent): single-word capitalized names ──
+    // Runs BEFORE shouldTranslate() so Nordic/Icelandic names like Aðalsteinn,
+    // Baldur, Þórir are never sent to translation providers.
+    if (isProperNoun(source)) {
+      return { reuse: true, translation: source, reason: 'proper_noun' };
     }
 
     if (!shouldTranslate(source)) return { reuse: true, translation: source, reason: 'non_translatable' };
@@ -327,9 +347,44 @@ function createTranslationRuntime(options) {
     const glossaryRows = await loadGlossaryRows(entries);
     const glossaryMatches = findRelevantGlossaryTerms(entries, glossaryRows);
     const bySource = new Map(glossaryMatches.map(match => [match.source, match.terms]));
+
+    // ── Dynamic Risk: Blend static heuristics with DB history ───────────
+    // Queries stress_test_passed, flagged, quality_score, review_count
+    // for each unique source so scoreDynamicRisk() can calibrate.
+    const uniqueSources = [...new Set(entries.map(e => e.source))];
+    let dbHistoryMap = new Map();
+    try {
+      if (uniqueSources.length > 0) {
+        const placeholders = uniqueSources.map(() => '?').join(', ');
+        const historyRows = await dbAll(
+          `SELECT source_text, stress_test_passed, flagged, quality_score, review_count
+           FROM translations
+           WHERE target_lang = ? AND source_text IN (${placeholders})`,
+          [config.TARGET_LANG, ...uniqueSources]
+        );
+        for (const row of historyRows || []) {
+          dbHistoryMap.set(row.source_text, {
+            stressTestPassed: row.stress_test_passed === 1,
+            stressTestFailed: row.stress_test_passed === 0,
+            hasGoodQuality: (row.quality_score || 0) >= 80 && !row.flagged,
+            flagged: !!row.flagged,
+            retryCount: row.review_count || 0,
+            reviewCount: row.review_count || 0
+          });
+        }
+      }
+    } catch (e) {
+      // Non-critical: fall back to static risk scoring
+      console.warn(`[WARN] DB-History-Lookup fuer Dynamic Risk fehlgeschlagen: ${e.message}`);
+    }
+
     return entries.map(entry => {
       const hints = bySource.get(entry.source) || [];
-      const riskScore = scoreTranslationRisk(entry);
+      const dbHistory = dbHistoryMap.get(entry.source);
+      // Use dynamic risk when DB history is available, otherwise static heuristic
+      const riskScore = dbHistory
+        ? scoreDynamicRisk(entry, dbHistory)
+        : scoreTranslationRisk(entry);
       return {
         ...entry,
         riskScore,
@@ -890,6 +945,10 @@ except Exception as e:
     const preview = texts.map(t => t.length > 25 ? t.substring(0, 22) + '...' : t).join(' | ');
     console.log(`[BATCH] (${resolvedRoute.provider}/${resolvedRoute.model || 'default'}) [${texts.length} Texte]: ${preview}`);
 
+    if (cli.isActive()) {
+      cli.updateBatch(0, texts.length, resolvedRoute.provider, resolvedRoute.model);
+    }
+
     let rawTranslations;
     if (resolvedRoute.provider === 'gemini') rawTranslations = await callGeminiBatch(entries, resolvedRoute.model);
     else if (resolvedRoute.provider === 'groq') rawTranslations = await callGroqBatch(entries, resolvedRoute.model);
@@ -919,6 +978,11 @@ except Exception as e:
     });
     if (unchangedCount === texts.length && texts.some(text => shouldTranslate(text) && !isLikelyTargetLanguageText(text))) {
       throw new Error(`Provider ${resolvedRoute.provider} lieferte keine brauchbaren Uebersetzungen.`);
+    }
+
+    if (cli.isActive()) {
+      cli.addOk(texts.length - unchangedCount);
+      if (unchangedCount > 0) cli.addErr(unchangedCount);
     }
     return finalizedResults;
   }
@@ -990,6 +1054,37 @@ except Exception as e:
     const flagReason = meta.flagReason || '';
     const flagged = flagReason ? 1 : 0;
     const qualityScore = Number(meta.qualityScore || scoreTranslationQuality(sourceText, translation));
+
+    // ── Revision System: preserve the current version before overwriting ──
+    try {
+      const existing = await _dbGet(
+        'SELECT translation, provider, quality_score, flagged, flag_reason FROM translations WHERE source_text = ? AND target_lang = ?',
+        [sourceText, config.TARGET_LANG]
+      );
+      if (existing && existing.translation) {
+        // Deactivate all previous active revisions
+        await dbRun(
+          'UPDATE translation_revisions SET is_active = 0 WHERE source_text = ? AND target_lang = ?',
+          [sourceText, config.TARGET_LANG]
+        );
+        // Determine if this is the first-ever revision (reference)
+        const revCount = await _dbGet(
+          'SELECT COUNT(*) as cnt FROM translation_revisions WHERE source_text = ? AND target_lang = ?',
+          [sourceText, config.TARGET_LANG]
+        );
+        const isReference = (revCount && revCount.cnt === 0) ? 1 : 0;
+        // Save old version as a revision
+        await dbRun(
+          `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
+           VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)`,
+          [sourceText, config.TARGET_LANG, existing.translation, existing.provider || '', existing.quality_score || 0, existing.flagged || 0, existing.flag_reason || '', isReference]
+        );
+      }
+    } catch (e) {
+      // Non-critical: revision save is best-effort
+      console.warn(`[WARN] Revision-Speicherung fehlgeschlagen fuer "${sourceText.substring(0, 30)}": ${e.message}`);
+    }
+
     await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP)
             ON CONFLICT(source_text, target_lang)
@@ -1174,6 +1269,10 @@ except Exception as e:
             global.guiServer.broadcastDbSample(t, data.translation);
           }
           if (options.onProgress) options.onProgress({ cacheHits: 1, filesScanned: translations.size });
+          if (cli.isActive() && reusedCacheCount % 20 === 0) {
+            cli.addCache(20);
+            cli.tick(translations.size, uniqueTexts.length);
+          }
         } else if (!isSafe && !needsRefresh) {
           console.log(`[INTEGRITY] Cache-Eintrag fuer "${t.substring(0, 30)}..." verworfen (Integritaets-Fehler).`);
         }
@@ -1216,7 +1315,10 @@ except Exception as e:
     }
 
     let processedCount = 0;
+    let batchNumber = 0;
+    const totalBatches = Math.ceil(missing.length / (options.batchSize || 20));
     while (processedCount < missing.length && !isAborting()) {
+      batchNumber++;
       let currentBatch = [];
       let currentBatchChars = 0;
       const preferredRoute = dispatcher.buildStageRoutePlan('translate')[0] || dispatcher.resolveProviderModel('translate');
@@ -1265,16 +1367,25 @@ except Exception as e:
           savePromises.push(learnGlossary(source, translated, entry));
         }
         await Promise.all(savePromises);
+        if (cli.isActive()) {
+          cli.updateBatch(batchNumber, totalBatches, result.provider, result.model);
+          cli.tick(translations.size, uniqueTexts.length);
+        }
       } catch (e) {
         if (e.message === 'ABORTED') break;
         console.error(`[!] Batch fehlgeschlagen: ${extractErrorMessage(e)}`);
         const failPromises = [];
         for (const item of currentBatch) {
           translations.set(item.source, item.source);
-          failPromises.push(saveTranslation(item, item.source, 0, { provider: 'native_fallback', flagReason: 'all_routes_failed', qualityScore: 20 }));
-          cachedData.set(item.source, { translation: item.source, polishLevel: 0, flagged: true, flagReason: 'all_routes_failed', provider: 'native_fallback', qualityScore: 20, sourceHash: getEntryHash(item) });
+          // Proper nouns that couldn't be translated are not errors — they're expected
+          const isPN = isProperNoun(item.source) || classifyPath(item.relativePath) === 'proper_noun';
+          const failReason = isPN ? 'proper_noun' : 'all_routes_failed';
+          const failScore = isPN ? 90 : 20;
+          failPromises.push(saveTranslation(item, item.source, 0, { provider: 'native_fallback', flagReason: failReason, qualityScore: failScore }));
+          cachedData.set(item.source, { translation: item.source, polishLevel: isPN ? 2 : 0, flagged: !isPN, flagReason: failReason, provider: 'native_fallback', qualityScore: failScore, sourceHash: getEntryHash(item) });
         }
         await Promise.all(failPromises);
+        if (cli.isActive()) cli.addErr(currentBatch.length);
       }
     }
 
@@ -1333,8 +1444,18 @@ except Exception as e:
                 contextPacket: buildContextPacket(batchEntries[idx], batchEntries[idx].hints || [])
               }));
 
-              const best = await getBestAvailableQualityModel();
-              const corrected = await fixGrammarBatch(problematicEntries, 'polish');
+              // ── A/B Multi-Provider Polish (with fallback to single-provider) ──
+              let corrected;
+              let polishProvider = 'single';
+              const abResult = await polishArbiter.runAbPolishing(problematicEntries, config.TARGET_LANG);
+              if (abResult) {
+                corrected = abResult;
+                polishProvider = 'ab_multi';
+              } else {
+                // Fallback: single-provider polish (original flow)
+                corrected = await fixGrammarBatch(problematicEntries, 'polish');
+              }
+
               const finalStrictTerms = await getGuardedTerminology(problematicEntries);
                             
               for (let j = 0; j < problematicIdx.length; j++) {
@@ -1350,7 +1471,7 @@ except Exception as e:
                                 
                 translations.set(key, improved);
                 batchUpdatePromises.push(saveTranslation(entry, improved, 2, {
-                  provider: best.provider,
+                  provider: polishProvider === 'ab_multi' ? 'ab_polish' : 'polish_single',
                   flagReason: persistentViolation ? 'terminology_violation_persistent' : '',
                   qualityScore: scoreTranslationQuality(key, improved)
                 }));

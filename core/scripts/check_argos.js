@@ -4,6 +4,10 @@ const inquirer = require('inquirer');
 // Cache to prevent infinite loops during a session
 let argosInstalledCache = null;
 
+/**
+ * Detects the available Python interpreter with a robust fallback chain.
+ * @returns {string} The first working command ('py', 'python', or 'python3'), or 'python' as last resort
+ */
 function getPython() {
   const commands = ['py', 'python', 'python3'];
   for (const cmd of commands) {
@@ -14,6 +18,9 @@ function getPython() {
   }
   return 'python'; // Fallback
 }
+
+// Alias for compatibility with the Multi-Language Model Plan (P1a).
+const detectPython = getPython;
 
 function isArgosInstalled() {
   if (argosInstalledCache !== null) return argosInstalledCache;
@@ -28,11 +35,20 @@ function isArgosInstalled() {
   }
 }
 
+/**
+ * Invalidates the cached install state. Useful after `ensureArgos()` or
+ * `installArgosLanguage()` to force the next `isArgosInstalled()` call
+ * to re-evaluate (e.g. when chaining wizard steps).
+ */
+function clearArgosCache() {
+  argosInstalledCache = null;
+}
+
 async function ensureArgos() {
   if (isArgosInstalled()) return true;
 
   console.log('[!] Argos Translate (lokale KI) wurde nicht gefunden.');
-  
+
   if (process.env.GUI_HEALTH_CHECK === 'true') {
     return false;
   }
@@ -67,8 +83,138 @@ async function ensureArgos() {
   return false;
 }
 
+/**
+ * Lists all Argos language packages that are currently installed locally.
+ * Uses Python because the model manifest lives in the argostranslate package.
+ * @returns {Promise<Array<{code: string, name: string}>>} Installed languages, empty on error
+ */
+async function getAvailableArgosLanguages() {
+  const python = getPython();
+  if (!isArgosInstalled()) return [];
+  const script = [
+    'import json',
+    'try:',
+    '  from argostranslate import translate',
+    '  languages = translate.get_installed_languages()',
+    '  result = [{"code": lang.code, "name": lang.name} for lang in languages]',
+    '  print(json.dumps(result))',
+    'except Exception as e:',
+    '  print(json.dumps({"error": str(e)}))'
+  ].join('\n');
+  try {
+    const out = execSync(`${python} -c ${JSON.stringify(script)}`, { encoding: 'utf-8', timeout: 15000 });
+    const parsed = JSON.parse(out.trim());
+    if (parsed && parsed.error) {
+      console.warn(`[WARN] getAvailableArgosLanguages: ${parsed.error}`);
+      return [];
+    }
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.warn(`[WARN] getAvailableArgosLanguages fehlgeschlagen: ${e.message}`);
+    return [];
+  }
+}
+
+/**
+ * Checks which of the given target languages have an installed EN→XX translation model.
+ * @param {string[]} targetLangs - ISO 639-1 codes (e.g. ['de', 'fr', 'pl'])
+ * @returns {Promise<{[code: string]: boolean}>} Map of code -> installed (false on error for all)
+ */
+async function checkArgosLanguages(targetLangs) {
+  if (!Array.isArray(targetLangs) || targetLangs.length === 0) return {};
+  if (!isArgosInstalled()) {
+    return Object.fromEntries(targetLangs.map(code => [code, false]));
+  }
+  const python = getPython();
+  const codesJson = JSON.stringify(targetLangs);
+  const script = [
+    'import json, sys',
+    'try:',
+    '  target_codes = json.loads(sys.argv[1])',
+    '  from argostranslate import translate',
+    '  available = {}',
+    '  for code in target_codes:',
+    '    available[code] = translate.get_translation_from_codes("en", code) is not None',
+    '  print(json.dumps(available))',
+    'except Exception as e:',
+    '  print(json.dumps({"error": str(e)}))'
+  ].join('\n');
+  try {
+    const out = execSync(`${python} -c ${JSON.stringify(script)} ${JSON.stringify(codesJson)}`, { encoding: 'utf-8', timeout: 20000 });
+    const parsed = JSON.parse(out.trim());
+    if (parsed && parsed.error) {
+      console.warn(`[WARN] checkArgosLanguages: ${parsed.error}`);
+      return Object.fromEntries(targetLangs.map(code => [code, false]));
+    }
+    return parsed || {};
+  } catch (e) {
+    console.warn(`[WARN] checkArgosLanguages fehlgeschlagen: ${e.message}`);
+    return Object.fromEntries(targetLangs.map(code => [code, false]));
+  }
+}
+
+/**
+ * Installs the Argos language model for EN→{langCode}.
+ * Prefers the modern CLI: `python -m argostranslate.cli download en {code}`.
+ * Falls back to the Python API on failure.
+ * @param {string} langCode - Target language code (e.g. 'de', 'fr')
+ * @returns {Promise<boolean>} true on success
+ */
+async function installArgosLanguage(langCode) {
+  if (!langCode || typeof langCode !== 'string' || !/^[a-z]{2}(-[A-Z]{2})?$/.test(langCode)) {
+    console.warn(`[WARN] installArgosLanguage: ungueltiger Sprachcode "${langCode}"`);
+    return false;
+  }
+  if (!isArgosInstalled()) {
+    console.warn('[WARN] installArgosLanguage: argostranslate nicht installiert. Bitte zuerst ensureArgos() aufrufen.');
+    return false;
+  }
+  const python = getPython();
+  console.log(`[INFO] Installiere Argos-Sprachmodell: en -> ${langCode}...`);
+
+  // Primary: Modern CLI
+  try {
+    execSync(`${python} -m argostranslate.cli download en ${langCode}`, { stdio: 'inherit', timeout: 180000 });
+    console.log(`[OK] Argos-Sprachmodell en -> ${langCode} installiert.`);
+    return true;
+  } catch (e) {
+    console.warn(`[WARN] CLI-Download fehlgeschlagen (${e.message}). Versuche Fallback...`);
+  }
+
+  // Fallback: Python API
+  const script = [
+    'from argostranslate import package',
+    'package.update_package_index()',
+    `for pkg in package.get_available_packages():`,
+    `    if pkg.from_code == 'en' and pkg.to_code == '${langCode}':`,
+    '        path = pkg.download()',
+    '        package.install_from_path(path)',
+    '        break',
+    'else:',
+    `    raise SystemExit('Kein Paket fuer en -> ${langCode} verfuegbar.')`,
+    'print("OK")'
+  ].join('\n');
+  try {
+    execSync(`${python} -c ${JSON.stringify(script)}`, { stdio: 'inherit', timeout: 180000 });
+    console.log(`[OK] Argos-Sprachmodell en -> ${langCode} installiert (Fallback-Methode).`);
+    return true;
+  } catch (e) {
+    console.error(`[ERROR] Argos-Installation fuer ${langCode} fehlgeschlagen: ${e.message}`);
+    return false;
+  }
+}
+
 if (require.main === module) {
   ensureArgos().then(ok => process.exit(ok ? 0 : 1));
 }
 
-module.exports = { ensureArgos, isArgosInstalled };
+module.exports = {
+  ensureArgos,
+  isArgosInstalled,
+  clearArgosCache,
+  getPython,
+  detectPython,
+  getAvailableArgosLanguages,
+  checkArgosLanguages,
+  installArgosLanguage
+};

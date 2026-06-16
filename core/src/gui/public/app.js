@@ -37,6 +37,9 @@ let currentConfig = {};
 let providerStats = {}; // { gemini: { pass: 0, fail: 0 }, ... }
 let apiProviderStatus = {}; // { gemini: { valid: 0, total: 0, rateLimited: false }, ... }
 let dbSearchResults = [];
+let currentRevisionsSource = '';
+let currentRevisionsLang = '';
+let revisionResults = [];
 let liveStats = {
   activePhase: 'Idle',
   currentMod: '-',
@@ -670,7 +673,8 @@ function renderDbTable() {
             </td>
             <td>${row.target_lang}</td>
             <td>
-                <button onclick="saveDbEntry(${idx})" style="padding: 2px 6px; font-size: 0.6rem; width: auto;">Save</button>
+                <button onclick="saveDbEntry(${idx})" style="padding: 2px 6px; font-size: 0.6rem; width: auto; margin-bottom: 2px;">Save</button>
+                <button onclick="openRevisions('${row.source_text.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${row.target_lang}')" title="Alle gespeicherten Versionen dieser Uebersetzung anzeigen" style="padding: 2px 6px; font-size: 0.6rem; width: auto; background: #332d29; border: 1px solid #444; color: var(--muted);">Rev</button>
             </td>
         </tr>
     `;
@@ -716,6 +720,91 @@ async function _saveDbEntry(idx) {
   } catch (e) {
     input.style.borderColor = 'var(--danger)';
     alert('Fehler beim Speichern in der Datenbank.');
+  }
+}
+
+// ── Revision System ──────────────────────────────────────────────────
+async function openRevisions(sourceText, targetLang) {
+  currentRevisionsSource = sourceText;
+  currentRevisionsLang = targetLang;
+  const modal = document.getElementById('revision-modal');
+  const sourceLabel = document.getElementById('revision-source-text');
+  if (sourceLabel) sourceLabel.textContent = `Original: "${sourceText.substring(0, 120)}${sourceText.length > 120 ? '...' : ''}"`;
+  if (modal) modal.style.display = 'flex';
+  await fetchRevisions();
+}
+
+function closeRevisionModal() {
+  const modal = document.getElementById('revision-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function fetchRevisions() {
+  const container = document.getElementById('revision-list');
+  if (!container) return;
+  container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 10px;">Lade Revisionen...</div>';
+  try {
+    const res = await fetch('/api/revisions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_text: currentRevisionsSource,
+        target_lang: currentRevisionsLang
+      })
+    });
+    revisionResults = await res.json();
+    if (revisionResults.length === 0) {
+      container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 10px;">Keine Revisionen vorhanden.</div>';
+      return;
+    }
+    container.innerHTML = revisionResults.map((rev, idx) => {
+      const isActive = rev.is_active ? ' (AKTIV)' : '';
+      const isRef = rev.is_reference ? ' [Referenz]' : '';
+      const bgColor = rev.is_active ? 'rgba(100, 213, 196, 0.08)' : (rev.is_reference ? 'rgba(216, 151, 60, 0.05)' : 'rgba(255,255,255,0.02)');
+      const borderColor = rev.is_active ? 'var(--success)' : (rev.is_reference ? 'var(--accent)' : 'var(--border)');
+      const qualityColor = (rev.quality_score || 0) >= 80 ? 'var(--success)' : ((rev.quality_score || 0) >= 50 ? 'var(--accent)' : 'var(--danger)');
+      return `
+        <div style="background: ${bgColor}; border: 1px solid ${borderColor}; border-radius: 4px; padding: 8px; margin-bottom: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+            <div style="flex: 1;">
+              <div style="font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-break: break-word; margin-bottom: 4px;">${rev.translation}</div>
+              <div style="font-size: 0.6rem; color: var(--muted);">
+                ${rev.created_at || ''} | ${rev.provider || 'unbekannt'} | Score: <span style="color: ${qualityColor}">${rev.quality_score || 0}</span>${isRef}${isActive}
+                ${rev.flagged ? ' | <span style="color: var(--danger);">Geflaggt: ' + (rev.flag_reason || 'ja') + '</span>' : ''}
+              </div>
+            </div>
+            ${!rev.is_active ? `<button onclick="restoreRevision(${rev.revision_id})" title="Diese Version als aktive Uebersetzung wiederherstellen" style="width: auto; padding: 3px 10px; font-size: 0.6rem; background: transparent; border: 1px solid var(--accent); color: var(--accent); flex-shrink: 0; margin-left: 8px;">Restore</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<div style="color: var(--danger); text-align: center; padding: 10px;">Fehler beim Laden der Revisionen.</div>';
+  }
+}
+
+async function restoreRevision(revisionId) {
+  if (!confirm('Diese Revision als aktive Uebersetzung wiederherstellen? Die aktuelle Version wird als Revision archiviert.')) return;
+  try {
+    const res = await fetch('/api/revisions/restore', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        revision_id: revisionId,
+        source_text: currentRevisionsSource,
+        target_lang: currentRevisionsLang
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert(result.message || 'Revision wiederhergestellt.');
+      await fetchRevisions();
+      searchDb(); // Refresh DB table
+    } else {
+      alert('Fehler: ' + (result.message || 'Unbekannter Fehler'));
+    }
+  } catch (e) {
+    alert('Fehler bei der Wiederherstellung: ' + e.message);
   }
 }
 
@@ -847,11 +936,148 @@ async function fetchHealth() {
   }
 }
 
+// ── P3: Multi-Language Model Status Panel ─────────────────────────────
+async function fetchModelStatus() {
+  try {
+    const res = await fetch('/api/models/status');
+    if (!res.ok) return;
+    const status = await res.json();
+    renderModelStatus(status);
+  } catch (e) {
+    const c = document.getElementById('model-status-container');
+    if (c) c.innerHTML = '<div style="color: var(--danger); padding: 6px 0;">Modell-Status nicht abrufbar.</div>';
+  }
+}
+
+function renderModelStatus(status) {
+  const c = document.getElementById('model-status-container');
+  if (!c || !status) return;
+  if (status.error) {
+    c.innerHTML = `<div style="color: var(--danger); padding: 6px 0;">Fehler: </div><div style="color: var(--danger); padding: 6px 0;" id="model-status-error-msg"></div>`;
+    const errEl = document.getElementById('model-status-error-msg');
+    if (errEl) errEl.textContent = status.error;
+    return;
+  }
+
+  const argos = status.argos || {};
+  const ollama = status.ollama || {};
+  const tCode = status.targetLangCode || '—';
+  const tName = status.targetLang || '';
+
+  const argosIcon = argos.installed ? '✓' : '✗';
+  const argosColor = argos.installed ? 'var(--success)' : 'var(--danger)';
+  const langIcon = argos.targetLangInstalled ? '✓' : (argos.installed ? '✗' : '⏭');
+  const langColor = argos.targetLangInstalled ? 'var(--success)' : (argos.installed ? 'var(--danger)' : 'var(--muted)');
+  const ollamaIcon = ollama.running ? '✓' : '✗';
+  const ollamaColor = ollama.running ? 'var(--success)' : 'var(--danger)';
+
+  // Active pull progress
+  const pulls = ollama.activePulls || {};
+  const pullKeys = Object.keys(pulls);
+  const pullsHtml = pullKeys.length > 0
+    ? pullKeys.map(jobId => {
+        const p = pulls[jobId];
+        const color = p.status === 'success' ? 'var(--success)' : (p.status === 'failed' ? 'var(--danger)' : 'var(--accent)');
+        return `<div style="margin-top: 6px; padding: 4px 6px; background: rgba(255,255,255,0.02); border-radius: 3px; border-left: 2px solid ${color};">
+          <div style="display:flex; justify-content:space-between; font-size:0.6rem;">
+            <span>📥 ${p.model}</span>
+            <span style="color:${color}">${p.status} (${p.percent || 0}%)</span>
+          </div>
+          <div class="progress-bar" style="height: 3px; margin-top: 3px;">
+            <div class="progress-fill" style="width: ${p.percent || 0}%; background: ${color};"></div>
+          </div>
+        </div>`;
+      }).join('')
+    : '';
+
+  // Ollama models
+  const ollamaModelsHtml = (ollama.models && ollama.models.length > 0)
+    ? `<div style="margin-top: 4px; color: var(--muted); font-size: 0.6rem;">${ollama.models.length} lokal: ${ollama.models.slice(0, 3).join(', ')}${ollama.models.length > 3 ? '…' : ''}</div>`
+    : (ollama.running ? '<div style="margin-top: 4px; color: var(--muted); font-size: 0.6rem;">Keine Modelle installiert</div>' : '');
+
+  // Ollama pull UI
+  const ollamaPullUi = ollama.running ? `
+    <div style="display:flex; gap: 4px; margin-top: 6px;">
+      <input type="text" id="ollama-pull-input" placeholder="Modell (z.B. gemma3:4b)" style="flex: 1; margin: 0; font-size: 0.65rem; padding: 4px;">
+      <button onclick="pullOllamaModel()" style="width: auto; padding: 4px 10px; font-size: 0.65rem; background: var(--accent);">PULL</button>
+    </div>
+  ` : '';
+
+  c.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <div>
+        <div style="margin-bottom: 4px;"><span style="color:${argosColor}; font-weight: bold;">${argosIcon}</span> Argos</div>
+        ${!argos.installed ? `<button onclick="installArgosFromUI()" style="width: auto; padding: 3px 8px; font-size: 0.6rem; background: var(--accent); color: #000;">INSTALL ARGS</button>` : ''}
+        <div style="margin-top: 4px;"><span style="color:${langColor};">${langIcon}</span> ${tName} (${tCode})</div>
+        ${(argos.installed && !argos.targetLangInstalled) ? `<button onclick="installArgosLanguageFromUI()" style="width: auto; padding: 3px 8px; font-size: 0.6rem; background: var(--accent); color: #000; margin-top: 2px;">INSTALL ${tCode.toUpperCase()}</button>` : ''}
+      </div>
+      <div>
+        <div style="margin-bottom: 4px;"><span style="color:${ollamaColor}; font-weight: bold;">${ollamaIcon}</span> Ollama</div>
+        ${ollamaModelsHtml}
+        ${ollamaPullUi}
+        ${pullsHtml}
+      </div>
+    </div>
+  `;
+}
+
+async function _installArgosFromUI() {
+  if (!confirm('Argos Translate jetzt installieren? (Python + Default-Sprachmodell)')) return;
+  try {
+    await fetch('/api/action/install-argos', { method: 'POST' });
+    alert('Argos-Installation gestartet. Seite wird in 10s aktualisiert.');
+    setTimeout(fetchModelStatus, 5000);
+  } catch (e) { alert('Fehler: ' + e.message); }
+}
+
+async function _installArgosLanguageFromUI() {
+  try {
+    const res = await fetch('/api/models/install', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'argos-language' })
+    });
+    const result = await res.json();
+    if (result.ok) {
+      alert('Sprachmodell installiert: ' + result.message);
+      setTimeout(fetchModelStatus, 2000);
+    } else {
+      alert('Fehler: ' + result.message);
+    }
+  } catch (e) { alert('Fehler: ' + e.message); }
+}
+
+async function _pullOllamaModel() {
+  const input = document.getElementById('ollama-pull-input');
+  if (!input || !input.value.trim()) return;
+  const model = input.value.trim();
+  try {
+    const res = await fetch('/api/models/ollama/pull', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model })
+    });
+    const result = await res.json();
+    if (result.ok) {
+      input.value = '';
+      setTimeout(fetchModelStatus, 1000);
+    } else {
+      alert('Fehler: ' + result.message);
+    }
+  } catch (e) { alert('Fehler: ' + e.message); }
+}
+
+window.installArgosFromUI = _installArgosFromUI;
+window.installArgosLanguageFromUI = _installArgosLanguageFromUI;
+window.pullOllamaModel = _pullOllamaModel;
+
 // Lifecycle
 setInterval(fetchHealth, 5000);
 setInterval(fetchProviderStatus, 3000);
+setInterval(fetchModelStatus, 10000); // P3: auto-refresh
 fetchHealth();
 fetchProviderStatus();
+fetchModelStatus();
 requestAnimationFrame(tick);
 loadInitialConfig();
 searchDb(); // Initial DB Load
@@ -921,6 +1147,9 @@ async function restoreBackup(modId) {
 
 // Global exposure (HTML onclick handlers refer to these names)
 window.restoreBackup = restoreBackup;
+window.openRevisions = openRevisions;
+window.closeRevisionModal = closeRevisionModal;
+window.restoreRevision = restoreRevision;
 window.togglePatchOverride = togglePatchOverride;
 window.toggleMode = _toggleMode;
 window.toggleBridge = _toggleBridge;

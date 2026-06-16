@@ -1,16 +1,19 @@
 const path = require('path');
 const db = require('./db');
 const scanner = require('./scanner');
+const parser = require('./parser');
 const extractor = require('./extractor');
 const { logRun } = require('./logger');
+const cli = require('./cli-progress');
 
 /**
  * Orchestrates the translation production pipeline.
  */
 class Planner {
-  constructor(config, hooks = {}) {
+  constructor(config, hooks = {}, adapter = null) {
     this.config = config;
     this.hooks = hooks;
+    this.adapter = adapter;
     this.stats = {
       modsFound: 0,
       filesScanned: 0,
@@ -50,17 +53,25 @@ class Planner {
       // 1. SCAN
       this.setPhase('Scanning');
       const mods = await this.scanPhase(modsOverride);
+
+      // CLI Progress: start tracking
+      if (cli.isActive() || !global.guiServer) {
+        cli.startPhase(mode.toUpperCase(), mods.length);
+      }
             
       // 2. PLAN & EXTRACT
-      for (const mod of mods) {
+      for (let i = 0; i < mods.length; i++) {
+        const mod = mods[i];
         this.stats.currentMod = mod.id;
         this.setPhase('Processing Mod');
+        if (cli.isActive()) cli.updateMod(mod.id, i + 1);
         await this.processMod(mod, mode, options);
       }
 
       // 3. FINISH
       this.setPhase('Abgeschlossen');
       this.stats.currentMod = 'Fertig';
+      if (cli.isActive()) cli.finish();
       await this.finishRun(runId, 'success');
       this.printSummary();
       setTimeout(() => this.setPhase('Idle'), 5000);
@@ -96,7 +107,7 @@ class Planner {
       const entries = await require('fs').promises.readdir(this.config.MOD_ROOT, { withFileTypes: true });
       for (const entry of entries) {
         if (entry.isDirectory()) {
-          const mod = await scanner.scanMod(path.join(this.config.MOD_ROOT, entry.name));
+          const mod = await scanner.scanMod(path.join(this.config.MOD_ROOT, entry.name), this.adapter);
           if (mod) {
             mod.source = 'workshop';
             mods.push(mod);
@@ -129,6 +140,10 @@ class Planner {
       if (result && typeof result === 'object') {
         this.stats.stringsExtracted += Number(result.stringsExtracted || 0);
       }
+      // Tick CLI progress after each mod (filesScanned already includes new + cached)
+      if (cli.isActive()) {
+        cli.tick(this.stats.filesScanned, this.stats.totalFiles);
+      }
       return;
     }
         
@@ -136,7 +151,7 @@ class Planner {
     const dbMod = await this.syncModToDb(mod);
         
     // 2. Collect Files
-    const files = await scanner.collectFiles(mod.path);
+    const files = await scanner.collectFiles(mod.path, mod.path, this.adapter);
     this.stats.filesScanned += files.length;
         
     for (const file of files) {
@@ -169,7 +184,8 @@ class Planner {
       return;
     }
 
-    const strings = extractor.extractStrings(content);
+    const format = this.adapter ? this.adapter.getParserFormat(file.fullPath) : undefined;
+    const strings = parser.parse(content, { filePath: file.relativePath, format, adapter: this.adapter });
     this.stats.stringsExtracted += strings.length;
         
     // Save/Update file info in DB

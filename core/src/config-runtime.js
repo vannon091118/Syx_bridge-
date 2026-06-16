@@ -8,7 +8,7 @@ const inquirer = require('inquirer');
 // For OpenRouter we default to the free tier so there is always a zero-cost fallback.
 const OPENROUTER_FREE_MODEL = 'openrouter/free';
 const GROQ_FALLBACK_MODELS   = ['llama-3.1-8b-instant', 'llama3-8b-8192', 'gemma-7b-it'];
-const OLLAMA_FALLBACK_MODELS = ['llama3', 'llama2', 'mistral', 'gemma'];
+const OLLAMA_FALLBACK_MODELS = ['llama3.2', 'llama3.1', 'mistral', 'gemma3', 'gemma4', 'phi4'];
 const OLLAMA_DEFAULT_URL     = 'http://localhost:11434';
 const PLAYER2_DEFAULT_URL    = 'http://localhost:4315/v1';
 
@@ -22,6 +22,16 @@ function firstDefined(...values) {
   return '';
 }
 
+function parseDryRunFlag(value) { return parseEnvFlag(value, false); }
+function isDryRun() {
+  if (_dryRunCache === null) {
+    _dryRunCache = parseDryRunFlag(process.env.SYXBRIDGE_DRY_RUN);
+  }
+  return _dryRunCache;
+}
+function resetDryRunCache() { _dryRunCache = null; }
+let _dryRunCache = null;
+function getGateCounterOpts(logger) { return { logger: logger || null, dryRun: isDryRun(), source: "config-runtime" }; }
 function parseEnvFlag(value, defaultValue = false) {
   if (value === undefined || value === null || value === '') return defaultValue;
   if (typeof value === 'boolean') return value;
@@ -703,12 +713,63 @@ async function persistConfigToEnv(config) {
   await fs.promises.writeFile(envPath, `${lines.join('\n')}\n`, 'utf-8');
 }
 
+/**
+ * Targeted single-variable .env writer.
+ * Reads the current .env (if it exists), replaces the line for `key` (or appends
+ * a new line if absent), and writes the file back. Preserves all other entries
+ * and comments — unlike persistConfigToEnv() which rewrites the whole file and
+ * would clobber unrelated custom env vars.
+ * @param {string} key Uppercase env var name, e.g. 'TARGET_LANG'
+ * @param {string|number|boolean} value Value to persist
+ * @returns {Promise<{written: boolean, key: string, value: string}>}
+ */
+async function persistSingleEnvVar(key, value) {
+  const envPath = path.join(process.cwd(), '.env');
+  const safeKey = String(key || '').trim();
+  if (!safeKey) throw new Error('persistSingleEnvVar: key is required');
+  const safeValue = String(value ?? '').replace(/"/g, '\\"');
+
+  let lines = [];
+  if (fs.existsSync(envPath)) {
+    const raw = await fs.promises.readFile(envPath, 'utf-8');
+    lines = raw.split(/\r?\n/);
+  }
+
+  const keyPrefix = `${safeKey}=`;
+  let found = false;
+  // Match either active lines (`KEY=...`) or commented-out lines (`#KEY=...` /
+  // `  # KEY=...`); the latter should be stripped to avoid leaving dead duplicates
+  // in .env when the user uncomments + re-runs the wizard.
+  const commentedKeyRe = new RegExp(`^\\s*#\\s*${safeKey}\\s*=`);
+  const updated = lines
+    .filter((line) => !commentedKeyRe.test(line))
+    .map((line) => {
+      if (line.startsWith(keyPrefix)) {
+        found = true;
+        return `${safeKey}="${safeValue}"`;
+      }
+      return line;
+    });
+  if (!found) updated.push(`${safeKey}="${safeValue}"`);
+
+  // Strip trailing empty lines but keep exactly one final newline
+  while (updated.length > 0 && updated[updated.length - 1].trim() === '') updated.pop();
+  await fs.promises.writeFile(envPath, `${updated.join('\n')}\n`, 'utf-8');
+  process.env[safeKey] = safeValue;
+  return { written: true, key: safeKey, value: safeValue };
+}
+
 module.exports = {
   ConfigRuntime,
   persistConfigToEnv,
+  persistSingleEnvVar,
   parseEnvFlag,
   parseKeys,
   isUsableTextModel,
   filterLLMs,
-  getDefaultModelForProvider
+  getDefaultModelForProvider,
+  parseDryRunFlag,
+  resetDryRunCache,
+  isDryRun,
+  getGateCounterOpts,
 };
