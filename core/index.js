@@ -3,7 +3,7 @@ const fsp = require('fs').promises;
 const path = require('path');
 const axios = require('axios');
 const inquirer = require('inquirer');
-require('dotenv').config({ quiet: true });
+require('dotenv').config({ path: path.join(__dirname, '.env'), quiet: true });
 
 const Router = require('./src/router');
 const Planner = require('./src/planner');
@@ -93,7 +93,7 @@ let CONFIG = {
   BACKUP_ROOT: path.join(__dirname, 'backups'),
   TARGET_LANG: process.env.TARGET_LANG || 'German',
   NATIVE_MODE: parseEnvFlag(process.env.NATIVE_MODE, true),
-  GRAMMAR_CHECK: process.env.GRAMMAR_CHECK === 'true',
+  GRAMMAR_CHECK: process.env.GRAMMAR_CHECK !== 'false', // BUG-004: Default true — ensures Polish/Audit runs for all entries
   GRAMMAR_PROMPT_FILE: 'grammar_context.txt',
   LOCAL_MODELS_ENABLED: parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, false),
     
@@ -1167,7 +1167,7 @@ async function main() {
         process.exit(0);
       }
       else if (type === 'reload_config') {
-        require('dotenv').config({ path: path.join(process.cwd(), '.env'), override: true });
+        require('dotenv').config({ path: path.join(__dirname, '.env'), override: true });
         applyEnvToConfig();
       }
     });

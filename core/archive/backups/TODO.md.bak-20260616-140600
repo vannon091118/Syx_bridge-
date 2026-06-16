@@ -1,0 +1,37 @@
+# Developer TODO & Report
+
+## 📊 Offene Baustellen (nur PENDING)
+
+### 🟠 P1 — Architektur
+
+### 🟡 P2 — Code-Qualität / Tech-Debt
+
+- [x] **DONE · [WARN-1] `persistConfig` konsolidiert:** `persistConfigToEnv` in `config-runtime.js` als Shared-Funktion; `index.js` und `configure()` delegieren dorthin.
+- [x] **DONE · [BUG-2] Kommentar-Stub in `runtime-ops.js`:** Entfernt und durch klaren Kommentar ersetzt.
+- [x] **DONE · [BUG-3] Platzhalter-Kommentar in `planner.js`:** Durch beschreibenden Kommentar ersetzt.
+
+### 🟢 P3 — Features & Erweiterungen
+
+- [x] **IN PROGRESS · Dynamisches Risiko-Scoring:** Google Free Stress-Test für AvgRisk-Routing. Pre-flight bei ambiguous-risk (1.5-4.0) Batches, dynamische Risk-Scores, DB-Persistierung. Core implementiert in `context-packets.js` + `translation-runtime.js` + `db.js`.
+- [ ] ⏳ **PENDING · Tier A Optimierung:** OpenRouter Free in `ConfigRuntime` für High-Risk-Weiterleitung.
+- [ ] ⏳ **PENDING · Batch-Historie & Fehlversuche:** Payload-Viewer im GUI.
+- [ ] ⏳ **PENDING · Auto-Update der DB:** Hintergrund-Sync ins globale Glossar.
+- [ ] ⏳ **PENDING · Workshop-Builder:** Mod-Uploader/Zipper-Integration.
+
+---
+
+## ✅ Abgeschlossen (v0.15.0-alpha — v0.15.4-patch)
+
+- [x] **BUG-5 Native Mode (P0):** Backup immer frisch, Polish immer, _Info.txt geschützt
+- [x] **BUG-1 PLAYER2_KEYS (P0):** Persistiert in persistConfig + applyEnvToConfig
+- [x] **BUG-4 persistConfig-Divergenz (P0):** CLI + GUI schreiben identische .env
+- [x] **WARN-2 Ollama/Player2 (P1):** executeStageRequest erweitert
+- [x] **M1 Shielding:** Konsolidiert in translateBatch + text-core
+- [x] **M2 Quote Preservation:** parseBatchResponse erhält Dialog-Quotes
+- [x] **M3 Text-Core Cleanup:** applyTranslations optimiert
+- [x] **M6 Architecture Cleanup:** Tote Imports aus planner.js entfernt
+- [x] **Task-4 Prompt-Konsistenz:** Alle Provider gleicher System-Prompt
+- [x] **Mod-Deployment & 1:1 Restore:** NATIVE_MODE Standard + Backup-Mechanismus
+
+→ Detailliertes Changelog: **[core/CHANGELOG.md](core/CHANGELOG.md)**
+→ Audit-Befunde & Testläufe: **[AUDIT_REPORT.md](AUDIT_REPORT.md)**

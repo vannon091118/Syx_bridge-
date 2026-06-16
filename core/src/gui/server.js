@@ -122,20 +122,9 @@ class GuiServer extends EventEmitter {
         return;
       }
 
-      // API: Models
-      if (url.pathname.startsWith('/api/models/')) {
-        const provider = url.pathname.split('/').pop();
-        let handled = false;
-        this.emit('get-models', provider, (models) => {
-          if (handled) return;
-          handled = true;
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(models));
-        });
-        return;
-      }
-
       // API: Model Status (P4 — multi-language model registry)
+      // NOTE: Specific /api/models/* routes MUST come BEFORE the generic
+      // startsWith('/api/models/') prefix block to avoid routing shadowing.
       if (url.pathname === '/api/models/status' && req.method === 'GET') {
         let handled = false;
         const timeout = setTimeout(() => {
@@ -201,6 +190,19 @@ class GuiServer extends EventEmitter {
         this.emit('get-active-pulls', (pulls) => {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(pulls));
+        });
+        return;
+      }
+
+      // API: Models — generic provider lookup (MUST be after specific routes above)
+      if (url.pathname.startsWith('/api/models/')) {
+        const provider = url.pathname.split('/').pop();
+        let handled = false;
+        this.emit('get-models', provider, (models) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(models));
         });
         return;
       }

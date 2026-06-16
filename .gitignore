@@ -17,5 +17,7 @@ server_output.txt
 **/*vannon*
 Gemini.md
 TODO.md
-backups/VISION.md
 VISION.md
+archive/docs/VISION.md
+core/.env.e2e-live-backup
+core/release/

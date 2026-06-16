@@ -2,13 +2,13 @@
 
 ## Handshake-Vermerk
 
-Version: `0.19.5`
+Version: `0.19.05b-19.06`
 
 > 📋 **Doku-Vermerk (15.06.2026):** Der vollständige Technical Review mit 12 Prüfpunkten liegt unter **[TECHNICAL_REVIEW_2026-06-15.md](../../TECHNICAL_REVIEW_2026-06-15.md)**. Alle P1, P2 und P3 Issues behoben. Letzte Änderungen dieser Session: Deep Polish A/B-Vergleich (polish-arbiter.js), CLI-Progress-Indikatoren (cli-progress.js), 5 neue Risk-Kategorien, Revision-System, P3 Quick Wins.
 
 Diese Dokumentation beschreibt den produktiven Stand der Bridge. Das System nutzt eine modulare Architektur mit Web-GUI (Dashboard) und CLI-Modus.
 
-## Produktiver Stand In `0.19.5`
+## Produktiver Stand In `0.19.05b-19.06`
 
 - `index.js`: Operativer Einstiegspunkt und Starter für CLI/GUI.
 - `src/gui/`: Web-Dashboard Kern (Express + Socket.io).
@@ -47,7 +47,7 @@ Der Dispatcher ist jetzt die zentrale Routing-Instanz für alle Translate-Stage-
 
 `LOCAL_MODELS_ENABLED=false` (Default) sperrt Ollama und Player2 im Router. Erst nach explizitem Opt-in des Users (GUI Toggle) werden lokale LLMs freigegeben. **Argos bleibt immer verfügbar** (leichtgewichtig, Offline-Fallback, Multi-Language).
 
-### Risk Routing (erweitert v0.19.5)
+### Risk Routing (erweitert v0.19.05b-19.06)
 
 1. **UI-Strings** (>80%): → Google Free / Argos (kostenlos)
 2. **Low-Risk** (AvgRisk < 2.0): → Argos / Google Free (schnell)
@@ -79,7 +79,7 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - Ergebnisse werden in `translations.stress_test_passed` + `stress_tested_at` persistiert
 - Technische Spec für dedizierte `stress_test_results`-Tabelle: `docs/STRESS_TEST_SPEC.md`
 
-## Polish Arbiter (NEU v0.19.5)
+## Polish Arbiter (NEU v0.19.05b-19.06)
 
 `polish-arbiter.js` ersetzt den Single-Provider Polish durch einen parallelen Multi-Provider A/B-Vergleich:
 
@@ -88,7 +88,7 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - `pickBestPerEntry()`: Bester Score pro Eintrag gewinnt
 - Fallback auf `fixGrammarBatch()` (Single-Provider) wenn <2 Provider verfügbar
 
-## CLI Progress (NEU v0.19.5)
+## CLI Progress (NEU v0.19.05b-19.06)
 
 `cli-progress.js` rendert eine ASCII-Progress-Box im CLI-Mode mit ANSI-Cursor-Control:
 
@@ -98,7 +98,7 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - OK/ERR/Cache kumulative Stats
 - 250ms Render-Throttling gegen Flackern
 
-## Architektur (Stand v0.19.5)
+## Architektur (Stand v0.19.05b-19.06)
 
 - `db.js`: Datenbankzugriff, Migrationen (translations, translation_revisions, glossary_terms)
 - `polish-arbiter.js`: Paralleler Multi-Provider Polish A/B-Vergleich (NEU)

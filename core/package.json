@@ -1,7 +1,7 @@
 {
   "name": "syx-bridge",
-  "version": "0.19.5",
-  "releaseVersion": "0.19.5",
+  "version": "0.19.05b-19.06",
+  "releaseVersion": "0.19.05b-19.06",
   "description": "AI-powered translation bridge for Songs of Syx mods. Optimized for V71.",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,10 @@
     "testline": "npm run lint && npm run test:syntax && node scripts/redteam_baseline.js && node scripts/reconstruct.js",
     "test": "npm run testline",
     "reconstruct": "node scripts/reconstruct.js",
+    "release": "node scripts/release.js",
+    "sync": "node scripts/sync-version.js",
+    "sync:dry": "node scripts/sync-version.js --dry-run",
+    "consistency": "node scripts/check_consistency.js",
     "package": "node scripts/package.js",
     "workshop": "node scripts/workshop_export.js"
   },
@@ -27,7 +31,7 @@
     "axios": "1.17.0",
     "dotenv": "16.3.1",
     "inquirer": "8.2.7",
-    "sql.js": "^1.14.1",
+    "sql.js": "1.14.1",
     "sqlite3": "6.0.1"
   },
   "devDependencies": {

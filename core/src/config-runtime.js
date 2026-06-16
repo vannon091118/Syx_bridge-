@@ -15,6 +15,11 @@ const PLAYER2_DEFAULT_URL    = 'http://localhost:4315/v1';
 const MODEL_BLACKLIST = ['whisper', 'stt', 'tts', 'embedding', 'bert', 'vision', 'guard', 'moderation', 'rerank'];
 const MODEL_WHITELIST = ['llama', 'gemini', 'gpt', 'mixtral', 'gemma', 'claude', 'qwen', 'mistral', 'deepseek', 'yi'];
 
+// P5 Fix: Resolve .env path relative to project root (core/), not process.cwd().
+// When the bridge is started from a parent directory, process.cwd() points elsewhere
+// and persistSingleEnvVar/persistConfigToEnv would write to the wrong location.
+const ENV_PATH = path.join(__dirname, '..', '.env');
+
 function firstDefined(...values) {
   for (const value of values) {
     if (value !== undefined && value !== null && value !== '') return value;
@@ -684,7 +689,7 @@ class ConfigRuntime {
  * Used by CLI (index.js) and config-wizard (ConfigRuntime.configure).
  */
 async function persistConfigToEnv(config) {
-  const envPath = path.join(process.cwd(), '.env');
+  const envPath = ENV_PATH;
   const rows = [
     ['MOD_PATH', firstDefined(config.MOD_ROOT)],
     ['OUTPUT_PATH', firstDefined(config.GAME_MOD_ROOT)],
@@ -724,7 +729,7 @@ async function persistConfigToEnv(config) {
  * @returns {Promise<{written: boolean, key: string, value: string}>}
  */
 async function persistSingleEnvVar(key, value) {
-  const envPath = path.join(process.cwd(), '.env');
+  const envPath = ENV_PATH;
   const safeKey = String(key || '').trim();
   if (!safeKey) throw new Error('persistSingleEnvVar: key is required');
   const safeValue = String(value ?? '').replace(/"/g, '\\"');

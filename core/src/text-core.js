@@ -313,6 +313,8 @@ function placeholdersValid(sourceOrPlaceholders, target) {
 function translationLooksSafe(source, target, placeholders = null) {
   const restored = String(target || '');
   if (!restored || restored.includes('[[') || restored.includes(']]')) return false;
+  // BUG-002 Fix: Pure numbers (batch indices, IDs like "14", "22") are never safe translations.
+  if (/^\d+$/.test(restored)) return false;
   if (placeholders && !placeholdersValid(placeholders, restored)) return false;
   if (!placeholdersValid(source, restored)) return false;
   if (!validateTags(String(source || ''), restored)) return false;

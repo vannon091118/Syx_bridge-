@@ -1,5 +1,46 @@
 # CHANGELOG
 
+## [0.19.05b-19.06] - 2026-06-19 — RELEASE
+
+### Fixed (P0 — DB Quality Bugs)
+- **[BUG-001] Google Free False-Positive Flagging:** `inferFlagReason()` (`translation-runtime.js:314`) flaggte pauschal ALLE google_free-Übersetzungen als `free_machine_translation` — 567+ korrekte Übersetzungen betroffen (98,1% Flagged-Rate). Fix: `scoreTranslationQuality()` wird jetzt VOR `inferFlagReason()` berechnet und via `{ qualityScore }` übergeben. Flag nur noch bei Score < 80. Default `?? 100` für Rückwärtskompatibilität bei anderen Call-Sites.
+- **[BUG-002] Numeric Garbage passes all quality gates:** LLM lieferte Batch-Indizes ("14", "22") statt Übersetzungen — `scoreTranslationQuality()` gab Score 90 (Length-Ratio-Check versagte), `translationLooksSafe()` ließ Zahlen durch. Fix: `if (/^\d+$/.test(tgt)) return 0` in `scoreTranslationQuality()`, `if (/^\d+$/.test(restored)) return false` in `translationLooksSafe()`. `parseBatchResponse()` NICHT gefiltert (Game-Stats wie "42" könnten legitim sein). 26+ Einträge betroffen.
+- **[BUG-003] Argos/Google Free Names-Mangling:** Eigennamen ("Ragnar" → "Ritter", "Kolbeinn" → "In den Warenkorb") wurden von Argos/Google Free als normale Wörter "übersetzt". `isProperNoun()` existierte aber wurde nur im native_runtime-Pfad aufgerufen. Fix: Proper Noun Post-Filter nach Provider-Dispatch in `translateBatch()` für argos/google_free. Common-Words-Allowlist (the, he, she, in, on...) verhindert False-Positives. 194+ Einträge betroffen.
+
+### Fixed (P1 — DB Quality + Scoring)
+- **[BUG-004] Stage 0 — 46% nie auditiert:** `index.js:96` — `GRAMMAR_CHECK` Default von `false` auf `true` geändert (`process.env.GRAMMAR_CHECK !== 'false'`). Polish/Audit-Loop läuft jetzt für flagged und stage<2 Einträge. 1.397+ Einträge werden beim nächsten Run auditiert.
+- **[BUG-005] Revision is_active immer 0:** `translation-runtime.js:~1125` — Nach translations-UPSERT wird die neue Version zusätzlich in `translation_revisions` mit `is_active=1` eingefügt. Vorher gingen nur alte Versionen (is_active=0) in die Revisions-Tabelle. 558+ Revisions haben jetzt einen aktiven Eintrag — Restore funktioniert.
+- **[BUG-006] Score-System binär (nur 20 oder 90):** `translation-runtime.js:299-325` — `scoreTranslationQuality()` lieferte pauschal 90 für fast alle Übersetzungen. Neues granulares Scoring: Baseline 70, Längen-Ratio-Bonus (+15 für 0.5-3.0), Halluzinations-Erkennung (-10 für >3.0), isLikelyTargetLanguageText-Bonus (+15), Source-Reuse-Penalty (-10, Word-Boundary-Regex). Score [0, 95]. Regression-sicher: Baseline 70 landet bei <80 Threshold in inferFlagReason.
+
+### Security
+- **npm audit:** `form-data` CRLF Injection Vulnerability (CVE in 4.0.0-4.0.5) via `axios@1.17.0` behoben. `npm audit fix --force` aktualisierte auf `form-data@4.0.6`. 0 Vulnerabilities nach Fix.
+
+### Added
+- **DB-Fehler-Report:** `core/docs/DB_REPORT_v0.19.5.md` — vollständige DB-Analyse mit 11 Sektionen, 8 Root-Cause-Analysen (Code-Level mit Zeilenverweisen), Provider-Versageraten, Numeric-Garbage-Liste, Argos-Names-Katalog, Stage-0-Verteilung.
+- **DB-Backup:** `core/archive/dbold/translations_2026-06-16.tar.gz` (653 KB) — Snapshot vor P0-Fixes.
+- **Priorisiertes TODO:** `core/docs/TODO.md` — 10 Tickets (3x P0, 3x P1, 3x P2, 2x P3) mit Quick-Win-Reihenfolge.
+- **Projekt-TREE:** `core/TREE.md` — vollständige Verzeichnisstruktur mit Modul-Übersicht.
+
+### Fixed (P5 — Live-E2E Blocker)
+- **[P5] persistSingleEnvVar() .env-Pfad-Mismatch:** `persistConfigToEnv()`, `persistSingleEnvVar()` und `dotenv.config()` nutzten `process.cwd()` für die `.env`-Auflösung. Wenn die Bridge aus dem Projekt-Root gestartet wurde (statt aus `core/`), wurde die `.env` im falschen Verzeichnis gesucht/geschrieben — Sprachwechsel via Wizard schlug still vor. Fix: `path.join(__dirname, '..', '.env')` in `config-runtime.js` (module-level `ENV_PATH`-Konstante), `path.join(__dirname, '.env')` in `index.js` (initial + hot-reload dotenv). Unit-Test (31/31) + Live-Verhalten jetzt konsistent.
+
+### Fixed (BUG-009 + Audit-Befunde)
+- **[BUG-009] Argos DE→DE Feedback-Loop:** Argos/Google Free erhielten bereits übersetzte Texte und produzierten Synonym-Ersatz oder Halluzinationen (z.B. "Menge der Kupplungen" → "Anzahl der Kupplungen", "traurig aussehend" → "Ich bin nicht da"). Fix: `isLikelyTargetLanguageText()` Pre-Filter in `translateBatch()` vor Argos/Google Free Dispatch — Einträge die bereits in der Zielsprache sind werden übersprungen. Re-Expansion nach dem Provider-Call stellt Array-Alignment sicher. 5+ DB-Einträge betroffen.
+- **[AUDIT-1] Routing-Shadowing in gui/server.js:** 5 spezifische `/api/models/*` Routes (status, argos/languages, install, ollama/pull, ollama/pulls) waren unreachable weil der generische `startsWith('/api/models/')` Prefix-Block mit unconditionalem `return` davor stand. Fix: Reihenfolge umgekehrt — spezifische Routes jetzt VOR dem generischen Catch-All.
+- **[AUDIT-2] Irreführende Versionsbezeichnung in SongsOfSyxAdapter.getCoreModMetadata():** Parameter `bridgeVersion` enthielt die SoS-Spiel-Version (71) statt die Bridge-Tool-Version. DESC zeigte "v71" statt "v0.19.05b". Fix: Parameter umbenannt zu `sosMajorVersion`, echte Bridge-Version via `require('../../package.json')` mit try-catch, DESC zeigt jetzt beide Versionen: `SyxBridge v{bridgeVersion} (SoS v{sosMajorVersion})`.
+
+### Added (Tooling & Doku)
+- **Version-Sync-Script:** `core/scripts/sync-version.js` — Liest Version aus package.json und synchronisiert sie automatisch ueber 7 Dateien (README, TREE, cli-progress, docs/README, docs/TODO, CHANGELOG-Header, package.json). Version-Validation (X.Y.Z Pflicht), `--dry-run` Modus. _Info.txt explizit ausgeschlossen. npm-scripts: `npm run sync` / `npm run sync:dry`.
+- **Release-Script:** `core/scripts/release.js` — Baut sauberes Workshop-Release (45 Dateien, 152 KB ZIP) in `core/release/SyxBridge_v{version}/`. Enthaelt nur Runtime: start.bat, README.md, V70/, V71/, core/index.js + src/ + 5 Runtime-Skripte. Keine Dev-Tools, Docs, Archive, DB oder node_modules.
+- **AGENTS.md:** Neue Datei im Root. Dokumentiert alle 10 Codebuff Sub-Agents, Orchestrations-Patterns (Root-Cause-Analyse, Release-Build, Bug-Fix), und Regeln (_Info.txt sacred, keine destruktiven Befehle, Reviewer-Pflicht).
+
+### Tests
+- Syntax-Check: 41/41 PASS (inkl. 2 neue Scripts)
+- Parser Smoke: 26/26 PASS
+- Gate-Counter Smoke: PASS
+- npm audit: 0 Vulnerabilities
+- Sync-Version Dry-Run: PASS (2 Dateien erkannt, _Info.txt ignoriert)
+
 ## [0.19.5] - 2026-06-16 — RELEASE
 
 ### Added

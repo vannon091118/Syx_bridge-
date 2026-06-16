@@ -94,7 +94,7 @@ function buildLines() {
   lines.push(`\u2554${'\u2550'.repeat(WIDTH - 2)}\u2557`);
 
   // Title
-  const title = ' SYX BRIDGE CLI \u2014 v0.19.5 ';
+  const title = ' SYX BRIDGE CLI \u2014 v0.19.05b-19.06';
   const titlePad = WIDTH - 2 - title.length;
   const titleLeft = Math.floor(titlePad / 2);
   const titleRight = titlePad - titleLeft;

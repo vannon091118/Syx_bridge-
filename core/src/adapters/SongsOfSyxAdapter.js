@@ -63,13 +63,18 @@ class SongsOfSyxAdapter extends GameAdapter {
     return 'BridgeCore';
   }
 
-  getCoreModMetadata(bridgeVersion) {
+  getCoreModMetadata(sosMajorVersion) {
+    let bridgeVersion = '0.0.0';
+    try {
+      const pkg = require('../../package.json');
+      bridgeVersion = pkg.releaseVersion || pkg.version;
+    } catch (e) { /* fallback if package.json not found */ }
     return this.formatMetadata({
       VERSION: '1.0.0',
-      GAME_VERSION_MAJOR: bridgeVersion,
+      GAME_VERSION_MAJOR: sosMajorVersion,
       GAME_VERSION_MINOR: 0,
       NAME: 'AI Bridge Core',
-      DESC: `SyxBridge Translation Core (v${bridgeVersion}). Enthaelt alle KI-uebersetzten Texte fuer Mods. Diese Mod MUSS im Launcher aktiviert sein. Falls Texte fehlen: SyxBridge neu starten und VOLL-AUTO SYNC ausfuehren.`,
+      DESC: `SyxBridge v${bridgeVersion} (SoS v${sosMajorVersion}). Enthaelt alle KI-uebersetzten Texte fuer Mods. Diese Mod MUSS im Launcher aktiviert sein. Falls Texte fehlen: SyxBridge neu starten und VOLL-AUTO SYNC ausfuehren.`,
       AUTHOR: 'Vannon / SyxBridge',
       INFO: 'ANLEITUNG: 1) BridgeCore im SoS-Launcher aktivieren. 2) Nur SyxBridge aendert diese Mod - nicht manuell editieren. 3) Bei fehlenden Uebersetzungen: SyxBridge Dashboard oeffnen -> VOLL-AUTO SYNC.'
     });

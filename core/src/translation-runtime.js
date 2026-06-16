@@ -300,9 +300,29 @@ function createTranslationRuntime(options) {
     const src = normalizeWhitespace(source);
     const tgt = normalizeWhitespace(translation);
     if (!tgt) return 0;
+    // BUG-002 Fix: Pure numbers (batch indices, IDs) are never valid translations.
+    if (/^\d+$/.test(tgt)) return 0;
     if (src === tgt) return isLikelyTargetLanguageText(tgt) ? 80 : 25;
-    if (tgt.length < Math.max(2, Math.floor(src.length * 0.2))) return 20;
-    return 90;
+
+    // BUG-006 Fix: Granular scoring instead of always returning 90.
+    let score = 70; // baseline for a non-empty, non-identical translation
+
+    // Length ratio check — too short or too long is suspicious
+    const lenRatio = tgt.length / Math.max(1, src.length);
+    if (lenRatio < 0.2) return 20; // too short — likely truncated or garbage
+    if (lenRatio >= 0.5 && lenRatio <= 3.0) score += 15; // good length range
+    else if (lenRatio > 3.0) score -= 10; // suspiciously long — possible hallucination
+
+    // Target language detection — if translation actually looks like target language
+    if (isLikelyTargetLanguageText(tgt)) score += 15;
+
+    // Source reuse check — if translation still contains English words from source
+    const srcTokens = src.toLowerCase().split(/\s+/);
+    const tgtLower = tgt.toLowerCase();
+    const reusedWords = srcTokens.filter(w => w.length > 3 && new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(tgtLower)).length;
+    if (srcTokens.length > 1 && reusedWords / srcTokens.length > 0.5) score -= 10;
+
+    return Math.max(0, Math.min(95, score));
   }
 
   function inferFlagReason(source, translation, provider, options = {}) {
@@ -311,7 +331,9 @@ function createTranslationRuntime(options) {
     const tgt = normalizeWhitespace(translation);
     if (options.forcedFallback) reasons.push(options.forcedFallback);
     if (!tgt) reasons.push('empty_translation');
-    if (provider === 'google_free') reasons.push('free_machine_translation');
+    // BUG-001 Fix: Only flag google_free if quality is actually poor (score < 80).
+    // Previously ALL google_free translations were unconditionally flagged.
+    if (provider === 'google_free' && (options.qualityScore ?? 100) < 80) reasons.push('free_machine_translation');
     if (src === tgt && !isLikelyTargetLanguageText(tgt)) reasons.push('source_reused');
     if (tgt.includes('[[') || tgt.includes(']]')) reasons.push('shield_leak');
     return reasons.join('|');
@@ -941,6 +963,26 @@ except Exception as e:
       }
     }
 
+    // BUG-009 Fix: Pre-filter entries already in target language for Argos/Google Free.
+    // These providers lack LLM intelligence and will "translate" DE→DE producing garbage
+    // (synonym swaps, hallucinations). Skip them and use the original text.
+    const skipIndices = new Set();
+    if (resolvedRoute.provider === 'argos' || resolvedRoute.provider === 'google_free') {
+      for (let i = 0; i < entries.length; i++) {
+        if (isLikelyTargetLanguageText(entries[i].source)) {
+          skipIndices.add(i);
+        }
+      }
+      if (skipIndices.size > 0) {
+        console.log(`[BUG-009] ${skipIndices.size}/${entries.length} Eintraege bereits in ${config.TARGET_LANG} — ueberspringe ${resolvedRoute.provider}-Uebersetzung.`);
+      }
+    }
+
+    // Build filtered batch for providers that need it (Argos/Google Free)
+    const filteredEntries = skipIndices.size > 0
+      ? entries.filter((_, i) => !skipIndices.has(i))
+      : entries;
+
     const texts = entries.map(entry => entry.source);
     const preview = texts.map(t => t.length > 25 ? t.substring(0, 22) + '...' : t).join(' | ');
     console.log(`[BATCH] (${resolvedRoute.provider}/${resolvedRoute.model || 'default'}) [${texts.length} Texte]: ${preview}`);
@@ -954,9 +996,43 @@ except Exception as e:
     else if (resolvedRoute.provider === 'groq') rawTranslations = await callGroqBatch(entries, resolvedRoute.model);
     else if (resolvedRoute.provider === 'openrouter') rawTranslations = await callOpenRouterBatch(entries, resolvedRoute.model);
     else if (resolvedRoute.provider === 'ollama') rawTranslations = await callOllamaBatch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'argos') rawTranslations = await callArgosBatch(entries.map(e => e.protectedText));
+    else if (resolvedRoute.provider === 'argos') rawTranslations = await callArgosBatch(filteredEntries.map(e => e.protectedText));
     else if (resolvedRoute.provider === 'player2') rawTranslations = await callPlayer2Batch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'google_free') rawTranslations = await callGoogleTranslateFree(entries.map(e => e.protectedText));
+    else if (resolvedRoute.provider === 'google_free') rawTranslations = await callGoogleTranslateFree(filteredEntries.map(e => e.protectedText));
+
+    // BUG-009 continued: Re-expand filtered results to full length, inserting
+    // original text for skipped entries so result array aligns with `entries`.
+    if (skipIndices.size > 0 && rawTranslations && (resolvedRoute.provider === 'argos' || resolvedRoute.provider === 'google_free')) {
+      const expanded = [];
+      let filteredIdx = 0;
+      for (let i = 0; i < entries.length; i++) {
+        if (skipIndices.has(i)) {
+          expanded.push(entries[i].source); // Already target language — use original
+        } else {
+          expanded.push(rawTranslations[filteredIdx++]);
+        }
+      }
+      rawTranslations = expanded;
+    }
+
+    // BUG-003 Fix: Argos and Google Free mangle proper nouns ("Ragnar" -> "Ritter",
+    // "Kolbeinn" -> "In den Warenkorb"). Post-filter: if source is a proper noun,
+    // preserve the original. Allowlist prevents false positives on common English words
+    // like "The", "He", "She" that isProperNoun() would also match.
+    if (resolvedRoute.provider === 'argos' || resolvedRoute.provider === 'google_free') {
+      const _properNounAllowlist = new Set([
+        'the', 'a', 'an', 'in', 'on', 'at', 'to', 'of', 'is', 'it', 'he', 'she',
+        'do', 'go', 'if', 'or', 'be', 'my', 'me', 'we', 'us', 'no', 'so', 'up',
+        'by', 'as', 'am', 'oh', 'hi', 'ok'
+      ]);
+      rawTranslations = rawTranslations.map((translation, i) => {
+        const source = entries[i].source;
+        if (isProperNoun(source) && !_properNounAllowlist.has(source.toLowerCase())) {
+          return source; // Preserve original proper noun — don't mangle it
+        }
+        return translation;
+      });
+    }
 
     if (!rawTranslations || rawTranslations.length !== texts.length) {
       throw new Error(`Batch-Antwort von ${resolvedRoute.provider} hat falsche Anzahl an Zeilen (${rawTranslations ? rawTranslations.length : 0}/${texts.length}).`);
@@ -1100,6 +1176,18 @@ except Exception as e:
                 review_count = COALESCE(translations.review_count, 0) + 1,
                 updated_at = CURRENT_TIMESTAMP`,
     [sourceText, sourceHash, config.TARGET_LANG, translation, polishLevel, provider, flagged, flagReason, qualityScore]);
+
+    // BUG-005 Fix: Also insert the NEW version into translation_revisions with is_active=1.
+    // Previously only old versions were archived (is_active=0), making Restore impossible.
+    try {
+      await dbRun(
+        `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0)`,
+        [sourceText, config.TARGET_LANG, translation, provider, qualityScore, flagged, flagReason]
+      );
+    } catch (e) {
+      // Non-critical: revision save is best-effort
+    }
 
     if (global.guiServer) {
       global.guiServer.broadcastDbSample(sourceText, translation);
@@ -1345,13 +1433,16 @@ except Exception as e:
           const entry = currentBatch[j];
           const source = entry.source;
           const translated = result.translations[j];
-          const flagReason = inferFlagReason(source, translated, result.provider);
+          // BUG-001 Fix: Compute qualityScore BEFORE inferFlagReason so google_free
+          // flagging can be gated on actual quality instead of unconditionally applied.
+          const qualityScore = scoreTranslationQuality(source, translated);
+          const flagReason = inferFlagReason(source, translated, result.provider, { qualityScore });
           translations.set(source, translated);
                     
           const saveMeta = {
             provider: result.provider,
             flagReason,
-            qualityScore: scoreTranslationQuality(source, translated)
+            qualityScore
           };
                     
           savePromises.push(saveTranslation(entry, translated, 0, saveMeta));
