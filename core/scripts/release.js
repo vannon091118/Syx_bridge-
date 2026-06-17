@@ -103,6 +103,14 @@ if (fs.existsSync(readmeSrc)) {
   console.log('  ✓ README.md');
 }
 
+// AGENTS.md Regel: _Info.txt gehört IMMER ins Root
+const infoSrc = path.join(rootDir, '_Info.txt');
+if (fs.existsSync(infoSrc)) {
+  fs.copyFileSync(infoSrc, path.join(stageDir, '_Info.txt'));
+  fileCount++;
+  console.log('  ✓ _Info.txt');
+}
+
 // ── 2. Mod assets (V70 + V71) ──────────────────────────────────────
 console.log('[2/4] Kopiere Mod-Assets (V70 + V71)...');
 for (const ver of ['V70', 'V71']) {
