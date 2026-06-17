@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
 const inquirer = require('inquirer');
 
 // Cache to prevent infinite loops during a session
@@ -102,7 +102,10 @@ async function getAvailableArgosLanguages() {
     '  print(json.dumps({"error": str(e)}))'
   ].join('\n');
   try {
-    const out = execSync(`${python} -c ${JSON.stringify(script)}`, { encoding: 'utf-8', timeout: 15000 });
+    const result = spawnSync(python, ['-'], { input: script, encoding: 'utf-8', timeout: 15000 });
+    if (result.error) throw result.error;
+    if (result.status !== 0) throw new Error(result.stderr || `Python exited with code ${result.status}`);
+    const out = result.stdout;
     const parsed = JSON.parse(out.trim());
     if (parsed && parsed.error) {
       console.warn(`[WARN] getAvailableArgosLanguages: ${parsed.error}`);
@@ -140,7 +143,13 @@ async function checkArgosLanguages(targetLangs) {
     '  print(json.dumps({"error": str(e)}))'
   ].join('\n');
   try {
-    const out = execSync(`${python} -c ${JSON.stringify(script)} ${JSON.stringify(codesJson)}`, { encoding: 'utf-8', timeout: 20000 });
+    // Inline codesJson directly into the script to avoid sys.argv + shell escaping issues on Windows.
+    // codesJson is already a valid Python literal (e.g. ["de"]).
+    const fullScript = script.replace('json.loads(sys.argv[1])', codesJson);
+    const result = spawnSync(python, ['-'], { input: fullScript, encoding: 'utf-8', timeout: 20000 });
+    if (result.error) throw result.error;
+    if (result.status !== 0) throw new Error(result.stderr || `Python exited with code ${result.status}`);
+    const out = result.stdout;
     const parsed = JSON.parse(out.trim());
     if (parsed && parsed.error) {
       console.warn(`[WARN] checkArgosLanguages: ${parsed.error}`);
@@ -195,7 +204,9 @@ async function installArgosLanguage(langCode) {
     'print("OK")'
   ].join('\n');
   try {
-    execSync(`${python} -c ${JSON.stringify(script)}`, { stdio: 'inherit', timeout: 180000 });
+    const result = spawnSync(python, ['-'], { input: script, stdio: 'inherit', timeout: 180000 });
+    if (result.error) throw result.error;
+    if (result.status !== 0) throw new Error(`Python exited with code ${result.status}`);
     console.log(`[OK] Argos-Sprachmodell en -> ${langCode} installiert (Fallback-Methode).`);
     return true;
   } catch (e) {

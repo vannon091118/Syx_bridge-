@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.19.05c-17.06] - 2026-06-17 — PATCH
+
+### Fixed
+- **[BUG-010] check_argos.js Windows Shell-Escaping:** `execSync()` für Python-Subprocess-Calls durch `spawnSync()` ersetzt. Vermeidet Shell-Escaping-Probleme auf Windows bei JSON-Literals und Sonderzeichen in Python-Scripts. `codesJson` wird direkt inline in das Python-Script injiziert statt als `sys.argv[1]` übergeben — umgeht komplexe Shell-Quoting-Issues. Alle 3 Python-Call-Sites (`getAvailableArgosLanguages`, `checkArgosLanguages`, `installArgosLanguage`) betroffen.
+
+### Performance
+- **[PERF-001] GUI Lazy-Loading:** Model-Status und Provider-Stats werden jetzt nur noch geladen wenn der Settings-Dropdown geöffnet wird (statt beim Start). Eliminiert 3 schwere parallele Requests beim Laden (model-status startet 2x Python-Subprocess). `startSettingsPolling()`/`stopSettingsPolling()` funktioniert als on/off-toggle. Backups-Loading um 2s verzögert und Intervall auf 15s reduziert (vorher 10s). DB-Initial-Load mit Default-Limit 50 (vorher unbegrenzt).
+- **[PERF-002] DB-Suche Server-Side Limit:** `/api/db/search` akzeptiert jetzt optionales `?limit=N` Parameter (Default 50, Max 500). Verhindert große JSON-Payloads beim Initial-Load und bei Suchanfragen.
+
 ## [0.19.05b-19.06] - 2026-06-19 — RELEASE
 
 ### Fixed (P0 — DB Quality Bugs)

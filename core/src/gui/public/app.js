@@ -1071,16 +1071,21 @@ window.installArgosFromUI = _installArgosFromUI;
 window.installArgosLanguageFromUI = _installArgosLanguageFromUI;
 window.pullOllamaModel = _pullOllamaModel;
 
-// Lifecycle
+// Lifecycle — PERFORMANCE: Lazy-load heavy endpoints.
+// Only Health + Config + DB load immediately. Model-Status, Provider-Stats
+// and Backups load ONLY when the user opens the Settings dropdown or
+// the respective panel becomes visible. This eliminates 3 slow parallel
+// requests on startup (model-status spawns 2x Python subprocess!).
+
+let _modelStatusInterval = null;
+let _providerStatusInterval = null;
+
+// Core: Always active
 setInterval(fetchHealth, 5000);
-setInterval(fetchProviderStatus, 3000);
-setInterval(fetchModelStatus, 10000); // P3: auto-refresh
 fetchHealth();
-fetchProviderStatus();
-fetchModelStatus();
 requestAnimationFrame(tick);
 loadInitialConfig();
-searchDb(); // Initial DB Load
+searchDb(''); // Initial DB Load (limited)
 
 // Keep session alive
 setInterval(() => {
@@ -1089,6 +1094,19 @@ setInterval(() => {
     body: JSON.stringify({ sessionId })
   }).catch(() => {});
 }, 30000);
+
+// Lazy: Model-Status + Provider-Stats only when Settings dropdown is open
+function startSettingsPolling() {
+  if (_modelStatusInterval) return; // already running
+  fetchModelStatus();
+  fetchProviderStatus();
+  _modelStatusInterval = setInterval(fetchModelStatus, 10000);
+  _providerStatusInterval = setInterval(fetchProviderStatus, 3000);
+}
+function stopSettingsPolling() {
+  if (_modelStatusInterval) { clearInterval(_modelStatusInterval); _modelStatusInterval = null; }
+  if (_providerStatusInterval) { clearInterval(_providerStatusInterval); _providerStatusInterval = null; }
+}
 
 async function loadBackups() {
   const container = document.getElementById('backup-list');
@@ -1157,7 +1175,11 @@ window.saveDbEntry = _saveDbEntry;
 window.addKeyRow = _addKeyRow;
 window.saveKeysFromModal = _saveKeysFromModal;
 window.toggleLocalModels = _toggleLocalModels;
+window.startSettingsPolling = startSettingsPolling;
+window.stopSettingsPolling = stopSettingsPolling;
 
-// Initialize backups loading
-loadBackups();
-setInterval(loadBackups, 10000);
+// Initialize backups loading — DEFERRED (loads after 2s so initial page is fast)
+setTimeout(() => {
+  loadBackups();
+  setInterval(loadBackups, 15000); // Poll every 15s instead of 10s
+}, 2000);

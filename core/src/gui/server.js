@@ -250,11 +250,14 @@ class GuiServer extends EventEmitter {
         return;
       }
 
-      // API: DB Browser Search
+      // API: DB Browser Search (default limit 50 for fast initial load)
       if (url.pathname === '/api/db/search' && req.method === 'GET') {
         const query = url.searchParams.get('q') || '';
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10) || 50, 500);
         let handled = false;
         this.emit('db-search', query, (results) => {
+          // Enforce limit on server side
+          if (Array.isArray(results) && results.length > limit) results.length = limit;
           if (handled) return;
           handled = true;
           res.writeHead(200, { 'Content-Type': 'application/json' });

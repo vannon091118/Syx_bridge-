@@ -580,14 +580,16 @@
     <script src="/public/app.js"></script>
     <script>
         function toggleSettings() {
-            // Need to wait until liveStats exists in window or access from app.js context. 
-            // In app.js, liveStats is top-level. 
             if (window.liveStats && window.liveStats.isRunning) {
                 alert("Einstellungen können während eines aktiven Laufs nicht geändert werden!");
                 return;
             }
             const dropdown = document.getElementById('settings-dropdown');
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            const isOpen = dropdown.style.display !== 'none';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            // Lazy-load: only poll model-status + provider-stats while dropdown is open
+            if (!isOpen && window.startSettingsPolling) window.startSettingsPolling();
+            if (isOpen && window.stopSettingsPolling) window.stopSettingsPolling();
         }
     </script>
 </body>
