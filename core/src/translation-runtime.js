@@ -489,7 +489,7 @@ function createTranslationRuntime(options) {
     else if (resolvedRoute.provider === 'ollama') rawTranslations = await clients.callOllamaBatch(entries, resolvedRoute.model);
     else if (resolvedRoute.provider === 'argos') rawTranslations = await clients.callArgosBatch(filteredEntries.map(e => e.protectedText));
     else if (resolvedRoute.provider === 'player2') rawTranslations = await clients.callPlayer2Batch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'google_free') rawTranslations = await callGoogleTranslateFree(filteredEntries.map(e => e.protectedText));
+    else if (resolvedRoute.provider === 'google_free') rawTranslations = await clients.callGoogleTranslateFree(filteredEntries.map(e => e.protectedText));
 
     // BUG-009 continued: Re-expand filtered results to full length, inserting
     // original text for skipped entries so result array aligns with `entries`.
