@@ -134,7 +134,6 @@ Syx_bridge-/
 
 | Version | Datum | Was ist passiert? |
 |---|---|---|
-| `v0.19.6` | 2026-06-19 | Release: Version vereinheitlicht, Doku konsolidiert, AGENTS.md erweitert |
 | `v0.19.05b` | 2026-06-15 | Provider Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown, _Info.txt-Verbesserung |
 | `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, Google-Free Stress-Test, persistConfig konsolidiert, Route-Pipeline |
 | `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer |
@@ -144,28 +143,31 @@ Syx_bridge-/
 ---
 
 ## ⚠️ Status: Alpha — Ehrliche Ansage
-*(aktualisiert 2026-06-19, v0.19.6 Release)*
+*(aktualisiert 2026-06-16, nach Recovery aus Session-Abbruch 2026-06-15 23:18:53 UTC)*
 
 | Bereich | Stand |
 |---|---|
 | Version (CHANGELOG) | **v0.19.6** |
-| Version (package.json) | v0.19.6 |
+| Version (package.json) | v0.19.6|
 | Reifegrad | Alpha, Solo-Projekt, im Daily-Use |
-| Letztes Release | v0.19.6 (2026-06-19) — 47 Dateien, 135 KB ZIP |
-| **Live-Limitations UI** | **Patch Mode** deaktiviert — Rest funktioniert |
+| Letzte erfolgreiche Runs | #9 + #10 am 2026-06-15 um 22:44/22:45 UTC |
+| Letzter Abbruch | 2026-06-15 23:18:53 (manual cancel / forced shutdown) |
+| **Live-Limitations UI** | **Patch Mode** im Control-Panel deaktiviert (buggy) — Rest funktioniert |
 
-### Known Issues
-| ID | Fehler | Severity |
-|----|--------|----------|
-| **F1** | Argos Python SyntaxError (spawnSync-Fix unwirksam) | 🔴 P0 |
-| **F2** | `_dbGet is not a function` — Revision skipped | 🟠 P1 |
-| **F3** | 99,7% Stage 0 — 722/724 Einträge nie auditiert | 🟠 P1 |
-| **F4** | Exporter-Syntax: 45× discard/ok:false in Smoke-Tests | 🟡 P2 |
+### Aktive Roadmap
+- **P1 (Architektur):** leer ✅
+- **P2 (Tech-Debt, WARN-1/BUG-2/BUG-3):** alle DONE ✅
+- **P3 (Features):** Dynamisches Risiko-Scoring **IN PROGRESS** (Core in , ,  fertig → Integration/E2E-Live offen)
+- **P3 pending:** Tier-A Optim. (OpenRouter Free), Batch-Historie/Payload-Viewer, Auto-Update DB → Glossar, Workshop-Builder
+- **Parser-Vorbereitung:** noch nicht angelaufen — kein  (grep = 0 Treffer)
+
+### Blocker
+- **P5 — Multi-Language-Wizard:**  wählt Sprache ok, aber  schreibt  im Live-E2E nicht zuverlässig (Unit ok, vermutlich cwd/Caching-Mismatch).
 
 ### Bug-Report-Pack
-- `log.txt`, `runs.jsonl`, `debug_payloads.txt`
-- `.env` immer mit redigierten Keys (nie die Keys mitsenden!)
-- optional: `translations.db` + `CHANGELOG.md`, falls DB-Analyse nötig
+- , , 
+-  immer mit redigierten Keys ()
+- optional:  + /, falls WAL-Checkpoint nötig
 
 💬 Kontakt / Contact
 

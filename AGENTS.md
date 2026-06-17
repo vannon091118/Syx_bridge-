@@ -1,6 +1,6 @@
 # 🤖 AGENTS.md — SyxBridge Sub-Agent Reference
 
-> **Version:** v0.19.05b-19.06 | **Stand:** 2026-06-19 (Release)
+> **Version:** v0.19.05d-17.06 | **Stand:** 2026-06-19 (Updated)
 > Dieses Dokument beschreibt alle verfügbaren Sub-Agents die von Buffy (Codebuff) orchestriert werden.
 > **Regel:** Keine Dependencies die wir selbst mit Code lösen können. Kein tmux. Keine Lockfiles im Release.
 
@@ -111,3 +111,42 @@ CHANGELOG LESEN / AKTUELL HALTEN VISIONS.MD BLEIBT NUR LOKAL und immer bei jedem
 6. **Tests laufen lassen:** Nach jedem Fix: Syntax + passende Tests
 7. **Keine External Dependencies:** Keine Dependencies die wir selbst mit Code lösen können (tmux, lockfiles, etc.)
 8. **CHANGELOG aktuell halten:** Nach jedem Fix den CHANGELOG updaten
+9. **DB-Retention am Session-Ende:** Nach jeder Session oder vor jedem grösseren Fix den User fragen ob die aktuelle `translations.db` archiviert werden soll. Siehe § DB-Retention & Backup-Strategie.
+
+---
+
+## § DB-Retention & Backup-Strategie
+
+> **Ziel:** Reproduzierbare Vorher/Nachher-Vergleiche über Fixes und Sessions hinweg.
+> **Empfehlung:** Vor jedem grösseren Fix die DB sichern, nach jeder Session entscheiden ob die aktuelle DB archiviert wird.
+
+### Sortierstrategie
+
+Format: `translations_YYYY-MM-DD_{fix-tag}.tar.gz`
+
+| Tag | Bedeutung | Beispiel |
+|-----|-----------|---------|
+| `before_{fix-id}` | Vor einem Fix | `translations_2026-06-16_before_BUG001.tar.gz` |
+| `after_{fix-id}` | Nach einem Fix | `translations_2026-06-16_after_BUG001.tar.gz` |
+| `before_session` | Vor einer Session | `translations_2026-06-19_before_session_ANALYSE.tar.gz` |
+| `session` | Session-Ende | `translations_2026-06-19_session_ANALYSE.tar.gz` |
+| `release` | Release-Snapshot | `translations_2026-06-17_release_v0.19.05d.tar.gz` |
+
+**Ablage:** `core/archive/dbold/` (bereits existierend).
+
+### Archivierungs-Flow
+
+1. Vor Fix: `translations.db` → `dbold/translations_YYYY-MM-DD_before_{bugid}.tar.gz`
+2. Fix implementieren + testen
+3. Nach Fix: Aktuelle DB analysieren → Report mit Vorher/Nachher-Metriken
+4. Nach Session: User fragen: **„Soll die aktuelle DB archiviert werden? (Empfohlen bei Metrik-Änderung >5% oder neuen Einträgen >100)“**
+5. Bei Ja: `dbold/translations_YYYY-MM-DD_session_{thema}.tar.gz`
+
+### Vergleichs-Metriken (für Reports)
+
+- **Gesamteinträge** — Erwartung: steigt bei neuen Runs
+- **Flagged-Rate** — Erwartung: sinkt nach Quality-Fixes
+- **Stage-0-Anteil** — Erwartung: sinkt nach Audit/Polish-Läufen
+- **Ø Quality-Score** — Erwartung: steigt nach Provider-/Scoring-Fixes
+- **Aktive Revisions** — Erwartung: 100% nach BUG-005-Fix
+- **Provider-Verteilung** — Dokumentiert welche Provider dominieren

@@ -2,7 +2,7 @@
 
 ## Handshake-Vermerk
 
-Version: `0.19.05b-19.06`
+Version: `0.19.6`
 
 > 📋 **Doku-Vermerk (17.06.2026):** Patch-Release nach v0.19.05b. Änderungen: Windows Shell-Escaping Fix (execSync → spawnSync in check_argos.js), GUI Lazy-Loading (Model-Status + Provider-Stats nur bei offenem Settings-Dropdown), DB-Suche mit Server-Side Limit (Default 50). Alle P0/P1/P2/P3 Issues aus v0.19.05b behoben. Full Technical Review unter **[TECHNICAL_REVIEW_2026-06-15.md](../archive/docs/TECHNICAL_REVIEW_2026-06-15.md)**.
 
@@ -47,7 +47,7 @@ Der Dispatcher ist jetzt die zentrale Routing-Instanz für alle Translate-Stage-
 
 `LOCAL_MODELS_ENABLED=false` (Default) sperrt Ollama und Player2 im Router. Erst nach explizitem Opt-in des Users (GUI Toggle) werden lokale LLMs freigegeben. **Argos bleibt immer verfügbar** (leichtgewichtig, Offline-Fallback, Multi-Language).
 
-### Risk Routing (erweitert v0.19.05b-19.06)
+### Risk Routing (erweitert v0.19.6-19.06)
 
 1. **UI-Strings** (>80%): → Google Free / Argos (kostenlos)
 2. **Low-Risk** (AvgRisk < 2.0): → Argos / Google Free (schnell)
@@ -79,7 +79,7 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - Ergebnisse werden in `translations.stress_test_passed` + `stress_tested_at` persistiert
 - Technische Spec für dedizierte `stress_test_results`-Tabelle: `docs/STRESS_TEST_SPEC.md`
 
-## Polish Arbiter (NEU v0.19.05b-19.06)
+## Polish Arbiter (NEU v0.19.6-19.06)
 
 `polish-arbiter.js` ersetzt den Single-Provider Polish durch einen parallelen Multi-Provider A/B-Vergleich:
 
@@ -88,7 +88,7 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - `pickBestPerEntry()`: Bester Score pro Eintrag gewinnt
 - Fallback auf `fixGrammarBatch()` (Single-Provider) wenn <2 Provider verfügbar
 
-## CLI Progress (NEU v0.19.05b-19.06)
+## CLI Progress (NEU v0.19.6-19.06)
 
 `cli-progress.js` rendert eine ASCII-Progress-Box im CLI-Mode mit ANSI-Cursor-Control:
 
@@ -98,7 +98,7 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - OK/ERR/Cache kumulative Stats
 - 250ms Render-Throttling gegen Flackern
 
-## Architektur (Stand v0.19.05b-19.06)
+## Architektur (Stand v0.19.6-19.06)
 
 - `db.js`: Datenbankzugriff, Migrationen (translations, translation_revisions, glossary_terms)
 - `polish-arbiter.js`: Paralleler Multi-Provider Polish A/B-Vergleich (NEU)

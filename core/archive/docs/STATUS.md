@@ -1,4 +1,9 @@
-# SyxBridge \u2014 Aktueller Stand (2026-06-16)
+# 🗄️ SyxBridge — Aktueller Stand (2026-06-16) [ARCHIVED]
+
+> **🔴 Archiviert am 2026-06-19.** Diese Status-Dokumentation ist mit v0.19.5 veraltet.
+> Aktuelle Version: **v0.19.6** — Siehe `core/docs/CHANGELOG.md` und `core/archive/docs/LOG_REPORT_2026-06-19.md`.
+> **Grund der Archivierung:** Enthält Pre-P0-Fix-Zustand, veraltete P5-Blocker-Analyse und historische Run-Daten.
+> Diese Datei bleibt als historische Referenz erhalten.
 
 > Snapshot zur Recovery nach dem Session-Abbruch am 2026-06-15 23:18:53 UTC.
 > Diese Datei ist die **Single-Source-of-Truth** f\u00fcr Status-Fragen; TODO.md/CHANGELOG.md f\u00fchren Detail-Listen.

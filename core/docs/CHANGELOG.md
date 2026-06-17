@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## [0.19.6] - 2026-06-19 — RELEASE
+
+### Consolidated
+- **Version-Bump:** v0.19.05d-17.06 → v0.19.6 — Globale Version vereinheitlicht (package.json, _Info.txt, CHANGELOG, TREE, README, AGENTS, cli-progress).
+- **STATUS.md archiviert:** Historsche Doku mit [ARCHIVED]-Marker versehen (Pre-P0-Fix-Zustand).
+- **AGENTS.md aktualisiert:** Version, Regel 9 (DB-Retention), § DB-Retention & Backup-Strategie.
+- **ANALYSE_2026-06-19.md:** Doku-Validitätsprüfung + DB-Analyse (724 Einträge, 8 flagged).
+- **LOG_REPORT_2026-06-19.md:** Log-Analyse + DB-Abgleich + Fehlerprüfung (5 Bugs identifiziert).
+- **Release-Build:** `release/SyxBridge_v0.19.6/` — neues Release-Paket.
+
+### Known Issues (unfixed)
+- **F1 — Argos Python SyntaxError:** `spawnSync()`-Fix (BUG-010) greift nicht — Python-Escaping weiterhin defekt.
+- **F2 — `_dbGet is not a function`:** Revision-Save wird still übersprungen — Scope-Problem in `translation-runtime.js`.
+- **F3 — Exporter-Syntax:** 45/45 Smoke-Test-Runs melden `validateFileSyntax → discard/ok:false`.
+- **F4 — 99,7% Stage 0:** 722/724 Einträge nie auditiert — Polish-Lauf erforderlich.
+
+### Tests
+- Syntax-Check: 44/44 PASS
+- DB-Integrität: ✅ Keine Korruption
+
 ## [0.19.05d-17.06] - 2026-06-17 — CLEANUP
 
 ### Fixed (Konsistenz-Audit)

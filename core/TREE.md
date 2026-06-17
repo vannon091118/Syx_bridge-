@@ -1,6 +1,6 @@
-# 🌳 Syx-Bridge v0.19.05b-19.06 — Projekt-Struktur (TREE)
+# 🌳 Syx-Bridge v0.19.6 — Projekt-Struktur (TREE)
 
-> **Generiert:** 2026-06-17 | **Branch:** feat/parser-adapter-integration | **Version:** v0.19.05b
+> **Generiert:** 2026-06-19 | **Branch:** feat/parser-adapter-integration | **Version:** v0.19.6
 
 ```
 SyxBridge_Live/                     # Root — Deployment-Verzeichnis
@@ -23,7 +23,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
 └── core/                           # ═══ Anwendung ═══
     │
     ├── index.js                    # ⭐ ENTRY POINT — CLI, Startup-Wizard, Orchestrator
-    ├── package.json                # v0.19.05b-19.06, Dependencies: axios, dotenv, inquirer, sql.js, sqlite3
+    ├── package.json                # v0.19.6, Dependencies: axios, dotenv, inquirer, sql.js, sqlite3
     ├── package-lock.json
     ├── eslint.config.mjs           # ESLint-Konfiguration
     ├── LICENSE                     # MIT
@@ -131,7 +131,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │
     ├── docs/
     │   ├── README.md                   # Technische Doku (API, Module, Routing-Pipeline)
-    │   ├── CHANGELOG.md                # Versionshistorie (v0.19.05b-19.06)
+    │   ├── CHANGELOG.md                # Versionshistorie (v0.19.6)
     │   ├── TODO.md                     # Priorisierte Fehlerbehebung (10 Tickets, P0 ✅)
     │   ├── server_output.txt           # [gitignore] Server-Output
     │   │
@@ -146,8 +146,10 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     ├── archive/
     │   ├── .gitkeep
     │   ├── docs/
-    │   │   ├── AUDIT_REPORT.md              # DB-Audit-Report
-    │   │   ├── DB_REPORT_v0.19.5.D17.06.U17.06.md  # DB-Fehler-Report (archiviert)
+│   │   ├── ANALYSE_2026-06-19.md            # Doku-Validität + DB-Analyse (724 Einträge)
+│   │   ├── AUDIT_REPORT.md              # DB-Audit-Report
+│   │   ├── DB_REPORT_v0.19.5.D17.06.U17.06.md  # DB-Fehler-Report (archiviert)
+│   │   ├── LOG_REPORT_2026-06-19.md            # Log-Report + DB-Abgleich + Fehlerprüfung
     │   │   ├── MASTER_DOC.md                # Architektur-Master-Doku (Referenz)
     │   │   ├── PATCH_REVIEW_2026-06-16.md   # Patch-Review
     │   │   ├── REPORT_v0.19.5_dry_run.md    # Dry-Run Fehler-Report
