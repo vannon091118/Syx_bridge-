@@ -887,7 +887,7 @@ function createTranslationRuntime(options) {
     }
 
     const missing = uniqueTexts.filter(text => !translations.has(text));
-    console.log(`\n[STATUS] Texte gefunden: ${texts.length} (${uniqueTexts.length} eindeutig)`);
+    console.log(`\n[STATUS] Texte gefunden: ${entries.length} (${uniqueTexts.length} eindeutig)`);
     console.log(`[STATUS] Cache-Hits: ${translations.size} | Fehlend: ${missing.length}`);
     if (nativeReuseCount > 0) {
       console.log(`[STATUS] Native Uebernahmen: ${nativeReuseCount}`);

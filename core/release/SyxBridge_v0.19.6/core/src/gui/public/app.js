@@ -370,22 +370,31 @@ function updatePipeline(phase) {
 function renderProviderStats() {
   const container = document.getElementById('provider-stats-container');
   if (!container) return;
-    
-  let html = '';
+
+  // Clear container
+  container.innerHTML = '';
+
   // Combine request stats with API health
   const providers = new Set([...Object.keys(providerStats), ...Object.keys(apiProviderStatus)]);
 
+  if (providers.size === 0) {
+    const noData = document.createElement('div');
+    noData.className = 'stat-label';
+    noData.textContent = 'Keine Provider-Daten';
+    container.appendChild(noData);
+    return;
+  }
+
   providers.forEach(provider => {
     if (provider === 'player2' && !currentConfig.PLAYER2_ENABLED) return;
-    
+
     const reqs = providerStats[provider] || { pass: 0, fail: 0 };
     const api = apiProviderStatus[provider] || { valid: 0, total: 0, rateLimited: false };
-    
+
     const total = reqs.pass + reqs.fail;
     const successRate = total > 0 ? Math.round((reqs.pass / total) * 100) : 100;
-    
+
     const keyLabel = api.total > 0 ? `${api.valid}/${api.total} Keys` : '(Lokal/Kein Key)';
-    const limitLabel = api.rateLimited ? '<span style="color:var(--danger)">[429 LIMIT]</span>' : '';
     const statusColor = api.rateLimited ? 'var(--danger)' : (api.total > 0 && api.valid === 0 ? 'var(--warning)' : 'var(--success)');
 
     const providerLabels = {
@@ -396,23 +405,66 @@ function renderProviderStats() {
       player2: 'Player2 — Lokaler KI-Client auf dem Desktop (optional).'
     };
 
-    html += `
-            <div style="margin-bottom:10px; padding:6px; background: rgba(255,255,255,0.02); border-radius:4px;" title="${providerLabels[provider] || `Provider: ${provider} — ${keyLabel}`}">
-                <div style="display:flex; justify-content:space-between; font-size:0.65rem; margin-bottom:4px;">
-                    <span style="font-weight:bold;">${provider.toUpperCase()}</span>
-                    <span>${limitLabel} <span style="color:${statusColor}">${keyLabel}</span></span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:var(--muted);">
-                    <span>Erfolgsrate: ${successRate}%</span>
-                    <span title="${api.rateLimited ? 'Aktuell ratelimited (429) — Bridge wechselt automatisch den Key' : 'Anfragen: OK = erfolgreich, ERR = fehlgeschlagen'}">OK: ${reqs.pass} | ERR: ${reqs.fail}</span>
-                </div>
-                <div class="progress-bar" style="height:2px; margin-top:4px;">
-                    <div class="progress-fill" style="width:${successRate}%; background:${successRate > 80 ? 'var(--success)' : (successRate > 40 ? 'var(--warning)' : 'var(--danger)')}"></div>
-                </div>
-            </div>
-        `;
+    // Create wrapper div
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'margin-bottom:10px; padding:6px; background: rgba(255,255,255,0.02); border-radius:4px;';
+    wrapper.setAttribute('title', providerLabels[provider] || `Provider: ${provider} — ${keyLabel}`);
+
+    // Create header div
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex; justify-content:space-between; font-size:0.65rem; margin-bottom:4px;';
+
+    const providerName = document.createElement('span');
+    providerName.style.fontWeight = 'bold';
+    providerName.textContent = provider.toUpperCase();
+
+    const keyInfo = document.createElement('span');
+    if (api.rateLimited) {
+      const limitSpan = document.createElement('span');
+      limitSpan.style.color = 'var(--danger)';
+      limitSpan.textContent = '[429 LIMIT] ';
+      keyInfo.appendChild(limitSpan);
+    }
+    const keySpan = document.createElement('span');
+    keySpan.style.color = statusColor;
+    keySpan.textContent = keyLabel;
+    keyInfo.appendChild(keySpan);
+
+    header.appendChild(providerName);
+    header.appendChild(keyInfo);
+
+    // Create stats div
+    const stats = document.createElement('div');
+    stats.style.cssText = 'display:flex; justify-content:space-between; font-size:0.6rem; color:var(--muted);';
+
+    const rateSpan = document.createElement('span');
+    rateSpan.textContent = `Erfolgsrate: ${successRate}%`;
+
+    const countsSpan = document.createElement('span');
+    countsSpan.setAttribute('title', api.rateLimited ? 'Aktuell ratelimited (429) — Bridge wechselt automatisch den Key' : 'Anfragen: OK = erfolgreich, ERR = fehlgeschlagen');
+    countsSpan.textContent = `OK: ${reqs.pass} | ERR: ${reqs.fail}`;
+
+    stats.appendChild(rateSpan);
+    stats.appendChild(countsSpan);
+
+    // Create progress bar
+    const progressBar = document.createElement('div');
+    progressBar.className = 'progress-bar';
+    progressBar.style.cssText = 'height:2px; margin-top:4px;';
+
+    const progressFill = document.createElement('div');
+    progressFill.className = 'progress-fill';
+    const fillColor = successRate > 80 ? 'var(--success)' : (successRate > 40 ? 'var(--warning)' : 'var(--danger)');
+    progressFill.style.cssText = `width:${successRate}%; background:${fillColor}`;
+
+    progressBar.appendChild(progressFill);
+
+    // Assemble
+    wrapper.appendChild(header);
+    wrapper.appendChild(stats);
+    wrapper.appendChild(progressBar);
+    container.appendChild(wrapper);
   });
-  container.innerHTML = html || '<div class="stat-label">Keine Provider-Daten</div>';
 }
 
 async function fetchProviderStatus() {

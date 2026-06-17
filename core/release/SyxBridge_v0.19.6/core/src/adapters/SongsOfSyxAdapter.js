@@ -46,14 +46,26 @@ class SongsOfSyxAdapter extends GameAdapter {
       ...infoObj
     };
     const lines = [];
+    const processedKeys = new Set();
     // Field order matters for Songs of Syx parser: VERSION first, then GAME_VERSION, then NAME
-    if (info.VERSION) lines.push(`VERSION: "${info.VERSION}",`);
-    if (info.GAME_VERSION_MAJOR !== undefined) lines.push(`GAME_VERSION_MAJOR: ${info.GAME_VERSION_MAJOR},`);
-    if (info.GAME_VERSION_MINOR !== undefined) lines.push(`GAME_VERSION_MINOR: ${info.GAME_VERSION_MINOR},`);
-    if (info.NAME) lines.push(`NAME: "${info.NAME}",`);
-    if (info.DESC) lines.push(`DESC: "${info.DESC}",`);
-    if (info.AUTHOR) lines.push(`AUTHOR: "${info.AUTHOR}",`);
-    if (info.INFO) lines.push(`INFO: "${info.INFO}",`);
+    if (info.VERSION) { lines.push(`VERSION: "${info.VERSION}",`); processedKeys.add('VERSION'); }
+    if (info.GAME_VERSION_MAJOR !== undefined) { lines.push(`GAME_VERSION_MAJOR: ${info.GAME_VERSION_MAJOR},`); processedKeys.add('GAME_VERSION_MAJOR'); }
+    if (info.GAME_VERSION_MINOR !== undefined) { lines.push(`GAME_VERSION_MINOR: ${info.GAME_VERSION_MINOR},`); processedKeys.add('GAME_VERSION_MINOR'); }
+    if (info.NAME) { lines.push(`NAME: "${info.NAME}",`); processedKeys.add('NAME'); }
+    if (info.DESC) { lines.push(`DESC: "${info.DESC}",`); processedKeys.add('DESC'); }
+    if (info.AUTHOR) { lines.push(`AUTHOR: "${info.AUTHOR}",`); processedKeys.add('AUTHOR'); }
+    if (info.INFO) { lines.push(`INFO: "${info.INFO}",`); processedKeys.add('INFO'); }
+    // Preserve any additional custom metadata keys
+    for (const key of Object.keys(info)) {
+      if (!processedKeys.has(key) && info[key] !== undefined) {
+        const value = info[key];
+        if (typeof value === 'string') {
+          lines.push(`${key}: "${value}",`);
+        } else if (typeof value === 'number') {
+          lines.push(`${key}: ${value},`);
+        }
+      }
+    }
     return lines.join('\n') + '\n';
   }
 

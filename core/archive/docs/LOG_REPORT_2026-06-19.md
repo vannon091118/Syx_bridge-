@@ -78,7 +78,7 @@ SyntaxError: unexpected character after line continuation character
 | **Stage 0** | 1.397 (45,9%) | **722 (99,7%)** | ⚠️ +46% | Kein Audit-Lauf seit DB-Reset |
 | **Revisions aktiv** | 0 | **724 (100%)** | ✅ BUG-005 gefixed | Revisions-System funktioniert |
 | **Ø Score** | — (binär 20/90) | **92,1** | ✅ Granular | Neues Scoring (nicht mehr binär) |
-| **DB-Größe** | 2,2 MB (3.047 entries) | **1,9 MB (724 entries)** | ⚠️ | Passt: ~0,6 KB/Entry ist konsistent |
+| **DB-Größe** | 2,2 MB (3.047 entries) | **1,9 MB (724 entries)** | ⚠️ | Passt: ~2,6 KB/Entry ist konsistent |
 
 ### 2.2 Provider-Vergleich: Alt vs. Neu
 

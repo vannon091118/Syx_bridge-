@@ -472,9 +472,14 @@ async function synchronize(planner, options = {}) {
         
     if (modDir) {
       plannerMods.push({ id: m, path: modDir, source: 'active' });
-      const info = await fsp.readFile(path.join(modDir, '_Info.txt'), 'utf-8');
-      const nameMatch = info.match(/NAME:\s*"([^"]+)"/);
-      createdPatches.push(`${(nameMatch ? nameMatch[1] : m).replace(/[^a-z0-9]/gi, '_')}_${CONFIG.TARGET_LANG}`);
+      try {
+        const info = await fsp.readFile(path.join(modDir, '_Info.txt'), 'utf-8');
+        const nameMatch = info.match(/NAME:\s*"([^"]+)"/);
+        createdPatches.push(`${(nameMatch ? nameMatch[1] : m).replace(/[^a-z0-9]/gi, '_')}_${CONFIG.TARGET_LANG}`);
+      } catch (e) {
+        console.warn(`[WARN] Konnte _Info.txt nicht lesen für Mod ${m}: ${e.message}. Verwende Mod-ID als Fallback.`);
+        createdPatches.push(`${m.replace(/[^a-z0-9]/gi, '_')}_${CONFIG.TARGET_LANG}`);
+      }
     }
   }
   if (plannerMods.length > 0) await planner.run('sync', plannerMods, options);
@@ -492,9 +497,12 @@ async function synchronize(planner, options = {}) {
 
 async function managePatches() {
   printHeader('Patch Management');
-  const patches = (await fsp.readdir(CONFIG.PATCH_ROOT, { withFileTypes: true }))
-    .filter(d => d.isDirectory() && d.name.endsWith(`_${CONFIG.TARGET_LANG}`) && d.name !== 'BridgeCore')
-    .map(d => d.name);
+  let patches = [];
+  if (fs.existsSync(CONFIG.PATCH_ROOT)) {
+    patches = (await fsp.readdir(CONFIG.PATCH_ROOT, { withFileTypes: true }))
+      .filter(d => d.isDirectory() && d.name.endsWith(`_${CONFIG.TARGET_LANG}`) && d.name !== 'BridgeCore')
+      .map(d => d.name);
+  }
         
   if (patches.length === 0) {
     console.log('[INFO] Keine Patches gefunden.');
@@ -763,6 +771,6 @@ async function main() {
   }
 }
 
-if (require.main === module) main().catch(console.error);
+if (require.main === module) main().catch(err => { console.error(err); process.exit(1); });
 
 module.exports = { shouldTranslate, protectPlaceholders, restorePlaceholders, parseBatchResponse: (text, count) => parseBatchResponse(text, { expectedCount: count }), initDb };

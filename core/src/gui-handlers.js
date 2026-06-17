@@ -13,7 +13,7 @@ function readDisplayName(dirPath) {
   if (fs.existsSync(infoPath)) {
     try {
       const content = fs.readFileSync(infoPath, 'utf-8');
-      const match = content.match(/^\s*NAME:\s*\"?(.*?)\"?,?\s*$/im);
+      const match = content.match(/^\s*NAME:\s*"?(.*?)"?,?\s*$/im);
       if (match) return match[1].trim();
     } catch (e) {}
   }

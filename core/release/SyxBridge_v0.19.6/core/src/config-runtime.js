@@ -513,7 +513,7 @@ class ConfigRuntime {
       {
         type: 'list',
         name: 'mode',
-        message: 'WÃ¤hle den Ãœbersetzungs-Modus:',
+        message: 'Wähle den Übersetzungs-Modus:',
         choices: [
           { name: 'AI API (Cloud Modelle)', value: 'api' },
           { name: 'Offline / Argos (Komplett lokal)', value: 'local' },
@@ -526,7 +526,7 @@ class ConfigRuntime {
       {
         type: 'list',
         name: 'primary_provider',
-        message: 'Haupt-Anbieter fÃ¼r Ãœbersetzungen:',
+        message: 'Haupt-Anbieter für Übersetzungen:',
         default: this.config.PRIMARY_PROVIDER,
         when: () => strategy.mode !== 'local',
         choices: [
@@ -538,7 +538,7 @@ class ConfigRuntime {
         ]
       },
       {
-        type: 'input',
+        type: 'password',
         name: 'ollama_key',
         message: 'Ollama API Key(s) [optional, kommagetrennt]:',
         mask: '*',
@@ -546,7 +546,7 @@ class ConfigRuntime {
         default: (this.config.OLLAMA_KEYS || []).join(',')
       },
       {
-        type: 'input',
+        type: 'password',
         name: 'gemini_key',
         message: 'Gemini API Key(s) [kommagetrennt]:',
         mask: '*',
@@ -555,13 +555,13 @@ class ConfigRuntime {
           const keys = parseKeys(input);
           if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
           for (const k of keys) {
-            if (!await this.testApiKey('gemini', k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
+            if (!await this.testApiKey('gemini', k)) return `Key ungültig: ${k.substring(0, 8)}...`;
           }
           return true;
         }
       },
       {
-        type: 'input',
+        type: 'password',
         name: 'groq_key',
         message: 'Groq API Key(s) [kommagetrennt]:',
         mask: '*',
@@ -570,13 +570,13 @@ class ConfigRuntime {
           const keys = parseKeys(input);
           if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
           for (const k of keys) {
-            if (!await this.testApiKey('groq', k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
+            if (!await this.testApiKey('groq', k)) return `Key ungültig: ${k.substring(0, 8)}...`;
           }
           return true;
         }
       },
       {
-        type: 'input',
+        type: 'password',
         name: 'openrouter_key',
         message: 'OpenRouter API Key(s) [kommagetrennt]:',
         mask: '*',
@@ -585,7 +585,7 @@ class ConfigRuntime {
           const keys = parseKeys(input);
           if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
           for (const k of keys) {
-            if (!await this.testApiKey('openrouter', k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
+            if (!await this.testApiKey('openrouter', k)) return `Key ungültig: ${k.substring(0, 8)}...`;
           }
           return true;
         }

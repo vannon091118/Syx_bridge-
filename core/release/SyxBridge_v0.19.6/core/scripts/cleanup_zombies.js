@@ -33,7 +33,8 @@ function cleanup() {
     } else {
       // Linux/SteamDeck cleanup
       try {
-        execSync('pkill -f "core/index.js"');
+        const currentPid = process.pid;
+        execSync(`pkill -f "core/index.js" | grep -v ${currentPid} || true`);
         console.log('[OK] Alte Instanzen beendet.');
       } catch (e) {}
     }

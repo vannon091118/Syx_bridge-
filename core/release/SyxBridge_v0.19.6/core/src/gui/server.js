@@ -26,6 +26,15 @@ class GuiServer extends EventEmitter {
         let filePath = url.pathname === '/' ? 'index.html' : url.pathname.replace('/public/', '');
         const fullPath = path.join(__dirname, 'public', filePath);
 
+        // Path traversal validation: ensure fullPath is within the public directory
+        const resolvedPath = path.resolve(fullPath);
+        const resolvedPublic = path.resolve(__dirname, 'public');
+        if (!resolvedPath.startsWith(resolvedPublic)) {
+          res.writeHead(403, { 'Content-Type': 'text/plain' });
+          res.end('403 Forbidden');
+          return;
+        }
+
         if (fs.existsSync(fullPath)) {
           const ext = path.extname(fullPath);
           const contentType = {

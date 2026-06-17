@@ -48,7 +48,7 @@ function createPolishArbiter(deps = {}) {
     if (isLikelyTargetLanguageText(restored)) score += 15;
 
     // 5. No shield leaks
-    if (!/[\[\[]\d+[\]\]]/.test(restored) && !/__VAR\d+__/.test(restored)) score += 5;
+    if (!/\[\[\d+\]\]/.test(restored) && !/__VAR\d+__/.test(restored)) score += 5;
 
     return Math.max(0, Math.min(100, score));
   }

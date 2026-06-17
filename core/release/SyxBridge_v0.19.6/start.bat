@@ -57,14 +57,14 @@ echo [INFO] Pruefe Argos Translate...
 node core\scripts\check_argos.js
 
 :: Check for .env file
-if not exist .env (
-    echo [WARNUNG] Keine .env Datei gefunden. 
+if not exist core\.env (
+    echo [WARNUNG] Keine .env Datei gefunden.
     echo Erstelle Standard .env...
-    echo GEMINI_KEY=DEIN_API_KEY_HIER > .env
-    echo MOD_PATH="C:\Program Files (x86)\Steam\steamapps\workshop\content\1162750" >> .env
-    echo OUTPUT_PATH="%APPDATA%\songsofsyx\mods" >> .env
-    echo TARGET_LANG=German >> .env
-    echo [INFO] Bitte trage deinen API-Key in die .env Datei ein.
+    echo GEMINI_KEY=DEIN_API_KEY_HIER > core\.env
+    echo MOD_PATH="C:\Program Files (x86)\Steam\steamapps\workshop\content\1162750" >> core\.env
+    echo OUTPUT_PATH="%APPDATA%\songsofsyx\mods" >> core\.env
+    echo TARGET_LANG=German >> core\.env
+    echo [INFO] Bitte trage deinen API-Key in die core\.env Datei ein.
 )
 
 :: Run the bridge

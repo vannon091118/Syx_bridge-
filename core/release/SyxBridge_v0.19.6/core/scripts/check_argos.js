@@ -204,7 +204,7 @@ async function installArgosLanguage(langCode) {
     'print("OK")'
   ].join('\n');
   try {
-    const result = spawnSync(python, ['-'], { input: script, stdio: 'inherit', timeout: 180000 });
+    const result = spawnSync(python, ['-'], { input: script, stdio: ['pipe', 'inherit', 'inherit'], timeout: 180000 });
     if (result.error) throw result.error;
     if (result.status !== 0) throw new Error(`Python exited with code ${result.status}`);
     console.log(`[OK] Argos-Sprachmodell en -> ${langCode} installiert (Fallback-Methode).`);

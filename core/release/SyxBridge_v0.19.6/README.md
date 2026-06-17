@@ -130,15 +130,23 @@ Syx_bridge-/
 
 ## 📋 Changelog — Peinlich genau dokumentiert
 
-→ **Vollständiges Changelog:** [`core/docs/CHANGELOG.md`](core/docs/CHANGELOG.md)
-
 | Version | Datum | Was ist passiert? |
 |---|---|---|
-| `v0.19.05b` | 2026-06-15 | Provider Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown, _Info.txt-Verbesserung |
-| `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, Google-Free Stress-Test, persistConfig konsolidiert, Route-Pipeline |
-| `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer |
-| `v0.15.0` | 2026-06-14 | GUI-Overhaul, Live-Terminal, DB-Browser, Strict Versioning |
-| `v0.13.0a`| 2026-06-06 | Erstes Dashboard, Gemini-API-Fix, Linux-Support |
+| `v0.19.6` | 2026-06-19 | Version-Bump, Doku-Konsolidierung, ANALYSE + LOG Reports, Release-Build v0.19.6 |
+| `v0.19.05d` | 2026-06-17 | TREE.md Struktur-Fix, check_consistency.js Pfad-Korrektur, nul-Datei entfernt |
+| `v0.19.05c` | 2026-06-17 | BUG-010 Argos Shell-Escaping (spawnSync), PERF-001 GUI Lazy-Loading, PERF-002 DB-Suche Limit |
+| `v0.19.05b` | 2026-06-19 | Provider Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown, _Info.txt-Verbesserung, BUG-001 bis BUG-009 Fixed |
+| `v0.19.5` | 2026-06-16 | Parser-Adapter-Integration (8 Dateien), DI-Kette vollständig, Format-Extensibility |
+| `v0.19.1-alpha` | 2026-06-16 | Sprachauswahl im Startup-Wizard, persistSingleEnvVar(), Lazy getTargetLang, E2E-Tests |
+| `v0.19.0-alpha` | 2026-06-15 | Provider Capability Matrix, Lokale Modelle Opt-in, OpenRouter/Groq JSON-Retry, Deep Polish A/B-Vergleich, CLI Progress, Dynamic Risk Scoring, Revision System |
+| `v0.16.0` | 2026-06-15 | Dynamisches Risiko-Scoring, Google-Free Stress-Test, persistConfig konsolidiert, Route-Pipeline, Technical Review Report |
+| `v0.15.4` | 2026-06-15 | Native Mode: Backup immer, Polish immer, BUG-5 Fixed |
+| `v0.15.3` | 2026-06-14 | WARN-2 Ollama/Player2 Stage-Requests Support |
+| `v0.15.2` | 2026-06-14 | BUG-1 PLAYER2_KEYS Datenverlust, BUG-4 persistConfig-Divergenz Fixed |
+| `v0.15.1` | 2026-06-14 | Shielding Konsolidierung, Quote Preservation, Text-Core Cleanup, System-Prompt Konsistenz |
+| `v0.15.0` | 2026-06-14 | GUI-Overhaul, Top Settings Dropdown, Dynamic Center Stack, Neon Progress Border, Streamlined Sidebars, Initial DB Stats, GUI State Restore, Patch Mode Directory Fix |
+| `v0.13.0a`| 2026-06-06 | Linux-Support, Improved Troubleshooting, Native GUI Dashboard, Fixed Mi5/M5/C2/C3/C4 |
+| `v0.13.0` | Pre-Alpha | Native GUI management dashboard, Glass-morphism header, Real-time telemetry, Interactive health indicators, Dependency management scripts |
 
 ---
 
@@ -157,17 +165,17 @@ Syx_bridge-/
 ### Aktive Roadmap
 - **P1 (Architektur):** leer ✅
 - **P2 (Tech-Debt, WARN-1/BUG-2/BUG-3):** alle DONE ✅
-- **P3 (Features):** Dynamisches Risiko-Scoring **IN PROGRESS** (Core in , ,  fertig → Integration/E2E-Live offen)
+- **P3 (Features):** Dynamisches Risiko-Scoring **IN PROGRESS** (Core in context-packets.js, translation-runtime.js, db.js fertig → Integration/E2E-Live offen)
 - **P3 pending:** Tier-A Optim. (OpenRouter Free), Batch-Historie/Payload-Viewer, Auto-Update DB → Glossar, Workshop-Builder
-- **Parser-Vorbereitung:** noch nicht angelaufen — kein  (grep = 0 Treffer)
+- **Parser-Vorbereitung:** noch nicht angelaufen — kein GameAdapter.getParserFormat() (grep = 0 Treffer)
 
 ### Blocker
-- **P5 — Multi-Language-Wizard:**  wählt Sprache ok, aber  schreibt  im Live-E2E nicht zuverlässig (Unit ok, vermutlich cwd/Caching-Mismatch).
+- **P5 — Multi-Language-Wizard:** runStartupWizard() wählt Sprache ok, aber persistSingleEnvVar() schreibt .env im Live-E2E nicht zuverlässig (Unit ok, vermutlich cwd/Caching-Mismatch).
 
 ### Bug-Report-Pack
-- , , 
--  immer mit redigierten Keys ()
-- optional:  + /, falls WAL-Checkpoint nötig
+- log.txt, runs.jsonl, translations.db
+- .env immer mit redigierten Keys (niemals echte API-Keys committen!)
+- optional: translations.db-shm + translations.db-wal, falls WAL-Checkpoint nötig
 
 💬 Kontakt / Contact
 

@@ -291,11 +291,18 @@ function registerGuiHandlers(ctx) {
       if (!targetDir) {
         targetDir = path.join(config.MOD_ROOT, modId);
       }
-      
+
+      // Path traversal validation: ensure targetDir is actually within MOD_ROOT
+      const resolvedTarget = path.resolve(targetDir);
+      const resolvedModRoot = path.resolve(config.MOD_ROOT);
+      if (!resolvedTarget.startsWith(resolvedModRoot)) {
+        return callback(false, 'Ungültiger Ziel-Pfad (außerhalb MOD_ROOT).');
+      }
+
       if (!fs.existsSync(targetDir)) {
         return callback(false, 'Originaler Mod-Ordner existiert nicht.');
       }
-      
+
       console.log(`[INFO] Restoriere Backup für Mod: ${modId} nach ${targetDir}...`);
       await restoreBackup(backupDir, targetDir);
       await fsp.rm(backupDir, { recursive: true, force: true });
@@ -409,6 +416,19 @@ function registerGuiHandlers(ctx) {
   global.guiServer.on('db-update', async (data, callback) => {
     try {
       const { source_text, target_lang, translation } = data;
+      // Archive current translation before updating
+      const existing = await dbGet(
+        'SELECT * FROM translations WHERE source_text = ? AND target_lang = ?',
+        [source_text, target_lang]
+      );
+      if (existing) {
+        await dbRun(
+          `INSERT INTO translation_revisions
+           (source_text, target_lang, translation, quality_score, provider, model, flagged, flag_reason, is_active, is_reference, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 0, CURRENT_TIMESTAMP)`,
+          [existing.source_text, existing.target_lang, existing.translation, existing.quality_score, existing.provider, existing.model, existing.flagged, existing.flag_reason]
+        );
+      }
       await dbRun(
         'UPDATE translations SET translation = ?, updated_at = CURRENT_TIMESTAMP WHERE source_text = ? AND target_lang = ?',
         [translation, source_text, target_lang]
