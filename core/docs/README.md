@@ -2,13 +2,13 @@
 
 ## Handshake-Vermerk
 
-Version: `0.19.05b-19.06`
+Version: `0.19.05c-17.06`
 
-> 📋 **Doku-Vermerk (15.06.2026):** Der vollständige Technical Review mit 12 Prüfpunkten liegt unter **[TECHNICAL_REVIEW_2026-06-15.md](../../TECHNICAL_REVIEW_2026-06-15.md)**. Alle P1, P2 und P3 Issues behoben. Letzte Änderungen dieser Session: Deep Polish A/B-Vergleich (polish-arbiter.js), CLI-Progress-Indikatoren (cli-progress.js), 5 neue Risk-Kategorien, Revision-System, P3 Quick Wins.
+> 📋 **Doku-Vermerk (17.06.2026):** Patch-Release nach v0.19.05b. Änderungen: Windows Shell-Escaping Fix (execSync → spawnSync in check_argos.js), GUI Lazy-Loading (Model-Status + Provider-Stats nur bei offenem Settings-Dropdown), DB-Suche mit Server-Side Limit (Default 50). Alle P0/P1/P2/P3 Issues aus v0.19.05b behoben. Full Technical Review unter **[TECHNICAL_REVIEW_2026-06-15.md](../../TECHNICAL_REVIEW_2026-06-15.md)**.
 
 Diese Dokumentation beschreibt den produktiven Stand der Bridge. Das System nutzt eine modulare Architektur mit Web-GUI (Dashboard) und CLI-Modus.
 
-## Produktiver Stand In `0.19.05b-19.06`
+## Produktiver Stand `0.19.05c-17.06`
 
 - `index.js`: Operativer Einstiegspunkt und Starter für CLI/GUI.
 - `src/gui/`: Web-Dashboard Kern (Express + Socket.io).
@@ -137,6 +137,15 @@ Die Routing-Entscheidung ist stage-gated: Nur `translate` nutzt diese Logik. `po
 - P4: Visuelle Überarbeitung (Glassmorphism → Gradient Border, Neo-Stripes, Warning/Info-Farben)
 - P4: WAL Checkpoint nach Runs automatisieren
 - Arch: `index.js` Refactoring (1000+ Zeilen)
+
+## Änderungen v0.19.05c-17.06 (PATCH)
+
+### Fixed
+- **BUG-010 — Windows Shell-Escaping:** `check_argos.js` nutzt jetzt `spawnSync()` statt `execSync()` für alle Python-Subprocess-Calls. `codesJson` wird inline injiziert statt als `sys.argv[1]` übergeben.
+
+### Performance
+- **PERF-001 — GUI Lazy-Loading:** Model-Status und Provider-Stats nur bei offenem Settings-Dropdown. Backups um 2s verzögert, Intervall 15s.
+- **PERF-002 — DB-Suche Server-Side Limit:** `/api/db/search` akzeptiert `?limit=N` (Default 50, Max 500).
 
 ## Diagnose
 
