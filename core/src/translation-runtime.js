@@ -803,7 +803,10 @@ function createTranslationRuntime(options) {
     } catch (e) {
       console.warn(`[!] Flagging fehlgeschlagen: ${e.message} -> Pruefe alle Texte.`);
     }
-    return items.map(() => true);
+    // F1 Fix: Fail-closed statt fail-open. Wenn der Audit-Call scheitert,
+    // liefern wir null statt true — der Caller interpretiert null als
+    // "Status unverändert" (kein Flag, alter flagged-Wert bleibt erhalten).
+    return items.map(() => null);
   }
 
   async function getBestAvailableQualityModel() {
@@ -1002,7 +1005,8 @@ function createTranslationRuntime(options) {
           for (let j = 0; j < batchKeys.length; j++) {
             const key = batchKeys[j];
             const entry = batchEntries[j];
-            const needsPolish = flags[j] || entry.riskScore >= 4;
+            // F1 Fix: null = "Audit fehlgeschlagen, Status unveraendert"
+            const needsPolish = flags[j] === true || entry.riskScore >= 4;
                         
             if (needsPolish) problematicIdx.push(j);
                         
@@ -1011,7 +1015,7 @@ function createTranslationRuntime(options) {
             if (cached.polishLevel < 1) {
               batchUpdatePromises.push(saveTranslation(entry, translations.get(key), 1, {
                 provider: cached.provider || 'native_review',
-                flagReason: flags[j] ? 'needs_polish' : '',
+                flagReason: (flags[j] === true) ? 'needs_polish' : '',
                 qualityScore: scoreTranslationQuality(key, translations.get(key))
               }));
             }

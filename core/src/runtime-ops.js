@@ -235,8 +235,10 @@ function setupGateCounter(logger) {
 function flushGateCounter() {
   try { return getGateCounter().flush(); } catch (e) { return { error: String((e && e.message) || e) }; }
 }
-module.exports.setupGateCounter = setupGateCounter;
-module.exports.flushGateCounter = flushGateCounter;
+// F5 Fix: Einzelner Export-Block statt module.exports-XY + module.exports = {}
+// (das zweite Statement hat setupGateCounter/flushGateCounter vorher gekillt).
 module.exports = {
-  createRuntimeOps
+  createRuntimeOps,
+  setupGateCounter,
+  flushGateCounter
 };

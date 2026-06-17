@@ -154,11 +154,9 @@ class Planner {
     const files = await scanner.collectFiles(mod.path, mod.path, this.adapter);
     this.stats.filesScanned += files.length;
         
-    for (const file of files) {
-      if (file.type === 'TEXT_FILE' || file.type === 'WIKI_TEXT') {
-        await this.processFile(dbMod, file, mode, options);
-      }
-    }
+    // F6 Fix: Batch-Query statt N+1 pro Datei
+    const textFiles = files.filter(f => f.type === 'TEXT_FILE' || f.type === 'WIKI_TEXT');
+    await this.processFiles(dbMod, textFiles, mode, options);
   }
 
   async syncModToDb(mod) {
@@ -169,12 +167,31 @@ class Planner {
     return await db.get('SELECT * FROM mods WHERE mod_id = ?', [mod.id]);
   }
 
-  async processFile(mod, file, mode) {
+  // F6 Fix: Batch-DB-Lookup statt N+1 pro Datei. processFiles() sammelt
+  // erst alle Dateien und macht einen einzigen SELECT, dann processFile()
+  // arbeitet mit dem vorab geladenen Map.
+  async processFiles(mod, files, mode, _options = {}) {
+    // Single batch query: alle files für diesen Mod auf einmal
+    const dbFiles = await db.all(
+      'SELECT id, relative_path, source_hash FROM files WHERE mod_id = ?',
+      [mod.id]
+    );
+    const dbFileMap = new Map();
+    for (const f of dbFiles || []) {
+      dbFileMap.set(f.relative_path, f);
+    }
+
+    for (const file of files) {
+      await this.processFile(mod, file, mode, dbFileMap);
+    }
+  }
+
+  async processFile(mod, file, mode, dbFileMap = null) {
     const content = await require('fs').promises.readFile(file.fullPath, 'utf-8');
     const fileHash = extractor.getHash(content);
 
-    // Hash-Dedup: Check if file has changed
-    const dbFile = await db.get(
+    // Hash-Dedup: Check if file has changed (uses pre-loaded map when available)
+    const dbFile = dbFileMap ? dbFileMap.get(file.relativePath) : await db.get(
       'SELECT id, source_hash FROM files WHERE mod_id = ? AND relative_path = ?',
       [mod.id, file.relativePath]
     );

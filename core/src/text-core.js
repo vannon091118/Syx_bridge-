@@ -143,6 +143,13 @@ function summarizeGrammarContext(grammarContext) {
   return result.join('\n');
 }
 
+// Shared artifact cleanup: strip batch-index prefixes ("1. ", "3)") and
+// surrounding quotes from LLM responses. Used by both JSON-success and
+// fallback paths in parseBatchResponse().
+function cleanTranslationArtifact(raw) {
+  return String(raw || '').replace(/^\s*\d+[).:-]\s*/, '').replace(/^"|"$/g, '').trim();
+}
+
 function parseBatchResponse(text, _options = {}) {
   const clean = extractJsonPayload(text);
   let results = [];
@@ -157,17 +164,19 @@ function parseBatchResponse(text, _options = {}) {
 
     if (list) {
       results = list.map(item => {
-        if (typeof item === 'object' && item !== null) {
-          return item.translation || item.text || item.target || Object.values(item)[0];
-        }
-        return String(item);
+        const value = (typeof item === 'object' && item !== null)
+          ? (item.translation || item.text || item.target || Object.values(item)[0])
+          : String(item);
+        // F2 Fix: Apply artifact cleanup so JSON success never leaks
+        // "31. Berufsmäßige Holzkohleverbrennung" artifacts.
+        return cleanTranslationArtifact(value);
       });
     }
   } catch (e) {}
 
   if (results.length === 0) {
     results = clean.split(/\r?\n/)
-      .map(line => line.replace(/^\s*\d+[).:-]\s*/, '').trim().replace(/^"|"$/g, ''))
+      .map(line => cleanTranslationArtifact(line))
       .filter(Boolean);
   }
 
@@ -397,5 +406,6 @@ module.exports = {
   translationLooksSafe,
   restoreAndValidateTranslation,
   extractReplacements,
-  applyTranslations
+  applyTranslations,
+  cleanTranslationArtifact
 };

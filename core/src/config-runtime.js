@@ -7,7 +7,9 @@ const inquirer = require('inquirer');
 // The router always prefers 'auto' (runtime discovery) or the user-specified model.
 // For OpenRouter we default to the free tier so there is always a zero-cost fallback.
 const OPENROUTER_FREE_MODEL = 'openrouter/free';
-const GROQ_FALLBACK_MODELS   = ['llama-3.1-8b-instant', 'llama3-8b-8192', 'gemma-7b-it'];
+// F3 Fix: gemma-7b-it (deprecated Dec 2024) + llama3-8b-8192 (decommissioned) ersetzt
+// durch aktuell von Groq gelistete Modelle (Stand 2026-06-17).
+const GROQ_FALLBACK_MODELS   = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'gemma2-9b-it'];
 const OLLAMA_FALLBACK_MODELS = ['llama3.2', 'llama3.1', 'mistral', 'gemma3', 'gemma4', 'phi4'];
 const OLLAMA_DEFAULT_URL     = 'http://localhost:11434';
 const PLAYER2_DEFAULT_URL    = 'http://localhost:4315/v1';
@@ -298,7 +300,9 @@ class ConfigRuntime {
       if (provider === 'gemini') {
         // Use the lightest available model for key tests; list first from API
         const models = await this.fetchGeminiModels();
-        const testModel = models.find(m => m.includes('flash') || m.includes('lite')) || models[0] || 'gemini-1.5-flash-latest';
+        // F4 Fix: gemini-1.5-flash-latest ist seit März 2025 vollständig abgeschaltet (404).
+        // Ersetzt durch gemini-2.5-flash-lite — aktuell lebendes Leichtgewicht-Modell.
+        const testModel = models.find(m => m.includes('flash') || m.includes('lite')) || models[0] || 'gemini-2.5-flash-lite';
         const cleanModel = testModel.startsWith('models/') ? testModel.replace('models/', '') : testModel;
         response = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${key}`, {
           contents: [{ parts: [{ text: 'Return OK.' }] }]
