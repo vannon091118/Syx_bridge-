@@ -95,8 +95,8 @@ class Router {
   hasAccess(id) {
     if (id === 'google_free') return true;
     if (id === 'argos') return this.helpers.isArgosInstalled();
-    // FCM: local daemon proxy — always accessible (no API key needed)
-    if (id === 'fcm') return true;
+    // FCM: local daemon proxy — accessible unless explicitly disabled via FCM_ENABLED=false
+    if (id === 'fcm') return isEnabledFlag(this.config.FCM_ENABLED, true);
     // Lokale LLM-Modelle (Ollama, Player2) nur mit explizitem Opt-in
     // (Hardware-Schutz: lokale LLMs können GPU/CPU überlasten)
     if (id === 'ollama' || id === 'player2') {

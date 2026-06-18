@@ -683,7 +683,7 @@ function createTranslationRuntime(options) {
       if (cachedData.has(t)) {
         const data = cachedData.get(t);
         const sourceEntry = contextBySource.get(t) || normalizeTranslationEntry(t);
-        const needsRefresh = data.flagged && data.translation === t && !isLikelyTargetLanguageText(t);
+        const needsRefresh = (data.flagged && data.translation === t && !isLikelyTargetLanguageText(t)) || (data.provider === 'native_fallback' && data.translation === t);
         const hashMismatch = data.sourceHash && sourceEntry.sourceHash && data.sourceHash !== sourceEntry.sourceHash;
 
         const criticalCheck = translationCriticalCheck(t, data.translation);
@@ -852,7 +852,7 @@ function createTranslationRuntime(options) {
           });
           savePromises.push(learnGlossary(source, translated, entry));
         }
-        await Promise.all(savePromises);
+        for (const p of savePromises) { await p; }
         if (cli.isActive()) {
           cli.updateBatch(batchNumber, totalBatches, result.provider, result.model);
           cli.tick(translations.size, uniqueTexts.length);

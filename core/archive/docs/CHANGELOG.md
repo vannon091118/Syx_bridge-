@@ -1,6 +1,51 @@
 # CHANGELOG
 
+## [DOKU-KONSOLIDIERUNG] - 2026-06-19 — DOKU-KONSOLIDIERUNG & BRANCH-REVIEW
+
+### Konsolidierung
+- **49 Dokumente analysiert** (42 FREEZE + 7 aktiv) via 3 parallele Sub-Agents
+- **10 Dokumente als ERLEDIGT** markiert (BUGFIX_BU001-005, DB_REPAIR, REDUNDANCY, etc.)
+- **8 Dokumente als VERALTET** markiert (alte Audits, Pre-Release, Planning)
+- **4 Widersprüche identifiziert** und aufgelöst (KNOWN_BUGS vs BUGFIX, DB_REPAIR vs aktuelle Stats, FULLSCAN vs IMPORT_CHAIN, DB_AUDIT vs ANALYSE)
+- **15 offene Punkte dedupliziert** und priorisiert (3× P0, 4× P1, 5× P2, 3× P3)
+- **2 Dokumente von aktiv → FREEZE verschoben:** `DB_AUDIT_2026-06-18.md`, `HARDENING-DRY-RUN-GATE-COUNTER_2026-06-16.md`
+
+### Branch-Review (prepare-0.20-wip vs main)
+- **209 Dateien,** +18.566/−12.519 Zeilen, 9 Commits
+- **Empfehlung: 🟡 MIT AUFLAGEN** — 3 P0-Blocker vor Merge
+- **Geschätzter Aufwand bis Merge-bereit:** 4-6 Stunden
+
+### DB-Snapshot
+- `translations_2026-06-19_before_quickfix-sprint.db` (6.131 Einträge, 2.122 stale)
+- Keine Änderungen durch Quickfix-Sprint (nur Code-Fixes)
+
+### Wachstumsanalyse
+- Dokumentenwachstum seit letzter Konsolidierung: **+27.5%** (40→51)
+- Empfehlung: Konsolidierungs-Intervall auf alle 3 Sessions verkürzen
+
+### Report
+→ `core/archive/docs/FREEZE/DOKU_KONSOLIDIERUNG_2026-06-19.md`
+
+---
+
 ## [0.19.7-chain] - 2026-06-18 — PREFLIGHT NATIVE-STALE FIX + ROUTING-HARDENING + ERROR-HANDLER SMART
+
+### TODO — Masteranalyse-Resultate umsetzen
+> **Quelle:** `archive/docs/FREEZE/MASTERANALYSE_15AGENT_2026-06-19.md` (15 Sub-Agents, 3 Wellen)
+> **Verifiziert:** 2026-06-19 via echte .db-Queries aller 21 Snapshots. Siehe `DB_TREND_REPORT.md` + `DB_STATISTICS.md`.
+> **Status:** ✅ ABGESCHLOSSEN (2026-06-19 Quick-Fix-Sprint)
+>
+> | # | Aktion | Aufwand | Status |
+> |---|--------|---------|--------|
+> | 1 | `needsRefresh` um `provider === 'native_fallback'` erweitern | 1 Zeile | ✅ Done (translation-runtime.js:686) |
+> | 2 | `consecutiveGrammarFailures` Reset in `ensureTranslations()` | 1 Zeile | ✅ Bereits vorhanden (translation-runtime.js:586) |
+> | 3 | `saveTranslation` sequentiell statt `Promise.all` | 1 Zeile | ✅ Done (translation-runtime.js:855) |
+> | 4 | NVIDIA API-Key prüfen/konfigurieren | Config | ⚠️ .env erstellt, Key noch leer — User muss eintragen |
+> | 5 | FCM Proxy deaktivieren | 4 Dateien | ✅ Done (router.js + index.js + config-runtime.js + .env) |
+>
+> **DB-Backup:** `core/archive/dbold/translations_2026-06-19_before_quickfix-sprint.db` (6.131 Einträge, 2.122 stale, 1.151 Glossary)
+> **Reviewer:** Nit Pick Nick — "Ship it". Follow-ups: Promise.all in QA-phase + failPromises-Catch (niedrige Priorität).
+> **User-Entscheidung nötig:** NVIDIA Key in `core/.env` eintragen.
 
 ### Fixed (P0 — PREFLIGHT Sync-Blocker)
 - **[PREFLIGHT] NATIVE_STALE blockierte Sync:** `preflight.js` zählte 1.593 NATIVE_STALE-Einträge (native_runtime src=tgt — erwartetes Verhalten) in die 5%-Blocking-Schwelle ein. 31,5% statt echte 2,3%. Fix: `criticalIssues = totalIssues - issues.nativeStale`. Nur echte Issues (UNFLAGGED_STALE, SHIELD_LEAK, LOW_SCORE, JAVA_NOISE, ORPHANED_REVISIONS) zählen für die Schwelle. Soft-Warnung bei >50% NATIVE_STALE.
