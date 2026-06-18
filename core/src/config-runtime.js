@@ -853,6 +853,15 @@ const PERSISTED_KEYS = [
 ];
 
 async function persistConfigToEnv(config) {
+  // ═══ SAFETY: Backup .env ONCE before the loop ═══
+  // Preserves original state in case the in-memory CONFIG has lost its keys.
+  const backupPath = ENV_PATH + '.backup';
+  try {
+    if (fs.existsSync(ENV_PATH)) {
+      fs.copyFileSync(ENV_PATH, backupPath);
+    }
+  } catch (_) { /* non-critical */ }
+
   const failures = [];
   for (const [key, extractor] of PERSISTED_KEYS) {
     try {
@@ -871,6 +880,25 @@ async function persistConfigToEnv(config) {
     console.warn(`[WARN] ${failures.length}/${PERSISTED_KEYS.length} .env-Keys konnten nicht persistiert werden:`);
     for (const f of failures) console.warn(`  - ${f.key}: ${f.error}`);
   }
+}
+
+/**
+ * Reads the current value of a key from the raw .env lines.
+ * Returns the unquoted value, or null if the key is not found.
+ */
+function readEnvValue(lines, key) {
+  const keyPrefix = `${key}=`;
+  for (const line of lines) {
+    if (line.startsWith(keyPrefix)) {
+      let val = line.slice(keyPrefix.length);
+      // Strip surrounding quotes if present
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      return val;
+    }
+  }
+  return '';
 }
 
 /**
@@ -893,6 +921,17 @@ async function persistSingleEnvVar(key, value) {
   if (fs.existsSync(envPath)) {
     const raw = await fs.promises.readFile(envPath, 'utf-8');
     lines = raw.split(/\r?\n/);
+  }
+
+  // ═══ SAFETY: Never blank out a non-empty key ═══
+  // If the new value is empty/falsy but the .env currently has a non-empty
+  // value for this key, preserve the existing value. This prevents
+  // persistConfigToEnv from wiping API keys when called with an in-memory
+  // CONFIG that loaded empty keys from a partially-corrupted .env.
+  const existingValue = readEnvValue(lines, safeKey);
+  if ((!safeValue || safeValue === '') && existingValue && existingValue.trim() !== '') {
+    console.warn(`[ENV-SAFETY] ${safeKey}: würde leeren Wert schreiben, aber .env hat nicht-leeren Wert — bewahre existierenden.`);
+    return { written: false, key: safeKey, value: existingValue, reason: 'preserved-non-empty' };
   }
 
   const keyPrefix = `${safeKey}=`;
@@ -923,6 +962,7 @@ module.exports = {
   ConfigRuntime,
   persistConfigToEnv,
   persistSingleEnvVar,
+  readEnvValue,
   parseEnvFlag,
   parseKeys,
   isUsableTextModel,

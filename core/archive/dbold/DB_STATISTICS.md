@@ -1,8 +1,8 @@
 # 📈 DB Statistiken — Cross-Snapshot Analysis
 
 > **Typ:** Statistische Durchschnittswerte über alle DB-Snapshots
-> **Erstellt:** 2026-06-18 | **Letzte Aktualisierung:** 2026-06-19 (Korrektur: Echte sqlite3-Queries aller 21 .db-Dateien)
-> **Snapshots analysiert:** 15 unique (aus 21 .db-Dateien, Duplikate entfernt)
+> **Erstellt:** 2026-06-18 | **Letzte Aktualisierung:** 2026-06-19 (Snapshot 16: Post-Quickfix-Sprint, Ø Score erstmals gemessen)
+> **Snapshots analysiert:** 14 unique (Duplikate bereinigt, Snapshot 13+14 identisch)
 > **⚠️ Hinweis:** Snapshot 2+ (17.06) sind post-DB-Reset. Der Sprung von 3.373 → 936 macht den Durchschnitt weniger repräsentativ — Median ist zuverlässiger.
 
 ---
@@ -25,9 +25,11 @@
 | 10 | 2026-06-18 22:46 | translations_2026-06-18_224600.db | **4.277** | 621 | 14.5% | 1.068 | 1.510 | 2.725 | 1.024 |
 | 11 | 2026-06-18 23:04 🔥 | translations_2026-06-18_230454.db | **5.447** | 1.672 | 30.7% | 988 | 1.305 | 4.066 | 1.040 |
 | 12 | 2026-06-18 23:14 | translations_2026-06-18_231437.db | **5.447** | 1.672 | 30.7% | 988 | 1.305 | 4.066 | 1.040 |
-| 13 | 2026-06-19 | LIVE translations.db | **6.131** | 2.122 | 34.6% | 1.729 | 2.038 | 3.972 | 1.151 |
+| 13 | 2026-06-19 | LIVE translations.db (Pre-Quickfix) | **6.131** | 2.122 | 34.6% | 1.729 | 2.038 | 3.972 | 1.151 |
+| 14 | 2026-06-19 | LIVE translations.db (Post-Quickfix) | **6.131** | 2.122 | 34.6% | 1.729 | 2.038 | 3.972 | 1.151 |
 
 > **Duplikate entfernt (6):** 175334, 194210, 231423, post-routing, post-routing-v2, pre-nvidia, 212202_preflight — alle identisch mit jeweiligem Original.
+> **Snapshot 14 (=16):** Pre- und Post-Quickfix-Sprint sind identisch (kein Run zwischen den Snapshots, nur Code-Änderungen).
 
 ---
 

@@ -631,7 +631,7 @@ function renderKeySections() {
       return `
         <div class="key-row" style="display:flex; gap:10px; margin-bottom:5px; align-items:center;">
           <input type="text" class="key-name" value="${name}" placeholder="Bezeichnung" style="flex:1; min-width:80px; max-width:120px; margin:0;">
-          <input type="text" class="key-val" value="${val}" placeholder="API Key" style="flex:4; margin:0; font-family: monospace; font-size:0.8rem;">
+          <input type="text" class="key-val" value="${val}" placeholder="API Key — z.B. sk-or-v1-..." style="flex:8; margin:0; font-family: monospace; font-size:0.85rem; min-width:300px; max-width:100%;">
           <button onclick="checkSingleKey('${p.id}', this)" title="Key jetzt testen" style="padding: 5px 8px; background: #1a3a1a; border:1px solid var(--success); color:var(--success); flex:none; width:auto; margin:0; font-size:0.6rem;">TEST</button>
           <button onclick="this.parentElement.remove()" style="padding: 5px 10px; background: #c0392b; flex:none; width:auto; margin:0;">✕</button>
         </div>`;
@@ -668,7 +668,7 @@ function _addKeyRow(providerId) {
   div.style.cssText = 'display:flex; gap:10px; margin-bottom:5px;';
   div.innerHTML = `
     <input type="text" class="key-name" value="Key ${rowCount + 1}" placeholder="Name" style="flex:1;">
-    <input type="text" class="key-val" value="" placeholder="API Key" style="flex:3;">
+    <input type="text" class="key-val" value="" placeholder="API Key — z.B. sk-or-v1-..." style="flex:6; min-width:280px;">
     <button onclick="this.parentElement.remove()" style="padding: 5px 10px; background: #c0392b; flex:none;">X</button>
   `;
   list.appendChild(div);
@@ -1315,6 +1315,9 @@ let _fcmRankingsInterval = null;
 // Core: Always active
 setInterval(fetchHealth, 5000);
 fetchHealth();
+// Preflight DB Warning: check every 30s (lightweight check, only reads cached value)
+setInterval(fetchPreflightStatus, 30000);
+fetchPreflightStatus();
 requestAnimationFrame(tick);
 loadInitialConfig();
 searchDb(''); // Initial DB Load (limited)
@@ -1326,6 +1329,92 @@ setInterval(() => {
     body: JSON.stringify({ sessionId })
   }).catch(() => {});
 }, 30000);
+
+// ── DB Repair Button — PREFLIGHT Warning mit Blink-Tiers ──────────────
+let _preflightWarning = null;
+
+async function fetchPreflightStatus() {
+  try {
+    const res = await fetch('/api/preflight-status');
+    const warning = await res.json();
+    _preflightWarning = warning;
+    updateDbRepairButton();
+  } catch (e) {
+    _preflightWarning = null;
+    updateDbRepairButton();
+  }
+}
+
+function updateDbRepairButton() {
+  const btn = document.getElementById('db-repair-btn');
+  if (!btn) return;
+
+  // Remove all tier classes
+  btn.classList.remove('tier-slowFade', 'tier-fade', 'tier-fastFade', 'tier-blinkAlarm');
+
+  if (!_preflightWarning || !_preflightWarning.blinkTier) {
+    btn.style.display = 'none';
+    return;
+  }
+
+  const w = _preflightWarning;
+  btn.style.display = 'block';
+  btn.classList.add(`tier-${w.blinkTier}`);
+  btn.title = `DB-Reparatur empfohlen: ${w.criticalIssues}/${w.totalEntries} kritische Einträge (${w.criticalPct}%)\n` +
+    `• ${w.unflaggedStale} ungeflaggte Stale\n` +
+    `• ${w.lowScore} Low-Score (<30)\n` +
+    `• ${w.nativeStale} Native Stale (erwartet)\n` +
+    `Klicken zum Reparieren — markiert Einträge für Re-Translation.`;
+}
+
+async function runDbRepair() {
+  const btn = document.getElementById('db-repair-btn');
+  if (!btn) return;
+  const confirmed = confirm(
+    `🔧 DATENBANK-REPARATUR\n\n` +
+    `${_preflightWarning.criticalIssues} Einträge werden für Re-Translation markiert.\n` +
+    `Keine Übersetzungen gehen verloren!\n\n` +
+    `• ${_preflightWarning.unflaggedStale} ungeflaggte Stale\n` +
+    `• ${_preflightWarning.lowScore} Low-Score\n` +
+    `• ${_preflightWarning.nativeStale} Native Stale\n\n` +
+    `Fortfahren?`
+  );
+  if (!confirmed) return;
+
+  btn.textContent = '⏳ REPARIERE...';
+  btn.disabled = true;
+  btn.classList.remove('tier-slowFade', 'tier-fade', 'tier-fastFade', 'tier-blinkAlarm');
+  btn.style.animation = 'none';
+  btn.style.opacity = '1';
+  btn.style.borderColor = 'var(--accent)';
+  btn.style.color = 'var(--accent)';
+
+  try {
+    const res = await fetch('/api/db-repair', { method: 'POST' });
+    const result = await res.json();
+    if (result.ok) {
+      _preflightWarning = null;
+      btn.style.display = 'none';
+      alert(`✅ Reparatur erfolgreich!\n\n${result.totalFixed} Einträge markiert:\n` +
+        `• ${result.details.nativeStale} Native Stale\n` +
+        `• ${result.details.unflaggedStale} Ungeflaggte Stale\n` +
+        `• ${result.details.lowScore} Low-Score\n\n` +
+        `Beim nächsten Sync werden diese Einträge neu übersetzt.`);
+    } else {
+      alert(`❌ Reparatur fehlgeschlagen: ${result.error || 'Unbekannter Fehler'}`);
+      btn.textContent = '🔧 DB-REPARATUR';
+      btn.disabled = false;
+      updateDbRepairButton();
+    }
+  } catch (e) {
+    alert(`❌ Fehler: ${e.message}`);
+    btn.textContent = '🔧 DB-REPARATUR';
+    btn.disabled = false;
+    updateDbRepairButton();
+  }
+}
+
+window.runDbRepair = runDbRepair;
 
 // FCM: Initial load (delayed to not block startup)
 setTimeout(refreshFcmRankings, 4000);

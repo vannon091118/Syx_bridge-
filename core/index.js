@@ -494,10 +494,18 @@ async function synchronize(planner, options = {}) {
   // ── PREFLIGHT ANALYSIS ────────────────────────────────────────────
   // Runs before every non-dry-run sync to check DB health.
   // Repairs common issues automatically (<5% threshold).
-  // Blocks sync if critical integrity problems are found.
+  // At >5%: warns but does NOT block — GUI shows repair button.
   if (!options.dryRun) {
     const preflight = createPreflight(dbManager);
     const pfResult = await preflight.runPreflight({ gui: process.argv.includes('--gui') });
+    // Store warning for GUI access (e.g., blinking repair button)
+    if (pfResult.report && pfResult.report.dbWarning) {
+      global._preflightWarning = pfResult.report.dbWarning;
+      console.warn('[!] PREFLIGHT DB-Warnung — GUI-Repair-Button verfuegbar.');
+    } else {
+      global._preflightWarning = null;
+    }
+    // Only block on true critical (integrity check failure, not the >5% threshold)
     if (!pfResult.ok) {
       console.error('[!] Sync blockiert — PREFLIGHT hat kritische DB-Probleme gefunden.');
       return;

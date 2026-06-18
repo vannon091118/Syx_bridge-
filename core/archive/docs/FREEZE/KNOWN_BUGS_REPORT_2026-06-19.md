@@ -19,36 +19,19 @@
 
 ## 🔴 P0 — Kritisch (Datenverlust / Crash)
 
-### BUG-FS-001: `_dbGet is not a function` (bekannt als F2)
-**Datei:** `translation-db.js:223` (in `saveTranslation()`)
-**Aufruf-Kette:** `ensureTranslations()` → `saveTranslation()` → `_dbGet(SELECT ...)` → 💥
+### BUG-FS-001: `_dbGet is not a function` (bekannt als F2) ✅ BEHOBEN
+**Datei:** `index.js` / `translation-runtime.js` / `translation-db.js`
+**Status:** ✅ **BEHOBEN** (v0.19.7) — Injection-Kette verifiziert am 2026-06-19:
+- `index.js:763`: `_dbGet: dbGet` — korrekt als `dbGet`-Wrapper übergeben
+- `translation-runtime.js:41`: `_dbGet` via Options-Destructuring empfangen
+- `translation-db.js:28`: `_dbGet` via Options-Destructuring empfangen
+- Run #51 + #52: 0 `_dbGet`-Fehler in runs.jsonl
+- Live-DB: 6,131/6,131 Revisions aktiv (Revision-System funktioniert)
+- Kein Auftreten mehr seit v0.19.7 Code-Basis
 
-**Ausführliche Beschreibung:**
-`_dbGet` wird als Dependency via `createTranslationDb(options)` injiziert (Zeile 20). Die Kette funktioniert so:
-1. `index.js` ruft `createTranslationRuntime({...})` auf
-2. `createTranslationRuntime` extrahiert `_dbGet` aus seinen Options (Zeile 39): `const { config, _dbGet, dbAll, dbRun, ... } = options;`
-3. Es übergibt `_dbGet` an `createTranslationDb({ _dbGet, ... })` (Zeile 39)
-4. `saveTranslation()` in `translation-db.js:223` ruft `_dbGet(...)` auf
-
-Wenn in Schritt 2 `_dbGet` nicht explizit übergeben wird (z.B. weil `index.js` den falschen Variablennamen nutzt oder `_dbGet` vor der Initialisierung aufgerufen wird), ist `_dbGet = undefined`.
-
-**Konkretes Failure-Szenario:**
-```
-TypeError: _dbGet is not a function
-    at saveTranslation (translation-db.js:223)
-    at ensureTranslations (translation-runtime.js:549)  ← native-decision Pfad
-    at processMod (runtime-ops.js)
-```
-
-`saveTranslation()` wird an 3 Stellen aufgerufen:
-- Zeile 549: Native-Decision (provider='native_runtime') — JEDER Eintrag der als "bereits Deutsch" erkannt wird
-- Zeile 636: Nach erfolgreichem LLM-Batch
-- Zeile 655: Bei Batch-Fehler (provider='native_fallback')
-
-Bei Crash: KEINE Übersetzungen werden in die DB gespeichert. Der Run läuft weiter (Crash landet im Promise), aber alle Stats sind falsch (0 Cache-Hits beim nächsten Run).
-
-**Status:** Bekannt (F2 in MASTER_DOC), aber NICHT gefixt.
-**Schwere:** P0 — Kompletter DB-Write-Verlust.
+**Ursprüngliches Problem:** `_dbGet` wurde nicht korrekt an `createTranslationRuntime` übergeben → `_dbGet = undefined` → `TypeError: _dbGet is not a function` bei `saveTranslation()`. Der Fehler betraf alle drei Save-Pfade (Native-Decision, LLM-Batch, Fail-Path).
+**Fix:** `index.js:763` übergibt jetzt explizit `dbGet` als `_dbGet`.
+**Schwere:** P0 → ✅ Behoben
 
 ---
 
@@ -156,11 +139,14 @@ Ohne skipIndices enthält der Batch 20 gleichsprachige Texte. Mit skipIndices ge
 
 ## 🟠 P1 — Hoch (Funktionsverlust / Qualitätsverlust)
 
-### BUG-FS-004: `consecutiveGrammarFailures` ist Module-Global, nicht Reset pro Run
-**Datei:** `translation-runtime.js:15`
-**Problem:** `let consecutiveGrammarFailures = 0;` wird bei `ensureTranslations()` (Zeile 565) zurückgesetzt, aber `fixGrammarBatch()` hat einen eigenen Reset bei Erfolg (Zeile 419). Wenn ein LAUF 3 Grammar-Failures hat und der nächste LAUF startet, kann `consecutiveGrammarFailures` noch >= 3 sein wenn `ensureTranslations()` vor dem ersten `fixGrammarBatch()` einen Fehler wirft.
+### BUG-FS-004: `consecutiveGrammarFailures` ist Module-Global, nicht Reset pro Run ✅ BEHOBEN
+**Datei:** `translation-runtime.js`
+**Status:** ✅ **BEHOBEN** (2026-06-19) — Zwei Resets implementiert:
+1. Zeile 665: `consecutiveGrammarFailures = 0` am Anfang von `ensureTranslations()` → schützt Cross-Run-Persistenz
+2. Zeile ~1035: `consecutiveGrammarFailures = 0` VOR `runDeepPolishBatch()` → schützt Inner-Run-Blockade (Polish-Queue-Failures blockieren nicht mehr Deep Polish)
+**Problem:** `let consecutiveGrammarFailures = 0;` wird bei `ensureTranslations()` (Zeile 565) zurückgesetzt, aber `fixGrammarBatch()` hat einen eigenen Reset bei Erfolg (Zeile 419). Wenn ein LAUF 3 Grammar-Failures hat und der nächste LAUF startet, kann `consecutiveGrammarFailures` noch >= 3 sein wenn `ensureTranslations()` vor dem ersten `fixGrammarBatch()` einen Fehler wirft. **Zusätzlich:** Polish-Failures im gleichen Run blockieren Deep-Polish-Auto-Trigger.
 **Impact:** Nach einem fehlerhaften Run werden alle Polish-Batches im nächsten Run sofort übersprungen.
-**Schwere:** P1 — Polish wird nach einem fehlerhaften Run komplett deaktiviert.
+**Schwere:** P1 → ✅ Behoben
 
 ### BUG-FS-005: Cache-Invalidierung fehlt für `native_fallback` Einträge
 **Datei:** `translation-runtime.js:516-528`
@@ -269,7 +255,7 @@ Ohne skipIndices enthält der Batch 20 gleichsprachige Texte. Mit skipIndices ge
 | ID | Status | In diesem Report |
 |----|--------|-----------------|
 | F1 — Argos Python SyntaxError | Offen | Nicht gescannt (externes Tool) |
-| F2 — `_dbGet is not a function` | Offen | → BUG-FS-001 |
+| F2 — `_dbGet is not a function` | ✅ Behoben | → BUG-FS-001 ✅
 | F3 — Exporter-Syntax discard | Offen | → Teil von BUG-FS-011 |
 | F4 — 99.7% Stage 0 | Offen | → Teil von BUG-FS-006 |
 | F5 — 28.5% Stale | Offen | → BUG-FS-005 |

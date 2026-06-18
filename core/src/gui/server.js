@@ -320,6 +320,30 @@ class GuiServer extends EventEmitter {
         return;
       }
 
+      // API: Preflight Status — GUI checks for DB warnings (blinking repair button)
+      if (url.pathname === '/api/preflight-status' && req.method === 'GET') {
+        let handled = false;
+        this.emit('get-preflight-status', (status) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(status));
+        });
+        return;
+      }
+
+      // API: DB Repair — GUI button triggers repair via db_repair.js
+      if (url.pathname === '/api/db-repair' && req.method === 'POST') {
+        let handled = false;
+        this.emit('run-db-repair', (result) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(result));
+        });
+        return;
+      }
+
       // API: FCM Live Model Rankings
       if (url.pathname === '/api/fcm-rankings' && req.method === 'GET') {
         let handled = false;

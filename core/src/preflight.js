@@ -41,7 +41,8 @@ function createPreflight(dbManager) {
       repairs: {},
       warnings: [],
       snapshot: null,
-      aborted: false
+      aborted: false,
+      dbWarning: null
     };
 
     // ── 1. PRAGMA integrity_check ───────────────────────────────────
@@ -133,15 +134,28 @@ function createPreflight(dbManager) {
       console.log(`[PREFLIGHT]    → ${fixed} issues fixed, ${afterTotal} remaining.`);
 
     } else {
-      report.health = 'critical';
-      report.aborted = true;
+      report.health = 'warning';
+      report.dbWarning = {
+        criticalPct: parseFloat((pct * 100).toFixed(1)),
+        criticalIssues,
+        totalIssues,
+        totalEntries: total,
+        nativeStale: issues.nativeStale,
+        unflaggedStale: issues.unflaggedStale,
+        shieldLeaks: issues.shieldLeaks,
+        lowScore: issues.lowScore,
+        javaNoise: issues.javaNoise,
+        orphanedRevisions: issues.orphanedRevisions,
+        // Blink-Stufe: 5-6% = slowFade, 6-7% = fade, 7-10% = fastFade, >10% = blinkAlarm
+        blinkTier: pct < 0.06 ? 'slowFade' : pct < 0.07 ? 'fade' : pct < 0.10 ? 'fastFade' : 'blinkAlarm'
+      };
       report.warnings.push(
         `>5% of DB has CRITICAL issues (${criticalIssues}/${total} = ${(pct * 100).toFixed(1)}%). ` +
-        `Auto-repair blocked to prevent cascading corruption.`
+        `GUI shows repair button.`
       );
-      console.error(`[PREFLIGHT] 🚨 CRITICAL: ${criticalIssues}/${total} critical issues (${(pct * 100).toFixed(1)}%) — exceeds 5% threshold.`);
-      console.error(`[PREFLIGHT]    → (${issues.nativeStale} NATIVE_STALE excluded — these are expected.)`);
-      console.error(`[PREFLIGHT]    → Auto-repair blocked. Run "node scripts/db_repair.js --execute" manually.`);
+      console.warn(`[PREFLIGHT] ⚠️ WARNING: ${criticalIssues}/${total} critical issues (${(pct * 100).toFixed(1)}%) — exceeds 5% threshold.`);
+      console.warn(`[PREFLIGHT]    → (${issues.nativeStale} NATIVE_STALE excluded — these are expected.)`);
+      console.warn(`[PREFLIGHT]    → GUI repair button available. Sync continues.`);
     }
 
     // ── 6. Write report ────────────────────────────────────────────
@@ -249,6 +263,7 @@ function createPreflight(dbManager) {
 
     const healthIcon = report.health === 'healthy' ? '✅'
       : report.health === 'auto-repaired' ? '🔧'
+      : report.health === 'warning' ? '⚠️'
       : '🚨';
 
     const lines = [
@@ -264,6 +279,7 @@ function createPreflight(dbManager) {
       report.snapshot ? `- **Snapshot:** \`${report.snapshot}\` (created before repair)` : '',
       report.aborted ? '- **⚠️ SYNC BLOCKED** — manual repair required' : '',
       report.aborted ? '- **Action:** `node core/scripts/db_repair.js --execute`' : '',
+      report.dbWarning ? `- **⚠️ DB WARNING:** ${report.dbWarning.criticalPct}% critical (${report.dbWarning.criticalIssues}/${report.dbWarning.totalEntries}) — use GUI repair button` : '',
       '',
       '## Issues Detected',
       '',
@@ -324,7 +340,8 @@ function createPreflight(dbManager) {
     const historyLine =
       `[${report.timestamp}] ${report.mode} | ${healthIcon} ${report.health} | ` +
       `issues=${report.issues.total || 0} | ${report.elapsedMs}ms` +
-      `${report.aborted ? ' | SYNC BLOCKED' : ''}\n`;
+      `${report.aborted ? ' | SYNC BLOCKED' : ''}` +
+      `${report.dbWarning ? ' | DB WARNING ' + report.dbWarning.criticalPct + '%' : ''}\n`;
 
     try {
       fs.appendFileSync(historyPath, historyLine, 'utf-8');

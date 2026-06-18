@@ -40,13 +40,16 @@ if !KILL_OLD!==1 (
 )
 
 :: ─── Port 3000 instance check ──────────────────────────────────────
+:: KILL old backend process to prevent connecting to outdated code.
+:: The backend runs independently from this CMD window (start /B), so
+:: a previous instance can survive across multiple start.bat runs.
 netstat -ano | findstr :3000 | findstr LISTENING >nul
 if !ERRORLEVEL! equ 0 (
-    if !KILL_OLD!==0 (
-        echo [WARNUNG] Eine Instanz laeuft bereits auf Port 3000.
-        echo           Nutze "start.bat --kill" um alte Instanzen zu beenden.
-        timeout /t 3 >nul
+    echo [INFO] Alte Instanz auf Port 3000 gefunden. Beende...
+    for /f "tokens=5" %%p in ('netstat -ano ^| findstr :3000 ^| findstr LISTENING') do (
+        taskkill /F /PID %%p >nul 2>nul
     )
+    timeout /t 2 /nobreak >nul
 )
 
 :: ─── npm install (first run) ────────────────────────────────────────

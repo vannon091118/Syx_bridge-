@@ -3,6 +3,7 @@
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
+const dbRepair = require('../scripts/db_repair');
 
 /**
  * Reads the display name from a mod's metadata file.
@@ -553,6 +554,37 @@ function registerGuiHandlers(ctx) {
       console.log(`[GUARD] Begriff geschuetzt: "${source}" -> "${target}"`);
     } catch (e) {
       console.error(`[!] Fehler beim Schuetzen des Begriffs: ${e.message}`);
+    }
+  });
+
+  // ── PREFLIGHT DB Warning & Repair (GUI blinking button) ──────────
+  global.guiServer.on('get-preflight-status', (callback) => {
+    // Returns the cached preflight warning from the last sync run.
+    // null = no issues, or object with { criticalPct, criticalIssues, ... }
+    callback(global._preflightWarning || null);
+  });
+
+  global.guiServer.on('run-db-repair', async (callback) => {
+    try {
+      let totalFixed = 0;
+      // Run all 5 repair functions (skip orphanedRevisions — rare, separate audit)
+      // dbRun (= dbManager.run) returns { changes } — exactly what repair functions expect
+      const r1 = await dbRepair.repairNativeStale(dbRun);
+      const r2 = await dbRepair.repairUnflaggedStale(dbRun);
+      const r3 = await dbRepair.repairShieldLeaks(dbRun);
+      const r4 = await dbRepair.repairLowScore(dbRun);
+      const r5 = await dbRepair.repairJavaNoise(dbRun);
+      totalFixed = r1 + r2 + r3 + r4 + r5;
+
+      console.log(`[DB-REPAIR] GUI-Repair: ${totalFixed} Eintraege repariert (nativeStale=${r1}, unflaggedStale=${r2}, shieldLeaks=${r3}, lowScore=${r4}, javaNoise=${r5})`);
+
+      // Clear the warning so the button disappears until next sync
+      global._preflightWarning = null;
+
+      callback({ ok: true, totalFixed, details: { nativeStale: r1, unflaggedStale: r2, shieldLeaks: r3, lowScore: r4, javaNoise: r5 } });
+    } catch (e) {
+      console.error(`[DB-REPAIR] Fehler: ${e.message}`);
+      callback({ ok: false, error: e.message });
     }
   });
 

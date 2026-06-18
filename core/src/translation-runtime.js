@@ -683,7 +683,13 @@ function createTranslationRuntime(options) {
       if (cachedData.has(t)) {
         const data = cachedData.get(t);
         const sourceEntry = contextBySource.get(t) || normalizeTranslationEntry(t);
-        const needsRefresh = (data.flagged && data.translation === t && !isLikelyTargetLanguageText(t)) || (data.provider === 'native_fallback' && data.translation === t);
+        // QO-FIX-1: polish_single stale entries (73.5% stale = src=tgt) müssen
+        // re-translatiert werden. Gleiche Logik wie native_fallback: wenn der
+        // Provider den Originaltext als "Übersetzung" gespeichert hat, Cache
+        // verwerfen und durch normale Translate-Pipeline neu übersetzen lassen.
+        // Side-Effect: 208 gute polish_single Einträge (translation ≠ t) sind
+        // NICHT betroffen weil Bedingung translation === t prüft.
+        const needsRefresh = (data.flagged && data.translation === t && !isLikelyTargetLanguageText(t)) || (data.provider === 'native_fallback' && data.translation === t) || (data.provider === 'polish_single' && data.translation === t);
         const hashMismatch = data.sourceHash && sourceEntry.sourceHash && data.sourceHash !== sourceEntry.sourceHash;
 
         const criticalCheck = translationCriticalCheck(t, data.translation);
@@ -1026,6 +1032,11 @@ function createTranslationRuntime(options) {
         );
         if (deepPolishCount && deepPolishCount.cnt > 0) {
           console.log(`[DEEP-POLISH] ${deepPolishCount.cnt} Eintraege warten auf Deep Polish. Starte automatisch...`);
+          // BUG-FS-004: Reset vor Deep Polish, damit Failures aus der Polish-Queue
+          // nicht den Deep-Polish-Lauf blockieren. Ohne diesen Reset wuerden 3
+          // Grammar-Failures im Polish-Teil dazu fuehren, dass ALLE Deep-Polish-
+          // Batches sofort uebersprungen werden (consecutiveGrammarFailures >= 3).
+          consecutiveGrammarFailures = 0;
           await runDeepPolishBatch(config.TARGET_LANG);
         }
       } catch (e) {
@@ -1080,36 +1091,50 @@ function createTranslationRuntime(options) {
         contextPacket: ''
       }));
 
-      try {
-        const corrected = await fixGrammarBatch(entries, 'polish');
+      // QO-FIX-2: Retry-Mechanismus für Deep Polish Batches.
+      // Vorher: Bei Fehler sofort polish_status='failed' (2 Einträge betroffen).
+      // Jetzt: 1 Retry nach 5s Pause. Erst bei doppeltem Fehlschlag → 'failed'.
+      let batchSucceeded = false;
+      for (let attempt = 0; attempt < 2 && !batchSucceeded; attempt++) {
+        try {
+          if (attempt > 0) {
+            console.log(`[DEEP-POLISH] Retry #${attempt} für Batch (5s Pause)...`);
+            await sleep(5000);
+          }
+          const corrected = await fixGrammarBatch(entries, 'polish');
 
-        for (let j = 0; j < batch.length; j++) {
-          const row = batch[j];
-          const improved = corrected[j];
-          const wasImproved = improved !== row.translation;
+          for (let j = 0; j < batch.length; j++) {
+            const row = batch[j];
+            const improved = corrected[j];
+            const wasImproved = improved !== row.translation;
 
-          await dbRun(
-            `UPDATE translations SET
-                translation = ?,
-                polish_status = 'completed',
-                requires_deep_polish = 0,
-                audit_stage = MAX(audit_stage, 2),
-                quality_score = ?,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE source_text = ? AND target_lang = ?`,
-            [improved, scoreTranslationQuality(row.source_text, improved), row.source_text, targetLang]
-          );
+            await dbRun(
+              `UPDATE translations SET
+                  translation = ?,
+                  polish_status = 'completed',
+                  requires_deep_polish = 0,
+                  audit_stage = MAX(audit_stage, 2),
+                  quality_score = ?,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE source_text = ? AND target_lang = ?`,
+              [improved, scoreTranslationQuality(row.source_text, improved), row.source_text, targetLang]
+            );
 
-          if (wasImproved) fixed++;
-          processed++;
-        }
-      } catch (e) {
-        console.warn(`[DEEP-POLISH] Batch fehlgeschlagen: ${e.message}`);
-        for (const row of batch) {
-          await dbRun(
-            `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
-            [row.source_text, targetLang]
-          ).catch(() => {});
+            if (wasImproved) fixed++;
+            processed++;
+          }
+          batchSucceeded = true;
+        } catch (e) {
+          console.warn(`[DEEP-POLISH] Batch fehlgeschlagen (Versuch ${attempt + 1}/2): ${e.message}`);
+          if (attempt >= 1) {
+            // Zweiter Fehlschlag → endgültig als failed markieren
+            for (const row of batch) {
+              await dbRun(
+                `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
+                [row.source_text, targetLang]
+              ).catch(() => {});
+            }
+          }
         }
       }
     }

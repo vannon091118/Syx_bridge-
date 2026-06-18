@@ -47,6 +47,73 @@
             100% { background-color: var(--bg); }
         }
 
+        /* DB Repair Button — Blink-Tiers */
+        .db-repair-btn {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid var(--danger);
+            color: #fff;
+            background: rgba(239, 107, 96, 0.15);
+            text-align: center;
+        }
+        .db-repair-btn.visible { display: block; }
+
+        /* Tier 1: slowFade (5-6%) — sanftes Pulsieren, 3s */
+        .db-repair-btn.tier-slowFade {
+            animation: repair-pulse-slow 3s ease-in-out infinite;
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(216, 151, 60, 0.1);
+        }
+        @keyframes repair-pulse-slow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px rgba(216, 151, 60, 0.2); }
+            50% { opacity: 0.6; box-shadow: 0 0 15px rgba(216, 151, 60, 0.4); }
+        }
+
+        /* Tier 2: fade (6-7%) — schnelleres Pulsieren, 1.5s */
+        .db-repair-btn.tier-fade {
+            animation: repair-pulse-fade 1.5s ease-in-out infinite;
+            border-color: #ff8844;
+            color: #ff8844;
+            background: rgba(255, 136, 68, 0.1);
+        }
+        @keyframes repair-pulse-fade {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 136, 68, 0.3); }
+            50% { opacity: 0.4; box-shadow: 0 0 25px rgba(255, 136, 68, 0.6); }
+        }
+
+        /* Tier 3: fastFade (7-10%) — sehr schnelles Pulsieren, 0.8s */
+        .db-repair-btn.tier-fastFade {
+            animation: repair-pulse-fast 0.8s ease-in-out infinite;
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(239, 107, 96, 0.15);
+        }
+        @keyframes repair-pulse-fast {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(239, 107, 96, 0.4); }
+            50% { opacity: 0.25; box-shadow: 0 0 35px rgba(239, 107, 96, 0.8); }
+        }
+
+        /* Tier 4: blinkAlarm (>10%) — ALARM, 0.4s harter Blink */
+        .db-repair-btn.tier-blinkAlarm {
+            animation: repair-blink-alarm 0.4s step-end infinite;
+            border-color: #ff0000;
+            color: #ff0000;
+            background: rgba(255, 0, 0, 0.2);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+        @keyframes repair-blink-alarm {
+            0%, 100% { opacity: 1; box-shadow: 0 0 20px rgba(255, 0, 0, 0.7); }
+            50% { opacity: 0.15; box-shadow: 0 0 50px rgba(255, 0, 0, 1); }
+        }
+
         header { 
             background: rgba(0,0,0,0.5); 
             backdrop-filter: blur(5px);
@@ -459,6 +526,11 @@
                     <button onclick="if(confirm('⚠️ WIRKLICH ALLE BRIDGE-PROZESSE BEENDEN?\n\nDies beendet:\n• Aktuelle Übersetzungs-Aufgaben\n• Den GUI-Server\n• Alle alten/hängenden Bridge-Prozesse\n\nDanach musst du das Dashboard neu starten.')) triggerAction('kill-all')" title="⚠️ Beendet ALLE Bridge-Prozesse sofort — auch alte/hängende Instanzen. Dashboard muss neu gestartet werden!" style="background: #3d0a0a; color: #ff6666; margin-top: 5px; font-size:0.65rem; border: 1px solid #8a1f1f;">🧨 ALLE PROZESSE KILLEN</button>
 
                     <button onclick="triggerAction('full_reset')" title="Setzt alles zurück: löscht Patches, Backups und processed_files — Originale werden aus Backups wiederhergestellt" style="background: #4a1a1a; color: #ff9999; margin-top: 10px; font-size:0.65rem; border: 1px solid #632525;">WERKSEINSTELLUNG (RESET)</button>
+
+                    <!-- DB Repair Button — erscheint nur wenn PREFLIGHT kritische Issues findet -->
+                    <button id="db-repair-btn" class="db-repair-btn" onclick="runDbRepair()" title="Datenbank-Reparatur: Markiert fehlerhafte Einträge für Re-Translation. Kein Datenverlust.">
+                        🔧 DB-REPARATUR
+                    </button>
                 </div>
             </div>
         </div>

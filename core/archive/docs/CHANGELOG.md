@@ -1,5 +1,46 @@
 # CHANGELOG
 
+## [QUALITY-OFFENSIVE] - 2026-06-19 — CHIRURGISCHE FIXES MIT SIDE-EFFECT-ANALYSE
+
+### FIX-1: needsRefresh für polish_single stale (577 Einträge)
+- **Datei:** `core/src/translation-runtime.js` (Zeile ~686)
+- **Änderung:** `needsRefresh` um `data.provider === 'polish_single' && data.translation === t` erweitert
+- **Effekt:** 577 stale polish_single Einträge werden beim nächsten Run re-translatiert
+- **Erwartung:** Stale-Rate 34.6% → ~25%, Score 30-69: 11.9% → ~2.5%
+- **Side-Endlosschleife Risiko 🟡**, Rest ✅
+
+### FIX-2: Deep Polish Retry-Mechanismus (2 Einträge)
+- **Datei:** `core/src/translation-runtime.js` (runDeepPolishBatch)
+- **Änderung:** 1 Retry nach 5s Pause vor endgültigem 'failed'-Status
+- **Effekt:** Transiente Provider-Fehler werden automatisch retried
+- **Code-Review:** FIX-1 + FIX-2 = "Ship it"
+
+### Doku
+- `FREEZE/QUALITY_OFFENSIVE_2026-06-19.md` erstellt (persistentes Protokoll)
+
+---
+
+## [DB-AUDIT] - 2026-06-19 — DB-TENDENZ-TRACKING & INTEGRITÄTS-AUDIT
+
+### Tendenz-Tracking (Task 11)
+- **Snapshot 16** an DB_TREND_REPORT.md angehängt (Post-Quickfix-Sprint, keine DB-Änderung)
+- **DB_STATISTICS.md** aktualisiert: Ø Score 84.4 erstmals gemessen, Snapshot 14 hinzugefügt
+- **16 unique Snapshots** über 4 Tage (16.06 → 19.06) dokumentiert
+- **Neue Anomalie #012:** polish_single 73.5% stale Rate
+
+### Integritäts-Audit (Task 12)
+- **DB_INTEGRITY_AUDIT_2026-06-19.md** erstellt (persistentes Dokument)
+- **7 Fehlerkategorien** identifiziert (A-G) mit Ursachenanalyse + Code-Referenzen
+- **Reparaturplan** mit 10 Maßnahmen (R-1 bis R-10), priorisiert nach Risk × Effort
+- **KPIs:** 5 von 9 KPIs im roten Bereich (Stale, Stage 0, Deep Polish, Score 30-69, NVIDIA)
+- **Temporäres Script** `scripts/_db_audit_live.js` erstellt (DB-Query-Hilfsmittel)
+
+### DB-Snapshot
+- LIVE translations.db: 6.131 Einträge, 2.122 stale (34.6%), Ø Score 84.4
+- Keine Änderungen seit Snapshot 15 (kein Run zwischen den Snapshots)
+
+---
+
 ## [DOKU-KONSOLIDIERUNG] - 2026-06-19 — DOKU-KONSOLIDIERUNG & BRANCH-REVIEW
 
 ### Konsolidierung

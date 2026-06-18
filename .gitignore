@@ -20,6 +20,7 @@ TODO.md
 VISION.md
 archive/docs/VISION.md
 core/.env.e2e-live-backup
+core/.env.backup
 
 # Windows reserved device name
 nul

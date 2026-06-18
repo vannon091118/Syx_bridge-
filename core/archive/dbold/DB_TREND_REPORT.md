@@ -420,6 +420,76 @@ ab_polish:        76     0     0   224   979 —     —   1.147 1.262 1.262 1.3
 
 ---
 
+### ⚡ Snapshot 16: 2026-06-19 (Post-Quickfix-Sprint) — LIVE translations.db
+
+| Metrik | Wert | Δ zum 15. Snapshot |
+|--------|------|-------------------|
+| Translations gesamt | **6.131** | ±0 (kein Run seit Snapshot 15) |
+| Stale (translation = source) | **2.122 (34.6%)** | ±0 |
+| Flagged | **1.729 (28.2%)** | ±0 |
+| Stage 0 (Draft) | 2.038 (33.2%) | ±0 |
+| Stage 1 (Polished) | 121 (2.0%) | ±0 |
+| Stage 2 (Verified) | 3.972 (64.8%) | ±0 |
+| Ø Quality-Score | **84.4** | NEU (erstmals gemessen) |
+| Score 0-29 | 258 (4.2%) | — |
+| Score 30-69 | 730 (11.9%) | — |
+| Score 70-79 | 36 (0.6%) | — |
+| Score 80-89 | 1.214 (19.8%) | — |
+| Score 90+ | 3.893 (63.5%) | — |
+| Deep Polish Pending | **393** | ±0 |
+| Polish Status completed | 5.736 | — |
+| Polish Status pending | 393 | — |
+| Polish Status failed | **2** | NEU (erstmals gemessen) |
+| Glossary Terms | 1.151 | ±0 |
+| Guarded Terms | **0** | ⚠️ Keine geschützten Terme |
+| Empty Translations | 0 | ✅ |
+| Overwrite Fallback | 5 | — |
+| Max Revisions Exceeded | **2** | — |
+| **Provider:** native_runtime | 2.272 (37.1%) | ±0 |
+| **Provider:** ab_polish | 1.370 (22.3%) | ±0 |
+| **Provider:** google_free | 815 (13.3%) | ±0 |
+| **Provider:** polish_single | 785 (12.8%) | ±0 |
+| **Provider:** argos | 649 (10.6%) | ±0 |
+| **Provider:** openrouter | 213 (3.5%) | ±0 |
+| **Provider:** groq | 24 (0.4%) | ±0 |
+| **Provider:** native_fallback | 2 (0.03%) | ±0 |
+| **Provider:** nvidia | **0** | ⚠️ |
+| **Provider:** native_glossary | 1 (0.02%) | — |
+
+**Stale nach Provider:**
+| Provider | Stale | Anteil an Provider-Gesamt |
+|----------|-------|---------------------------|
+| native_runtime | 1.343 | **59.1%** 🔴 |
+| polish_single | 577 | **73.5%** 🔴 |
+| google_free | 118 | 14.5% |
+| argos | 68 | 10.5% |
+| ab_polish | 8 | 0.6% |
+| openrouter | 6 | 2.8% |
+| native_fallback | 2 | 100% |
+
+**Flag-Reasons:**
+| Reason | Count |
+|--------|-------|
+| stale_retranslate | 1.492 (86.3%) |
+| free_machine_translation\|source_reused | 131 |
+| source_reused | 73 |
+| low_quality_score | 10 |
+| structural_noise | 7 |
+| stale_unflagged | 5 |
+| needs_polish | 4 |
+| shield_leak_blocked | 2 |
+| free_machine_translation | 3 |
+| max_revisions_exceeded | 2 |
+
+**Kontext:** Quickfix-Sprint implementiert (BUG-FS-002, BUG-FS-005, FCM_ENABLED), aber noch kein Live-Run durchgeführt. DB unverändert seit Snapshot 15. Neue Metriken: Ø Score 84.4, Polish Status failed=2, Stale nach Provider.
+
+**🔍 Anomalie #012: polish_single Stale-Rate 73.5%**
+- **Ursache:** 577 von 785 polish_single-Einträgen haben translation=source_text
+- **Impact:** polish_single ist zweitgrößter Stale-Treiber nach native_runtime
+- **Status:** ⚠️ Offen — Deep Polish (393 Pending) sollte diese reduzieren
+
+---
+
 ## 🔄 Wie dieses Dokument aktualisieren
 
 1. **Nach jedem größeren Run:** Neue Sektion unten anfügen (Format wie oben)
