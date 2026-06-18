@@ -9,7 +9,7 @@ let argosInstalledCache = null;
  * @returns {string} The first working command ('py', 'python', or 'python3'), or 'python' as last resort
  */
 function getPython() {
-  const commands = ['py', 'python', 'python3'];
+  const commands = ['python', 'python3', 'py'];
   for (const cmd of commands) {
     try {
       execSync(`${cmd} --version`, { stdio: 'ignore' });
@@ -102,7 +102,7 @@ async function getAvailableArgosLanguages() {
     '  print(json.dumps({"error": str(e)}))'
   ].join('\n');
   try {
-    const result = spawnSync(python, ['-'], { input: script, encoding: 'utf-8', timeout: 15000 });
+    const result = spawnSync(python, ['-'], { input: script, encoding: 'utf-8', timeout: 5000 });
     if (result.error) throw result.error;
     if (result.status !== 0) throw new Error(result.stderr || `Python exited with code ${result.status}`);
     const out = result.stdout;

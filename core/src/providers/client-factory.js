@@ -55,23 +55,30 @@ function createProviderClients(ctx) {
     if (provider === 'ollama')      return { maxItems: mode === 'polish' ? 8  : 12, maxChars: 1800 };
     if (provider === 'argos')       return { maxItems: 10, maxChars: 1500 };
 
-    // OpenRouter: free tier is heavily rate-limited → conservative batches
-    if (provider === 'openrouter' && isFree)  return { maxItems: mode === 'polish' ? 6  : 10, maxChars: 1600 };
-    if (provider === 'openrouter' && isLarge) return { maxItems: mode === 'polish' ? 20 : 28, maxChars: 3600 };
-    if (provider === 'openrouter')            return { maxItems: mode === 'polish' ? 14 : 20, maxChars: 2800 };
+    // FCM: local daemon proxy — smaller batches for quality
+    if (provider === 'fcm')         return { maxItems: mode === 'polish' ? 8  : 14, maxChars: 2000 };
 
-    // Groq: very fast but token-per-minute limited → scale by model size
-    if (provider === 'groq' && isLarge) return { maxItems: mode === 'polish' ? 20 : 28, maxChars: 3200 };
-    if (provider === 'groq' && isLite)  return { maxItems: mode === 'polish' ? 16 : 22, maxChars: 2800 };
-    if (provider === 'groq')            return { maxItems: mode === 'polish' ? 14 : 20, maxChars: 2600 };
+    // NVIDIA NIM: Max-Effort — smaller batches = more context per item = better quality
+    if (provider === 'nvidia' && isLarge) return { maxItems: mode === 'polish' ? 10 : 16, maxChars: 2400 };
+    if (provider === 'nvidia')            return { maxItems: mode === 'polish' ? 8  : 12, maxChars: 2000 };
 
-    // Gemini: large context window
-    if (provider === 'gemini' && isLite)  return { maxItems: mode === 'polish' ? 18 : 24, maxChars: 3200 };
-    if (provider === 'gemini' && isLarge) return { maxItems: mode === 'polish' ? 24 : 36, maxChars: 5000 };
-    if (provider === 'gemini')            return { maxItems: mode === 'polish' ? 20 : 28, maxChars: 3600 };
+    // OpenRouter: conservative batches for quality
+    if (provider === 'openrouter' && isFree)  return { maxItems: mode === 'polish' ? 4  : 8,  maxChars: 1200 };
+    if (provider === 'openrouter' && isLarge) return { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2800 };
+    if (provider === 'openrouter')            return { maxItems: mode === 'polish' ? 8  : 14, maxChars: 2200 };
 
-    // Generic paid provider
-    return { maxItems: mode === 'polish' ? 14 : 20, maxChars: 2600 };
+    // Groq: fast but quality-per-item matters more than throughput
+    if (provider === 'groq' && isLarge) return { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2400 };
+    if (provider === 'groq' && isLite)  return { maxItems: mode === 'polish' ? 10 : 14, maxChars: 2000 };
+    if (provider === 'groq')            return { maxItems: mode === 'polish' ? 8  : 12, maxChars: 1800 };
+
+    // Gemini: large context window — reduce for quality
+    if (provider === 'gemini' && isLite)  return { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2600 };
+    if (provider === 'gemini' && isLarge) return { maxItems: mode === 'polish' ? 16 : 24, maxChars: 4000 };
+    if (provider === 'gemini')            return { maxItems: mode === 'polish' ? 14 : 20, maxChars: 3000 };
+
+    // Generic paid provider — quality over speed
+    return { maxItems: mode === 'polish' ? 8 : 12, maxChars: 1800 };
   }
 
   function handleRateLimits(provider, headers) {
@@ -400,6 +407,132 @@ except Exception as e:
     }
   }
 
+  async function callNvidiaBatch(items, modelOverride = '', attemptCount = 0) {
+    const keys = config.NVIDIA_KEYS || [];
+    const key = getApiKey('nvidia');
+    if (!key) throw new Error('NVIDIA API Key fehlt.');
+    const model = getModelForProvider('nvidia', modelOverride);
+    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
+    const payload = {
+      model,
+      messages: [
+        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.1
+    };
+    logPayload('nvidia', 'REQUEST', payload);
+
+    try {
+      const response = await withRetry('NVIDIA Batch', () => axios.post('https://integrate.api.nvidia.com/v1/chat/completions', payload, {
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        timeout: 90000
+      }));
+      handleRateLimits('nvidia', response.headers);
+      if (configRuntime) configRuntime.markKeyStatus('nvidia', true);
+      const raw = response.data.choices?.[0]?.message?.content ?? null;
+      if (!raw) throw new Error('NVIDIA returned no message content.');
+      logPayload('nvidia', 'RESPONSE', raw);
+      let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+
+      // JSON-Retry: NVIDIA models sometimes return markdown or truncated JSON.
+      if (parsed.length !== items.length) {
+        console.warn(`[NVIDIA] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
+        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
+        const strictPayload = {
+          model,
+          messages: [
+            { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
+            { role: 'user', content: strictPrompt.prompt }
+          ],
+          temperature: 0.1
+        };
+        try {
+          const retryResp = await withRetry('NVIDIA Batch (JSON-Retry)', () => axios.post('https://integrate.api.nvidia.com/v1/chat/completions', strictPayload, {
+            headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+            timeout: 90000
+          }));
+          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
+          if (retryRaw) {
+            logPayload('nvidia', 'RESPONSE (Retry)', retryRaw);
+            parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
+            console.log(`[NVIDIA] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
+          }
+        } catch (retryErr) {
+          console.warn(`[NVIDIA] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
+        }
+      }
+      return parsed;
+    } catch (e) {
+      const status = e.response ? e.response.status : 0;
+      if (status === 401 || status === 403) if (configRuntime) configRuntime.markKeyStatus('nvidia', false);
+      if (status === 429) {
+        if (configRuntime) configRuntime.updateProviderRateLimit('nvidia', true);
+        const ci = (config.KEY_INDICES && config.KEY_INDICES.nvidia) || 0;
+        if (configRuntime && configRuntime.markKeyCooldown) configRuntime.markKeyCooldown('nvidia', ci, 30000);
+      }
+      if ((status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey('nvidia')) {
+        return callNvidiaBatch(items, modelOverride, attemptCount + 1);
+      }
+      throw e;
+    }
+  }
+
+  async function callFcmBatch(items, modelOverride = '', attemptCount = 0) {
+    const fcmUrl = config.FCM_URL || 'http://localhost:19280/v1';
+    const model = getModelForProvider('fcm', modelOverride);
+    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
+    const payload = {
+      model,
+      messages: [
+        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.1
+    };
+    logPayload('fcm', 'REQUEST', payload);
+
+    try {
+      const response = await withRetry('FCM Batch', () => axios.post(`${fcmUrl}/chat/completions`, payload, {
+        timeout: 90000
+      }));
+      if (configRuntime) configRuntime.markKeyStatus('fcm', true);
+      const raw = response.data.choices?.[0]?.message?.content ?? null;
+      if (!raw) throw new Error('FCM returned no message content.');
+      logPayload('fcm', 'RESPONSE', raw);
+      const parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+
+      // JSON-Retry: FCM routes to various free models that may return markdown
+      if (parsed.length !== items.length) {
+        console.warn(`[FCM] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
+        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
+        try {
+          const retryResp = await withRetry('FCM Batch (JSON-Retry)', () => axios.post(`${fcmUrl}/chat/completions`, {
+            model,
+            messages: [
+              { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
+              { role: 'user', content: strictPrompt.prompt }
+            ],
+            temperature: 0.1
+          }, { timeout: 90000 }));
+          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
+          if (retryRaw) {
+            logPayload('fcm', 'RESPONSE (Retry)', retryRaw);
+            const retryParsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
+            console.log(`[FCM] JSON-Retry: ${retryParsed.length}/${items.length} Eintraege.`);
+            return retryParsed;
+          }
+        } catch (retryErr) {
+          console.warn(`[FCM] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
+        }
+      }
+      return parsed;
+    } catch (e) {
+      if (configRuntime) configRuntime.markKeyStatus('fcm', false);
+      throw e;
+    }
+  }
+
   async function executeStageRequest(stage, route, prompt, options = {}, attemptCount = 0) {
     const {
       mode = 'text',
@@ -427,15 +560,37 @@ except Exception as e:
       }
 
       if (mode === 'text' && shieldMaps.length > 0) {
-        return parsed.map((str, idx) => {
+        const values = [];
+        const shieldResults = [];
+        for (let idx = 0; idx < parsed.length; idx++) {
+          const str = parsed[idx];
           const map = shieldMaps[idx];
-          if (!map) return str;
-          if (entries[idx]) {
+          if (!map) {
+            values.push(str);
+            shieldResults.push(null);
+          } else if (entries[idx]) {
             const result = restoreAndValidateTranslation(entries[idx].source, str, map);
-            return result.restored;
+            // FIX: Respect validation — shield_leak means [[0]] was NOT restored.
+            // Fall back to the unpolished source instead of leaking tokens into DB.
+            if (!result.valid) {
+              console.warn(`[SHIELD-LEAK] Stage restore failed for "${(entries[idx].source || '').substring(0, 30)}" — fallback to source.`);
+              values.push(entries[idx].source);
+              shieldResults.push(null);
+            } else {
+              values.push(result.restored);
+              shieldResults.push(result._shieldResult || null);
+            }
+          } else {
+            const shieldResult = restorePlaceholders(str, map);
+            if (shieldResult.replacedCount < shieldResult.totalTokens) {
+              console.warn(`[SHIELD] executeStageRequest: ${shieldResult.totalTokens - shieldResult.replacedCount}/${shieldResult.totalTokens} Tokens nicht restored.`);
+            }
+            values.push(shieldResult.restored);
+            shieldResults.push(shieldResult);
           }
-          return restorePlaceholders(str, map);
-        });
+        }
+        values.__shieldResults = shieldResults;
+        return values;
       }
       return parsed;
     };
@@ -524,6 +679,39 @@ except Exception as e:
         logPayload(provider, `RESPONSE [${stage}]`, raw);
         return parseRaw(raw);
       }
+      if (provider === 'nvidia') {
+        if (!key) throw new Error('NVIDIA API Key fehlt.');
+        const response = await withRetry(`NVIDIA ${stage}`, () => axios.post('https://integrate.api.nvidia.com/v1/chat/completions', {
+          model: activeModel,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ],
+          temperature: mode === 'flags' ? 0 : 0.1
+        }, {
+          headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+          timeout: mode === 'flags' ? 60000 : 90000
+        }));
+        const raw = response.data.choices?.[0]?.message?.content ?? null;
+        if (!raw) throw new Error('NVIDIA returned no stage response content.');
+        logPayload(provider, `RESPONSE [${stage}]`, raw);
+        return parseRaw(raw);
+      }
+      if (provider === 'fcm') {
+        const fcmUrl = config.FCM_URL || 'http://localhost:19280/v1';
+        const response = await withRetry(`FCM ${stage}`, () => axios.post(`${fcmUrl}/chat/completions`, {
+          model: activeModel,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ],
+          temperature: mode === 'flags' ? 0 : 0.1
+        }, { timeout: mode === 'flags' ? 60000 : 90000 }));
+        const raw = response.data.choices?.[0]?.message?.content ?? null;
+        if (!raw) throw new Error('FCM returned no stage response content.');
+        logPayload(provider, `RESPONSE [${stage}]`, raw);
+        return parseRaw(raw);
+      }
       throw new Error(`Nicht unterstuetzter ${stage}-Provider: ${provider}`);
     } catch (e) {
       const status = e.response ? e.response.status : 0;
@@ -544,6 +732,8 @@ except Exception as e:
     callGoogleTranslateFree,
     callOllamaBatch,
     callPlayer2Batch,
+    callNvidiaBatch,
+    callFcmBatch,
     executeStageRequest
   };
 }

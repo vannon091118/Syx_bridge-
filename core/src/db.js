@@ -87,6 +87,10 @@ async function init() {
   await run('PRAGMA journal_mode = WAL');
   await run('PRAGMA synchronous = NORMAL');
   await run('PRAGMA foreign_keys = ON');
+  await run('PRAGMA mmap_size = 134217728');   // 128 MB — eliminiert read() syscalls, größter HDD-Gewinn
+  await run('PRAGMA cache_size = -64000');       // 64 MB Page Cache (negativ = Kilobytes)
+  await run('PRAGMA temp_store = MEMORY');       // Temp-Tabellen im RAM statt auf Platte
+  await run('PRAGMA busy_timeout = 5000');       // 5s warten statt sofort SQLITE_BUSY
 
   // --- V1 Tables (Legacy Support) ---
   await run(`CREATE TABLE IF NOT EXISTS translations (
@@ -125,6 +129,12 @@ async function init() {
   try { await run('ALTER TABLE translations ADD COLUMN stress_tested_at TEXT'); } catch (e) {}
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_hash ON translations(target_lang, source_hash)');
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_flagged ON translations(target_lang, flagged, audit_stage)');
+
+  // --- v0.19.8 Deep Polish / Preserve-Content-First Flags ---
+  try { await run('ALTER TABLE translations ADD COLUMN polish_status TEXT NOT NULL DEFAULT \'completed\''); } catch (e) {}
+  try { await run('ALTER TABLE translations ADD COLUMN requires_deep_polish INTEGER NOT NULL DEFAULT 0'); } catch (e) {}
+  try { await run('ALTER TABLE translations ADD COLUMN overwrite_fallback_used INTEGER NOT NULL DEFAULT 0'); } catch (e) {}
+  await run('CREATE INDEX IF NOT EXISTS idx_translations_deep_polish ON translations(target_lang, requires_deep_polish, polish_status)');
 
   await run(`CREATE TABLE IF NOT EXISTS processed_files (
         source_path TEXT NOT NULL,
@@ -255,9 +265,40 @@ async function init() {
         FOREIGN KEY(source_text, target_lang) REFERENCES translations(source_text, target_lang)
     )`);
   await run('CREATE INDEX IF NOT EXISTS idx_revisions_lookup ON translation_revisions(source_text, target_lang, revision_id)');
+
+  // --- v0.19.9 Shield-Leak Cleanup ---
+  // Entries with unreplaced shield tokens in translation column (both new __SHLD_
+  // and legacy [[N]] format) were never properly restored.
+  // Mark them for re-translation instead of leaving corrupted data in DB.
+  try {
+    const shieldLeakResult = await run(
+      `UPDATE translations SET flagged = 1, flag_reason = 'shield_leak_migration',
+       audit_stage = 0, requires_deep_polish = 1, polish_status = 'pending',
+       updated_at = CURRENT_TIMESTAMP
+       WHERE translation LIKE '%__SHLD_%' OR translation LIKE '%[[%' OR translation LIKE '%]]%'`
+    );
+    if (shieldLeakResult && shieldLeakResult.changes > 0) {
+      console.log(`[DB] Shield-Leak-Migration: ${shieldLeakResult.changes} Eintraege mit unreplaced Tokens fuer Re-Translation markiert.`);
+    }
+  } catch (e) {
+    console.warn('[DB] Shield-Leak-Migration fehlgeschlagen:', e.message);
+  }
+}
+
+// Migration: add risk_score if missing (safe on existing DBs)
+// Uses the promise-wrapped run() helper because the raw sqlite3 db.run() is callback-based.
+async function migrateRiskScore() {
+  try {
+    await run('ALTER TABLE translation_revisions ADD COLUMN risk_score INTEGER NOT NULL DEFAULT 0');
+    console.log('[DB] risk_score column added to translation_revisions');
+  } catch (e) {
+    if (!e.message.includes('duplicate column')) console.warn('[DB] risk_score migration:', e.message);
+  }
 }
 
 module.exports = {
+  migrateRiskScore,
+
   init,
   run,
   get,

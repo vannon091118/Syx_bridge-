@@ -52,15 +52,34 @@ function classifyString(key, value) {
  * Extracts translatable strings from file content.
  */
 function extractStrings(content) {
-  const regex = /([a-zA-Z0-9_]+):\s*"((?:\\.|[^"\\])*)"/g;
+  // KEY: prefix is OPTIONAL — captures both `KEY: "value"` and bare `"value"` strings.
+  // Dictionary files (Dic.txt) and nested blocks use bare strings without keys.
+  const regex = /(?:([a-zA-Z0-9_]+)\s*:\s*)?"((?:\\.|[^"\\])*)"/g;
   const strings = [];
   let match;
     
   while ((match = regex.exec(content)) !== null) {
-    const key = match[1];
+    const key = match[1] || '';
     const rawValue = match[2];
-    const unescapedValue = unescapeTextValue(rawValue);
-        
+    let unescapedValue = unescapeTextValue(rawValue);
+    // Strip leading structural noise from extracted values.
+    // SoS files sometimes have structural chars (comma, whitespace, tabs)
+    // leaking into the value portion due to multi-line formatting.
+    const stripped = unescapedValue.replace(/^[,\s:]+/, '');
+    if (stripped && stripped !== unescapedValue) {
+      unescapedValue = stripped;
+    }
+
+    // Skip empty values after stripping
+    if (!unescapedValue) continue;
+
+    // full is ONLY the quoted value portion — never includes the KEY: prefix.
+    // applyTranslations() replaces only this range, preserving structural keys.
+    const quotedValue = match[0].includes(':') && key
+      ? match[0].substring(match[0].indexOf('"'))
+      : match[0];
+    const valueOffset = match.index + match[0].indexOf('"');
+
     strings.push({
       key,
       source: unescapedValue,
@@ -68,8 +87,8 @@ function extractStrings(content) {
       hash: getHash(unescapedValue),
       type: classifyString(key, unescapedValue),
       fullMatch: match[0],
-      full: match[0],
-      index: match.index
+      full: quotedValue,
+      index: valueOffset
     });
   }
   return strings;
@@ -77,6 +96,7 @@ function extractStrings(content) {
 
 /**
  * Shields complex placeholders and tags with simple tokens to protect them from LLMs.
+ * Token format: __SHLD_N__ (instead of old [[N]]) to avoid collision with SoS [[...]] markers.
  * @param {string} text 
  * @returns {Object} { shieldedText, map }
  */
@@ -87,7 +107,7 @@ function shieldPlaceholders(text) {
     
   let index = 0;
   const shieldedText = text.replace(regex, (match) => {
-    const token = `[[${index++}]]`;
+    const token = `__SHLD_${index++}__`;
     map.set(token, match);
     return token;
   });
@@ -97,15 +117,22 @@ function shieldPlaceholders(text) {
 
 /**
  * Restores original placeholders from shield tokens.
+ * Returns object with restoration metadata so callers can track shield integrity.
  * @param {string} shieldedText 
  * @param {Map} map 
+ * @returns {{ restored: string, replacedCount: number, totalTokens: number }}
  */
 function restorePlaceholders(shieldedText, map) {
   let text = shieldedText;
+  let replacedCount = 0;
+  const totalTokens = map.size;
   for (const [token, match] of map.entries()) {
+    const before = text;
     text = text.replaceAll(token, match);
+    if (text !== before) replacedCount++;
+    else console.warn(`[SHIELD] Token ${token} nicht im Text gefunden — moeglicherweise vom LLM korrumpiert.`);
   }
-  return text;
+  return { restored: text, replacedCount, totalTokens };
 }
 
 module.exports = {

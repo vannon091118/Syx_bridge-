@@ -6,7 +6,7 @@ const {
   classifyString,
   getHash
 } = require('./extractor');
-const { validatePlaceholders, validateTags, checkStructure } = require('./validator');
+const { validatePlaceholders, validateTags, checkStructure, classifyStructureIssues } = require('./validator');
 
 function normalizePromptItem(item) {
   if (typeof item === 'string') {
@@ -47,18 +47,21 @@ function isProperNoun(text) {
         && !/[\s.,!?;:]/.test(value);
 }
 
-const PATH_RULES = {
-  'bio/specific': 'proper_noun',    // Namen -> nie übersetzen
-  'race/name':    'proper_noun',
-  'room/':        'ui_string',      // UI -> Google Free reicht
-  'tech/':        'ui_string',
-  'subject/':     'translate',      // Flavor Text -> LLM
-};
-
-function classifyPath(relativePath) {
+/**
+ * Classify a relative file path into a translation category.
+ *
+ * Delegates to plugin.getPathRules() when a plugin is provided.
+ * Without a plugin, all paths are treated as 'translate' (no game-specific rules).
+ *
+ * @param {string} relativePath
+ * @param {object} [plugin]  Optional GamePlugin instance
+ * @returns {string} 'translate' | 'proper_noun' | 'ui_string'
+ */
+function classifyPath(relativePath, plugin) {
   if (!relativePath) return 'translate';
   const normalized = String(relativePath).replace(/\\/g, '/');
-  for (const [pattern, category] of Object.entries(PATH_RULES)) {
+  const rules = plugin?.getPathRules?.() ?? {};
+  for (const [pattern, category] of Object.entries(rules)) {
     if (normalized.includes(pattern)) return category;
   }
   return 'translate';
@@ -72,6 +75,17 @@ function shouldTranslate(text) {
   if (/^(true|false|null|none|yes|no)$/i.test(value)) return false;
   if (/^[\w.-]+\.(png|jpg|jpeg|webp|gif|dds|wav|ogg|mp3|json|xml|ini|txt)$/i.test(value)) return false;
   if (/^[a-z0-9_.:-]+$/i.test(value) && /[_./:-]/.test(value) && !/\s/.test(value)) return false;
+  // Reject structural noise: strings starting with SoS file structure characters
+  // (comma, semicolon, colon, tab). Note: value is already .trim()\'d, so no need
+  // for ^\s* or ^[\r\n] checks — those are dead code after trim.
+  if (/^[,:;]/.test(value)) return false;
+  // Reject strings that are just a key name + colon with no actual content
+  // (e.g. "HistoryValue:", "Type:"). These are SoS structural keys, not translatable text.
+  if (/^[A-Za-z_][A-Za-z0-9_]*:\s*$/.test(value)) return false;
+  // Reject Java package/class notation (e.g. "view.sett.ui.room.UIRoom: {",
+  // "world.map.landmark.WorldLandmarks: {"). Pattern: 3+ lowercase dot-separated
+  // segments followed by an uppercase class name. Safe for SoS translations.
+  if (/[a-z]+\.[a-z]+\.[a-z]+\.[A-Z]/.test(value)) return false;
   return true;
 }
 
@@ -210,17 +224,30 @@ function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = 
     return `ID:${index + 1}${metaLine} | Source: "${item.protectedText}"\nTranslation:`;
   }).join('\n\n');
 
+  // Plugin-delegated prompt context: game name, style, rules.
+  // Fallback: generische Defaults — kein Spielwissen im Core (v0.20 H3).
+  const ctx = (buildBatchPrompt._plugin?.getPromptContext?.())
+    ?? { gameName: 'Game', styleGuide: '', rules: [] };
+  if (!buildBatchPrompt._plugin) {
+    // Warn once so the developer knows a plugin should be wired up.
+    if (!buildBatchPrompt._warnedNoPlugin) {
+      buildBatchPrompt._warnedNoPlugin = true;
+      console.warn('[text-core] buildBatchPrompt: kein Plugin gesetzt — generischer Fallback aktiv.');
+    }
+  }
+
   const lines = [
-    'You are a professional localization expert for the dark medieval city-builder game "Songs of Syx".',
+    `You are a professional localization expert for the game "${ctx.gameName}".`,
     `Task: Translate the following ${items.length} strings into ${targetLang}.`,
     '',
     'CRITICAL RULES:',
-    '1. PRESERVE TAGS: Keep all tokens like [[0]], [[1]], etc. EXACTLY unchanged and in their correct grammatical position.',
-    '2. STYLE: Use a medieval, professional, and slightly gritty tone. Avoid modern corporate language.',
-    '3. FORMAT: Respond ONLY with a raw JSON array of strings. No intro, no explanation.',
-    `4. BATCH SIZE: Your response MUST contain exactly ${items.length} elements.`,
+    ...ctx.rules.map((r, i) => `${i + 1}. ${r}`),
+    ctx.rules.length === 0 ? '1. PRESERVE TAGS: Keep all tokens like [[0]], [[1]], etc. EXACTLY unchanged.' : '',
+    ctx.rules.length === 0 ? '2. FORMAT: Respond ONLY with a raw JSON array of strings.' : '',
+    ctx.styleGuide ? `STYLE: ${ctx.styleGuide}` : '',
+    `BATCH SIZE: Your response MUST contain exactly ${items.length} elements.`,
     ''
-  ];
+  ].filter(Boolean);
 
   if (strictTerms.length > 0) {
     lines.push('STRICT TERMINOLOGY RULES (MANDATORY):');
@@ -273,13 +300,20 @@ function buildProofreadPrompt(items, targetLang = 'German', grammarContext = '',
     return `ID:${index + 1}${metaLine}\n${originalLine}Current ${targetLang}: "${item.protectedText}"\nImproved ${targetLang}:`;
   }).join('\n\n');
 
+  // Plugin-delegated prompt context for proofread prompts (v0.20 H1).
+  const proofCtx = (buildProofreadPrompt._plugin?.getPromptContext?.())
+    ?? { gameName: 'Game', styleGuide: '', rules: [] };
+  const consistencyNote = proofCtx.styleGuide
+    ? `2. CONSISTENCY: ${proofCtx.styleGuide}`
+    : '2. CONSISTENCY: Maintain consistent terminology and tone.';
+
   const lines = [
-    'You are a senior editor for "Songs of Syx" game localizations.',
+    `You are a senior editor for "${proofCtx.gameName}" game localizations.`,
     `Task: Proofread and polish these ${items.length} ${targetLang} strings.`,
     '',
     'INSTRUCTIONS:',
     '1. FIX: Grammar, spelling, and unnatural phrasing.',
-    '2. CONSISTENCY: Ensure terms match the medieval world of Songs of Syx.',
+    consistencyNote,
     '3. SAFETY: Keep all [[0]], [[1]] tokens unchanged.',
     '4. FORMAT: Respond ONLY with a JSON array of strings.',
     ''
@@ -319,16 +353,48 @@ function placeholdersValid(sourceOrPlaceholders, target) {
   return validatePlaceholders(String(sourceOrPlaceholders || ''), String(target || ''));
 }
 
-function translationLooksSafe(source, target, placeholders = null) {
+/**
+ * CRITICAL-ONLY check: only rejects translations that would corrupt the file.
+ * Soft issues (quote mismatch, length drift, minor tag differences) are
+ * collected separately by assessTranslationWarnings() and accepted.
+ * @returns {{ ok: boolean, reason: string }}
+ */
+function translationCriticalCheck(source, target, placeholders = null) {
   const restored = String(target || '');
-  if (!restored || restored.includes('[[') || restored.includes(']]')) return false;
-  // BUG-002 Fix: Pure numbers (batch indices, IDs like "14", "22") are never safe translations.
-  if (/^\d+$/.test(restored)) return false;
-  if (placeholders && !placeholdersValid(placeholders, restored)) return false;
-  if (!placeholdersValid(source, restored)) return false;
-  if (!validateTags(String(source || ''), restored)) return false;
-  const issues = checkStructure(String(source || ''), restored);
-  return !issues.includes('UNBALANCED_QUOTES');
+  if (!restored) return { ok: false, reason: 'empty_translation' };
+  // Shield tokens not restored — would leak __SHLD_0__ (or legacy [[0]]) into game files
+  // Check BOTH new format (__SHLD_) and legacy format ([[N]]) for backward compat.
+  if (restored.includes('__SHLD_') || restored.includes('[[') || restored.includes(']]')) {
+    return { ok: false, reason: 'shield_leak' };
+  }
+  // BUG-002 Fix: Pure numbers (batch indices, IDs) are never valid translations.
+  if (/^\d+$/.test(restored)) return { ok: false, reason: 'pure_number' };
+  // Placeholder loss — game would crash on missing {0}, $VAR, etc.
+  if (placeholders && !placeholdersValid(placeholders, restored)) return { ok: false, reason: 'placeholder_loss' };
+  if (!placeholdersValid(source, restored)) return { ok: false, reason: 'placeholder_loss' };
+  return { ok: true, reason: '' };
+}
+
+/**
+ * Soft assessment: returns warnings for non-critical issues.
+ * These should NOT block acceptance but SHOULD flag for Deep Polish.
+ * @returns {{ warnings: string[] }}
+ */
+function assessTranslationWarnings(source, target) {
+  const { critical, warnings } = classifyStructureIssues(String(source || ''), String(target || ''));
+  // Tag mismatches are also soft — minor formatting differences shouldn't block
+  if (!validateTags(String(source || ''), String(target || ''))) {
+    warnings.push('TAG_MISMATCH');
+  }
+  return { critical, warnings };
+}
+
+/**
+ * Backward-compatible safety check. Now delegates to critical-only check.
+ * Previously this was a strict gate that also blocked on UNBALANCED_QUOTES.
+ */
+function translationLooksSafe(source, target, placeholders = null) {
+  return translationCriticalCheck(source, target, placeholders).ok;
 }
 
 function restoreAndValidateTranslation(source, rawTranslation, placeholders) {
@@ -349,11 +415,13 @@ function restoreAndValidateTranslation(source, rawTranslation, placeholders) {
     clean = clean.replace(/^"|"$/g, '');
   }
   
-  const restored = restorePlaceholders(clean, placeholders);
+  const shieldResult = restorePlaceholders(clean, placeholders);
+  const restored = shieldResult.restored;
   return {
     clean,
     restored,
-    valid: translationLooksSafe(source, restored, placeholders)
+    valid: translationLooksSafe(source, restored, placeholders),
+    _shieldResult: shieldResult
   };
 }
 
@@ -378,7 +446,7 @@ function extractReplacements(content, relativePath = '') {
   return replacements;
 }
 
-function applyTranslations(content, replacements, translations) {
+function applyTranslations(content, replacements, translations, plugin) {
   // Sort replacements backwards to avoid index shifting during modification
   const sorted = [...replacements].sort((a, b) => b.index - a.index);
   let result = content;
@@ -386,8 +454,12 @@ function applyTranslations(content, replacements, translations) {
   for (const r of sorted) {
     const translated = translations.get(r.value);
     if (translated !== undefined) {
-      const escaped = `"${escapeTextValue(translated)}"`;
-      result = result.slice(0, r.index) + escaped + result.slice(r.index + r.full.length);
+      // Plugin-delegated serialization: each game format has its own escaping.
+      // Fallback: SoS-style quoted value with backslash escaping (backward compat).
+      const serialized = plugin
+        ? plugin.serializeTranslation(translated, r)
+        : `"${escapeTextValue(translated)}"`;
+      result = result.slice(0, r.index) + serialized + result.slice(r.index + r.full.length);
     }
   }
   return result;
@@ -404,6 +476,8 @@ module.exports = {
   buildProofreadPrompt,
   placeholdersValid,
   translationLooksSafe,
+  translationCriticalCheck,
+  assessTranslationWarnings,
   restoreAndValidateTranslation,
   extractReplacements,
   applyTranslations,
