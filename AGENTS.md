@@ -4,7 +4,27 @@ RULE 1 _Overdrive Edition: Ich Der Agent (…) Bestätige jeden Task den ich aus
 Ich der Agent aktzeptiere meine rolle alls ausführende kraft und bevor ich beginne selber zu helfen Vertraue ich den User, der user weiss was er macht, Ich nicht. !!!!!!!!!!
 
 
+## RULE: TASK-CHAIN REPORT (Pflicht, immer am Ende)
 
+Jede abgeschlossene Task-Chain (egal ob 1 Sub-Agent oder 10) MUSS mit
+genau diesem Block enden — nichts davor, nichts danach, keine Prosa-
+Zusammenfassung zusätzlich:
+
+🧊 REPORT — <Task-Name> — <Datum>
+✅ FIXED   <n>  <Datei:Zeile — 3-5 Wörter was>
+❌ BROKEN  <n>  <Datei:Zeile — 3-5 Wörter was, NUR wenn neu gefunden>
+⚠️ RISK    <n>  <Datei:Zeile — was könnte noch kippen>
+🔍 PROOF   <wie verifiziert: ECHTER Funktionsaufruf > Datei-Scan > Syntax-Check>
+📁 TOUCHED <Liste geänderter Dateien, Kommagetrennt>
+⏭️ NEXT    <offene Punkte, max 3, oder "—">
+
+Regeln für den Agent:
+- Max. 12 Zeilen total. Keine Tabellen, keine Markdown-Header.
+- PROOF zählt nicht als erbracht durch "Syntax OK" oder "Datei enthält X" —
+  nur ein tatsächlicher Funktionsaufruf mit echtem Input/Output-Check gilt.
+- Wenn ein vorheriger Report etwas als ✅ FIXED gemeldet hat und es bei
+  Nachprüfung doch nicht stimmt: erscheint es jetzt als ❌ BROKEN, nicht
+  stillschweigend korrigiert.
 
 # 🤖 AGENTS.md — SyxBridge Sub-Agent Reference
 
