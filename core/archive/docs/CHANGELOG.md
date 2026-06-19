@@ -12,6 +12,18 @@
 
 ---
 
+## [WRITE-VERLUST] - 2026-06-19 — PROCESSED_FILES-RECOVERY + PATCHES/BACKUPS WIEDERHERSTELLUNG
+
+### Fixed (P0 — Export-Chain Write-Verlust)
+- **BUG:** 6.131 Übersetzungen in der DB, aber NULL Dateien im Spielverzeichnis (Workshop + AppData). `fullReset()` oder manuelle Löschung hatte `core/patches/` und `core/backups/` entfernt, während `processed_files`-Tabelle noch 401 Einträge mit veralteten Output-Pfaden enthielt. Neue Syncs schrieben keine Dateien, weil die Export-Chain zwar durchlief, aber die staging-Verzeichnisse fehlten.
+- **Root Cause:** `processed_files` persistierte über Verzeichnis-Löschung hinweg → `shouldSkipFile()` sah veraltete Einträge → kein Re-Export.
+- **Fix #1 (manuell):** `processed_files`-Tabelle gecleared (401 → 0 Einträge via sql.js). `core/patches/` und `core/backups/` Verzeichnisse neu erstellt und Schreibbarkeit verifiziert.
+- **Fix #2 (Code):** RECOVERY-Block in `synchronize()` (`core/index.js`): Erkennt fehlendes `patches/` bei vorhandenen `processed_files`-Einträgen und cleared die Tabelle automatisch. Nur bei `!dryRun`, nur bei `pfCount > 0`. Zusätzlicher Check auf leere `processed_files`-Tabelle (nur loggen, kein Clear).
+- **Dateien:** `core/index.js` (+20 Zeilen RECOVERY-Block), `core/patches/` (neu erstellt), `core/backups/` (neu erstellt)
+- **Code-Review:** "Ship it" — dryRun-Edge-Case korrekt, leere-Tabelle-Kante behandelt.
+
+---
+
 ## [QUALITY-OFFENSIVE] - 2026-06-19 — CHIRURGISCHE FIXES MIT SIDE-EFFECT-ANALYSE
 
 ### FIX-1: needsRefresh für polish_single stale (577 Einträge)
