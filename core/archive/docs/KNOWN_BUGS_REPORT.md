@@ -355,7 +355,7 @@
 | BU-010 | Scores nicht differenzierend | Granulares Scoring |
 | BU-034 | polish_single Low-Score | Re-Translate für Score<30 |
 
-**Status:** 4/5 behoben, BU-034 offen.
+**Status:** 5/5 behoben.
 
 ---
 
@@ -394,12 +394,12 @@
 | Bug | Symptom | Infra-Lücke |
 |-----|---------|-------------|
 | BU-020 | Kein AbortController | API-Calls nicht abbrechbar |
-| BU-021 | 14 ALTER TABLE pro Start | Schema-Check ohne Cache |
-| BU-023 | Keine Contract-Tests | Interface-Änderungen unbemerkt |
+| ~~BU-021~~ | ~~14 ALTER TABLE pro Start~~ | ✅ addColumnIfMissing Helper |
+| ~~BU-023~~ | ~~Keine Contract-Tests~~ | ✅ plugin-boundary-contract.js (73/73) |
 | BU-024 | CodeRabbit unreviewed | Kein CI-Gate |
 | BU-025 | Vendor-Drift | Einbahnstraßen-Release |
 
-**Status:** 0/5 behoben — alle offen.
+**Status:** 2/5 behoben (BU-021, BU-023), 3 offen (BU-020, BU-024, BU-025).
 
 ---
 
@@ -411,9 +411,9 @@
 | BU-031 | 31.5% `translations.flagged` | native_runtime nie re-evaluiert |
 | BU-032 | 14.6% `translations.audit_stage=0` | ENV.GRAMMAR_CHECK default false |
 | BU-033 | 22.9% `translation_revisions.is_active=1` | BUG-005 (`is_active=0`) |
-| BU-034 | 82 Low-Score `translations.quality_score<30` | Polish-Qualität nie re-evaluiert |
+| ~~BU-034~~ | ~~82 Low-Score~~ | ✅ needsRefresh erweitert (Score<30 triggert) |
 
-**Status:** 0/4 behoben (alle DB-Zustand — erfordern Re-Run, nicht Code-Fix).
+**Status:** 1/4 behoben (BU-034), 3 offen (BU-031, BU-032, BU-033 — alle DB-Zustand, erfordern Re-Run).
 
 ---
 
@@ -457,7 +457,7 @@
 | BU-019 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P1 | ➡️ Unverändert — nie priorisiert |
 | BU-020 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P2 | ➡️ Unverändert — nie priorisiert |
 | BU-021 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P2 | ➡️ Unverändert — niedrige Prio |
-| BU-023 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P2 | ➡️ Unverändert — F.B |
+| BU-023 | **GEHEILT** | — | ✅ BEHOBEN — plugin-boundary-contract.js (73/73 PASS) |
 | BU-024 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P1 | ➡️ Unverändert — F.C |
 | BU-025 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P2 | ➡️ Unverändert — F.A |
 | BU-026 | **PERSISTENT** | FORENSIC_FULLSCAN §4 P2 | ➡️ Unverändert — nie priorisiert |
@@ -470,8 +470,8 @@
 
 | Kategorie | Count |
 |-----------|-------|
-| ✅ GEHEILT (gefixt + verifiziert) | 13 |
-| ➡️ PERSISTENT (bekannt, nie priorisiert) | 8 |
+| ✅ GEHEILT (gefixt + verifiziert) | 14 |
+| ➡️ PERSISTENT (bekannt, nie priorisiert) | 7 |
 | 🆕 NEU (diese Session erstmals quantifiziert) | 4 |
 | **Total katalogisiert** | **25 aktive + 9 geheilt = 34** |
 
@@ -492,7 +492,7 @@
 
 | Cluster | Risk (1-10) | Effort (h) | Bugs | ROI (Risk/Effort) |
 |---------|------------|------------|------|-------------------|
-| **D — Infrastruktur** | 8 | 10.5 | BU-020,21,23,24,25 | 0.76 |
+| **D — Infrastruktur** | 6 | 8.5 | BU-020,24,25 | 0.71 |
 | **E — DB-Health** | 7 | 5.0 | BU-031,32,33,34 | 1.40 |
 | **C — Code-Qualität** | 4 | 6.0 | BU-019,22,26,28 | 0.67 |
 | **A — Quality-Pipeline** | 3 | 2.0 | BU-034 | 1.50 |
@@ -505,10 +505,10 @@
 | # | Bug | Risk | Effort | Cluster | Begründung |
 |---|-----|------|--------|---------|------------|
 | 1 | **BU-020** | 🔴 P1 | 2h | D | Kein AbortController → Key-Verschwendung bei Abbruch |
-| 2 | **BU-023** | 🔴 P1 | 3h | D | Interface-Change → unbemerkte Plugin-Breaks |
-| 3 | **BU-024** | 🔴 P1 | 1.5h | D | Unreviewed Auto-Fix → potenzielle Bugs |
-| 4 | **BU-031** | 🔴 P0 | 1h | E | 31.5% Flagged → Live-Run + Re-Evaluierung |
-| 5 | **BU-034** | 🟡 P1 | 0.5h | A | 82 Low-Score → needsRefresh erweitern |
+| 2 | **BU-024** | 🔴 P1 | 1.5h | D | Unreviewed Auto-Fix → potenzielle Bugs |
+| 3 | **BU-031** | 🔴 P0 | 1h | E | 31.5% Flagged → Live-Run + Re-Evaluierung |
+| 4 | **BU-025** | 🟡 P2 | 3h | D | Vendor-Sync Drift bidirektional |
+| 5 | **BU-019** | 🟡 P2 | 1h | C | consecutiveGrammarFailures modul-scoped mutable |
 
 ---
 

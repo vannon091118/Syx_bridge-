@@ -159,11 +159,11 @@ PRAGMA busy_timeout = 5000;      -- 5s
 - **Dual-Path-Copy:** Workshop + AppData parallel (`runtime-ops.js:230-264`)
 - **RECOVERY-Block:** processed_files Clear bei fehlenden patches/ (`index.js`)
 
-### 4.7 NMT Local (Optional)
-- **Status:** Implementiert, NICHT als Provider registriert
-- **Modell:** Xenova/nllb-200-distilled-600M (~1.2 GB)
-- **Config:** `NMT_LOCAL_ENABLED=false` (Default)
-- **Warmup:** `npm run warm-model` (manuell)
+### 4.7 NMT Local (Optional) — ENTFERNT (BU-040)
+- **Status:** ❌ ENTFERNT — `NMT_LOCAL_ENABLED` aus `config-runtime.js`, `index.js`, `start.bat` entfernt
+- **Grund:** Verhinderte stille 1.2 GB Package-Installationen
+- **Verbleibend:** `warm-model.js` als Roadmap v0.23 (nicht aktiv)
+- **Modell:** Xenova/nllb-200-distilled-600M (~1.2 GB) — nicht mehr geladen
 
 ---
 
@@ -174,7 +174,7 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | BUG-FS-003 | P0 | Argos Placeholder-Korruption bei skipIndices | `translation-runtime.js:85-91` | ✅ DNT-Fix implementiert |
 | BUG-FS-006 | P1 | `flagPotentialErrors()` gibt null statt false | `translation-runtime.js:449` | ✅ Fix implementiert |
 | F.A | P2 | Vendor-Sync Drift (Live-Core vs Release) | README.md | ✅ Manifest + checkVendorDrift() |
-| F.B | P1 | Plugin-Boundary Contract-Tests | plugin-boundary-smoke.js | ✅ 100/100 PASS |
+| F.B | P1 | Plugin-Boundary Contract-Tests | plugin-boundary-contract.js | ✅ 73/73 PASS (BU-023) |
 | F.C | P1 | CodeRabbit-Auto-Fix aus PR #5 unreviewed | README.md | ⚠️ OFFEN |
 | ~~UI-STRING-P0~~ | ~~P0~~ | ~~Tier 1 Hardcoded umgeht User-Config~~ | dispatcher.js:66-72 | ✅ FCB-Fix (Free-LLM-first) |
 
