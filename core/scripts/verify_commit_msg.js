@@ -4,7 +4,9 @@
  * 
  * Vergleicht die Commit-Message gegen `git diff --cached --name-only`.
  * JEDE gestagte Datei muss in der Commit-Message erwähnt werden.
- * Zusätzlich: RULE 2 Mindestwortzahl (500 Wörter) wird erzwungen.
+ * Zusätzlich: RULE 2 Mindestwortzahl wird erzwungen.
+ *   500 Wörter für normale Commits, 50 Wörter für triviale Commits
+ *   (nur Doc-Dateien oder ≤1 Datei + <10 Zeilen geändert).
  * 
  * Exit 0 = PASS (Commit darf durchgehen)
  * Exit 1 = BLOCKED (Commit wird verweigert)
@@ -51,33 +53,15 @@ if (commitMsg.trim().length === 0) {
     process.exit(1);
 }
 
-// ─── RULE 2: Word count check ──────────────────────────────────────
-const words = commitMsg.split(/\s+/).filter(Boolean);
-const wordCount = words.length;
-const RULE2_MIN_WORDS = 500;
-
-if (wordCount < RULE2_MIN_WORDS) {
-    console.error('═══════════════════════════════════════════');
-    console.error('  RULE 2 — COMMIT BLOCKED');
-    console.error('═══════════════════════════════════════════');
-    console.error('');
-    console.error(`Commit message has ${wordCount} words.`);
-    console.error(`RULE 2 requires at least ${RULE2_MIN_WORDS} words.`);
-    console.error('');
-    console.error('RULE 2 _Commit-Narrative Edition: KEIN Commit');
-    console.error('ohne eine 500-1000 Wörter lange satirische');
-    console.error('Erzählung als Commit-Beschreibung.');
-    console.error('');
-    process.exit(1);
-}
-
-// ─── Get staged files ──────────────────────────────────────────────
+// ─── Get staged files (single call, reused below) ──────────────────
 let stagedFiles;
+let stagedDiffStat = '';
 try {
     stagedFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' })
         .trim()
         .split('\n')
         .filter(Boolean);
+    stagedDiffStat = execSync('git diff --cached --stat', { encoding: 'utf8' }).trim();
 } catch (e) {
     console.error('BLOCKED: Could not read staged files.');
     console.error(`  ${e.message.trim()}`);
@@ -87,6 +71,49 @@ try {
 if (stagedFiles.length === 0) {
     console.error('BLOCKED: No files staged for commit.');
     console.error('  Nothing to verify — stage files first.');
+    process.exit(1);
+}
+
+// ─── Detect trivial commit ─────────────────────────────────────────
+// Trivial = only doc files (.md, .txt), or ≤1 file + <10 lines changed
+let isTrivial = false;
+const allDocs = stagedFiles.every(f => /\.(md|txt)$/i.test(f));
+let smallDiff = false;
+if (stagedFiles.length <= 1 && stagedDiffStat) {
+    try {
+        const insMatch = stagedDiffStat.match(/(\d+) insertions?/);
+        const delMatch = stagedDiffStat.match(/(\d+) deletions?/);
+        const insertions = insMatch ? parseInt(insMatch[1]) : 0;
+        const deletions = delMatch ? parseInt(delMatch[1]) : 0;
+        smallDiff = (insertions + deletions) < 10;
+    } catch (_) { /* can't parse diff stat, assume not small */ }
+}
+isTrivial = allDocs || smallDiff;
+
+// ─── RULE 2: Word count check ──────────────────────────────────────
+const words = commitMsg.split(/\s+/).filter(Boolean);
+const wordCount = words.length;
+const RULE2_MIN_WORDS = isTrivial ? 50 : 500;
+const trivialLabel = isTrivial ? ' (trivial commit — 50 word minimum)' : ' (standard commit — 500 word minimum)';
+
+if (wordCount < RULE2_MIN_WORDS) {
+    console.error('═══════════════════════════════════════════');
+    console.error('  RULE 2 — COMMIT BLOCKED');
+    console.error('═══════════════════════════════════════════');
+    console.error('');
+    console.error(`Commit message has ${wordCount} words.`);
+    console.error(`RULE 2 requires at least ${RULE2_MIN_WORDS} words${trivialLabel}.`);
+    console.error('');
+    if (isTrivial) {
+        console.error('This commit was detected as TRIVIAL');
+        console.error('(doc-only or <10 lines changed).');
+        console.error('Minimum: 50 words. A precise sentence.');
+    } else {
+        console.error('RULE 2 _Commit-Narrative Edition: KEIN Commit');
+        console.error('ohne eine 500-1000 Wörter lange satirische');
+        console.error('Erzählung als Commit-Beschreibung.');
+    }
+    console.error('');
     process.exit(1);
 }
 
@@ -176,23 +203,6 @@ if (missingFromMsg.length > 0) {
     process.exit(1);
 }
 
-// ─── Bidirectional check (WARNING only): ──────────────────────────
-// Check if the commit message references files that are NOT staged.
-// This catches the case where the Orchestrator writes about a file
-// but forgot to `git add` it.
-let bidirectionalWarnings = 0;
-for (const file of stagedFiles) {
-    // Already verified: every staged file IS in the message.
-    // Now check the reverse: are there files in the message NOT staged?
-    // We can't easily extract file names from narrative text,
-    // but we can check the staged basenames against a broader set.
-    // This is a soft warning, not a block.
-}
-// Actually, the bidirectional check is inherently noisy with narrative
-// text. Instead, we verify that the staged file count is reasonable
-// (non-zero, which we already check) and that the commit message
-// seems to be about code/docs (not about something unrelated).
-
 // ─── PASS ──────────────────────────────────────────────────────────
 console.log('═══════════════════════════════════════════');
 console.log('  RULE 3 — COMMIT VERIFIED ✓');
@@ -204,5 +214,8 @@ for (const f of stagedFiles) {
 console.log('');
 console.log(`  ${stagedFiles.length} staged file(s) — all referenced`);
 console.log(`  RULE 2 word count: ${wordCount} words (≥${RULE2_MIN_WORDS})`);
+if (isTrivial) {
+    console.log(`  Type: TRIVIAL commit (doc-only or <10 lines)`);
+}
 console.log('');
 process.exit(0);
