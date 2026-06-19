@@ -188,6 +188,16 @@ Ein temporäres Node-Script (`scripts/_verify_bu036.js`) instanziierte den Route
 - SSOT-Sync: AGENTS.md Root und core/archive/docs/AGENTS.md synchronisiert
 - Verifikation: Happy-Path Exit 0 (4 staging files, 640 words), RULE-2-Short-Message Exit 1 (26 words)
 
+
+### VENDOR-DRIFT FIX — 2026-06-20
+
+**check_vendor_drift.js: DRIFT ist immer ERROR, Release nach 7 Commits synchronisiert.**
+
+- check_vendor_drift.js Zeile 238: DRIFT/WARN to DRIFT/ERROR (gleiche mtime, anderer Hash = REBUILD NOETIG)
+- npm run release ausgefuehrt: SyxBridge_v0.20.0-pre-release neu gebaut
+- Vor Rebuild: 7 DRIFT Errors (index.js, config-runtime.js, SongsOfSyxPlugin.js, client-factory.js, translation-runtime.js, plugins/INDEX.md, providers/INDEX.md)
+- Nach Rebuild: 0 DRIFT, 0 Errors, Exit 0 — Release synchron mit Source
+
 ## [BU-040] - 2026-06-19 — NMT_LOCAL_ENABLED VERWAIST removed from PERSISTED_KEYS
 
 ### Fixed (DEAD_FLAG_REPORT VERWAIST → REMOVED)
