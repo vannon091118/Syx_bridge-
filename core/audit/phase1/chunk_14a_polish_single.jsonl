@@ -1,0 +1,115 @@
+{"s":",\r\n},\r\nworld.map.landmark.WorldLandmarks: {\r\n\t","t":"},\nworld.map.landmark.WorldLandmarks: {","p":"polish_single","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Hunter Bonus","t":"Jäger-Bonus","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Hunter (Refined)","t":"Jäger (Verfeinert)","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Hunter Expanded","t":"Jäger erweitert","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This save is from a previous version and will probably not load!","t":"Dieser Speicher stammt aus einer vorherigen Version und wird wahrscheinlich nich","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This save is made with a different mod configuration and will probably not load!","t":"Dieser Speicher wurde mit einer anderen Mod-Konfiguration erstellt und wird wahr","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Stone can be obtained by manually clearing rocks on the ground.","t":"Stein kann durch manuelles Entfernen von Steinen vom Boden gewonnen werden.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Wood can be obtained by manually clearing trees.","t":"Holz kann durch manuelles Sammeln von Bäumen gewonnen werden.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This crop might be growing in the wild. Have a look, maybe you can harvest some ","t":"Diese Ernte könnte in der Wildnis wachsen. Schauen Sie mal, vielleicht können Si","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Each soldier of this supply wants at least {0} items stored per soldier.","t":"Jeder Soldat dieses Angebots benötigt mindestens {0} eingelagerte Gegenstände pr","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Each soldier of this supply consumes {0} items per year.","t":"Jeder Soldat dieser Lieferung verbraucht {0} Gegenstände pro Jahr.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Each items stored degrades by -{0} per year.","t":"Jede gespeicherte Ware wird jährlich um -{0} reduziert.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of shadows in-game. Can decrease performance.","t":"Die Anzahl der Schatten im Spiel kann die Leistung verringern.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of particles in-game. Can decrease performance.","t":"Die Menge an Partikeln im Spiel kann die Leistung verringern.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of gore in-game. Can decrease performance.","t":"Die Menge an Gore im Spiel kann die Leistung verringern.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Simulates the day and night cycle visually for the UI.","t":"Simuliert den Tages- und Nachtzyklus visuell für die UI.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Adds visual weather, such as rain and snow to the game.","t":"Fügt visuelles Wetter, wie Regen und Schnee, zum Spiel hinzu.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have returned from a heroic adventure.","t":"Themen, die von einem heroischen Abenteuer zurückgekehrt sind, werden als zurück","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of detail when rendering the map.","t":"Die Menge an Detail beim Rendern der Karte kann die Leistung beeinflussen.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that are freed slaves.","t":"Subjekte, die Sklaven befreit sind, werden als befreit markiert.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have been sacrificed to the gods.","t":"Untertanen, die den Göttern geopfert wurden.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have been readjusted in the asylum and cured of insanity.","t":"Untertanen, die im Asyl neu ausgerichtet und vom Wahnsinn geheilt wurden.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have been turned into prisoners.","t":"Untertanen, die zu Gefangenen gemacht wurden.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Immigrants are subjects from either your regional population, or camps that have","t":"Einwanderer sind Themen von Ihrer regionalen Bevölkerung oder Camps, die sich Ih","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This job needs {0} to complete, which is unobtainable in your city.","t":"Dieser Job benötigt {0}, um abzuschließen, was in Ihrer Stadt nicht zu erreichen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Job is inactive and needs to be manually activated before it will be performed.","t":"Job ist inaktiv und muss manuell aktiviert werden, bevor es durchgeführt wird.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Refills dug tunnels or natural mountain caves","t":"Nachfüllt gegrabene Tunnel oder natürliche Berghöhlen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Stairs are used for getting access to the top of fortifications. Should be place","t":"Treppen werden verwendet, um Zugang zur Spitze der Befestigungen. Sollte neben e","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Forage Wild Growing crops. These re-grow with each year.","t":"Forage Wild wachsende Kulturen. Diese Nachwachsen mit jedem Jahr.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Removes natural occurring water. Deep water can not be removed completely, but a","t":"Entfernt natürlich vorkommendes Wasser. Tiefes Wasser kann nicht vollständig ent","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Ceilings can house rooms inside them and protects subjects from the elements.","t":"Decken können Zimmer in ihnen beherbergen und schützen Themen vor den Elementen.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Overwrites other jobs or structures when placed.","t":"Überschreibt andere Arbeitsplätze oder Strukturen, wenn sie platziert werden.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Activates suspended jobs.","t":"Aktiviert suspendierte Arbeitsplätze.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Cancels all jobs and room plans.","t":"Entfernt alle Jobs und Zimmerpläne.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Dismantles structures and rooms.","t":"Demontage von Strukturen und Zimmern.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Repair damaged structures and rooms.","t":"Reparatur beschädigte Strukturen und Zimmer.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Removes structures (fortifications, walls, roofs and roads.)","t":"Entfernt Strukturen (Bemühungen, Wände, Dächer und Straßen.)","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Bonus (current)","t":"Bonus (aktuell)","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Your admin rooms are at full capacity. Bigger/more admin rooms are needed to pro","t":"Eure Verwaltungsräume sind voll ausgelastet. Größere oder zusätzliche Verwaltung","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Other storage rooms will not be able to pull from this warehouse if the stored g","t":"Andere Lagerräume können aus diesem Lagerraum nichts entnehmen, wenn der Lagerbe","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When enabled, the workers will fetch all odd resources from the ground and from ","t":"Wenn möglich, sammeln die Arbeiter alle nicht beanspruchten Ressourcen vom Boden","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Incoming Wares","t":"Eingehende Waren","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Preparing Cart","t":"Kartierung","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Loading Cart","t":"Ladewagen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} days","t":"{0} Tage","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sentence all prisoners to be: {0}","t":"Verurteile alle Gefangenen zu {0}","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Experience Gained","t":"Erfahrung gewonnen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Include Walls","t":"Mit Wand","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The commute the employees need to undertake each day. Usually this is the distan","t":"Die Arbeiter müssen jeden Tag ihren Arbeitsweg zurücklegen. In der Regel ist die","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Farm Employees","t":"Bauern","p":"polish_single","f":"","q":70,"sg":2,"fl":0,"a":null}
+{"s":"Pasture Employees","t":"Weidearbeiter","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Mine Employees","t":"Beleuchter der Mine","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Experience Lost","t":"Verlust an Erfahrung","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Refiner Employees","t":"Reinigungsmitarbeiter","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Orchard Employees","t":"Obstgarten-Mitarbeiter","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Workshop Employees","t":"Werkstattmitarbeiter","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Fishery Employees","t":"Fischer","p":"polish_single","f":"","q":70,"sg":2,"fl":0,"a":null}
+{"s":"Creates a new construction site that will become the new throne room when finish","t":"Erstellt eine neue Baustelle, die nach Fertigstellung zum neuen Thronraum wird. ","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This resting place still holds the dead and can not be removed. Deactivate the r","t":"Diese Ruhestätte enthält noch Leichname und kann nicht entfernt werden. Deaktivi","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} Target","t":"{0} Ziel","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"{0} Level","t":"{0} Stufe","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"(Ripe)","t":"(Reif)","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Wild {0}","t":"Wilder {0}","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Drought!","t":"Dürre!","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The gods have forsaken {0}, and the rains have stopped. If this keeps up, it wil","t":"Die Götter haben {0} verlassen, und der Regen hat aufgehört. Wenn dies anhält, w","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"A super screenshot generates a large image of the current view. It takes some ti","t":"Ein Superscreenshot erstellt ein großformatiges Bild der aktuellen Ansicht. Dies","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set amount {0}-{1}","t":"Menge festlegen {0}‑{1}","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Battle of {0}","t":"Schlacht um {0}","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Besieging {0}","t":"Belagert {0}","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Bound For {0}","t":"Auf dem Weg nach {0}","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Intercepting {0}","t":"Abfangen von {0}","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Marching To {0}","t":"Marschiert in Richtung {0}","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"{0}, {1} ago","t":"vor {0} Jahren, {1}","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} ago","t":"vor {0}","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"armies","t":"dieArmeen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Add Unit","t":"Eine Einheit hinzufügen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Enemy Kills","t":"Feindliche Tötungen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"CLICK TO CONTINUE!","t":"Klicken Sie!","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Zoom out (Mousewheel).","t":"Herauszoomen (Mausrad).","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Zoom in (Mousewheel).","t":"Vergrößern (Mausrad).","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggles game pause.","t":"Schaltet die Spielpause um.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Sets 5x speed.","t":"Stellt die 5‑fache Geschwindigkeit.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Slowly pans the map-","t":"Verlangsamt die Karte.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Moves the map.","t":"Beweg die Karte.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Toggles stats.","t":"Schaltet die Statistiken um.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The enter key.","t":"Geben Sie den Schlüssel ein.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The backspace key.","t":"Der Schlüssel.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"failed to be overwritten","t":"kann nicht überschrieben werden","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"saved game","t":"gespeichertes Spiel","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Loading it may crash the game!","t":"Das Laden kann das Spiel abstürzen!","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Landing Party","t":"Landetrupp","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"click to reconstruct rooms","t":"Klicken Sie, um Räume zu rekonstruieren.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Send Out","t":"Aussteigen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"KEY SETTINGS","t":"SCHLÜSSELEINSTELLUNGEN","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"key settings","t":"Schlüssel­einstellungen","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Maximally Upgraded.","t":"Maximal aufgerüstet.","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Assign a Role to this Hero.","t":"Weise diesem Helden eine Rolle zu.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Click to manage furnishing.","t":"Klicken Sie, um die Einrichtung zu verwalten.","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Work Bench","t":"Bezahlung","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Broken tide!","t":"Gebrochene Flut!","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Stillwater Host","t":"Stillwasser-Heer","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"croaker","t":"Croaker","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"worthless","t":"Wertlos","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"foolish","t":"Dummheit","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"frekish","t":"Frekten","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"jellyshit","t":"Jellyshit","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"soft shelled","t":"Weich geschält","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"moronic","t":"Moral","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"crooked swimmer","t":"Gruseliger Schwimmer","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Riverward Legion","t":"Flussabwärts-Legion","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Mire Crown","t":"Moor-Krone","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Willow Tide","t":"Weidenflut","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Onari Foam Nests","t":"Onari-Schaumnester","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Quiet Crown","t":"Stille Krone","p":"polish_single","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Onari Egg Tender","t":"Onari-Eierhüter","p":"polish_single","f":"","q":95,"sg":2,"fl":0,"a":null}

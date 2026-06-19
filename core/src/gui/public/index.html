@@ -47,6 +47,73 @@
             100% { background-color: var(--bg); }
         }
 
+        /* DB Repair Button — Blink-Tiers */
+        .db-repair-btn {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid var(--danger);
+            color: #fff;
+            background: rgba(239, 107, 96, 0.15);
+            text-align: center;
+        }
+        .db-repair-btn.visible { display: block; }
+
+        /* Tier 1: slowFade (5-6%) — sanftes Pulsieren, 3s */
+        .db-repair-btn.tier-slowFade {
+            animation: repair-pulse-slow 3s ease-in-out infinite;
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(216, 151, 60, 0.1);
+        }
+        @keyframes repair-pulse-slow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px rgba(216, 151, 60, 0.2); }
+            50% { opacity: 0.6; box-shadow: 0 0 15px rgba(216, 151, 60, 0.4); }
+        }
+
+        /* Tier 2: fade (6-7%) — schnelleres Pulsieren, 1.5s */
+        .db-repair-btn.tier-fade {
+            animation: repair-pulse-fade 1.5s ease-in-out infinite;
+            border-color: #ff8844;
+            color: #ff8844;
+            background: rgba(255, 136, 68, 0.1);
+        }
+        @keyframes repair-pulse-fade {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 136, 68, 0.3); }
+            50% { opacity: 0.4; box-shadow: 0 0 25px rgba(255, 136, 68, 0.6); }
+        }
+
+        /* Tier 3: fastFade (7-10%) — sehr schnelles Pulsieren, 0.8s */
+        .db-repair-btn.tier-fastFade {
+            animation: repair-pulse-fast 0.8s ease-in-out infinite;
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(239, 107, 96, 0.15);
+        }
+        @keyframes repair-pulse-fast {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(239, 107, 96, 0.4); }
+            50% { opacity: 0.25; box-shadow: 0 0 35px rgba(239, 107, 96, 0.8); }
+        }
+
+        /* Tier 4: blinkAlarm (>10%) — ALARM, 0.4s harter Blink */
+        .db-repair-btn.tier-blinkAlarm {
+            animation: repair-blink-alarm 0.4s step-end infinite;
+            border-color: #ff0000;
+            color: #ff0000;
+            background: rgba(255, 0, 0, 0.2);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+        @keyframes repair-blink-alarm {
+            0%, 100% { opacity: 1; box-shadow: 0 0 20px rgba(255, 0, 0, 0.7); }
+            50% { opacity: 0.15; box-shadow: 0 0 50px rgba(255, 0, 0, 1); }
+        }
+
         header { 
             background: rgba(0,0,0,0.5); 
             backdrop-filter: blur(5px);
@@ -309,6 +376,8 @@
                         <option value="openrouter">OpenRouter (Free/Paid)</option>
                         <option value="groq">Groq (Fast Cloud)</option>
                         <option value="gemini">Gemini (Google)</option>
+                        <option value="nvidia">NVIDIA NIM (NeMo)</option>
+                        <option value="fcm">FCM (Free Code Models)</option>
                         <option value="ollama">Ollama (Lokal)</option>
                         <option value="player2">Player2 (Desktop)</option>
                     </select>
@@ -317,6 +386,10 @@
                     <select id="cfg-model">
                         <option value="">Lade Modelle...</option>
                     </select>
+                    <div id="fcm-provider-hint" style="display:none; background:rgba(100,213,196,0.08); border:1px solid rgba(100,213,196,0.25); border-radius:4px; padding:6px 8px; margin-bottom:10px; font-size:0.65rem; color:var(--success); line-height:1.4;">
+                        ⚡ <strong>FCM Proxy-Modus:</strong> Übersetzungen laufen über den lokalen FCM-Daemon (<code style="color:var(--accent)">localhost:19280/v1</code>).
+                        Kein API-Key nötig — der Daemon routed automatisch zu den besten kostenlosen Modellen.
+                    </div>
                     
                     <div style="margin-bottom:10px;">
                         <label class="stat-label">Batch Größe (Rec: <span id="batch-rec" style="color:var(--accent)">-</span>)</label>
@@ -380,6 +453,8 @@
                 <div id="bridge-status-badge" class="status-badge" title="Aktueller Bridge-Status: Idle = bereit, Running = Übersetzung läuft">Idle</div>
                 <div id="health-argos" class="stat-label" title="Argos Translate (lokale Offline-Übersetzung) — Grün = verfügbar"><span class="status-dot" id="dot-argos"></span>Argos</div>
                 <div id="health-ollama" class="stat-label" title="Ollama (lokale KI-Modelle) — Grün = läuft"><span class="status-dot" id="dot-ollama"></span>Ollama</div>
+                <div id="health-fcm" class="stat-label" title="FCM Daemon (free-coding-models) — Grün = läuft auf Port 19280"><span class="status-dot" id="dot-fcm"></span>FCM</div>
+                <div id="health-nvidia" class="stat-label" title="NVIDIA NIM — Grün = Key konfiguriert"><span class="status-dot" id="dot-nvidia"></span>NVIDIA</div>
             </div>
             <div id="mode-warning" style="font-size: 0.6rem; color: var(--accent); margin-top: 4px; letter-spacing: 0.5px; font-weight: bold;" title="Bridge-Mode: NATIV überschreibt Originale, PATCH erstellt separaten Mod-Ordner">
                 NATIV: <span style="color:var(--success)">AKTIV</span> | PATCH: <span style="color:var(--danger)">DEAKTIVIERT</span>
@@ -403,6 +478,7 @@
                     <div class="stat-item"><div class="stat-label">Threads</div><div id="ui-threads" class="stat-value">0</div></div>
                 </div>
                 <div id="ui-mod-name" class="stat-label" style="margin-top: 10px; color: var(--success); font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bereit</div>
+                <div id="ui-sub-phase" style="display:none; font-size: 0.65rem; color: var(--accent); margin-top: 4px; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: blink 1.2s infinite;"></div>
                 <div class="progress-bar">
                     <div id="ui-progress" class="progress-fill"></div>
                     <div id="ui-progress-text" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000, -1px -1px 2px #000; z-index: 2;">BEREIT</div>
@@ -450,6 +526,11 @@
                     <button onclick="if(confirm('⚠️ WIRKLICH ALLE BRIDGE-PROZESSE BEENDEN?\n\nDies beendet:\n• Aktuelle Übersetzungs-Aufgaben\n• Den GUI-Server\n• Alle alten/hängenden Bridge-Prozesse\n\nDanach musst du das Dashboard neu starten.')) triggerAction('kill-all')" title="⚠️ Beendet ALLE Bridge-Prozesse sofort — auch alte/hängende Instanzen. Dashboard muss neu gestartet werden!" style="background: #3d0a0a; color: #ff6666; margin-top: 5px; font-size:0.65rem; border: 1px solid #8a1f1f;">🧨 ALLE PROZESSE KILLEN</button>
 
                     <button onclick="triggerAction('full_reset')" title="Setzt alles zurück: löscht Patches, Backups und processed_files — Originale werden aus Backups wiederhergestellt" style="background: #4a1a1a; color: #ff9999; margin-top: 10px; font-size:0.65rem; border: 1px solid #632525;">WERKSEINSTELLUNG (RESET)</button>
+
+                    <!-- DB Repair Button — erscheint nur wenn PREFLIGHT kritische Issues findet -->
+                    <button id="db-repair-btn" class="db-repair-btn" onclick="runDbRepair()" title="Datenbank-Reparatur: Markiert fehlerhafte Einträge für Re-Translation. Kein Datenverlust.">
+                        🔧 DB-REPARATUR
+                    </button>
                 </div>
             </div>
         </div>
@@ -569,12 +650,26 @@
                     <div class="stat-label" style="text-align:center; padding: 20px;">Noch keine neuen Übersetzungen in dieser Sitzung.</div>
                 </div>
             </div>
+
+            <!-- FCM LIVE RANKINGS PANEL -->
+            <div class="panel" id="fcm-panel" style="display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0; border-color: rgba(100,213,196,0.3);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <h3 style="margin:0; color: var(--success);">⚡ FCM Live Rankings</h3>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <span id="fcm-daemon-badge" style="font-size:0.55rem; padding:2px 6px; border-radius:10px; background:#333; color:#999;">OFFLINE</span>
+                        <button onclick="refreshFcmRankings()" id="fcm-refresh-btn" title="FCM Live-Daten jetzt neu laden" style="width:auto; padding:3px 8px; font-size:0.6rem; background:rgba(100,213,196,0.15); border:1px solid rgba(100,213,196,0.3); color:var(--success);">↻</button>
+                    </div>
+                </div>
+                <div id="fcm-rankings-list" style="overflow-y:auto; flex:1; font-size:0.7rem; font-family:monospace;">
+                    <div style="color:var(--muted); text-align:center; padding:10px;">Lade FCM-Daten...</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <footer style="background: rgba(0,0,0,0.8); padding: 5px 20px; font-size: 0.7rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); z-index: 100;">
-        <div title="Syx-Bridge Version — Songs of Syx AI Translation Tool by Vannon">Syx-Bridge v0.19.5 - V71 Ready</div>
-        <div title="Fehler oder Feedback bitte per E-Mail melden">Kontakt & Bug-Reports: <span style="color: var(--accent);">vannon858@gmail.com</span></div>
+        <div title="Syx-Bridge Version — Songs of Syx AI Translation Tool by Vannon"><span id="fcm-status-dot" style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#666; margin-right:4px;"></span>Syx-Bridge v0.19.6 - V71 Ready | NVIDIA NIM + FCM Live</div>
+        <div title="Fehler oder Feedback bitte per E-Mail melden">Kontakt &amp; Bug-Reports: <span style="color: var(--accent);">vannon858@gmail.com</span></div>
     </footer>
 
     <script src="/public/app.js"></script>

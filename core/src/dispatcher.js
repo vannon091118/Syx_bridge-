@@ -27,6 +27,16 @@ function createDispatcher(options) {
     return { provider: primaryProvider, model: primaryModel };
   }
 
+
+  /**
+   * Providers known to deliver superior quality for high-risk / audit tasks.
+   * Nvidia Nemotron/DeepSeek excel at reasoning and comparison;
+   * Gemini has strong multilingual capabilities.
+   */
+  function isQualityProvider(provider) {
+    return provider === 'nvidia' || provider === 'gemini';
+  }
+
   function buildStageRoutePlan(stage) {
     const preferred = resolveProviderModel(stage);
     return routingEngine.buildRoutePlan(stage, {
@@ -61,8 +71,37 @@ function createDispatcher(options) {
       }
     }
 
-    // ── Tier 2: Low-risk -> cheap/fast providers ────────────────────────────
+    // ── Tier 2: Low-risk -> honor configured provider, fallback to cheap ─────
     if (avgRisk < 2.0) {
+      // If user explicitly configured a non-free provider (e.g. nvidia),
+      // HONOR it even for low-risk text — user wants quality over free.
+      const isFreePreferred = preferred.provider === 'argos' || preferred.provider === 'google_free';
+      if (!isFreePreferred && routingEngine.isAvailable(preferred.provider)) {
+        console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> ${preferred.provider} (konfigurierter Primary)`);
+        return { provider: preferred.provider, model: preferred.model, reason: 'low_risk_primary', stressTestRequired: false };
+      }
+      // P1-Fix: Before falling back to machine translation, try free LLM tiers
+      // (OpenRouter free, Groq free) which deliver better quality than google_free/argos.
+      // FCM local daemon also preferred over pure MT when available.
+      // NVIDIA injected HERE — it has a dedicated API key (50 TPM) and delivers
+      // quality LLM translations. Must be tried before argos/google_free.
+      if (routingEngine.isAvailable('nvidia')) {
+        console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> nvidia (LLM-Quality)`);
+        return { provider: 'nvidia', model: 'auto', reason: 'low_risk_quality_llm', stressTestRequired: false };
+      }
+      if (routingEngine.isAvailable('openrouter')) {
+        console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> openrouter/free (LLM-Free-Tier)`);
+        return { provider: 'openrouter', model: 'openrouter/free', reason: 'low_risk_free_llm', stressTestRequired: false };
+      }
+      if (routingEngine.isAvailable('groq')) {
+        console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> groq (LLM-Free-Tier)`);
+        return { provider: 'groq', model: 'auto', reason: 'low_risk_free_llm', stressTestRequired: false };
+      }
+      if (routingEngine.isAvailable('fcm')) {
+        console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> fcm (Local-Daemon)`);
+        return { provider: 'fcm', model: 'auto', reason: 'low_risk_local', stressTestRequired: false };
+      }
+      // Only fall back to cheap providers if no free LLM tier is available
       if (routingEngine.isAvailable('argos')) {
         console.log(`[DISPATCH] Low-Risk (avgRisk: ${avgRisk.toFixed(1)}) -> argos`);
         return { provider: 'argos', model: 'argos-translate-local', reason: 'low_risk', stressTestRequired: false };

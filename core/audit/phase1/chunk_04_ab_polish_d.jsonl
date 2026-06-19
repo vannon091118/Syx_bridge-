@@ -1,0 +1,337 @@
+{"s":"Are you sure you wish to retreat and lose {0} soldiers?","t":"Sind Sie sicher, dass Sie sich zurückziehen und dabei {0} Soldaten verlieren?","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When enemies are standing by the throne, this timer will tick down, and once it ","t":"Wenn Feinde am Thron stehen, läuft dieser Timer ab; sobald er 0 erreicht, wird d","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Attack unit","t":"Einheit angreifen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Fire at unit","t":"Feuer auf die Einheit","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Attack/fire at unit","t":"Einheit angreifen/beschießen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Attack Building","t":"Angriffsgebäude","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Bombard Building","t":"Gebäude beschießen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Bombard Area","t":"Gebiet beschießen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Some of your available units are not mustered.","t":"Einige deiner verfügbaren Einheiten sind nicht aufgestellt.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"One or more divisions do not have a position. Set a position by clicking the div","t":"Eine oder mehrere Divisionen haben keine Position. Setzen Sie eine Position, ind","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The division do not have a position. Set a position by clicking the division, th","t":"Eine Division hat keine Position. Setzen Sie eine Position, indem Sie die Divisi","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"player","t":"Spieler","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"To position your troops, left-click on the ground and hold.","t":"Um deine Truppen zu positionieren, halte die linke Maustaste gedrückt und klicke","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To add troops to your selection, hold {0}, then click and drag over the addition","t":"Um Truppen zu Ihrer Auswahl hinzuzufügen, halten Sie {0} und ziehen Sie dann übe","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Stop all divisions and clear targets ({0}).","t":"Alle Divisionen stoppen und Ziele zurücksetzen ({0}).","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggle fire at will. Allows soldiers and artillery to fire at enemies within rea","t":"Feuer nach Belieben ein- oder ausschalten. Soldaten und Artillerie können Feinde","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When enabled, ranged units will stay put, and only attack targets that are withi","t":"Wenn aktiviert, bleiben Fernkampf-Einheiten stehen und greifen nur Ziele an, die","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To attack an enemy division, left click on it. If ranged, to attack an enemy div","t":"Um eine feindliche Division anzugreifen, klicken Sie mit der linken Maustaste da","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When soldiers are in position, they'll break it and go chasing enemy soldiers or","t":"Wenn Soldaten ihre Position erreicht haben, stürmen sie vor und jagen feindliche","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Potential targets","t":"Mögliche Ziele","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Pick a hotkey for:","t":"Wählen Sie einen Hotkey für:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Either press a single key, or press and hold a key to use as a modulator, then p","t":"Drücken Sie entweder eine einzelne Taste oder halten Sie eine Taste als Modulato","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Hotkey {0} successfully mapped to {1}!","t":"Hotkey {0} erfolgreich auf {1} gemappt!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Hotkey {0} is already in use by {1}, pick another one.","t":"Hotkey {0} wird bereits von {1} verwendet, wählen Sie einen anderen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"time of day","t":"Zeit des Tages","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"To rotate your selection, hold  {0}, click and hold where the center should be.","t":"Um Ihre Auswahl zu drehen, halten Sie {0}, klicken Sie und bestimmen Sie den gew","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To select all divisions, press {0}.","t":"Um alle Divisionen auszuwählen, drücken Sie {0}.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To reposition your troops, use the arrow keys ({0}).","t":"Um Ihre Truppen neu zu positionieren, benutzen Sie die Pfeiltasten ({0}).","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"escape","t":"Flucht","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"insert","t":"Einfügen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Move selected Divisions.","t":"Ausgewählte Divisionen verschieben.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Selects all divisions.","t":"Alle Divisionen auswählen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Shows all division positions.","t":"Zeigt alle Teilungspositionen.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Loose Formation. Good against projectiles","t":"Lose Formation. Gut gegen Geschosse.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Tight Formation. Good in melee.","t":"Tight Formation. Gut im Nahkampf.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"{0} is now without a hotkey!","t":"{0} ist jetzt ohne Hotkey!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To assign a new hotkey to this function, press: ","t":"Um dieser Funktion einen neuen Hotkey zuzuordnen, drücke:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"backspace","t":"Zurück zur Übersicht","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When in guard, soldiers will maintain formation in battle, and stay on the defen","t":"Im Wachzustand halten die Soldaten die Formation im Kampf und bleiben defensiv.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Soldiers will make haste when moving at the cost of exhaustion.","t":"Soldaten eilen beim Marsch, wobei sie Erschöpfung riskieren.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Soldiers will start running in their current direction until they reach an enemy","t":"Soldaten laufen in ihrer aktuellen Richtung weiter, bis sie einen Feind oder ein","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggles the minimap.","t":"Schaltet die Minikarte ein oder aus.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"When hovering specific buttons, you can press this to assign a new hotkey for th","t":"Wenn Sie über bestimmte Schaltflächen fahren, können Sie diese anklicken, um ein","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Saves the game under the name 'Quicksave'.","t":"Speichert das Spiel unter dem Namen 'Quicksave'.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Loads the latest save.","t":"Lädt den letzten Speicherstand.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sets 25x speed. Double press for x250 speed.","t":"Setzt die Geschwindigkeit auf 25x. Doppelklick für 250x.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Slowly pans the map.","t":"Schwenkt die Karte langsam.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Creates a screenshot, saved in your local files, reachable through the launcher ","t":"Erstellt einen Screenshot, der in Ihren lokalen Dateien gespeichert wird und übe","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sets 0 speed, thus pausing the game.","t":"Setzt die Geschwindigkeit auf 0, wodurch das Spiel pausiert.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sets 1x speed. Double press for 1/4th speed.","t":"Setzt die Geschwindigkeit auf 1x. Doppelklick für 1/4x.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Center the map on the throne or the capital.","t":"Zentriert die Karte auf dem Thron oder der Hauptstadt.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Increases size/cycle options.","t":"Erhöht die Größe und Zyklusoptionen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggles the menu, or closes panels.","t":"Schaltet das Menü ein oder schließt Panels.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggle between common views.","t":"Wechselt zwischen den üblichen Ansichten.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"resume","t":"Lebenslauf","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"save first?","t":"Zuerst speichern?","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"quit to menu","t":"Menü schließen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"THE MENU","t":"DIE MENÜ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Name your save-game","t":"Nennen Sie Ihr Spiel","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"{0} successfully saved!","t":"{0} wurde erfolgreich gespeichert!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Only characters: {0} are allowed!","t":"Nur die Zeichen {0} sind erlaubt!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Save failed. See error report!","t":"Speichern fehlgeschlagen. Siehe Fehlerbericht!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"< back","t":"< zurück","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggle view","t":"Toggle-Option","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When pressed, modulates certain functions, such as the mouse wheel.","t":"Beim Drücken moduliert es bestimmte Funktionen, z. B. das Mausrad.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When pressed, lets you use alternative tools when using a tool.","t":"Wenn Sie diese Taste drücken, können Sie alternative Werkzeuge verwenden, wenn S","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Delete {0} outdated saves forever? You might still be able to load them if you r","t":"Wollen Sie die veralteten Speicherstände {0} dauerhaft löschen? Sie könnten sie ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"restore","t":"Wiederherstellung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Hold '{0}' and click to place more of job: ","t":"Halte '{0}' und klicke, um weitere Einheiten dieses Typs zu platzieren.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Hold '{0}' and click to build another: ","t":"Halte '{0}' und klicke, um ein weiteres Gebäude zu errichten.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Hold '{0}' and click to copy this: ","t":"Halte '{0}' und klicke, um diese Einheit zu kopieren.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The selected division are already attached to a world army. You must recall them","t":"Die ausgewählte Division ist bereits an eine Weltarmee gebunden. Du musst sie zu","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Recall these divisions from its world armies and have them return to the city. I","t":"Rufen Sie diese Divisionen aus ihren weltweiten Armeen zurück und lassen Sie sie","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"No divisions are selected that are currently attached to a world army.","t":"Es sind keine Divisionen ausgewählt, die derzeit einer Weltarmee zugeteilt sind.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Send this division to join an army on the world map. These soldiers will then ha","t":"Senden Sie diese Division, um einer Armee auf der Weltkarte beizutreten. Diese S","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Some of the soldiers are not fully trained to specification yet, and will contin","t":"Einige Soldaten sind noch nicht vollständig ausgebildet und werden weiter traini","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"There are no armies to send this division to. Recruit one on the world map.","t":"Es gibt keine Armeen, an die diese Division gesendet werden kann. Rekrutiere ein","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"No divisions are selected.","t":"Es wurden keine Divisionen ausgewählt.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"It can not be loaded with the current version of the game.","t":"Es kann nicht mit der aktuellen Version des Spiels geladen werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Are you sure you wish to disband {0} divisions?","t":"Sind Sie sicher, dass Sie {0} Divisionen auflösen möchten?","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Our city is closed, we can not leave.","t":"Unsere Stadt ist verschlossen, wir können sie nicht verlassen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Soldiers of this division is still on route back to our city. We must wait until","t":"Soldaten dieser Division sind noch auf dem Rückweg in unsere Stadt. Wir müssen w","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} divisions","t":"{0} Abteilungen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of days it will take to train this division to specification.","t":"Die Anzahl der Tage, die benötigt wird, um diese Division nach Vorgabe auszubild","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Copy Area","t":"Kopierbereich","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"When enabled, placed jobs will not be performed until manually activated by your","t":"Wenn aktiviert, werden platzierte Aufgaben nicht ausgeführt, bis Sie sie manuell","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Allow buildings such as fences to visually try to match their tile to the roads ","t":"Erlaubt Gebäuden wie Zäunen, sich optisch an die angrenzenden Straßen anzupassen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Add and manage saved blueprints.","t":"Erstellen und verwalten Sie gespeicherte Blaupausen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Paint the map in different colors. Has no impact on game-play","t":"Färbt die Karte in verschiedenen Farben. Hat keinen Einfluss auf das Spiel.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Room upgrade","t":"Zimmer-Upgrade","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Upgrade the rooms that can be upgraded.","t":"Verbessern Sie die Räume, die aufrüstbar sind.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Not enough resources.","t":"Nicht genügend Ressourcen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"No rooms selected that can be upgraded.","t":"Keine Zimmer ausgewählt, die aufgerüstet werden können.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Search for tools and rooms","t":"Suche nach Werkzeugen und Zimmern","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"(Optional)","t":"(Optional)","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"and click to place one of your saved blueprint.","t":"und klicke, um eine deiner gespeicherten Blaupausen zu platzieren.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of men currently training to be able to join a division.","t":"Die Zahl der Männer, die derzeit ausgebildet werden, um einer Division beitreten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of soldiers that are ready to be deployed in your city.","t":"Die Zahl der Soldaten, die bereit sind, in deiner Stadt eingesetzt zu werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current Rooms","t":"Aktuelle Zimmer","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Current Worshippers","t":"Aktuelle Anbeter","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of days we can feed the population for. Note that this is a rough est","t":"Die Anzahl der Tage, für die wir die Bevölkerung ernähren können. Beachten Sie, ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Known Diseases","t":"Bekannte Krankheiten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current Epidemic","t":"Aktuelle Epidemie","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Unassigned Hero Role","t":"Nicht zugewiesene Heldenrolle","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Lets you assign homes to specific criteria.","t":"Ermöglicht es dir, Häuser nach bestimmten Kriterien zuzuordnen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on a house.","t":"Muss auf ein Haus gesetzt werden.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Set permission for everyone","t":"Berechtigung für jeden festlegen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set permission for none","t":"Berechtigung für niemanden festlegen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set permission for:","t":"Beenden Sie die Berechtigung für:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set permission for All:","t":"Berechtigung für alle festlegen:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on a house with vacancies.","t":"Muss auf ein Haus mit freien Wohnplätzen gesetzt werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"No oddjobbers to move!","t":"Keine Nebenjobber zum Versetzen!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"There are no oddjobbers that can be moved into the specific house. They are eith","t":"Es gibt keine Nebenjobber, die in das angegebene Haus verlegt werden können. Sie","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} per item per year, estimation: -{1} in total per year.","t":"{0} pro Stück pro Jahr, Schätzung: -{1} insgesamt pro Jahr.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Currently Used","t":"Derzeit verwendet","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Oddjobbers will automatically move out if an employed subject needs their home. ","t":"Oddjobber ziehen automatisch aus, wenn ein beschäftigter Bewohner ein freies Hau","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current Level of this hero. Leveling up increases the hero's stats and unlocks n","t":"Aktuelles Level dieses Helden. Ein Levelaufstieg erhöht die Werte des Helden und","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current Maximum","t":"Maximal","p":"ab_polish","f":"","q":70,"sg":2,"fl":0,"a":null}
+{"s":"Current Target","t":"Aktuelles Ziel","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have looked for housing, yet have not found one. Oddjobbers will s","t":"Untertanen, die nach Wohnraum gesucht haben, aber noch keinen gefunden haben. Od","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Everyone (Overwrites all specific races)","t":"Jeder (überwältigt alle spezifischen Rassen)","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set target rate for:","t":"Zielrate festlegen für:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggle for:","t":"Toggle für:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Are you sure you want to persecute your entire population of this race?","t":"Sind Sie sicher, dass Sie die gesamte Bevölkerung dieser Rasse verfolgen wollen?","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Once you have caught the criminals, all you have to do is decide what to do with","t":"Sobald Sie die Verbrecher erfasst haben, müssen Sie lediglich entscheiden, was S","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Cinematic mode + Hide UI. Cancel by right click or ESC.","t":"Cinematic‑Modus + UI ausblenden. Mit Rechtsklick oder ESC abbrechen.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Toggle Overlay: ","t":"Overlay umschalten:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current rank of this noble. More ranks allows a noble to contribute a lot more t","t":"Aktueller Rang dieses Adligen. Höhere Ränge ermöglichen es einem Adligen, wesent","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Unassigned Nobility","t":"Unzugeordnetes Adel","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Assign this noble to an office.","t":"Weise diesem Adligen ein Amt zu.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Limits regarding what resources that can be used, is set in the subject panels r","t":"Die Beschränkungen, welche Ressourcen verwendet werden dürfen, werden in den jew","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have a home. There might be a small delay between building new hou","t":"Untertanen, die ein Zuhause haben. Es kann eine kurze Verzögerung geben, bis neu","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Total Housing","t":"Gesamter Wohnraum","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Click to go to a subject that has trouble finding a home.","t":"Klicke, um zu einem Bürger zu springen, dem ein Zuhause fehlt.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Available Housing of this type across the map. Note that these houses might be b","t":"Verfügbare Unterkünfte dieses Typs auf der Karte. Beachten Sie, dass diese Häuse","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To assign another noble you must click a subject and elevate them from there.","t":"Um einen weiteren Adligen zu ernennen, klicken Sie auf einen Untertan und beförd","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sets a hotspot that can easily be navigated to with a single click.","t":"Erstellt einen Hotspot, zu dem man mit einem einzigen Klick gelangen kann.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Left click to go to hotspot. Right click to edit.","t":"Linksklick, um zum Hotspot zu gelangen. Rechtsklick, um zu bearbeiten.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Set Hotspot","t":"Hotspot","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"An assortment of opinions from your citizens:","t":"Eine Auswahl an Meinungen Ihrer Bürger:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Efficiency increases production","t":"Effizienz erhöht die Produktion","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of workers","t":"Die Zahl der Arbeitnehmer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Multiplies the amount of resources gained when a corpse is butchered at a Cannib","t":"Multipliziert die Menge an erlangten Ressourcen, wenn ein Leichnam in einem Kann","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Cannibal Rooms","t":"Cannibal‑Räume","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Die Zahl der Arbeitnehmer","t":"Die Zahl der Arbeitnehmer","p":"ab_polish","f":"stale_unflagged","q":80,"sg":2,"fl":1,"a":"source_reused"}
+{"s":"Effizienz erhöht die Produktion","t":"Effizienz erhöht die Produktion","p":"ab_polish","f":"stale_unflagged","q":80,"sg":2,"fl":1,"a":"source_reused"}
+{"s":"+ Mousewheel","t":"+ Mausrad","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"},\r\nview.sett.ui.room.UIRoom: {\r\n\t","t":"},\nview.sett.ui.room.UIRoom: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nworld.map.landmark.WorldLandmarks: {\r\n\t","t":"},\nworld.map.landmark.WorldLandmarks: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.sett.ui.room.ModulePunish: {\r\n\t","t":"},\nview.sett.ui.room.ModulePunish: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.sett.ui.room.ModuleRadius: {\r\n\t","t":"},\nview.sett.ui.room.ModuleRadius: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.world.ui.region.ListAll: {\r\n\t","t":"},\nview.world.ui.region.ListAll: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.sett.ui.room.priority.UIWorkPrio: {\r\n\t","t":"},\nview.sett.ui.room.priority.UIWorkPrio: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.sett.ui.standing.CatReligion: {\r\n\t","t":"},\nview.sett.ui.standing.CatReligion: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.sett.ui.room.UIRooms: {\r\n\t","t":"},\nview.sett.ui.room.UIRooms: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"},\r\nview.sett.ui.standing.CatAccess: {\r\n\t","t":"},\nview.sett.ui.standing.CatAccess: {","p":"ab_polish","f":"low_quality_score","q":25,"sg":2,"fl":1,"a":"low_score"}
+{"s":"of the Jade Isles","t":"der Jadeinseln","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"High Warden of Tidal Reach","t":"Hoher Wächter des Flutreichs","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of the Verdant Glades","t":"der Grünen Wiesen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of the Pearl Steppe","t":"der Perlensteppe","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of the Reedlands","t":"der Reedlands","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of the Moon Grove","t":"des Mondhains","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of Rainfall Court","t":"vom Regenhof","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of Suncrest Hollow","t":"von Suncrest Hollow","p":"ab_polish","f":"","q":75,"sg":2,"fl":0,"a":null}
+{"s":"of Silver Shoals","t":"von den Silberfluten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of Dawn Waters","t":"von den Morgentümern","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of Riverfall Vale","t":"von Riverfall Vale","p":"ab_polish","f":"","q":75,"sg":2,"fl":0,"a":null}
+{"s":"of the Western Fens","t":"der westlichen Fens","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of Stormpetal Bay","t":"von Stormpetal Bay","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Bearer of the Crowned Lily","t":"Träger der gekrönten Lilie","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Shield of the Lowlands","t":"Schild des Lowlands","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Warden of the Lotus Provinces","t":"der Lotusprovinzen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Chancellor of the Deep Marsh","t":"des tiefen Sumpfes","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of the Whispering Banks","t":"der Flüsternden Ufer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Voice of the Tide Court","t":"des Flutgerichts","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Steward of the Emerald Basin","t":"des Smaragdbecken","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Keeper of the Ceremonial Reed","t":"Bewahrer des zeremoniellen Schilfrohrs","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Protector of Greenhaven","t":"Beschützer von Greenhaven","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of the Sapphire Canopy","t":"des Saphirgewölbes","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of the Tranquil Seat","t":"des stillen Sitzes","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Von Halorin Marsh-Lord","t":"von Halorin, Marschlord","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Patron of the Riverbound Clans","t":"der Flussgebundenen Clans","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"of the Verdant Line","t":"von der Verdant Line","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of the Floodplain","t":"des Flutplains","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Herald of the Crescent Throne","t":"Herold des Halbmondthrons","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Guardian of the First Waters","t":"Wächter der ersten Gewässer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Von Tierlach Court-Patron","t":"von Tierlach, Hofpatron","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Bearer of the Royal Tides","t":"Träger der königlichen Wellen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Keeper of the Sacred Fen","t":"Hüter des Heiligen Fen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"of the Shimmering Delta","t":"des schimmernden Deltas","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Marshal of the River Crown","t":"Marshaller der Flusskrone","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Custodian of the Ancestral Waters","t":"Wächter der Ahnengewässer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Marshal of the Moonlit Causeway","t":"Marshaller der mondbeschienenen Brücke","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Speaker of the Royal Chorus","t":"Sprecher des königlichen Chores","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"High Envoy of the Reed Courts","t":"Hoher Gesandter der Reed Courts","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Champion of the Lily Banner","t":"Champion des Lilienbanners","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Emissary of the Verdant Court","t":"Gesandter des Grünen Hofes","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Holder of the Ceremonial Trident","t":"Halter des Zeremoniellen Tridents","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Seigneur of the Willow Marches","t":"Seigneur der Willow-Marches","p":"ab_polish","f":"","q":75,"sg":2,"fl":0,"a":null}
+{"s":"of the Marsh Kingdom","t":"des Sumpfreichs","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"High Noble of the Tideborn Line","t":"Hoher Adliger der Wellengeborenen Linie","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Keeper of the Anointed Path","t":"Halter des gesalbten Pfades","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Bearer of the Royal Crest of Reeds","t":"Träger des königlichen Wappens der Reeds","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Onari are a humanoid Horned Frog race. They get along well with others and enjoy","t":"Die Onari sind eine humanoide, gehörnte Froschart. Sie verstehen sich gut mit an","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Naturally Happy","t":"Natürlich glücklich","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Lots of desire for entertainment","t":"Viel Lust auf Unterhaltung","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Vulnerable to the cold","t":"Anfällig für Kälte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Gets along with most races","t":"Kommt mit den meisten Rassen aus","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"himself","t":"selbst","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Onari were one of many species uplifted by the goddess Nylora, given form and th","t":"Die Onari waren eine von vielen Arten, die von der Göttin Nylora erhoben wurden,","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"herself","t":"selbst","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Tides bring you","t":"Die Gezeiten bringen dich mit","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Warm reeds","t":"Warme Schilfe","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Quiet winds","t":"Sanfte Winde","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Still waters","t":"Stille Gewässer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Clear waters","t":"Klare Gewässer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Kind currents","t":"Sanfte Strömungen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Soft tides","t":"Weiche Gezeiten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Bright shallows","t":"Helle Untiefen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Easy day","t":"Leichter Tag","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Good flow","t":"Gute Strömung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Take care","t":"Passen Sie auf","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Follow the flow","t":"Folgen Sie der Strömung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Until stillness","t":"Bis zur Stille","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Easy waters","t":"Leichtes Wasser","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Rest well","t":"Gut ausruhen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Walk gently","t":"Gehen Sie sanft","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Calm tides","t":"Ruhige Gezeiten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Quiet paths","t":"Ruhewege","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Soft steps","t":"Weiche Schritte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Safe currents","t":"Sichere Ströme","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Rotting reeds!","t":"Verrottendes Schilf!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Dry basin!","t":"Trockenes Becken!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Stagnant flow!","t":"Stagnierender Fluss!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Crooked waters!","t":"Schwarzer Marsch!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Black marsh!","t":"Gebleichte Knochen!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Light feet","t":"Leichte Schritte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Cracked mud!","t":"Rissiger Schlamm!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Dead pool!","t":"Toter Pool!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sour rain!","t":"Saurer Regen!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"rotting fish","t":"Verrottende Fische","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"imbecile","t":"Imbécil","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"sinker","t":"Sinkerkugel","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"slow thinker","t":"Langsamer Denker","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"bloated","t":"aufgebläht","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Bleached bones!","t":"Gesundes Land","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"rotted fish","t":"verrottete Fische","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"mud-headed fool","t":"Dummkopf","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"hollow throat","t":"Hohlkehle","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"sour tongue","t":"Saurige Zunge","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"clouded eyes","t":"vernebligte Augen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"weak fin","t":"schwache Flosse","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"sluggish step","t":"träge Schritt","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"My flowing lord","t":"Mein fließender Herr","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"My Lord","t":"Mein Herr","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"dry-skinned wretch","t":"trockene Haut, Schuft","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Reed-crowned lord","t":"Herr mit Schilfkrone","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"High of the waters","t":"Hoch des Wassers","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"My tide lord","t":"Mein Flutlord","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"My clear lord","t":"Mein klarer Fürst","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"My crowned waters","t":"Meine gekrönten Gewässer","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"My quiet lord","t":"Mein stiller Herr","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"My honored flow","t":"Mein ehrenwerter Fluss","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Lord of still pools","t":"Herr der stillen Teiche","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"My gentle lord","t":"Mein edler Herr","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"metropolis","t":"Metropole","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"fellow","t":"Mann","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"subject","t":"Gegenstand","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"others","t":"andere","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"exotics","t":"exotisch","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"fellows","t":"Leute","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"subjects","t":"Themen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"gathering","t":"Treffen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Reed Guard","t":"Schilfwächter","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Whispering Blades","t":"Flüsternde Klingen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Quiet Current","t":"Ruhestrom","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Softstep Vanguard","t":"Sanftschritt‑Vorhut","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Marshbound Spear","t":"Sumpfgebundener Speer","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Delta Ward","t":"Delta‑Wacht","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Shallow Tide","t":"Flache Flut","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Lowland Phalanx","t":"Gesundes Land","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Mire Wardens","t":"Sumpfwächter","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Tidewatch Cohort","t":"Flutwacht‑Kohorte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"River Crown","t":"Flusskrone","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Fenward Line","t":"Fenward‑Linie","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Stillflow Brigade","t":"Stillfluss‑Brigade","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Willow Guard","t":"Weihnachtsgarde","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Deep Marsh Host","t":"Herr des tiefen Sumpfes","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Low Tide Legion","t":"Niedrige-Flut-Legion","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Rainmarch Cohort","t":"Rainmarch-Kohorte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Thornreed Watch","t":"Dornreed-Uhr","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Reed Banner","t":"Schilfbanner","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Silent Shoals","t":"Stille Schollen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Reedward Phalanx","t":"Reedward Phalanx","p":"ab_polish","f":"","q":25,"sg":2,"fl":0,"a":"source_reused|low_score"}
+{"s":"Shoreline Phalanx","t":"Küsten-Phalanx","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Emerald Marsh","t":"Smaragdmoor","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Tide Reed Order","t":"Gezeitenrohr-Orden","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Tidebound Guard","t":"Gezeitengebundener Wächter","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Quiet Marsh","t":"Ruhiger Sumpf","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Moonlit Reeds","t":"Mondlicht-Rohr","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Rain Reed Host","t":"Regenrohr-Host","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Shallow Guard","t":"Flachwächter","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Karrun, the Maw Beaneath, the slumbering keeper of the oceans.","t":"Karrun, der Schlund des Meeres, der schlafende Hüter der Ozeane.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Onari Foam Nest","t":"Onari-Schaumnest","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Flowing Blades","t":"Fließende Klingen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"One of the oldest of the Astarii, Karrun is the keeper and creator of the oceans","t":"Einer der ältesten Astarii, Karrun, ist der Hüter und Schöpfer der Ozeane und al","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Calm Tide Host","t":"Ruhiger Gezeiten-Host","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Silent Current","t":"Stiller Strom","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Increases the rate at which Onari are produced in Onari Foam Nests.","t":"Erhöht die Rate, mit der Onari in Onari-Schaumnestern produziert werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Onari Birthing","t":"Onari Geburt","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The capacity of worshippers the will be available.","t":"Die Kapazität der Anbeter, die zur Verfügung steht.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Temple of Karrun'Tai","t":"Tempel von Karrun'Tai","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Tending to eggs.","t":"Eier betreuen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"A place where Onari babies are born and brought up. Each station is capable of b","t":"Ein Ort, an dem Onari-Babys geboren und aufgezogen werden. Jede Station kann ein","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Shrine to Karrun","t":"Heiligtum Karrun","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"A place for a quick worship of the deity Karrun","t":"Ein Ort für eine schnelle Verehrung der Gottheit Karrun.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Amount of Clusters","t":"Anzahl der Cluster","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Temples of Karrun'Tai","t":"Tempel von Karrun'Tai","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The sheer size of the room. The gods like it big. Will boost the temple efficien","t":"Die schiere Größe des Raumes. Die Götter mögen es groß. Er erhöht die Tempelausl","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"No one likes a cluttered temple. This is the area divided by the amount of worsh","t":"Niemand mag einen überfüllten Tempel. Dieser Wert gibt den Raum an, der durch di","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"A torch. Increases decoration","t":"Eine Fackel. Erhöht die Dekoration.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Karrun Astarii, lord of the oceans.","t":"Karrun Astarii, Herr der Ozeane.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The amount of priests that need to be staffed.","t":"Die Anzahl der Priester, die besetzt werden müssen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Karrun, the Maw Beaneath, the slumbering keeper of the oceans. He created the oc","t":"Karrun, der Schlund des Meeres, der schlafende Hüter der Ozeane. Er erschuf die ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The place of rituals. Adds Priest and worshipper capacity.","t":"Der Ort der Rituale. Er erhöht die Kapazität von Priestern und Anhängern.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Shrines and decorations to the honour of deity. Increases decoration","t":"Schreine und Dekorationen zur Ehre der Gottheit. Erhöht die Dekoration.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of decoration. Will boost the temple efficiency.","t":"Die Menge an Dekoration. Er erhöht die Tempelauslastung.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Pathways to increase decoration.","t":"Ein Pfad, der die Dekoration erhöht.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Karrun'Tai Shrine Upgrade","t":"Karrun'Tai‑Schreinaufwertung","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"For a better gameplay experience, unlock this tech once you unlock the vanilla v","t":"Für ein besseres Spielerlebnis schaltest du diese Technologie frei, sobald du di","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Karrun'Tai Shrine Upgrade II","t":"Karrun'Tai‑Schreinaufwertung II","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"For a better gameplay experience, unlock this tech once you unlock the vanilla v","t":"Für ein besseres Spielerlebnis schaltest du diese Technologie frei, sobald du di","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"A relief that increases decoration.","t":"Ein Relief, das die Dekoration erhöht.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Karrun'Tai Temple","t":"Karrun'Tai Tempel","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"OBH Techs","t":"OBH Techniken","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"For a better gameplay experience, unlock this tech once you unlock the vanilla v","t":"Um das Spielerlebnis zu verbessern, schalte diese Technologie frei, sobald du di","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Followers of Karrun, the lord of oceans. Temples accepts animals as offerings.","t":"Anhänger von Karrun, dem Herrscher der Ozeane. Der Tempel akzeptiert Tiere als O","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}

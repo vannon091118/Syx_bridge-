@@ -1,0 +1,202 @@
+{"s":"\r\nChoosing to play a random game allows you to create the world you will play on","t":"Die Wahl eines zufallsgenerierten Spiels gestattet euch, die Welt zu erschaffen,","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nChoosing one of them can be difficult for a newcomer so here is a list of thin","t":"Die Wahl eines von ihnen kann für einen Neuling schwierig sein, daher hier eine ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"04. Settling Down","t":"Sich niederlassen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis will be the map you build your capital on. There are no outposts or simil","t":"Dies ist die Karte, auf der Ihr Eure Hauptstadt errichten werdet. Es gibt keine ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"05. Important Controls","t":"Wichtige Steuerungen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nBuilding a small stable settlement:\r\n \r\nThis part is covered in much more deta","t":"Errichten einer kleinen, stabilen Siedlung:\n\nDieser Abschnitt wird im Tutorial, ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter is about the various ways to get food and prevent starvation, and","t":"Diese Kapitel beschäftigt sich mit verschiedenen Methoden, um Nahrung zu beschaf","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter explains how to increase the population of your capital.\r\nThe ava","t":"[\"ID:1 [field=TEXT | ctx:risk=15 | role=LONG_TEXT | field=TEXT | path=V70\\\\asset","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nAfter a certain amount of population size crime becomes an inevitability. Crim","t":"<c 219_255_077 stockade> und <c 219_255_077 guardposts>. \\n\\nNach Begehung eines","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"33. Havens","t":"Havens","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nHavens are small settlements on the world map. Owning a region containing a ha","t":"Friedhöfe sind kleine Siedlungen auf der Weltkarte. Das Besitzen eines Gebiets m","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nFisheries are a reliable food source on maps with lots of water.\r\n\r\nThe more t","t":"Fischereien sind eine zuverlässige Nahrungsquelle auf Karten mit viel Wasser.\n\nJ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nHunters are a very efficient source of food early on, but a map can only suppo","t":"Die Jagd ist eine äußerst effiziente Nahrungsquelle zu Beginn, doch eine Karte k","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nDecorations comes in many shapes and sizes. Each emits a certain environmental","t":"Verzierungen gibt es in mancherlei Gestalt und Größe. Jede verströmt einen gewis","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nWoodcutter worker capacity is determined by area size and soil type. Alluvium ","t":"Die Kapazität der Holzfäller wird durch die Größe des Gebiets und die Bodenart b","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nMines need to be placed on deposits. Deposits do not run out or degrade over t","t":"Bergwerke müssen auf Lagerstätten erbaut werden. Diese erschöpfen sich nicht und","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Double click to grant access to all immigrants. Right click to open immigration ","t":"Doppelklick, um allen Einwanderern Zutritt zu gewähren. Rechtsklick öffnet die E","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Needed to keep artillery functioning","t":"Erforderlich, um die Artillerie funktionsfähig zu halten.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases the replenishment of the immigration pool.","t":"Steigert die Nachschubmenge des Einwanderungspools.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This event is no longer relevant.","t":"Dieses Ereignis ist nicht mehr relevant.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Low loyalty!","t":"Niedrige Loyalität!","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This faction joins our enemies.","t":"Diese Fraktion stellt sich unser Feinden.","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"This faction of {0} and {1} have now banded together against you. They call them","t":"Diese Fraktion von {0} und {1} ist nun zu unseren Feinden vereint. Sie nennen si","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The law of your city. Law is added to loyalty/submission for your subjects. It i","t":"Das Gesetz deiner Stadt. Es wird durch Hinzufügung zum Treue- und Anziehungsfakt","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Bad Rumours","t":"Schlechte Gerüchte","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"It has come to our attention that a rumour has been spread. That you {0}. Now, w","t":"Ein Gerücht ist uns bekannt geworden. Dass du {0} tust. Obwohl die Nahe stehende","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"In the region of {0} there has emerged an organization calling themselves {1}. T","t":"In der Region {0} hat sich eine Organisation namens {1} gebildet. Sie lehnen dei","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Bad Teachings","t":"Schlechte Lehre","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Someone has been spreading leaflets about the teachings of the Burnt Prophet, fi","t":"Blattläuber verteilen Lehren des verbrannten Propheten, die Ideen wie 'alle glei","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Failure to comply with this request can have unforeseen consequences.","t":"Fehlenderecution dieser Anfrage kann gefährliche Folgen haben.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This faction asks that you release them from their bounds. The faction will beco","t":"Diese Fraktion möchte, dass du sie von ihren Grenzen befreist. Sie wird dein Kol","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Happiness is fulfillment in proportion to expectations. Fulfillment is gained by","t":"Glück ist die Erfüllung im Verhältnis zu Erwartungen. Erfüllung wird durch Diens","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Happiness (Slaves)","t":"Glück (Diener)","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"More enemies","t":"Mehr Feinde","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"A factions trust is how reliable they are when it comes to keeping their treatie","t":"Das Vertrauen einer Fraktion ist, wie verlässlich sie ist, wenn es darum geht, i","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"My lord, even in distant places they manage to hate our freedom and way of life.","t":"Mein Herr, selbst in fernen Ländern ablehnen sie unsere Freiheit und Lebensweise","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Tribute from our loyal subjects has arrived. As always, they are expressing eter","t":"Die Zustromungen unserer treuen Untertanen sind angekommen. Wie immer drücken si","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"(effective)","t":"(wirksam)","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Yearly losses","t":"Jährliche Verluste","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Our emissaries report, their mission is done. The great lord of {FACTION} slippe","t":"Unsere Gesandten berichten, die Tat ist vollbracht. Der große Fürst von {FACTION","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rumours about you spread by deceitful factions.","t":"Gerüchte über dich verbreiten sich durch listige Fraktionen.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The opinion of a royalty regarding you. High opinion yields better diplomacy and","t":"Die Meinung einer Royals zu euch. Hohe Meinung bringt bessere Diplomatie und erl","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Peace Value","t":"Friedenswert","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Emissary Target","t":"Boten-Ziel","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Trust is gained by maintaining high opinion and treaties, and eroded by rivalry,","t":"Vertrauen wird durch hohe Meinung und Verträge gewährt, und durch Rivalität zers","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Boosts {0} workers in your {1} with + {2}. Each additional rank boosts {3} more ","t":"Verstärkt {0} Arbeiter in eurem {1} mit + {2}. Jeder zusätzliche Rang verstärkt ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Assassinate a the current ruler. Has a small chance of succeeding and failed att","t":"Ermordet den jetzigen Herrscher. Es besteht eine kleine Chance auf Erfolg, und g","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Request that the faction attack this bandit. The consequences of this are hard t","t":"Bitte, dass die Fraktion diesen Banditen angreift. Die Folgen sind schwer abzusc","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You do not have enough goods to meet their demands. ({0})","t":"Du hast nicht genug Güter, um ihre Anforderungen zu erfüllen. ({0})","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rich border regions without proper garrisons or armies might become subject to l","t":"Reiche Grenzregionen ohne propere Garnituren oder Armeen können von Wilden Plünd","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Army Duty","t":"Heerespflicht","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Slain by enemies","t":"Von Feinden getötet","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Mauled by a beast","t":"Von einem Tier verhauen","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Mauled by Beasts","t":"Von Tieren verhauen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Yearly Profits","t":"Jährliche Gewinne","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Yearly Turnover","t":"Jährliche Umdrehung","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"(target)","t":"(Ziel)","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Points Allocated","t":"Punkte zugewiesen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"If we don't pay this ransom, chances are neighbour allows for free passage throu","t":"Wenn wir diesen Lösegeld nicht zahlen, hat die Nachbarfraktion wahrscheinlich fr","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Assassination attempts per year: ","t":"Ermordungsversuche pro Jahr:","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Heat stroke","t":"Hitzeschlag","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Heat strokes","t":"Hitzeschläge","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Crime Tyranny Multiplier","t":"Kriminalitätsmultiplikator der Tyrannei","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Crime Law Multiplier","t":"Kriminalitätsmultiplikator des Gesetzes","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Guards are soldiers on guard duty. They spend their days guarding your city, cat","t":"Wachen sind Soldaten im Wachdienst. Sie verbringen ihre Tage damit, deine Stadt ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Child (slave)","t":"Kind (Sklave)","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Children benefit from staffed nurseries to grow up to become subjects. Children ","t":"Kinder profitieren von besetzten Kinderstuben, um zu Untertanen heranzuwachsen. ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Parents are currently tending to infants and do not work.","t":"Eltern kümmern sich derzeit um Säuglinge und arbeiten nicht.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Parent (slave)","t":"Elternteil (Sklave)","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Parents (slave)","t":"Eltern (Sklaven)","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Waiting for {0}","t":"Warten auf {0}","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"burying corpse","t":"Leiche begraben","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Attending Nursery","t":"Besucht die Kinderstube","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"leaving your city.","t":"verlassen deine Stadt.","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Guard duty.","t":"Wachdienst.","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Executing Prisoners","t":"Hinrichtung von Gefangenen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Getting Gear","t":"Ausrüstung beziehen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Need to nurture an infant","t":"Muss einen Säugling pflegen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Nourishing Child","t":"Kind nähren","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Report to the cannibal for immediate pardon.","t":"Melde dich beim Kannibalen für eine sofortige Begnadigung.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Killed in brawls","t":"In Schlägereien getötet","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Succumbed to Diseases","t":"Den Krankheiten erlegen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Killed in a Brawl","t":"In einer Schlägerei getötet","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Succumbed to Disease","t":"Der Krankheit erlegen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Dumping Resource","t":"Ressource entsorgen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Storing Harvest","t":"Ernte sichern","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"bringing resource to stockpile","t":"Ressource zum Vorratslager bringen","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Doing an odd job","t":"Nebentätigkeit ausführen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"working","t":"Arbeiten","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"finding suspect","t":"Verdächtigen suchen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"bringing suspect back","t":"Verdächtigen zurückbringen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"ETA next immigrant (s)","t":"Voraussichtliche Ankunft des nächsten Einwanderers (s)","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Auto admit limit","t":"Automatische Aufnahmebegrenzung","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ability to produce captive","t":"Fähigkeit, Gefangene zu erzeugen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Farmers have no storage nearby to store their harvest.","t":"Bauern besitzen kein nahegelegenes Lager für ihre Ernte.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Prisoners convicted to be executed can be put to good use in the Cannibal.","t":"Gefangene, die zum Tode verurteilt sind, können in der Kannibale zur guten Nutzu","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Worker Skill","t":"Werkfähigkeit","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Adult Animals","t":"Erwachsene Tiere","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Allowing this resource use increases recovery rate by 75%","t":"Die Nutzung dieser Ressource erhöht die Erholungsrate um 75%","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Estimation of how much {0} will be produced.","t":"Schätzung, wie viel {0} produziert wird.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There are currently no stations that can accept the selected resource!","t":"Derzeit gibt es keine Stationen, die die ausgewählte Ressource akzeptieren könne","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Efficiency Estimate","t":"Effizienzschätzung","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A station network can be highly efficient compared to warehouses and haulers. Bu","t":"Ein Stationsnetz kann im Vergleich zu Lagern und Trägern hochgradig effizient se","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This subject class does not immigrate","t":"Diese Standklasse immigriert nicht","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"being interrogated","t":"Wird befragt","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Your throne can not be reached from the outside world. As a consequence, no immi","t":"Euer Thron kann nicht aus der Außenwelt erreicht werden. Infolgedessen kann kein","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Pleading case in court","t":"Fall im Gericht vorzulegen","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Being stocked","t":"Wird vorrätig gehalten","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Exponential efficiency gained from the amount of employees, where {0} is optimal","t":"Exponentielle Effizienz, die aus der Anzahl der Arbeiter gewonnen wird, wobei {0","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} tiles is the average distance to each targeted unloading station (longer dis","t":"{0} Kacheln ist die durchschnittliche Entfernung zu jedem angestrebten Entlade‑S","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total Hauling","t":"Gesamtes Ziehen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total amount of resources hauled 100 tiles per day of this loader. ({0} from fet","t":"Gesamte Menge an Ressourcen, die pro Tag von diesem Lader 100 Kacheln bewegt wer","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Hauled Per Employee","t":"Zug pro Mitarbeiter","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"How many resources are hauled 100 tiles on average per employee (including unloa","t":"Wie viele Ressourcen werden im Durchschnitt pro Mitarbeiter 100 Kacheln weitertr","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total Efficiency","t":"Gesamte Effizienz","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Efficiency compared to an average warehouse worker ({0} resources 100 tiles). Le","t":"Effizienz im Vergleich zu einem durchschnittlichen Lagerarbeiter ({0} Ressourcen","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Days to Educate","t":"Ausbildungsstage","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Species Boost","t":"Rassen‑Boost","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Learning speed of","t":"Lerngeschwindigkeit von","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Guard Force","t":"Wächter‑Macht","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Degrade and employment determines the efficiency of a guard-post.","t":"Degrad und Anstellung bestimmen die Effizienz eines Wächterpostens.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Active Duty","t":"Aktive Dienstpflicht","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"When a division is on active duty, the soldiers will become guards who actively ","t":"Wenn eine Truppe aktiv im Dienst ist, werden die Soldaten zu Wächtern, die eifri","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Sloth","t":"Verdächtiger Faul","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Witch","t":"Verdächtige Hexe","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Warlock","t":"Verdächtiger Zauberer","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Heretic","t":"Verdächtiger Ketzler","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The percentage of employees fetching resources vs preparing the cart. These are ","t":"Der Anteil der Arbeiter, die Ressourcen holen, im Vergleich zu denen, die den Wa","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The portion of employees that are active.","t":"Der Anteil der aktiven Knechte.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Current carry capacity boost affecting all logistics workers.","t":"Der gegenwärtige Trage‑Kapazitäts‑Aufschlag, der alle Versorgungs‑Knechte betrif","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Loading Efficiency","t":"Lade‑Wirksamkeit","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Unloading Staions","t":"Entlade‑Stationen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Beastialist","t":"Verdächtiger Bestialist","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Turncoat","t":"Verdächtiger Verräter","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The effect of your police force. Depends on the amount of police divided by the ","t":"Die Wirkung eures Wachtrupps. Hängt von der Anzahl der Wachen ab, dividiert durc","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Strength and Honor","t":"Kraft und Ehre","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Global limit","t":"Gesamtes Limit","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Class limit","t":"Klassengrenze","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"A limit for when to stop producing children, based on total population of all cl","t":"Eine Grenze, ab wann die Fortpflanzung eingestellt wird, basierend auf der Gesam","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A limit for when to stop producing children, based on population of current clas","t":"Eine Grenze, ab wann die Fortpflanzung eingestellt wird, basierend auf der Bevöl","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your total population of all races exceeds the limit set.","t":"Eure Gesamtbevölkerung aller Völker überschreitet das gesetzte Limit.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your population of citizens of the current species exceeds the limit set.","t":"Eure Bevölkerung der derzeitigen Rasse überschreitet das gesetzte Limit.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"To Breed","t":"Zur Fortpflanzung","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How much this room is prepared. Some preparation is required before the resource","t":"Wie weit dieser Raum vorbereitet ist. Etwas Vorbereitung ist erforderlich, bevor","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"food","t":"Nahrung","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enable prisoners condemned to die to do so on the sands of the arena.","t":"Erlaube den zu Tode Verurteilten Gefangenen, im Sande der Arena zu sterben.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"wares","t":"Waren","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Current Policy","t":"Aktuelle Politik","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Current Limit","t":"Aktuelles Limit","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Limit Speed","t":"Grenzen Geschwindigkeit","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Max Limit","t":"Obergrenze","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Study Limit","t":"Studienlimit","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Collaborator","t":"Verdächtiger Mitläufer","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Respect is gained by furnishing your rooms properly and keeping it fully staffed","t":"Respekt wird durch die ordnungsgemäße Einrichtung und vollständige Besetzung eur","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suspected Renegade","t":"Verdächtiger Abtrünniger","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"drinks","t":"Getränke","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Births Allowed","t":"Zulässige Geburten","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This subject type does dot reproduce naturally.","t":"Dieser Untertanentyp pflanzt sich nicht auf natürliche Weise fort.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Estimated births/year","t":"Geschätzte Geburten/Jahr","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A {0} infant is dependant on its parent for {1} days. After that, the child take","t":"Ein {0}-Säugling ist für {1} Tage von seinen Eltern abhängig. Danach benötigt da","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The maximum enlightenment allowed. High enlightenment gives diminishing returns,","t":"Die maximal zulässige Erleuchtung. Eine hohe Erleuchtung bietet abnehmende Erträ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":",\r\n\tcurrentGood: ","t":",\n\taktuellerNutzen:","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Fertile Population","t":"Fruchtbare Bevölkerung","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Guard Power","t":"Wachmacht","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Serving in the armed forces","t":"Dient in den Streitkräften","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} years of age","t":"{0} Jahre alt","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"{0} of {1}","t":"{0} von {1}","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Tyranny is gained from punishing crimes harshly and is detrimental to happiness","t":"Tyrannei wird durch harte Bestrafung von Verbrechen erzeugt und wirkt sich schäd","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Child Access","t":"Kindzugang","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Happiness increases loyalty and immigration and is fulfillment in proportion to ","t":"Glück steigert die Loyalität und die Zuwanderung und stellt die Erfüllung im Ver","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Loyalty Target","t":"Loyalitätsziel","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"What your loyalty will be in a few days.","t":"Der Stand, den deine Loyalität in einigen Tagen erreichen wird.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A fulfillment modifier can be access to a tavern, or a road, or increased food s","t":"Ein Erfüllungsmodifikator kann der Zugang zu einer Taverne, eine Straße oder erh","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Arrests (today/yearly)","t":"Festnahmen (heute/jährlich)","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"In Custody","t":"In Haft","p":"openrouter","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Crimes (today/yearly)","t":"Verbrechen (heute/jährlich)","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The current punishment for this crime too harsh, and the net {0} will decrease. ","t":"Die derzeitige Strafe für dieses Verbrechen ist zu hart, und das Netto-{0} wird ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Multiplier from recent persecutions","t":"Multiplikator aus jüngsten Verfolgungen","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Burial Priority","t":"Befestigung der Gräber","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Import Capacity","t":"Importkapazität","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Import Capacity Used","t":"Verwendete Importkapazität","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Treasury Limit","t":"Kasthöhegrenze","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Trade Quota","t":"Handelsquote","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Best price.","t":"Beste Preis.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Import to maintain warehouse stock at {0}% of total capacity ({1} items). You wi","t":"Du importierst, um das Lager auf {0} % der Gesamt­Kapazität ({1} Artikel) zu hal","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your import level is set to 0%, meaning you will never import anything.","t":"Dein Importniveau ist auf 0 % gestellt, das heißt, du wirst nie etwas importiere","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your workers can currently produce this ware at the speed of {0} items per day p","t":"Deine Arbeiter produzieren diese Ware derzeit mit einer Geschwindigkeit von {0} ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You currently don't have import depot capacity to import this goods.","t":"Derzeit fehlt dir die Lager­kapazität für diesen Import.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You don't have any capacity to import more captives.","t":"Du hast keine Kapazität, um weitere Gefangene zu importieren.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Limit is set to never Import {0}.","t":"Die Grenze ist auf \"niemals importieren\" für {0} gestellt.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Limit is set to import to maintain {0} {1}.","t":"Die Grenze ist auf ein Importziel von {0} {1} gestellt.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your automatic punishment for captives is set to either pardon or exile! Importe","t":"Deine automatische Bestrafung von Gefangenen ist auf Barmherzigkeit oder Exil ge","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your automatic punishment for captives is set to enslavement. Captives that arri","t":"Deine automatische Bestrafung von Gefangenen ist auf Versklavung gestellt. Ankom","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your automatic punishment for captives is set so that the limit refers to your s","t":"Deine automatische Bestrafung von Gefangenen ist so eingestellt, dass die Grenze","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There is no one willing to buy this goods. You must decrease either the tariff o","t":"Es gibt niemanden, der diese Waren kaufen will. Du musst die Zölle oder den Pfan","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There are no goods available to sell.","t":"Es sind keine Waren zum Verkauf verfügbar.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your workers can currently produce this ware at the speed of {0} items per day p","t":"Deine Arbeiter produzieren diese Ware derzeit mit einer Geschwindigkeit von {0} ","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"No one has claimed these remains .","t":"Niemand hat diese Überreste beansprucht.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You don't have enough credits to purchase this resource.","t":"Du hast nicht genügend Kredite, um diese Ressource zu erwerben.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The city is unreachable, no trade can be done.","t":"Die Stadt ist unerreichbar, kein Handel ist möglich.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The natural moisture content of the city map.","t":"Der eigentliche Feuchtigkeitsgehalt der Stadtkarte.","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Moisture Map","t":"Feuchtigkeitskarte","p":"openrouter","f":"","q":95,"sg":0,"fl":0,"a":null}

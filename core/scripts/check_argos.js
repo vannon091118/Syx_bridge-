@@ -3,21 +3,39 @@ const inquirer = require('inquirer');
 
 // Cache to prevent infinite loops during a session
 let argosInstalledCache = null;
+// Cache the detected Python interpreter — the detection probe is expensive (spawnSync)
+let _pythonCache = null;
 
 /**
  * Detects the available Python interpreter with a robust fallback chain.
- * @returns {string} The first working command ('py', 'python', or 'python3'), or 'python' as last resort
+ * Verifies that the interpreter can actually RUN code (not just --version),
+ * which filters out the Windows Store stub that hangs on stdin piping.
+ * Result is cached for the session — call clearPythonCache() to reset.
+ * @returns {string} The first working command, or 'python' as last resort
  */
 function getPython() {
-  const commands = ['py', 'python', 'python3'];
+  if (_pythonCache !== null) return _pythonCache;
+  const commands = ['python', 'python3', 'py'];
   for (const cmd of commands) {
     try {
-      execSync(`${cmd} --version`, { stdio: 'ignore' });
-      return cmd;
+      // Step 1: Quick version check (filters out non-existent commands)
+      execSync(`${cmd} --version`, { stdio: 'ignore', timeout: 3000 });
+      // Step 2: REAL code execution check (filters out Windows Store stub)
+      // The Store stub passes --version but hangs on spawnSync with stdin
+      const probe = spawnSync(cmd, ['-c', 'print("ok")'], { encoding: 'utf-8', timeout: 3000 });
+      if (probe.status === 0 && probe.stdout && probe.stdout.includes('ok')) {
+        _pythonCache = cmd;
+        console.log(`[PYTHON] Detected: ${cmd}`);
+        return cmd;
+      }
+      console.warn(`[PYTHON] "${cmd}" passed --version but fails code execution (likely Store stub) — skipping`);
     } catch (e) {}
   }
-  return 'python'; // Fallback
+  _pythonCache = 'python'; // Fallback
+  return _pythonCache;
 }
+
+function clearPythonCache() { _pythonCache = null; }
 
 // Alias for compatibility with the Multi-Language Model Plan (P1a).
 const detectPython = getPython;
@@ -102,7 +120,7 @@ async function getAvailableArgosLanguages() {
     '  print(json.dumps({"error": str(e)}))'
   ].join('\n');
   try {
-    const result = spawnSync(python, ['-'], { input: script, encoding: 'utf-8', timeout: 15000 });
+    const result = spawnSync(python, ['-'], { input: script, encoding: 'utf-8', timeout: 5000 });
     if (result.error) throw result.error;
     if (result.status !== 0) throw new Error(result.stderr || `Python exited with code ${result.status}`);
     const out = result.stdout;

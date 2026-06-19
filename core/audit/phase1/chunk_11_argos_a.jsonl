@@ -1,0 +1,261 @@
+{"s":"/day","t":"/Tag","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"out","t":"Raus!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"net","t":"Netto","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The population is declining.","t":"Die Bevölkerung sinkt.","p":"argos","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Custom Settings","t":"Individuelle Einstellungen","p":"argos","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"ok","t":"Okay.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Border Guards","t":"Grenzschutz","p":"argos","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"Game Config","t":"Spiel Config","p":"argos","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"Military training","t":"Militärausbildung","p":"argos","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Tax Collection III","t":"Steuererhebung III","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Skilled Workforce III","t":"Fachkräfte III","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A private estate for a governor in your employ to manage your realm for you. Gen","t":"Ein Privatgrundstück für einen Gouverneur in Ihrer Arbeit, um Ihr Reich für Sie ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Food distribution","t":"Lebensmittelverteilung","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Feed the plebs in this region to increase the workforce. Pleb love getting food ","t":"Füttern Sie die Plebs in dieser Region, um die Belegschaft zu erhöhen. Pleb Lieb","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Slaver's guild","t":"Die Schuld des Sklaven","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Actively persecute plebs in this region. The capital needs its meatsacks and by ","t":"Aktiv verfolgen Plebs in dieser Region. Die Hauptstadt braucht ihre Fleischsäcke","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Attempts to poison and assassinate a noble in the target faction's capitol.","t":"Versuche, einen Adligen im Kapitol der Zielgruppe zu vergiften und zu ermorden.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: social 0.7, inverse honour 1.5, inverse lawfulness 5.0","t":"Stats: social 0.7, inverse honor 1.5, inverse lawfulness 5.0","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Boost Industry","t":"Energiewirtschaft","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Temporarily boosts a production building in the target region, increasing its in","t":"Temporär steigert ein Produktionsgebäude in der Zielregion und erhöht seine Indu","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: mechanics 1.0, target building skill 1.0","t":"Stats: Mechanik 1.0, Zielbaufertigkeit 1.0","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Demoralize Army","t":"Demoralize Armee","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Spread some disturbing rumours in the Army camp, reducing the Morale.","t":"Verbreiten Sie einige störende Gerüchte im Armeelager und reduzieren die Morale.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Distract (STOP)","t":"Ablenkung (STOP)","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Lets us get more out of our regional workforce.","t":"Lassen Sie uns mehr aus unserer regionalen Belegschaft.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Skilled Workforce II","t":"Fachkräfte II","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Skilled Workforce","t":"Qualifizierte Arbeitskräfte","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Sabotage the target army's weapons and armour, reducing its current Equipment ef","t":"Sabotage der Waffen und Rüstung der Zielarmee, wodurch ihre aktuelle Effizienz d","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Sabotage Army Supplies","t":"Lieferungen von Sabotage Army","p":"argos","f":"","q":90,"sg":0,"fl":0,"a":null}
+{"s":"Sabotage the target army's supplies, reducing its current supplies effectiveness","t":"Sabotage die Vorräte der Zielarmee und reduziert ihre aktuelle Versorgungseffizi","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Damage City Fortifications","t":"Schaden Stadt Festungen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"damage the target regions' fortifications.","t":"die Festungen der Zielregionen beschädigen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: workshop mechanic 1.2, inverse lawfulness 5.0","t":"Stats: Werkstattmechaniker 1.2, inverse Rechtmäßigkeit 5.0","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: inverse honour 0.8, mechanics 1.0, social 1.1","t":"Stats: inverse honor 0.8, Mechanik 1.0, social 1.1","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Stats: inverse honour 1.0, lawfulness 1.0, mechanics 0.7, social 0.9, dexterity ","t":"Stats: inverse honor 1.0, lawfulness 1.0, Mechanik 0.7, social 0.9, dexterity 1.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Heroes are exceptional citizens who have shown outstanding capabilities, allowin","t":"Helden sind außergewöhnliche Bürger, die hervorragende Fähigkeiten gezeigt haben","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Attempts to steal a chosen resource from the region.","t":"Versuche, eine ausgewählte Ressource aus der Region zu stehlen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Running and fighting will exhaust a division, making them less effective in comb","t":"Laufen und Kämpfen werden eine Teilung erschöpfen, die sie im Kampf weniger effe","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: need temple 1.2, social 1.0","t":"Stats: brauchen Tempel 1.2, social 1.0","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Attempts to bolster conversion efforts towards a chosen religion in the target r","t":"Versuche, Konversionsbemühungen auf eine gewählte Religion in der Zielregion für","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Attempts to distract the target army, causing it to stop moving for a duration.","t":"Versucht, die Zielarmee abzulenken, was dazu führt, dass sie für eine Dauer nich","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Religious Conversion","t":"Religiöse Umrechnung","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The amount of heroes you may manage.","t":"Die Menge der Helden, die Sie verwalten können.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The size of our army against the size of the enemy's army.","t":"Die Größe unserer Armee gegen die Größe der Armee des Feindes.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enemy Army Size","t":"Größe der Armee","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The army's supplies prior to engagement.","t":"Die Lieferungen der Armee vor der Verlobung.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The amount of casualties sustained in this battle.","t":"Die Menge der Opfer in dieser Schlacht.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Taking Casulties","t":"Nehmen Sie Casulties","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"In Unit","t":"Einheit","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"In Army","t":"In der Armee","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The amount of soldiers that have routed.","t":"Die Menge der Soldaten, die geroutet haben.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Nothing can be as demoralizing as being bombarded by projectiles. The effect las","t":"Nichts kann so verzerrend sein, als von Geschossen bombardiert zu werden. Der Ef","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The proximity, and amount of enemy troops and their quality.","t":"Die Nähe und die Menge der feindlichen Truppen und ihre Qualität.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Feeling Outmatched","t":"Das Gefühl von Outmatched","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enemy Power Nearby","t":"Enemy Power in der Nähe","p":"argos","f":"","q":90,"sg":0,"fl":0,"a":null}
+{"s":"Ally Power Nearby","t":"Ally Power in der Nähe","p":"argos","f":"","q":90,"sg":0,"fl":0,"a":null}
+{"s":"Under Fire","t":"Unter Feuer","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Battle Weariness","t":"Schlacht Weariness","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Weariness Increase","t":"Steigerung der Ungleichheit","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Formation is Intact","t":"Bildung ist Intact","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"While soldiers are often eager to do battle initially, extended periods of comba","t":"Während die Soldaten oft daran interessiert sind, zuerst zu kämpfen, können verl","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A coherent formation of enough depth makes soldiers feel safe and helps them def","t":"Eine kohärente Formation ausreichender Tiefe macht Soldaten sich sicher und hilf","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Army Size","t":"Größe der Armee","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There's nothing to ruin a soldier's day more than being attacked in the flank.","t":"Es gibt nichts, einen Soldatentag mehr zu ruinieren, als in der Flanke angegriff","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Flanked Soldiers","t":"Flankierende Soldaten","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Flanked Value","t":"Geflechtswert","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The overall power of a battle unit. Divided into different attack and defence ty","t":"Die Gesamtkraft einer Kampfeinheit. In verschiedene Angriffs- und Verteidigungsa","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"attack","t":"Angriff","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"defence","t":"Verteidigung","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"morale","t":"Moral","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"mass","t":"Masse","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"speed","t":"Geschwindigkeit","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"charge","t":"Gebühren","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"ranged","t":"Reichweite","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The Weight of a subject.","t":"Das Gewicht eines Subjekts.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Flanks Compromized","t":"Flanks Kompromiert","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The speed of a subject, expressed in tiles per second.","t":"Die Geschwindigkeit eines Subjekts, ausgedrückt in Fliesen pro Sekunde.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How fast a subject speeds up.","t":"Wie schnell ein Thema beschleunigt.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"General health of subject. The higher health, the less likely a subject is to co","t":"Allgemeine Gesundheit des Subjekts. Je höher die Gesundheit ist, desto weniger w","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How long a subject can walk or run before needing to rest.","t":"Wie lange kann ein Thema laufen oder laufen, bevor es ruhen muss.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Surrounding Threats","t":"Umgeben von Bedrohungen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Apart from flanks, being surrounded by an enemy force is the greatest deterrence","t":"Abgesehen von Flanken, umgeben von einer feindlichen Kraft ist die größte Abschr","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Feeling Surrounded","t":"Gefühl umgeben","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The maximum amount of years a subject can live for.","t":"Die maximale Anzahl von Jahren, für die ein Thema leben kann.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases the ability to attack an enemy.","t":"Erhöht die Fähigkeit, einen Feind anzugreifen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Heat Resistance","t":"Wärmebeständigkeit","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ability to avoid the targets block armour when attacking.","t":"Fähigkeit, die Ziele zu vermeiden, blockieren Rüstung beim Angriff.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ability to use the parry attacks and reduce damage with block armour.","t":"Fähigkeit, die Parry-Angriffe zu verwenden und Schäden mit Blockpanzer zu reduzi","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Adds extra attack to charge attacks.","t":"Ermöglicht zusätzlichen Angriff auf Angriffe.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases defence and parry when in an intact formation and attacked from the fr","t":"Erhöht die Verteidigung und die Bewährung, wenn in einer intakten Formation und ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The force of any attack. Force applies damage in itself, but also amplified the ","t":"Die Kraft eines jeden Angriffs. Die Kraft hat an sich Schaden, verstärkt aber au","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ability to absorb damage.","t":"Fähigkeit, Schäden zu absorbieren.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Force Block","t":"Kraftblock","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Force damage absorbtion when an attack is parried.","t":"Kraftschadensabsorbtion, wenn ein Angriff geweiht wird.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The rate at which a soldier performs melee attacks.","t":"Die Rate, mit der ein Soldat Melee-Angriffe durchführt.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A soldier's morale is what determines how long, and against what odds and setbac","t":"Die Moral eines Soldaten ist das, was bestimmt, wie lange, und gegen welche Chan","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A lawful citizen is one that is reluctant to commit crime.","t":"Ein rechtmäßiger Bürger ist einer, der widerwillig ist, Verbrechen zu begehen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Submission is useful for slaves. Submissive slaves will be reluctant to revolt a","t":"Die Einreichung ist nützlich für Sklaven. Unterwürfige Sklaven werden zögerlich ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The rate at which a subject becomes dirty.","t":"Die Rate, mit der ein Thema schmutzig wird.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The ability for a subject to endure cold temperatures.","t":"Die Fähigkeit, kalte Temperaturen zu ertragen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The ability for a subject to endure hot temperatures.","t":"Die Fähigkeit, heiße Temperaturen zu ertragen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Cold Resistance","t":"Kalter Widerstand","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases the ability to avoid attacks when attacked frontally.","t":"Erhöht die Fähigkeit, Angriffe zu vermeiden, wenn sie frontal angegriffen werden","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases the happiness of your subjects. Happy subjects will be more loyal and ","t":"Erhöht das Glück Ihrer Themen. Glückliche Themen werden loyaler und unterwürfige","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Determines the chance a subject will become deranged during its lifetime.","t":"Bestimmt die Chance, dass ein Thema während seines Lebens verwirrt wird.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Decreases the rate at which our buildings degrade.","t":"Verringert die Rate, mit der unsere Gebäude abgebaut werden.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Decreases the decay rate of goods.","t":"Verringert die Verfallrate der Waren.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Decreases the chance of work related accidents.","t":"Verringert die Wahrscheinlichkeit von Arbeitsunfällen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Decreases the rate at which subjects use up the furniture of their homes.","t":"Verringert die Rate, mit der die Themen die Möbel ihrer Häuser verwenden.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Raid Security","t":"Rasche Sicherheit","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Determines the chances of us being raided","t":"Bestimmt die Chancen, dass wir überfallen werden","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Decreases the inflation of your treasury, allowing you to save up more.","t":"Verringert die Inflation Ihres Schatzes, wodurch Sie mehr sparen können.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases the replenishment and capacity of the immigration pool.","t":"Erhöht die Auffüllung und Kapazität des Einwanderungspools.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Used for technologies.","t":"Verwendet für Technologien.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Emissary Points","t":"Zulässige Punkte","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases your starting subjects and resources.","t":"Erhöht Ihre Ausgangsthemen und Ressourcen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The law of your city.","t":"Das Gesetz Ihrer Stadt.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Used to manipulate opinions of factions.","t":"Verwendet, um Meinungen von Fraktionen zu manipulieren.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Increases the Loyalty of your citizens, preventing riots and usurping.","t":"Erhöht die Loyalität Ihrer Bürger, verhindert Unruhen und Verwüstung.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Gov Points","t":"Gov Punkte","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Sentimentality for the dead. How often a subject will visit a grave and mourn.","t":"Sentimentalität für die Toten. Wie oft wird ein Thema ein Grab und Trauer besuch","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How often a subject wants to see a punishment such as an execution.","t":"Wie oft will ein Subjekt eine Strafe wie eine Hinrichtung sehen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The main currency to build your realm with. Gained by assigning nobles to govern","t":"Die wichtigste Währung, um Ihr Reich mit zu bauen. Gewinnt durch die Zuweisung v","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The value put in pledges and agreements.","t":"Der Wert der Zusagen und Vereinbarungen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The inclination towards mercy as opposed to cruelty.","t":"Die Neigung zur Barmherzigkeit gegenüber der Grausamkeit.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The general competence.","t":"Die allgemeine Kompetenz.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Tolerance to new and different things.","t":"Toleranz für neue und verschiedene Dinge.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Determines the aggression of other factions towards you.","t":"Bestimmt die Aggression anderer Fraktionen gegenüber Ihnen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Affected Regions","t":"Betroffene Regionen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Affected Groups","t":"Betroffene Gruppen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Nothing out of the ordinary is having an effect.","t":"Nichts aus dem gewöhnlichen hat einen Effekt.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Boosted Subjects","t":"Erhöhte Themen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Boosted Regions","t":"Gesteigerte Regionen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How often a subject wants to visit a court.","t":"Wie oft möchte ein Thema ein Gericht besuchen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Other Effects","t":"Sonstige Auswirkungen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Determines the opinion of other factions.","t":"Bestimmt die Meinung anderer Fraktionen.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"How much war is liked.","t":"Wie viel Krieg ist gefiel.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Prideful people put great value in flattery and gifts.","t":"Stolze Menschen legen großen Wert in schmeichelhaft und Geschenke.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How often a subject wants to socialize with others.","t":"Wie oft möchte ein Thema mit anderen sozialisieren.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You are too poor to pay this sum.","t":"Sie sind zu arm, um diese Summe zu bezahlen.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Affected Royalties","t":"Betroffene Königlichkeiten","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This event is no longer relative.","t":"Dieses Ereignis ist nicht mehr relativ.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ungrateful plebs!","t":"Unglaubliche Plebs!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Rumour has it that your citizens are grinding their teeth in frustration over wh","t":"Gerüchte hat es, dass Ihre Bürger ihre Zähne in Frustration schleifen, über das,","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A local dispute between a {RACE_A} and {RACE_B} citizen has spread across the wh","t":"Ein lokaler Streit zwischen einem {RACE_A} und {RACE_B} Bürger hat sich über die","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"War of the faiths","t":"Krieg der Glaubensrichtungen","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Due to low happiness, a local dispute between two citizens of opposing faiths ha","t":"Aufgrund des geringen Glücks hat sich in der ganzen Stadt ein lokaler Streit zwi","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The tension between religious factions have spread. Followers of {RELIGION_A} an","t":"Die Spannung zwischen religiösen Fraktionen hat sich ausgebreitet. Anhänger von ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your subjects have had enough of you and your rule. They have risen up, determin","t":"Ihre Themen haben genug von Ihnen und Ihrer Regel. Sie sind auferstanden, entsch","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"We have reports of {0} rioters. The following species have joined: ","t":"Wir haben Berichte über {0}-Richter. Folgende Arten sind beigetreten:","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The rioters have had a taste of your might and have laid down their arms. The ri","t":"Die Rrioten hatten einen Geschmack von deiner Macht und haben ihre Arme gelegt. ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Riot Over!","t":"Rüber!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You don't have enough resources available.","t":"Sie haben nicht genug Ressourcen zur Verfügung.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Time Remaining","t":"Zeit bleibt","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Emigrants!","t":"Emigranten!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A group of {RACE} have decided to leave your city, renouncing their citizenship,","t":"Eine Gruppe von {RACE} haben beschlossen, Ihre Stadt zu verlassen, ihre Staatsbü","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The army of {0} has now arrived.","t":"Die Armee von {0} ist nun angekommen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The rioters have had enough of murdering and pillaging for now. They have return","t":"Die Rrioten haben schon genug von Mord und Plünderung. Sie sind zurückgekehrt, u","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your {WORKPLACES} have resumed work and the strike is over.","t":"Ihre {WORKPLACES} haben die Arbeit wieder aufgenommen und der Streik ist vorbei.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Accident!","t":"Unfall!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Go to Site","t":"Zur Website","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Outbreak!","t":"Ausbruch!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Disease at our doorstep!","t":"Krankheit vor unserer Haustür!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Dreadful news! On account of poor health and sanitation, an epidemic of {0} has ","t":"Dreckliche Neuigkeiten! Aufgrund der schlechten Gesundheit und der Sanitation wu","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"It has come to us. The dreaded {0}. Nothing could have been done, it was the wil","t":"Es ist zu uns gekommen. Die gefürchtete {0}. Nichts hätte getan werden können, e","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Extreme Temperatures","t":"Extreme Temperaturen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The temperature has plunged to record lows. Make sure our hearths are stocked wi","t":"Die Temperatur ist gestürzt, um Tiefs aufzuzeichnen. Achten Sie darauf, dass uns","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There is rumour that the lands to the east have been ravaged by a deadly disease","t":"Es gibt Gerüchte, dass die Länder im Osten durch eine tödliche Krankheit verwüst","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Epidemic!","t":"Epidemie!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Realm Collapses","t":"Reiche Versäumnisse","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Due to internal strife, the realm of {0} has collapsed and much of its lands hav","t":"Aufgrund der internen Streitigkeiten ist das Reich {0} zusammengebrochen und ein","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This might be a good time to expand our kingdom into these lawless lands without","t":"Dies könnte eine gute Zeit sein, unser Königreich ohne diplomatische Strafe in d","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The temperature is rising to an extreme level today. Make sure you have ways for","t":"Die Temperatur steigt heute auf ein extremes Niveau. Stellen Sie sicher, dass Si","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Opinion boost for completing dungeons in the faction's territory.","t":"Stellungnahme Boost für die Fertigstellung von Kerben im Gebiet der Fraktion.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Mission Attempts Impact","t":"Missionsversuche Wirkung","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Opinion impact for attempting missions targeting this faction.","t":"Stellungnahme Auswirkungen auf den Versuch von Missionen, die auf diese Fraktion","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This faction is currently your {0}. If their opinion is not raised in time, it i","t":"Diese Fraktion ist derzeit Ihr {0}. Wenn ihre Meinung nicht rechtzeitig erhoben ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Proposal: {0}","t":"Vorschlag: {0}","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Freedom request","t":"Freiheitsantrag","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"This faction asks that you release them from their bounds. The faction will beco","t":"Diese Fraktion bittet, sie von ihren Grenzen freizugeben. Die Fraktion wird Ihr ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This former vassal has has severed all diplomatic relationships with you","t":"Dieser ehemalige Vasall hat alle diplomatischen Beziehungen mit Ihnen durchtrenn","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Proxy war!","t":"Proxy-Krieg!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"My lord, even in distant places they manage to hate our freedom and way of life.","t":"Mein Herr, selbst an fernen Orten schaffen sie es, unsere Freiheit und Lebenswei","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Our agents reveal that our enemies have managed to increase their armies by {0} ","t":"Unsere Agenten zeigen, dass unsere Feinde es geschafft haben, ihre Armeen durch ","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"War!","t":"Krieg!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"World War!","t":"Der Weltkrieg!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The enemy has shown itself. Let us muster and fight!","t":"Der Feind hat sich gezeigt. Lasst uns streiten!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"This faction has in secret conspired against you and have convinced other factio","t":"Diese Fraktion hat sich heimlich gegen dich verschwört und andere Fraktionen übe","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The following Factions have joined their cause:","t":"Die folgenden Factions haben sich ihrer Ursache angeschlossen:","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Freedom!","t":"Freiheit!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Agreements Cancelled.","t":"Abgesagte Vereinbarungen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Since the faction of {0} is no longer reachable to us, all agreements have been ","t":"Da die Tatsache von {0} für uns nicht mehr erreichbar ist, wurden alle Vereinbar","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Slave Uprising!","t":"Sklavenaufstand!","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"May the gods help us, the slaves are rising up to their masters! They claim to h","t":"Mögen uns die Götter helfen, die Sklaven steigen bis zu ihren Meistern! Sie beha","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} slaves have joined the uprising.","t":"{0} Sklaven haben sich dem Aufstand angeschlossen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The slave uprising has been defeated and your people rejoice at your might. Time","t":"Der Sklavenaufstand wurde besiegt und dein Volk freut sich über deine Macht. Zei","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A slaver has arrived and is offering his goods. Would you like to make a purchas","t":"Ein Sklave ist gekommen und bietet seine Ware an. Möchten Sie einen Kauf oder ei","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The filthy slaves have captured the throne through low cunning. The wretches hav","t":"Die schmutzigen Sklaven haben den Thron durch niedrige List gefangen genommen. D","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Slaves triumph!","t":"Sklaven triumphieren!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The region of {0} has very low public order, and could rebel any day now. A temp","t":"Die Region von {0} hat eine sehr geringe öffentliche Ordnung und könnte jeden Ta","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"In fact they hate you so much that they have raised an army against you. You bet","t":"Tatsächlich hassen sie dich so sehr, dass sie eine Armee gegen dich erhoben habe","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"As allies, you will trade at an increased discount, respect each other's soverei","t":"Als Verbündete werden Sie mit einem erhöhten Rabatt handeln, die Souveränität de","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Become Colleagues","t":"Werden Sie Kollegen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Uprising crushed!","t":"Aufstehen zerquetscht!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Slaver!","t":"Sklaven!","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The region of {0} has had enough of your mistreatment and have declared independ","t":"Die Region von {0} hat genug von Ihrer Misshandlung und haben Unabhängigkeit von","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rumour has it that our wretched slaves feel mistreated. Some battlegear has also","t":"Gerüchte hat es, dass unsere verwüsteten Sklaven sich misshandelt fühlen. Ein Ka","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Slaves are acting a bit out of order lately and submission seems to be low. Perh","t":"Die Sklaven sind in letzter Zeit etwas aus der Ordnung und die Unterwerfung sche","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The faction, and all of its territory joins you as your own territory.","t":"Die Fraktion und ihr ganzes Gebiet gehören dir als dein eigenes Gebiet.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The faction becomes your vassal, and you its protector. At the end of each year ","t":"Die Fraktion wird zu eurem Vasallen, und ihr ihr werdet ihr ihr ihr sein Beschüt","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Cancel All Agreements","t":"Alle Vereinbarungen abbrechen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Will cancel all agreements, including trade and make you neutral to each other","t":"löscht alle Vereinbarungen, einschließlich Handel und macht Sie neutral zueinand","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You and the faction become trade partners, which will allow you to automatically","t":"Sie und die Fraktion werden Handelspartner, mit denen Sie automatisch zu bessere","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You are already at war.","t":"Du bist schon im Krieg.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You are not at war.","t":"Du bist nicht im Krieg.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Can not be combined with other proposals.","t":"Kann nicht mit anderen Vorschlägen kombiniert werden.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You have no agreements to break.","t":"Sie haben keine Vereinbarungen zu brechen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This option requires the faction to be your neighbour.","t":"Diese Option erfordert die Fraktion, Ihr Nachbar zu sein.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You are already at this stance with each other.","t":"Sie sind bereits in dieser Haltung miteinander.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You are not liked enough by the faction for this stance to be considered. A mini","t":"Sie werden nicht von der Fraktion geliked genug für diese Haltung betrachtet wer","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"As a vassal, you can not propose this agreement to this faction.","t":"Als Vasall können Sie diese Vereinbarung nicht vorschlagen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This faction is a puppet state of another faction, and is not allowed to make th","t":"Diese Fraktion ist ein Marionettenzustand einer anderen Fraktion und darf dieses","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Opinion Required","t":"Erforderliche Stellungnahme","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"As colleagues, you will trade at an increased discount, and also pledge not atta","t":"Als Kollegen werden Sie mit einem erhöhten Rabatt handeln, und auch Versprechen,","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Peace Agreement. Will affect all allies and common enemies.","t":"Friedensabkommen. Wird alle Verbündeten und gemeinsame Feinde beeinflussen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Become Vassal","t":"Werden Sie Vassal","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You become a vassal to this faction. You will have no diplomatic relations with ","t":"Du wirst ein Vasall für diese Fraktion. Sie werden keine diplomatischen Beziehun","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You currently do not have the means to fulfill this agreement. ({0})","t":"Sie haben derzeit nicht die Mittel, diese Vereinbarung zu erfüllen. ({0})","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Trade partners can exchange goods automatically at favourable rates. Requires 1 ","t":"Handelspartner können Waren automatisch zu günstigen Preisen austauschen. Erford","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A colleague not only trades at a discounted rate, but allow transit through thei","t":"Ein Kollege handelt nicht nur mit einem ermäßigten Zinssatz, sondern erlaubt die","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"An ally is your sworn bannerman. You share the same enemies, trade and swear to ","t":"Ein Verbündeter ist Ihr gelobter Bannermann. Du teilest die gleichen Feinde, han","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A Vassal serves its overlord with tribute. In return, they are protected.","t":"Ein Vassal dient seiner Überherrschaft mit Tribut. Im Gegenzug sind sie geschütz","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A Protector is the overlord of a vassal. Their task is to protect, and in return","t":"Ein Protektor ist der Überherr eines Vasallen. Ihre Aufgabe ist es, zu schützen,","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"No relations at all","t":"Keine Beziehungen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Minimum Opinion","t":"Mindesturteil","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Enemies are at war and bent on destroying one another.","t":"Feinde sind im Krieg und beugen sich gegenseitig zu zerstören.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"One of your neighbours have gone to war. This could be an opportunity to snatch ","t":"Einer Ihrer Nachbarn ist in den Krieg gegangen. Dies könnte eine Gelegenheit sei","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{FACTION_A} and {FACTION_B} are now trade partners.","t":"{FACTION_A} und {FACTION_B} sind nun Handelspartner.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"It is time for us to pay our annual tribute to our overlord and protector. We mu","t":"Es ist an der Zeit, dass wir unsere jährliche Hommage an unseren Überherrn und B","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Tribute from our loyal subjects has arrived. As always, they are expressing eter","t":"Das Tribut unserer treuen Untertanen ist angekommen. Wie immer, sie drücken ewig","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The faction of {0} has been completely destroyed.","t":"Die Fraktion von {0} wurde vollständig zerstört.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The realm of {0} has declared war on {1}.","t":"Das Reich der {0}] hat den Krieg erklärt {1}.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The faction currently does not have the means to fulfill this agreement.","t":"Die Fraktion hat derzeit nicht die Mittel, diese Vereinbarung zu erfüllen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Trade Partners","t":"Handelspartner","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Distant war.","t":"Krieg.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The faction of this agreement does no longer exist.","t":"Die Fraktion dieser Vereinbarung existiert nicht mehr.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} and {1} have agreed to a truce.","t":"{0} und {1} haben einer Truce zugestimmt.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Money that flow through imports and exports.","t":"Geld, das durch Importe und Exporte fließt.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Denari spent/gained from diplomacy with other factions.","t":"Denari verbrachte/gekauft von der Diplomatie mit anderen Fraktionen.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Mercenaries can be conscripted into your armies and cost credits to upkeep each ","t":"Mercenaries kann in Ihre Armeen und Kosten Kredite, um jeden Tag zu aktualisiere","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Tourists that visit your city will give you some money at the end of their stay.","t":"Touristen, die Ihre Stadt besuchen, geben Ihnen etwas Geld am Ende ihres Aufenth","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Taxation from the realm.","t":"Steuern aus dem Bereich.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Worth of stored resources","t":"Wert der gespeicherten Ressourcen","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Transactions from slave trade.","t":"Transaktionen aus dem Sklavenhandel.","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Worth of population","t":"Einwohnerzahl","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Worth of your regions","t":"Wert Ihrer Regionen","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Worth of your vassals","t":"Wert Ihrer Vasallen","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The amount of Denari at disposal.","t":"Denari zur Verfügung.","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Worth of your slaves","t":"Wert Ihrer Sklaven","p":"argos","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Emissaries are used to influence foreign courts, or to increase support in regio","t":"Emissare werden verwendet, um ausländische Gerichte zu beeinflussen, oder um Unt","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A new faction has emerged. They call themselves '{0}'.","t":"Eine neue Fraktion ist entstanden. Sie nennen sich \"{0}\".","p":"argos","f":"","q":95,"sg":0,"fl":0,"a":null}

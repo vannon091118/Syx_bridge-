@@ -320,6 +320,94 @@ class GuiServer extends EventEmitter {
         return;
       }
 
+      // API: Preflight Status — GUI checks for DB warnings (blinking repair button)
+      if (url.pathname === '/api/preflight-status' && req.method === 'GET') {
+        let handled = false;
+        this.emit('get-preflight-status', (status) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(status));
+        });
+        return;
+      }
+
+      // API: DB Repair — GUI button triggers repair via db_repair.js
+      if (url.pathname === '/api/db-repair' && req.method === 'POST') {
+        let handled = false;
+        this.emit('run-db-repair', (result) => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(result));
+        });
+        return;
+      }
+
+      // API: FCM Live Model Rankings
+      if (url.pathname === '/api/fcm-rankings' && req.method === 'GET') {
+        let handled = false;
+        const timeout = setTimeout(() => {
+          if (handled) return;
+          handled = true;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, rankings: [], daemonRunning: false }));
+        }, 25000);
+        this.emit('get-fcm-rankings', (data) => {
+          if (handled) return;
+          handled = true;
+          clearTimeout(timeout);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(data));
+        });
+        return;
+      }
+
+      // API: Automated API Key Check
+      if (url.pathname === '/api/key-check' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          let data = {};
+          try { data = JSON.parse(body || '{}'); } catch (e) {}
+          this.emit('check-api-key', data, (result) => {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+          });
+        });
+        return;
+      }
+
+      // API: Revision History
+      if (url.pathname === '/api/revisions' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          let data = {};
+          try { data = JSON.parse(body || '{}'); } catch (e) {}
+          this.emit('get-revisions', data, (results) => {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(results));
+          });
+        });
+        return;
+      }
+
+      // API: Restore Revision
+      if (url.pathname === '/api/revisions/restore' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          let data = {};
+          try { data = JSON.parse(body || '{}'); } catch (e) {}
+          this.emit('restore-revision', data, (result) => {
+            res.writeHead(result.success ? 200 : 500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+          });
+        });
+        return;
+      }
+
       // 4. SSE: Logs
       if (url.pathname === '/api/logs') {
         res.writeHead(200, {

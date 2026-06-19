@@ -1,18 +1,14 @@
 const {
   normalizeTranslationEntry,
   mergeEntryContexts,
-  scoreTranslationRisk,
-  scoreDynamicRisk,
   buildContextPacket
 } = require('./context-packets');
 const { createDispatcher } = require('./dispatcher');
 const { createPolishArbiter } = require('./polish-arbiter');
 const cli = require('./cli-progress');
-const {
-  shouldLearnGlossaryTerm,
-  findRelevantGlossaryTerms
-} = require('./glossary');
 const { createProviderClients } = require('./providers/client-factory');
+const { createTranslationQuality, NATIVE_RUNTIME_DEFAULT_QUALITY, NATIVE_GLOSSARY_DEFAULT_QUALITY } = require('./translation-quality');
+const { createTranslationDb } = require('./translation-db');
 
 function createTranslationRuntime(options) {
   const {
@@ -35,6 +31,8 @@ function createTranslationRuntime(options) {
     classifyPath,
     restoreAndValidateTranslation,
     translationLooksSafe,
+    translationCriticalCheck,
+    assessTranslationWarnings,
     shouldTranslate,
     stripJsonFence,
     getGrammarContext,
@@ -49,6 +47,8 @@ function createTranslationRuntime(options) {
   } = options;
 
   let consecutiveGrammarFailures = 0;
+
+  // ── Dispatcher ───────────────────────────────────────────────────────
   const dispatcher = createDispatcher({
     config,
     routingEngine,
@@ -56,8 +56,7 @@ function createTranslationRuntime(options) {
     isArgosInstalled
   });
 
-
-  // ── Provider Clients (extracted to providers/client-factory.js) ──
+  // ── Provider Clients ─────────────────────────────────────────────────
   const clients = createProviderClients({
     config, configRuntime, axios, langCodes,
     getApiKey, rotateApiKey, withRetry, sleep, isAborting, logPayload,
@@ -67,7 +66,47 @@ function createTranslationRuntime(options) {
     buildBatchPromptForCurrentConfig
   });
   const { normalizeWhitespace, getBatchProfile } = clients;
-  // ── A/B Polish Arbiter ───────────────────────────────────────────────
+
+  // ── Sub-Modules (composition) ────────────────────────────────────────
+  const quality = createTranslationQuality({
+    config,
+    normalizeWhitespace,
+    isProperNoun,
+    shouldTranslate,
+    dbAll
+  });
+
+  const db = createTranslationDb({
+    config,
+    _dbGet,
+    dbAll,
+    dbRun,
+    scoreTranslationQuality: quality.scoreTranslationQuality
+  });
+
+  // Destructure for local convenience (avoid `quality.` / `db.` prefix everywhere)
+  const {
+    isLikelyTargetLanguageText,
+    classifyNativeDecision,
+    scoreTranslationQuality,
+    inferFlagReason,
+    checkTerminologyViolations,
+    getGuardedTerminology
+  } = quality;
+
+  const {
+    getEntryHash,
+    normalizeInputs,
+    buildGlossaryMap,
+    loadGlossaryRows,
+    enrichWithContext,
+    learnGlossary,
+    saveStressTestResult,
+    getCachedTranslations,
+    saveTranslation
+  } = db;
+
+  // ── A/B Polish Arbiter (created AFTER quality/db destructuring) ──────
   const polishArbiter = createPolishArbiter({
     executeStageRequest: clients.executeStageRequest,
     dispatcher,
@@ -82,65 +121,70 @@ function createTranslationRuntime(options) {
     logPayload
   });
 
+  // ── Helper Functions (stay in orchestrator) ──────────────────────────
+
   function parseBatchResponseWithMaps(text, expectedCount, shieldMaps = []) {
     return parseBatchResponse(text, { expectedCount, shieldMaps });
   }
 
-  function getEntryHash(entry) {
-    return entry && entry.sourceHash ? entry.sourceHash : '';
-  }
-  function isLikelyTargetLanguageText(text) {
-    const value = normalizeWhitespace(text);
-    if (!value || value.length < 4) return false;
-    const lang = config.TARGET_LANG;
-
-    if (lang === 'German') {
-      if (/[äöüßÄÖÜ]/.test(value)) return true;
-      const lower = value.toLowerCase();
-      const hits = (lower.match(/\b(der|die|das|und|nicht|mit|fuer|für|fur|eine|einer|einen|ihre|seine|den|dem|des|von|ist|sind|wird|werden|zum|zur|bei|nach|ohne)\b/g) || []).length;
-      if (hits >= 2) return true;
-    } else if (lang === 'French') {
-      if (/[éèêëàâîïôûùç]/.test(value)) return true;
-      const lower = value.toLowerCase();
-      const hits = (lower.match(/\b(le|la|les|un|une|des|et|pas|avec|pour|est|sont|dans|sur)\b/g) || []).length;
-      if (hits >= 2) return true;
-    } else if (lang === 'Spanish') {
-      if (/[áéíóúüñ¿¡]/.test(value)) return true;
-      const lower = value.toLowerCase();
-      const hits = (lower.match(/\b(el|la|los|las|un|una|y|no|con|para|es|son|en|de)\b/g) || []).length;
-      if (hits >= 2) return true;
-    } else if (lang === 'Russian' || lang === 'Ukrainian') {
-      if (/[а-яА-ЯёЁіІєЄґҐ]/.test(value)) return true;
-      return false;
+  async function buildBatchPromptForCurrentConfig(items) {
+    const strictTerms = await getGuardedTerminology(items);
+    if (strictTerms.length > 0) {
+      console.log(`[GUARD] Injeziere ${strictTerms.length} geschuetzte Begriffe in den Prompt.`);
     }
-
-    const lower = value.toLowerCase();
-    const englishHits = (lower.match(/\b(the|and|with|for|from|your|their|will|have|has|this|that|more|less|battle|room|workers|efficiency|better|hunting|city|food|guide|population|happiness)\b/g) || []).length;
-    if (englishHits > 0) return false;
-
-    const tokens = lower.match(/[a-zÀ-ž]+/g) || [];
-    if (tokens.length === 0) return false;
-    
-    // Generic morphology check for Latin-based languages
-    if (['German', 'French', 'Spanish', 'Italian', 'Portuguese'].includes(lang)) {
-      const morphologyHits = tokens.filter(token => /(ung|keit|heit|schaft|chen|lein|lich|isch|erei|tion|tions|te|ten|ter|tes|en|ment|age|ique|able|ante|amos|aron|iendo)$/i.test(token)).length;
-      return morphologyHits >= Math.max(1, Math.ceil(tokens.length * 0.5));
-    }
-    
-    return false;
+    const batch = buildBatchPrompt(items, config.TARGET_LANG, getGrammarContext(), strictTerms);
+    return { prompt: batch.prompt, shieldMaps: batch.shieldMaps };
   }
-  /**
-   * Google Free Stress Test: Quick pre-flight to dynamically calibrate risk.
-   * - Sends all entries through Google Translate Free (cheapest/fastest route)
-   * - Compares output quality to determine genuine translation difficulty
-   * - Returns: { translations: Map, stressResults: Map, overallPassRate: number }
-   */
+
+  // ── DNT Double-Shielding (BUG-FS-003) ──────────────────────────────
+  // Argos and Google Free translate __SHLD_N__ shield tokens as normal text,
+  // corrupting the placeholder restoration. Apply a second "Do Not Translate"
+  // layer using _DNT_N_ tokens which are even less likely to be translated.
+  function dntShieldEntries(entries) {
+    const dntMaps = [];
+    const dntTexts = entries.map(e => {
+      const dntMap = new Map();
+      let idx = 0;
+      const text = (e.protectedText || '').replace(/__SHLD_\d+__/g, (match) => {
+        const token = `_DNT_${idx++}_`;
+        dntMap.set(token, match);
+        return token;
+      });
+      dntMaps.push(dntMap);
+      return text;
+    });
+    return { dntTexts, dntMaps };
+  }
+
+  function dntRestoreTranslations(rawTranslations, dntMaps) {
+    return rawTranslations.map((t, i) => {
+      const map = dntMaps[i];
+      if (!map || map.size === 0) return t;
+      let result = String(t || '');
+      for (const [dntToken, shldToken] of map) {
+        // P1-Fix: Case-insensitive replacement because MT providers
+        // (Argos/Google) may alter token casing (e.g. _DNT_0_ → _dnt_0_)
+        const regex = new RegExp(dntToken.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        const before = result;
+        result = result.replace(regex, shldToken);
+        if (result === before) {
+          console.warn(`[DNT] Token ${dntToken} nicht in Google/Argos-Response gefunden — Token ging vermutlich verloren.`);
+        }
+      }
+      return result;
+    });
+  }
+
+  // ── Google Free Stress Test ──────────────────────────────────────────
+
   async function googleFreePreflight(entries) {
     console.log(`[STRESS-TEST] Google Free Pre-Flight fuer ${entries.length} Eintraege...`);
-    
-    const texts = entries.map(e => e.protectedText || e.source);
-    const rawResults = await clients.callGoogleTranslateFree(texts);
-    
+
+    // BUG-FS-003: DNT double-shield before sending to Google Free
+    const { dntTexts, dntMaps } = dntShieldEntries(entries);
+    let rawResults = await clients.callGoogleTranslateFree(dntTexts);
+    rawResults = dntRestoreTranslations(rawResults, dntMaps);
+
     const translations = new Map();
     const stressResults = new Map();
     let passedCount = 0;
@@ -149,23 +193,19 @@ function createTranslationRuntime(options) {
       const entry = entries[i];
       const raw = rawResults[i] || '';
       const source = entry.source;
-      
-      // Quality gates for Google Free output:
-      // 1. Must not be identical to source (unless source is already target language)
+
       const isIdentical = normalizeWhitespace(raw) === normalizeWhitespace(source);
-      // 2. Must have reasonable length (not truncated)
       const lengthRatio = raw.length / Math.max(1, source.length);
       const hasGoodLength = lengthRatio >= 0.2 && lengthRatio <= 5.0;
-      // 3. Must not contain placeholder leaks
       const hasPlaceholderLeak = /\[\[|\]\]|__VAR\d+__/.test(raw) && !/\[\[|\]\]|__VAR\d+__/.test(source);
 
       const passed = !isIdentical && hasGoodLength && !hasPlaceholderLeak;
-      
+
       if (passed) {
         passedCount++;
         translations.set(source, raw);
       }
-      
+
       stressResults.set(source, {
         passed,
         googleFreeOutput: raw,
@@ -184,237 +224,28 @@ function createTranslationRuntime(options) {
     return { translations, stressResults, overallPassRate: passRate };
   }
 
+  // ── Core Translation Pipeline ────────────────────────────────────────
 
-  async function getGuardedTerminology(items) {
-    try {
-      const guarded = await dbAll('SELECT source_term, target_term FROM glossary_terms WHERE target_lang = ? AND is_guarded = 1', [config.TARGET_LANG]);
-      if (!guarded || guarded.length === 0) return [];
-            
-      const activeTerms = [];
-      const combinedSource = items.map(i => String(i.source || i.originalSource || i || '').toLowerCase()).join(' ');
-            
-      for (const term of guarded) {
-        if (combinedSource.includes(term.source_term.toLowerCase())) {
-          activeTerms.push(term);
-        }
-      }
-      return activeTerms;
-    } catch (e) {
-      return [];
-    }
-  }
-
-  async function buildBatchPromptForCurrentConfig(items) {
-    const strictTerms = await getGuardedTerminology(items);
-    if (strictTerms.length > 0) {
-      console.log(`[GUARD] Injeziere ${strictTerms.length} geschuetzte Begriffe in den Prompt.`);
-    }
-    const batch = buildBatchPrompt(items, config.TARGET_LANG, getGrammarContext(), strictTerms);
-    return { prompt: batch.prompt, shieldMaps: batch.shieldMaps };
-  }
-
-  function classifyNativeDecision(entry, glossaryMap) {
-    const source = String(entry.source || '');
-    const normalized = normalizeWhitespace(source);
-    if (!normalized) return { reuse: true, translation: source, reason: 'empty' };
-        
-    // ── Proper noun heuristic (path-independent): single-word capitalized names ──
-    // Runs BEFORE shouldTranslate() so Nordic/Icelandic names like Aðalsteinn,
-    // Baldur, Þórir are never sent to translation providers.
-    if (isProperNoun(source)) {
-      return { reuse: true, translation: source, reason: 'proper_noun' };
-    }
-
-    if (!shouldTranslate(source)) return { reuse: true, translation: source, reason: 'non_translatable' };
-    if (isLikelyTargetLanguageText(source)) return { reuse: true, translation: source, reason: 'already_target_lang' };
-
-    const glossary = glossaryMap.get(source);
-    if (glossary && glossary.target_term) {
-      return { reuse: true, translation: glossary.target_term, reason: 'glossary_exact' };
-    }
-
-    return { reuse: false, translation: source, reason: '' };
-  }
-
-  function buildGlossaryMap(glossaryRows) {
-    const map = new Map();
-    for (const row of glossaryRows || []) {
-      if (!row || !row.source_term || !row.target_term) continue;
-      if (!map.has(row.source_term)) {
-        map.set(row.source_term, row);
-      }
-    }
-    return map;
-  }
-
-  function scoreTranslationQuality(source, translation) {
-    const src = normalizeWhitespace(source);
-    const tgt = normalizeWhitespace(translation);
-    if (!tgt) return 0;
-    // BUG-002 Fix: Pure numbers (batch indices, IDs) are never valid translations.
-    if (/^\d+$/.test(tgt)) return 0;
-    if (src === tgt) return isLikelyTargetLanguageText(tgt) ? 80 : 25;
-
-    // BUG-006 Fix: Granular scoring instead of always returning 90.
-    let score = 70; // baseline for a non-empty, non-identical translation
-
-    // Length ratio check — too short or too long is suspicious
-    const lenRatio = tgt.length / Math.max(1, src.length);
-    if (lenRatio < 0.2) return 20; // too short — likely truncated or garbage
-    if (lenRatio >= 0.5 && lenRatio <= 3.0) score += 15; // good length range
-    else if (lenRatio > 3.0) score -= 10; // suspiciously long — possible hallucination
-
-    // Target language detection — if translation actually looks like target language
-    if (isLikelyTargetLanguageText(tgt)) score += 15;
-
-    // Source reuse check — if translation still contains English words from source
-    const srcTokens = src.toLowerCase().split(/\s+/);
-    const tgtLower = tgt.toLowerCase();
-    const reusedWords = srcTokens.filter(w => w.length > 3 && new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(tgtLower)).length;
-    if (srcTokens.length > 1 && reusedWords / srcTokens.length > 0.5) score -= 10;
-
-    return Math.max(0, Math.min(95, score));
-  }
-
-  function inferFlagReason(source, translation, provider, options = {}) {
-    const reasons = [];
-    const src = normalizeWhitespace(source);
-    const tgt = normalizeWhitespace(translation);
-    if (options.forcedFallback) reasons.push(options.forcedFallback);
-    if (!tgt) reasons.push('empty_translation');
-    // BUG-001 Fix: Only flag google_free if quality is actually poor (score < 80).
-    // Previously ALL google_free translations were unconditionally flagged.
-    if (provider === 'google_free' && (options.qualityScore ?? 100) < 80) reasons.push('free_machine_translation');
-    if (src === tgt && !isLikelyTargetLanguageText(tgt)) reasons.push('source_reused');
-    if (tgt.includes('[[') || tgt.includes(']]')) reasons.push('shield_leak');
-    return reasons.join('|');
-  }
-
-  function normalizeInputs(items) {
-    return items.map(normalizeTranslationEntry).filter(item => item.source);
-  }
-
-  async function loadGlossaryRows(items) {
-    const entries = normalizeInputs(items);
-    if (entries.length === 0) return [];
-    const uniqueSources = [...new Set(entries.map(entry => entry.source))];
-    const placeholders = uniqueSources.map(() => '?').join(', ');
-    const modNames = [...new Set(entries.map(entry => entry.modName).filter(Boolean))];
-    const modClause = modNames.length > 0
-      ? ` OR mod_scope IN (${modNames.map(() => '?').join(', ')})`
-      : '';
-    return dbAll(
-      `SELECT source_term, target_term, scope, mod_scope, confidence
-             FROM glossary_terms
-             WHERE target_lang = ?
-               AND source_term IN (${placeholders})
-               AND (mod_scope = ''${modClause})
-             ORDER BY confidence DESC, updated_at DESC`,
-      [config.TARGET_LANG, ...uniqueSources, ...modNames]
-    );
-  }
-
-  async function enrichWithContext(items) {
-    const entries = normalizeInputs(items);
-    if (entries.length === 0) return [];
-    const glossaryRows = await loadGlossaryRows(entries);
-    const glossaryMatches = findRelevantGlossaryTerms(entries, glossaryRows);
-    const bySource = new Map(glossaryMatches.map(match => [match.source, match.terms]));
-
-    // ── Dynamic Risk: Blend static heuristics with DB history ───────────
-    // Queries stress_test_passed, flagged, quality_score, review_count
-    // for each unique source so scoreDynamicRisk() can calibrate.
-    const uniqueSources = [...new Set(entries.map(e => e.source))];
-    let dbHistoryMap = new Map();
-    try {
-      if (uniqueSources.length > 0) {
-        const placeholders = uniqueSources.map(() => '?').join(', ');
-        const historyRows = await dbAll(
-          `SELECT source_text, stress_test_passed, flagged, quality_score, review_count
-           FROM translations
-           WHERE target_lang = ? AND source_text IN (${placeholders})`,
-          [config.TARGET_LANG, ...uniqueSources]
-        );
-        for (const row of historyRows || []) {
-          dbHistoryMap.set(row.source_text, {
-            stressTestPassed: row.stress_test_passed === 1,
-            stressTestFailed: row.stress_test_passed === 0,
-            hasGoodQuality: (row.quality_score || 0) >= 80 && !row.flagged,
-            flagged: !!row.flagged,
-            retryCount: row.review_count || 0,
-            reviewCount: row.review_count || 0
-          });
-        }
-      }
-    } catch (e) {
-      // Non-critical: fall back to static risk scoring
-      console.warn(`[WARN] DB-History-Lookup fuer Dynamic Risk fehlgeschlagen: ${e.message}`);
-    }
-
-    return entries.map(entry => {
-      const hints = bySource.get(entry.source) || [];
-      const dbHistory = dbHistoryMap.get(entry.source);
-      // Use dynamic risk when DB history is available, otherwise static heuristic
-      const riskScore = dbHistory
-        ? scoreDynamicRisk(entry, dbHistory)
-        : scoreTranslationRisk(entry);
-      return {
-        ...entry,
-        riskScore,
-        hints,
-        contextPacket: buildContextPacket({ ...entry, riskScore }, hints)
-      };
-    });
-  }
-
-  async function learnGlossary(source, translation, context = {}) {
-    if (!shouldLearnGlossaryTerm(source, translation)) return;
-    await dbRun(`INSERT INTO glossary_terms (
-                target_lang, source_term, target_term, scope, mod_scope, confidence, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-            ON CONFLICT(target_lang, source_term, scope, mod_scope)
-            DO UPDATE SET
-                target_term = excluded.target_term,
-                confidence = MIN(glossary_terms.confidence + 1, 10),
-                updated_at = CURRENT_TIMESTAMP`,
-    [
-      config.TARGET_LANG,
-      source,
-      translation,
-      context.modName ? 'mod' : 'global',
-      context.modName || '',
-      1
-    ]);
-  }
-
-  async function saveStressTestResult(sourceText, passed) {
-    try {
-      await dbRun(
-        `UPDATE translations SET stress_test_passed = ?, stress_tested_at = CURRENT_TIMESTAMP
-         WHERE source_text = ? AND target_lang = ?`,
-        [passed ? 1 : 0, sourceText, config.TARGET_LANG]
-      );
-    } catch (e) {
-      // Non-critical: stress test metadata is best-effort
-    }
-  }
   async function translateBatch(items, routeOverride) {
     if (isAborting()) throw new Error('ABORTED');
     const entries = await enrichWithContext(items);
-    
-    // M1 Fix: Konsolidiertes Shielding direkt in den Entries
+
     entries.forEach(entry => {
       const shield = protectPlaceholders(entry.source);
       entry.protectedText = shield.protectedText;
       entry.placeholders = shield.placeholders;
     });
-        
-  
-    // ── Unified routing via dispatcher (single source of truth) ────────
-    // Use routeOverride from runRoute fallback chain if provided, otherwise resolve fresh
+
     const resolvedRoute = routeOverride || dispatcher.resolveTranslateRoute(entries);
 
-    // Stress test: dispatcher flagged ambiguous risk -> pre-flight with Google Free
+    // ── P0-Fix: Stress-Test Partial-Pass — failed entries silently got source text ──
+    // Vorher: Wenn overallPassRate > 0.7, wurde die GESAMTE Batch via Google Free
+    // zurueckgegeben. Eintraege die den Stress-Test NICHT bestanden (bis zu 30%)
+    // bekamen `entry.source` als "Uebersetzung" — ein stiller Datenverlust.
+    // Jetzt: Bestandene Eintraege werden vorab gefuellt, nicht-bestandene laufen
+    // durch die normale LLM-Pipeline weiter.
+    let stressPreResolved = null;  // Array<result | null> indexed by entry position
+
     if (resolvedRoute.stressTestRequired) {
       if (isAborting()) throw new Error('ABORTED');
       let stressResult;
@@ -425,21 +256,39 @@ function createTranslationRuntime(options) {
       }
 
       if (stressResult && stressResult.overallPassRate > 0.7) {
-        console.log(`[DISPATCH] Stress-Test bestanden (${(stressResult.overallPassRate * 100).toFixed(0)}%). Nutze Google Free direkt.`);
-        // Persist stress test results for future dynamic risk scoring
+        console.log(`[DISPATCH] Stress-Test bestanden (${(stressResult.overallPassRate * 100).toFixed(0)}%). Nutze Google Free fuer bestandene Eintraege.`);
+        stressPreResolved = new Array(entries.length).fill(null);
+        let stressPassedCount = 0;
+
+        for (let i = 0; i < entries.length; i++) {
+          const entry = entries[i];
+          const translated = stressResult.translations.get(entry.source);
+          if (translated) {
+            const shieldResult = restorePlaceholders(translated, entry.placeholders);
+            if (shieldResult.replacedCount < shieldResult.totalTokens) {
+              console.warn(`[SHIELD] Stelle ${shieldResult.totalTokens - shieldResult.replacedCount}/${shieldResult.totalTokens} Tokens nicht restored fuer "${(entry.source || '').substring(0, 30)}".`);
+            }
+            stressPreResolved[i] = { translation: shieldResult.restored, shieldResult };
+            stressPassedCount++;
+          }
+          // Failed entries remain null — they will be routed through normal pipeline
+        }
+
         for (const [source, result] of stressResult.stressResults) {
           saveStressTestResult(source, result.passed).catch(() => {});
         }
-        return entries.map((entry) => {
-          const translated = stressResult.translations.get(entry.source);
-          if (translated) {
-            return restorePlaceholders(translated, entry.placeholders);
-          }
-          return entry.source;
-        });
-      }
 
-      if (stressResult) {
+        console.log(`[DISPATCH] ${stressPassedCount}/${entries.length} via Google Free, ${entries.length - stressPassedCount} via LLM-Pipeline.`);
+
+        // P0-Fix Review-Issue #3: Don't early-return even when all entries pass.
+        // Let the normal results assembly validate all entries through the same
+        // quality checks (restoreAndValidateTranslation, translationCriticalCheck,
+        // properNounOverride). This ensures proper nouns get native_runtime/q=94
+        // metadata and all entries have consistent metadata structure.
+        // If ALL entries passed, they're all in skipIndices → rawTranslations will
+        // be entirely populated from stressPreResolved via expansion → normal
+        // pipeline produces empty rawTranslations → expansion fills them all in.
+      } else if (stressResult) {
         console.log(`[DISPATCH] Stress-Test marginal (${(stressResult.overallPassRate * 100).toFixed(0)}%). Eskaliere zu Qualitaets-Modell.`);
         const entryBySource = new Map(entries.map(e => [e.source, e]));
         for (const [source, result] of stressResult.stressResults) {
@@ -447,16 +296,12 @@ function createTranslationRuntime(options) {
           if (entry) entry.riskScore = result.dynamicRisk;
           saveStressTestResult(source, result.passed).catch(() => {});
         }
-        // Re-resolve route with updated risk scores -> may escalate to quality model
         const escalated = dispatcher.resolveTranslateRoute(entries);
         resolvedRoute.provider = escalated.provider;
         resolvedRoute.model = escalated.model;
       }
     }
 
-    // BUG-009 Fix: Pre-filter entries already in target language for Argos/Google Free.
-    // These providers lack LLM intelligence and will "translate" DE→DE producing garbage
-    // (synonym swaps, hallucinations). Skip them and use the original text.
     const skipIndices = new Set();
     if (resolvedRoute.provider === 'argos' || resolvedRoute.provider === 'google_free') {
       for (let i = 0; i < entries.length; i++) {
@@ -469,36 +314,76 @@ function createTranslationRuntime(options) {
       }
     }
 
-    // Build filtered batch for providers that need it (Argos/Google Free)
+    // P0-Fix: Add stress-pre-resolved indices to skipIndices so they are
+    // excluded from the normal LLM translation pipeline. Their translations
+    // (from Google Free) are already stored in stressPreResolved.
+    if (stressPreResolved) {
+      for (let i = 0; i < stressPreResolved.length; i++) {
+        if (stressPreResolved[i]) skipIndices.add(i);
+      }
+    }
+
     const filteredEntries = skipIndices.size > 0
       ? entries.filter((_, i) => !skipIndices.has(i))
       : entries;
 
     const texts = entries.map(entry => entry.source);
+    const keyIdx = config.KEY_INDICES && typeof config.KEY_INDICES[resolvedRoute.provider] === 'number' ? config.KEY_INDICES[resolvedRoute.provider] : 0;
+    const keys = config[`${resolvedRoute.provider.toUpperCase()}_KEYS`] || [];
     const preview = texts.map(t => t.length > 25 ? t.substring(0, 22) + '...' : t).join(' | ');
-    console.log(`[BATCH] (${resolvedRoute.provider}/${resolvedRoute.model || 'default'}) [${texts.length} Texte]: ${preview}`);
+    console.log(`[BATCH] (${resolvedRoute.provider}/${resolvedRoute.model || 'default'}) [${texts.length} Texte] KeyIndex:${keyIdx}/${keys.length}: ${preview}`);
 
     if (cli.isActive()) {
       cli.updateBatch(0, texts.length, resolvedRoute.provider, resolvedRoute.model);
     }
 
     let rawTranslations;
-    if (resolvedRoute.provider === 'gemini') rawTranslations = await clients.callGeminiBatch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'groq') rawTranslations = await clients.callGroqBatch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'openrouter') rawTranslations = await clients.callOpenRouterBatch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'ollama') rawTranslations = await clients.callOllamaBatch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'argos') rawTranslations = await clients.callArgosBatch(filteredEntries.map(e => e.protectedText));
-    else if (resolvedRoute.provider === 'player2') rawTranslations = await clients.callPlayer2Batch(entries, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'google_free') rawTranslations = await clients.callGoogleTranslateFree(filteredEntries.map(e => e.protectedText));
+    // P0-Fix V2: Pass filteredEntries to LLM providers when skipIndices has entries.
+    // LLM providers previously always received the full `entries` array, which
+    // prevented the provider-agnostic expansion logic from ever triggering
+    // (rawTranslations.length was always === entries.length, so expansion was skipped
+    // and stressPreResolved translations were silently discarded).
+    const batchInput = skipIndices.size > 0 ? filteredEntries : entries;
 
-    // BUG-009 continued: Re-expand filtered results to full length, inserting
-    // original text for skipped entries so result array aligns with `entries`.
-    if (skipIndices.size > 0 && rawTranslations && (resolvedRoute.provider === 'argos' || resolvedRoute.provider === 'google_free')) {
+    // P0-Fix V3 (Reviewer): Guard against empty batchInput. When all entries pass
+    // the stress test, filteredEntries is []. Sending [] to an LLM provider builds
+    // a nonsense prompt (zero items) which the LLM may reject or respond with garbage.
+    // The expansion logic handles zero-length rawTranslations correctly, so just skip.
+    if (batchInput.length === 0) {
+      rawTranslations = [];
+    } else if (resolvedRoute.provider === 'gemini') rawTranslations = await clients.callGeminiBatch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'groq') rawTranslations = await clients.callGroqBatch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'openrouter') rawTranslations = await clients.callOpenRouterBatch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'ollama') rawTranslations = await clients.callOllamaBatch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'argos') {
+      // BUG-FS-003: DNT double-shield before sending to non-LLM provider
+      const { dntTexts, dntMaps } = dntShieldEntries(filteredEntries);
+      let raw = await clients.callArgosBatch(dntTexts);
+      rawTranslations = dntRestoreTranslations(raw, dntMaps);
+    }
+    else if (resolvedRoute.provider === 'player2') rawTranslations = await clients.callPlayer2Batch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'nvidia') rawTranslations = await clients.callNvidiaBatch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'fcm') rawTranslations = await clients.callFcmBatch(batchInput, resolvedRoute.model);
+    else if (resolvedRoute.provider === 'google_free') {
+      // BUG-FS-003: DNT double-shield before sending to non-LLM provider
+      const { dntTexts, dntMaps } = dntShieldEntries(filteredEntries);
+      let raw = await clients.callGoogleTranslateFree(dntTexts);
+      rawTranslations = dntRestoreTranslations(raw, dntMaps);
+    }
+
+    // P0-Fix: Make expansion provider-agnostic. Vorher nur fuer argos/google_free.
+    // Jetzt immer wenn skipIndices Eintraege hat (auch stress-pre-resolved).
+    if (skipIndices.size > 0 && rawTranslations && rawTranslations.length < entries.length) {
       const expanded = [];
       let filteredIdx = 0;
       for (let i = 0; i < entries.length; i++) {
         if (skipIndices.has(i)) {
-          expanded.push(entries[i].source); // Already target language — use original
+          // For stress-pre-resolved entries, use the Google Free translation
+          if (stressPreResolved && stressPreResolved[i]) {
+            expanded.push(stressPreResolved[i].translation);
+          } else {
+            expanded.push(entries[i].source);
+          }
         } else {
           expanded.push(rawTranslations[filteredIdx++]);
         }
@@ -506,10 +391,11 @@ function createTranslationRuntime(options) {
       rawTranslations = expanded;
     }
 
-    // BUG-003 Fix: Argos and Google Free mangle proper nouns ("Ragnar" -> "Ritter",
-    // "Kolbeinn" -> "In den Warenkorb"). Post-filter: if source is a proper noun,
-    // preserve the original. Allowlist prevents false positives on common English words
-    // like "The", "He", "She" that isProperNoun() would also match.
+    // QUAL-OFFENSIVE Fix #1: track Proper-Noun-Override-Indizes damit der
+    // Save-Path den Provider auf native_runtime überschreiben kann (statt argos).
+    // Vorher: alle Proper-Nouns landeten in DB mit provider='argos' +
+    // translation=source → Audit staende als 522 argos|low_score|source_reused.
+    const properNounOverrideSet = new Set();
     if (resolvedRoute.provider === 'argos' || resolvedRoute.provider === 'google_free') {
       const _properNounAllowlist = new Set([
         'the', 'a', 'an', 'in', 'on', 'at', 'to', 'of', 'is', 'it', 'he', 'she',
@@ -519,7 +405,28 @@ function createTranslationRuntime(options) {
       rawTranslations = rawTranslations.map((translation, i) => {
         const source = entries[i].source;
         if (isProperNoun(source) && !_properNounAllowlist.has(source.toLowerCase())) {
-          return source; // Preserve original proper noun — don't mangle it
+          properNounOverrideSet.add(i);
+          return source;
+        }
+        return translation;
+      });
+    }
+
+    // P0-Fix Review-Issue #2: Always run properNounOverride for stress-pre-resolved
+    // entries too, regardless of resolvedRoute.provider. Without this, proper nouns
+    // in the stress-pre-resolved batch are saved with the LLM provider's metadata
+    // instead of native_runtime/q=94 (QUAL-OFFENSIVE Fix #1 bypass).
+    if (stressPreResolved && resolvedRoute.provider !== 'argos' && resolvedRoute.provider !== 'google_free') {
+      const _properNounAllowlist = new Set([
+        'the', 'a', 'an', 'in', 'on', 'at', 'to', 'of', 'is', 'it', 'he', 'she',
+        'do', 'go', 'if', 'or', 'be', 'my', 'me', 'we', 'us', 'no', 'so', 'up',
+        'by', 'as', 'am', 'oh', 'hi', 'ok'
+      ]);
+      rawTranslations = rawTranslations.map((translation, i) => {
+        // Only override stress-pre-resolved entries that are proper nouns
+        if (stressPreResolved[i] && isProperNoun(entries[i].source) && !_properNounAllowlist.has(entries[i].source.toLowerCase())) {
+          properNounOverrideSet.add(i);
+          return entries[i].source;
         }
         return translation;
       });
@@ -530,19 +437,50 @@ function createTranslationRuntime(options) {
     }
 
     let unchangedCount = 0;
+    let warningCount = 0;
     const finalizedResults = rawTranslations.map((translation, index) => {
       const item = entries[index];
       const finalized = restoreAndValidateTranslation(item.source, translation, item.placeholders);
-      if (!finalized.valid) {
-        console.warn(`[WARN] Placeholder/Tags/Quotes korrupt bei "${item.source.substring(0, 30)}" (${resolvedRoute.provider}) -> Fallback auf Original.`);
+
+      const critical = translationCriticalCheck(item.source, finalized.restored, item.placeholders);
+      if (!critical.ok) {
+        console.warn(`[CRITICAL] "${item.source.substring(0, 30)}" -> ${critical.reason} (${resolvedRoute.provider}). Fallback auf Original.`);
         unchangedCount++;
-        return item.source;
+        return {
+          translation: item.source,
+          softWarnings: [],
+          fallbackUsed: true,
+          criticalReject: true,
+          shieldResult: null,
+          // A5-Fix (Reviewer): Override-Indikator MUSS auch im critical-fail-Branch
+          // propagiert werden, sonst wird ein proper_noun das durch critical-check
+          // faellt mit provider='argos'+q=25 statt native_runtime+94 persistiert.
+          wasProperNounOverride: properNounOverrideSet.has(index)
+        };
       }
+
+      // Capture shield restoration stats from restoreAndValidateTranslation
+      const shieldResult = finalized._shieldResult || null;
+
+      const warnings = assessTranslationWarnings(item.source, finalized.restored);
+      if (warnings.warnings.length > 0) {
+        console.log(`[ACCEPT-WARN] "${item.source.substring(0, 30)}" akzeptiert mit Warnings: ${warnings.warnings.join(', ')}`);
+        warningCount++;
+      }
+
       if (normalizeWhitespace(finalized.restored) === normalizeWhitespace(item.source) && !isLikelyTargetLanguageText(finalized.restored)) {
         unchangedCount++;
       }
-      return finalized.restored;
+      return {
+        translation: finalized.restored,
+        softWarnings: warnings.warnings,
+        fallbackUsed: false,
+        criticalReject: false,
+        shieldResult,
+        wasProperNounOverride: properNounOverrideSet.has(index)
+      };
     });
+
     if (unchangedCount === texts.length && texts.some(text => shouldTranslate(text) && !isLikelyTargetLanguageText(text))) {
       throw new Error(`Provider ${resolvedRoute.provider} lieferte keine brauchbaren Uebersetzungen.`);
     }
@@ -551,154 +489,36 @@ function createTranslationRuntime(options) {
       cli.addOk(texts.length - unchangedCount);
       if (unchangedCount > 0) cli.addErr(unchangedCount);
     }
+    if (warningCount > 0) {
+      console.log(`[INFO] ${warningCount}/${texts.length} Uebersetzungen mit Soft-Warnings akzeptiert (Deep Polish geplant).`);
+    }
     return finalizedResults;
   }
 
   async function translateBatchWithRouting(items) {
-    return dispatcher.runRoute('translate', async (route) => ({
-      provider: route.provider,
-      model: route.model,
-      translations: await translateBatch(items, route)
-    }), items);
-  }
-
-  async function getCachedTranslations(items) {
-    const entries = normalizeInputs(items);
-    const cached = new Map();
-    if (entries.length === 0) return cached;
-
-    const uniqueSources = [...new Set(entries.map(e => e.source))];
-    const uniqueHashes = [...new Set(entries.map(e => getEntryHash(e)).filter(Boolean))];
-
-    // Build the query using IN clauses for batch performance
-    const sourcePlaceholders = uniqueSources.map(() => '?').join(', ');
-    const hashPlaceholders = uniqueHashes.map(() => '?').join(', ');
-    
-    let query = `SELECT source_text, source_hash, translation, audit_stage, flagged, flag_reason, provider, quality_score 
-                 FROM translations 
-                 WHERE target_lang = ? AND (source_text IN (${sourcePlaceholders})`;
-    const params = [config.TARGET_LANG, ...uniqueSources];
-
-    if (uniqueHashes.length > 0) {
-      query += ` OR source_hash IN (${hashPlaceholders})`;
-      params.push(...uniqueHashes);
-    }
-    query += ')';
-
-    try {
-      const rows = await dbAll(query, params);
-      
-      // Map results back to sources, giving priority to exact source matches
-      for (const entry of entries) {
-        const source = entry.source;
-        const hash = getEntryHash(entry);
-        
-        const row = rows.find(r => r.source_text === source) || (hash ? rows.find(r => r.source_hash === hash) : null);
-        
-        if (row) {
-          cached.set(source, {
-            translation: row.translation,
-            polishLevel: row.audit_stage,
-            flagged: !!row.flagged,
-            flagReason: row.flag_reason || '',
-            provider: row.provider || '',
-            qualityScore: Number(row.quality_score || 0),
-            sourceHash: row.source_hash || ''
-          });
-        }
-      }
-    } catch (e) {
-      console.warn(`[WARN] Batch-Cache-Abfrage fehlgeschlagen: ${e.message}`);
-    }
-
-    return cached;
-  }
-
-  async function saveTranslation(entry, translation, polishLevel = 0, meta = {}) {
-    const sourceText = typeof entry === 'string' ? entry : entry.source;
-    const sourceHash = typeof entry === 'string' ? '' : getEntryHash(entry);
-    const provider = meta.provider || '';
-    const flagReason = meta.flagReason || '';
-    const flagged = flagReason ? 1 : 0;
-    const qualityScore = Number(meta.qualityScore || scoreTranslationQuality(sourceText, translation));
-
-    // ── Revision System: preserve the current version before overwriting ──
-    try {
-      const existing = await _dbGet(
-        'SELECT translation, provider, quality_score, flagged, flag_reason FROM translations WHERE source_text = ? AND target_lang = ?',
-        [sourceText, config.TARGET_LANG]
+    return dispatcher.runRoute('translate', async (route) => {
+      const batchResults = await translateBatch(items, route);
+      const translations = batchResults.map(r => typeof r === 'string' ? r : r.translation);
+      const meta = batchResults.map(r => typeof r === 'string'
+        ? { softWarnings: [], fallbackUsed: false, criticalReject: false, shieldResult: null, wasProperNounOverride: false }
+        : {
+            softWarnings: r.softWarnings || [],
+            fallbackUsed: r.fallbackUsed || false,
+            criticalReject: r.criticalReject || false,
+            shieldResult: r.shieldResult || null,
+            wasProperNounOverride: !!r.wasProperNounOverride
+          }
       );
-      if (existing && existing.translation) {
-        // Deactivate all previous active revisions
-        await dbRun(
-          'UPDATE translation_revisions SET is_active = 0 WHERE source_text = ? AND target_lang = ?',
-          [sourceText, config.TARGET_LANG]
-        );
-        // Determine if this is the first-ever revision (reference)
-        const revCount = await _dbGet(
-          'SELECT COUNT(*) as cnt FROM translation_revisions WHERE source_text = ? AND target_lang = ?',
-          [sourceText, config.TARGET_LANG]
-        );
-        const isReference = (revCount && revCount.cnt === 0) ? 1 : 0;
-        // Save old version as a revision
-        await dbRun(
-          `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)`,
-          [sourceText, config.TARGET_LANG, existing.translation, existing.provider || '', existing.quality_score || 0, existing.flagged || 0, existing.flag_reason || '', isReference]
-        );
-      }
-    } catch (e) {
-      // Non-critical: revision save is best-effort
-      console.warn(`[WARN] Revision-Speicherung fehlgeschlagen fuer "${sourceText.substring(0, 30)}": ${e.message}`);
-    }
-
-    await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP)
-            ON CONFLICT(source_text, target_lang)
-            DO UPDATE SET 
-                translation = excluded.translation, 
-                source_hash = COALESCE(excluded.source_hash, translations.source_hash),
-                audit_stage = MAX(translations.audit_stage, excluded.audit_stage),
-                provider = excluded.provider,
-                flagged = excluded.flagged,
-                flag_reason = excluded.flag_reason,
-                quality_score = excluded.quality_score,
-                last_checked_at = CURRENT_TIMESTAMP,
-                review_count = COALESCE(translations.review_count, 0) + 1,
-                updated_at = CURRENT_TIMESTAMP`,
-    [sourceText, sourceHash, config.TARGET_LANG, translation, polishLevel, provider, flagged, flagReason, qualityScore]);
-
-    // BUG-005 Fix: Also insert the NEW version into translation_revisions with is_active=1.
-    // Previously only old versions were archived (is_active=0), making Restore impossible.
-    try {
-      await dbRun(
-        `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0)`,
-        [sourceText, config.TARGET_LANG, translation, provider, qualityScore, flagged, flagReason]
-      );
-    } catch (e) {
-      // Non-critical: revision save is best-effort
-    }
-
-    if (global.guiServer) {
-      global.guiServer.broadcastDbSample(sourceText, translation);
-    }
-  }
-
-  function checkTerminologyViolations(source, translation, strictTerms) {
-    for (const term of strictTerms) {
-      if (source.toLowerCase().includes(term.source_term.toLowerCase())) {
-        if (!translation.toLowerCase().includes(term.target_term.toLowerCase())) {
-          return `Fehlender geschuetzter Begriff: "${term.target_term}"`;
-        }
-      }
-    }
-    return null;
+      return {
+        provider: route.provider,
+        model: route.model,
+        translations,
+        _meta: meta
+      };
+    }, items);
   }
 
   async function fixGrammarBatch(items, stage = 'audit', attemptCount = 0) {
-    // Grammar guard is handled by the caller (ensureTranslations polish block).
-    // fixGrammarBatch is only invoked when polish is active.
     if (items.length === 0) return items.map(item => typeof item === 'string' ? item : item.source);
     if (attemptCount >= 2) return items.map(item => typeof item === 'string' ? item : item.source);
 
@@ -707,12 +527,12 @@ function createTranslationRuntime(options) {
     if (dispatcher.buildStageRoutePlan(stage).length === 0) {
       return entries.map(entry => entry.source);
     }
-        
+
     const strictTerms = await getGuardedTerminology(entries);
     if (strictTerms.length > 0 && attemptCount === 0) {
       console.log(`[GUARD] Injeziere ${strictTerms.length} geschuetzte Begriffe in den ${stage}-Prompt.`);
     }
-        
+
     const proofreadBatch = buildProofreadPrompt(entries, config.TARGET_LANG, getGrammarContext(), strictTerms);
     const prompt = proofreadBatch.prompt;
 
@@ -723,8 +543,10 @@ function createTranslationRuntime(options) {
         shieldMaps: proofreadBatch.shieldMaps,
         entries
       }), entries);
-            
-      // Validate terminology in the response
+
+      // ── Capture shield restoration results from executeStageRequest ──
+      const stageShieldResults = parsed.__shieldResults || null;
+
       if (strictTerms.length > 0) {
         const retryItems = [];
         const finalResults = [...parsed];
@@ -735,16 +557,16 @@ function createTranslationRuntime(options) {
           const violation = checkTerminologyViolations(originalSource, parsed[i], strictTerms);
           if (violation) {
             console.warn(`[GUARD] Terminologie-Verstoss in Batch-Pos ${i+1}: ${violation}. Startet Korrektur-Retry #${attemptCount + 1}...`);
-            retryItems.push({ 
-              ...entries[i], 
-              source: parsed[i], 
-              originalSource: originalSource 
+            retryItems.push({
+              ...entries[i],
+              source: parsed[i],
+              originalSource: originalSource
             });
             hasViolations = true;
           }
         }
 
-        if (hasViolations && attemptCount < 2) { 
+        if (hasViolations && attemptCount < 2) {
           const correctedRetries = await fixGrammarBatch(retryItems, stage, attemptCount + 1);
           let retryIdx = 0;
           for (let i = 0; i < parsed.length; i++) {
@@ -753,11 +575,36 @@ function createTranslationRuntime(options) {
               finalResults[i] = correctedRetries[retryIdx++];
             }
           }
+          // Propagate shieldResults from retries if available
+          if (correctedRetries.__shieldResults && stageShieldResults) {
+            Object.assign(stageShieldResults, correctedRetries.__shieldResults);
+          }
           return finalResults;
         }
       }
 
       consecutiveGrammarFailures = 0;
+
+      // FIX: Validate parsed results for shield_leak before returning.
+      // LLMs sometimes hallucinate [[0]] tokens when placeholders were lost,
+      // and fixGrammarBatch never runs translationCriticalCheck.
+      for (let i = 0; i < parsed.length; i++) {
+        const original = entries[i].originalSource || entries[i].source;
+        const critical = translationCriticalCheck(original, parsed[i]);
+        if (!critical.ok) {
+          console.warn(`[SHIELD-LEAK] fixGrammarBatch "${(original || '').substring(0, 30)}" rejected: ${critical.reason} — fallback to source.`);
+          // For shield_leak: fall back to originalSource (clean English text)
+          // instead of entries[i].source which may itself be corrupted.
+          parsed[i] = critical.reason === 'shield_leak' && entries[i].originalSource
+            ? entries[i].originalSource
+            : entries[i].source;
+        }
+      }
+
+      // Attach collected shield results for the caller (ensureTranslations)
+      if (stageShieldResults) {
+        parsed.__shieldResults = stageShieldResults;
+      }
       return parsed;
     } catch (e) {
       consecutiveGrammarFailures++;
@@ -803,9 +650,6 @@ function createTranslationRuntime(options) {
     } catch (e) {
       console.warn(`[!] Flagging fehlgeschlagen: ${e.message} -> Pruefe alle Texte.`);
     }
-    // F1 Fix: Fail-closed statt fail-open. Wenn der Audit-Call scheitert,
-    // liefern wir null statt true — der Caller interpretiert null als
-    // "Status unverändert" (kein Flag, alter flagged-Wert bleibt erhalten).
     return items.map(() => null);
   }
 
@@ -814,6 +658,8 @@ function createTranslationRuntime(options) {
     if (route) return { provider: route.provider, model: route.model };
     return { provider: config.PRIMARY_PROVIDER, model: config.PRIMARY_MODEL };
   }
+
+  // ── ensureTranslations (main orchestrator) ───────────────────────────
 
   async function ensureTranslations(texts, options = {}) {
     consecutiveGrammarFailures = 0;
@@ -830,16 +676,25 @@ function createTranslationRuntime(options) {
     let nativeReuseCount = 0;
     let reusedCacheCount = 0;
 
+    // Signal subPhase to GUI so it knows what's happening
+    if (options.onProgress) options.onProgress({ subPhase: 'caching' });
+
     uniqueTexts.forEach(t => {
       if (cachedData.has(t)) {
         const data = cachedData.get(t);
         const sourceEntry = contextBySource.get(t) || normalizeTranslationEntry(t);
-        const needsRefresh = data.flagged && data.translation === t && !isLikelyTargetLanguageText(t);
+        // QO-FIX-1: polish_single stale entries (73.5% stale = src=tgt) müssen
+        // re-translatiert werden. Gleiche Logik wie native_fallback: wenn der
+        // Provider den Originaltext als "Übersetzung" gespeichert hat, Cache
+        // verwerfen und durch normale Translate-Pipeline neu übersetzen lassen.
+        // Side-Effect: 208 gute polish_single Einträge (translation ≠ t) sind
+        // NICHT betroffen weil Bedingung translation === t prüft.
+        const needsRefresh = (data.flagged && data.translation === t && !isLikelyTargetLanguageText(t)) || (data.provider === 'native_fallback' && data.translation === t) || (data.provider === 'polish_single' && data.translation === t);
         const hashMismatch = data.sourceHash && sourceEntry.sourceHash && data.sourceHash !== sourceEntry.sourceHash;
-        
-        // INTEGRITY CHECK: Validate cache entry against source text
-        const isSafe = translationLooksSafe(t, data.translation);
-        
+
+        const criticalCheck = translationCriticalCheck(t, data.translation);
+        const isSafe = criticalCheck.ok;
+
         if (!needsRefresh && !hashMismatch && isSafe) {
           translations.set(t, data.translation);
           reusedCacheCount++;
@@ -847,19 +702,22 @@ function createTranslationRuntime(options) {
           else if (data.polishLevel === 1 && !data.flagged) basicCount++;
           else unverifiedCount++;
 
-          if (global.guiServer && reusedCacheCount % 5 === 0) { // Throttle cache hits
+          if (global.guiServer && reusedCacheCount % 5 === 0) {
             global.guiServer.broadcastDbSample(t, data.translation);
           }
-          if (options.onProgress) options.onProgress({ cacheHits: 1, filesScanned: translations.size });
+          if (options.onProgress) options.onProgress({ cacheHits: 1, filesScanned: translations.size, subPhase: 'caching' });
           if (cli.isActive() && reusedCacheCount % 20 === 0) {
             cli.addCache(20);
             cli.tick(translations.size, uniqueTexts.length);
           }
         } else if (!isSafe && !needsRefresh) {
-          console.log(`[INTEGRITY] Cache-Eintrag fuer "${t.substring(0, 30)}..." verworfen (Integritaets-Fehler).`);
+          console.log(`[INTEGRITY] Cache-Eintrag fuer "${t.substring(0, 30)}..." verworfen: ${criticalCheck.reason}.`);
         }
       }
     });
+
+    // Signal native-decision phase
+    if (options.onProgress) options.onProgress({ subPhase: 'native' });
 
     for (const entry of entries) {
       if (!entry.source || translations.has(entry.source)) continue;
@@ -867,10 +725,15 @@ function createTranslationRuntime(options) {
       if (!nativeDecision.reuse) continue;
       translations.set(entry.source, nativeDecision.translation);
       nativeReuseCount++;
+      // SoT-via-import (F3 Finalisierung, Reviewer-Pass-3): die Konstanten
+      // NATIVE_GLOSSARY_DEFAULT_QUALITY (88) und NATIVE_RUNTIME_DEFAULT_QUALITY (94)
+      // leben ausschliesslich in translation-quality.js. Dieser Code folgt der Single
+      // Source of Truth — keine lokal duplizierten Magic Numbers mehr, sodass eine
+      // v0.20-Anpassung der Quality-Scores nur EINE Stelle beruehrt.
       await saveTranslation(entry, nativeDecision.translation, nativeDecision.reason === 'glossary_exact' ? 1 : 2, {
         provider: nativeDecision.reason === 'glossary_exact' ? 'native_glossary' : 'native_runtime',
         flagReason: '',
-        qualityScore: nativeDecision.reason === 'glossary_exact' ? 88 : 94
+        qualityScore: nativeDecision.reason === 'glossary_exact' ? NATIVE_GLOSSARY_DEFAULT_QUALITY : NATIVE_RUNTIME_DEFAULT_QUALITY
       });
       cachedData.set(entry.source, {
         translation: nativeDecision.translation,
@@ -878,7 +741,7 @@ function createTranslationRuntime(options) {
         flagged: false,
         flagReason: '',
         provider: nativeDecision.reason === 'glossary_exact' ? 'native_glossary' : 'native_runtime',
-        qualityScore: nativeDecision.reason === 'glossary_exact' ? 88 : 94,
+        qualityScore: nativeDecision.reason === 'glossary_exact' ? NATIVE_GLOSSARY_DEFAULT_QUALITY : NATIVE_RUNTIME_DEFAULT_QUALITY,
         sourceHash: getEntryHash(entry)
       });
       if (nativeDecision.reason === 'glossary_exact') {
@@ -904,7 +767,6 @@ function createTranslationRuntime(options) {
       let currentBatch = [];
       let currentBatchChars = 0;
       const preferredRoute = dispatcher.buildStageRoutePlan('translate')[0] || dispatcher.resolveProviderModel('translate');
-      // Recalculate batch profile per iteration to adapt to fallback provider changes
       const batchProfile = getBatchProfile(preferredRoute.provider, preferredRoute.model, 'translate');
       const limit = Math.max(1, options.batchSize || batchProfile.maxItems);
       while (processedCount < missing.length && currentBatch.length < limit) {
@@ -915,43 +777,88 @@ function createTranslationRuntime(options) {
         processedCount++;
       }
       if (currentBatch.length === 0) break;
-      
+
+      const logRoute = preferredRoute;
+      const logKeys = config[`${logRoute.provider.toUpperCase()}_KEYS`] || [];
+      const logKeyIndex = config.KEY_INDICES && typeof config.KEY_INDICES[logRoute.provider] === 'number' ? config.KEY_INDICES[logRoute.provider] : 0;
+      console.log(`[BATCH-RUN] #${batchNumber}/${totalBatches} | Provider: ${logRoute.provider} | Model: ${logRoute.model} | KeyIndex: ${logKeyIndex}/${logKeys.length} | Items: ${currentBatch.length} | Chars: ${currentBatchChars}`);
+
       if (options.onProgress) {
-        options.onProgress({ newTranslations: currentBatch.length, filesScanned: translations.size + currentBatch.length });
+        options.onProgress({ newTranslations: currentBatch.length, filesScanned: translations.size + currentBatch.length, subPhase: 'translating', batchN: batchNumber, totalBatches });
       }
-            
+
       try {
         const result = await translateBatchWithRouting(currentBatch);
         const savePromises = [];
+        const batchMeta = result._meta || [];
+
+        // ── Collect shield restoration results for validateFileMarkers ────
+        if (!translations.__shieldResults) translations.__shieldResults = new Map();
+        for (let j = 0; j < currentBatch.length; j++) {
+          const entry = currentBatch[j];
+          const source = entry.source;
+          const itemMeta = batchMeta[j] || { softWarnings: [], fallbackUsed: false, criticalReject: false, shieldResult: null };
+          if (itemMeta.shieldResult) {
+            translations.__shieldResults.set(source, itemMeta.shieldResult);
+          }
+        }
+
         for (let j = 0; j < currentBatch.length; j++) {
           const entry = currentBatch[j];
           const source = entry.source;
           const translated = result.translations[j];
-          // BUG-001 Fix: Compute qualityScore BEFORE inferFlagReason so google_free
-          // flagging can be gated on actual quality instead of unconditionally applied.
+          const itemMeta = batchMeta[j] || { softWarnings: [], fallbackUsed: false, criticalReject: false, shieldResult: null, wasProperNounOverride: false };
           const qualityScore = scoreTranslationQuality(source, translated);
-          const flagReason = inferFlagReason(source, translated, result.provider, { qualityScore });
+          // QUAL-OFFENSIVE Fix #1: Proper-Noun-Override → persistieren mit
+          // provider='native_runtime' (nicht argos), korrekter Quality-Score 94.
+          const properNounOverride = !!itemMeta.wasProperNounOverride;
+          const saveProvider = properNounOverride ? 'native_runtime' : result.provider;
+          const flagReason = inferFlagReason(source, translated, saveProvider, { qualityScore });
           translations.set(source, translated);
-                    
+
           const saveMeta = {
-            provider: result.provider,
+            provider: saveProvider,
             flagReason,
-            qualityScore
+            qualityScore: properNounOverride ? NATIVE_RUNTIME_DEFAULT_QUALITY : qualityScore,
+            // C-Fix (Reviewer-Pass-2): Override-Indikator dominiert die Save-Semantik.
+            // polishStatus/requiresDeepPolish/overwriteFallbackUsed werden bei Override
+            // auf completed/false/false gezwungen, sonst entsteht der Widerspruch
+            // "q=94 + polishStatus=pending" der Deep-Polish-Code in eine dead-loop laufen liesse.
+            // F1-Fix (Reviewer-Pass-3): overwriteFallbackUsed ist jetzt truthy bei Override.
+            // Hintergrund: Deep-Polish-SELECT schliesst Eintraege mit
+            //   (overwrite_fallback_used=1 AND translation=source_text)
+            // explizit AUS. Wenn ein zukuenftiger Code-Pfad die polishQueue umgeht
+            // (Direct-SQL/Scripted-Rerun), wuerde ein Override-Eintrag sonst re-polished
+            // und der Override wuerde wirkungslos. Mit overwriteFallbackUsed=true ist die
+            // SQL-Selektion selbst der Schutz, nicht nur die Queue-Entscheidung.
+            polishStatus: properNounOverride ? 'completed' : ((itemMeta.softWarnings.length > 0 || itemMeta.fallbackUsed) ? 'pending' : 'completed'),
+            requiresDeepPolish: !properNounOverride && (itemMeta.softWarnings.length > 0 || itemMeta.fallbackUsed || qualityScore < 60),
+            overwriteFallbackUsed: properNounOverride || itemMeta.fallbackUsed
           };
-                    
-          savePromises.push(saveTranslation(entry, translated, 0, saveMeta));
+
+          // polishLevel 2 = final (deep-polished / proper-noun). Für Override markiert
+          // das den Eintrag als terminal, sodass Deep-Polish-SELECT ihn ueberspringt
+          // (zusaetzlich zu overwriteFallbackUsed=true als doppelte Absicherung).
+          savePromises.push(saveTranslation(entry, translated, properNounOverride ? 2 : 0, saveMeta));
           cachedData.set(source, {
             translation: translated,
-            polishLevel: 0,
+            polishLevel: properNounOverride ? 2 : 0,
+            // F2-Fix (Reviewer-Pass-3): flagged strikt an Presence von flagReason koppeln,
+            // nicht an properNounOverride. Vorher: Override=>flagged=false egal was.
+            // Jetzt: wenn inferFlagReason doch einen Grund liefert (z.B. shield_leak weil
+            // placeholders verloren), bleibt flagReason nicht ignoriert -> DB zeigt es.
             flagged: !!flagReason,
             flagReason,
-            provider: result.provider,
+            // A3-Fix (Reviewer): cachedData.provider muss saveProvider sein, sonst
+            // divergieren DB (native_runtime) und Cache (argos) für denselben Eintrag
+            // und spaetere Stats/Summary-Reports zeigen falsche Provider-Verteilung.
+            provider: saveProvider,
             qualityScore: saveMeta.qualityScore,
             sourceHash: getEntryHash(entry)
           });
           savePromises.push(learnGlossary(source, translated, entry));
         }
-        await Promise.all(savePromises);
+        for (const p of savePromises) { await p; }
         if (cli.isActive()) {
           cli.updateBatch(batchNumber, totalBatches, result.provider, result.model);
           cli.tick(translations.size, uniqueTexts.length);
@@ -962,12 +869,47 @@ function createTranslationRuntime(options) {
         const failPromises = [];
         for (const item of currentBatch) {
           translations.set(item.source, item.source);
-          // Proper nouns that couldn't be translated are not errors — they're expected
           const isPN = isProperNoun(item.source) || classifyPath(item.relativePath) === 'proper_noun';
+          // D-Fix (Reviewer-Pass-2): Fail-Path Proper-Nouns jetzt konsistent mit
+          // Translate-Path-Fix A — als native_runtime (q=94) persistieren statt
+          // als native_fallback (q=90). Verhindert Split-Brain bei Re-Runs wo der
+          // gleiche Proper-Noun mal als native_runtime (via Translate), mal als
+          // native_fallback (via Fail-Path) auftaucht.
+          const failProvider = isPN ? 'native_runtime' : 'native_fallback';
           const failReason = isPN ? 'proper_noun' : 'all_routes_failed';
-          const failScore = isPN ? 90 : 20;
-          failPromises.push(saveTranslation(item, item.source, 0, { provider: 'native_fallback', flagReason: failReason, qualityScore: failScore }));
-          cachedData.set(item.source, { translation: item.source, polishLevel: isPN ? 2 : 0, flagged: !isPN, flagReason: failReason, provider: 'native_fallback', qualityScore: failScore, sourceHash: getEntryHash(item) });
+          const failScore = isPN ? NATIVE_RUNTIME_DEFAULT_QUALITY : 20;
+          // Fail-Path-Hardening (Reviewer-Pass-3 Finalisierung):
+          //   overwriteFallbackUsed ist jetzt strikt `true` für BEIDE Fail-Path-Branches,
+          //   weil in beiden Faellen translation === item.source gilt. Analog zu F1 in
+          //   Translate-Path: wenn ein zukuenftiger Polish-Bypass-Pfad die Queue umgeht
+          //   (Direct-SQL/Scripted-Rerun), schuetzt das SQL-SELECT
+          //   `(overwrite_fallback_used=1 AND translation=source_text) → NOT selected`
+          //   beide Branches konsistent.
+          //
+          //   flagged bleibt asymmetrisch zu Translate-Path-F2-Strenge: Fail-Path
+          //   proper-noun-Entries erhalten flagReason='proper_noun' als informativen
+          //   Marker (DB-Audit-Dashboards koennen ihn lesen), sind aber nicht actionable
+          //   (requiresDeepPolish=false). Das ist bewaehrt, dokumentiert, NICHT split-
+          //   brain zu Translate-Path (wo proper-noun-Override flagged=false hat, aber
+          //   schon polishLevel=2 + overwriteFallbackUsed=true die Sicherheits-Garantien
+          //   liefert).
+          failPromises.push(saveTranslation(item, item.source, isPN ? 2 : 0, {
+            provider: failProvider,
+            flagReason: failReason,
+            qualityScore: failScore,
+            polishStatus: isPN ? 'completed' : 'pending',
+            requiresDeepPolish: !isPN,
+            overwriteFallbackUsed: true
+          }));
+          cachedData.set(item.source, {
+            translation: item.source,
+            polishLevel: isPN ? 2 : 0,
+            flagged: !isPN,
+            flagReason: failReason,
+            provider: failProvider,
+            qualityScore: failScore,
+            sourceHash: getEntryHash(item)
+          });
         }
         await Promise.all(failPromises);
         if (cli.isActive()) cli.addErr(currentBatch.length);
@@ -986,31 +928,30 @@ function createTranslationRuntime(options) {
 
       const limit = options.forcePolish ? polishQueue.length : Math.max(missing.length + 10, config.REPOLISH_BUDGET);
       const activeQueue = polishQueue.slice(0, limit);
-            
+
       if (activeQueue.length > 0) {
         console.log(`[INFO] QA-Phase: Optimiere ${activeQueue.length} Texte${options.forcePolish ? ' (Deep Polish aktiv)' : ''}...`);
+        if (options.onProgress) options.onProgress({ subPhase: 'polishing' });
         const polishRoute = dispatcher.buildStageRoutePlan('polish')[0] || dispatcher.resolveProviderModel('polish');
         const polishProfile = getBatchProfile(polishRoute.provider, polishRoute.model, 'polish');
-                
+
         for (let i = 0; i < activeQueue.length; i += polishProfile.maxItems) {
           if (isAborting()) break;
           const batchKeys = activeQueue.slice(i, i + polishProfile.maxItems);
           const batchValues = batchKeys.map(k => translations.get(k));
           const batchEntries = batchKeys.map(k => contextBySource.get(k) || normalizeTranslationEntry(k));
-                    
+
           const flags = await flagPotentialErrors(batchValues);
           const problematicIdx = [];
           const batchUpdatePromises = [];
-                    
+
           for (let j = 0; j < batchKeys.length; j++) {
             const key = batchKeys[j];
             const entry = batchEntries[j];
-            // F1 Fix: null = "Audit fehlgeschlagen, Status unveraendert"
             const needsPolish = flags[j] === true || entry.riskScore >= 4;
-                        
+
             if (needsPolish) problematicIdx.push(j);
-                        
-            // Progressive refinement: Mark as level 1 (Reviewed)
+
             const cached = cachedData.get(key) || {};
             if (cached.polishLevel < 1) {
               batchUpdatePromises.push(saveTranslation(entry, translations.get(key), 1, {
@@ -1020,7 +961,7 @@ function createTranslationRuntime(options) {
               }));
             }
           }
-                    
+
           if (problematicIdx.length > 0) {
             try {
               const problematicEntries = problematicIdx.map(idx => ({
@@ -1030,31 +971,40 @@ function createTranslationRuntime(options) {
                 contextPacket: buildContextPacket(batchEntries[idx], batchEntries[idx].hints || [])
               }));
 
-              // ── A/B Multi-Provider Polish (with fallback to single-provider) ──
               let corrected;
               let polishProvider = 'single';
+              let polishShieldResults = null;
               const abResult = await polishArbiter.runAbPolishing(problematicEntries, config.TARGET_LANG);
               if (abResult) {
                 corrected = abResult;
                 polishProvider = 'ab_multi';
               } else {
-                // Fallback: single-provider polish (original flow)
                 corrected = await fixGrammarBatch(problematicEntries, 'polish');
+                // Extract shield restoration results from polish path
+                if (corrected && corrected.__shieldResults) {
+                  polishShieldResults = corrected.__shieldResults;
+                }
               }
 
               const finalStrictTerms = await getGuardedTerminology(problematicEntries);
-                            
+
               for (let j = 0; j < problematicIdx.length; j++) {
                 const idx = problematicIdx[j];
                 const key = batchKeys[idx];
                 const entry = batchEntries[idx];
                 const improved = corrected[j];
-                                
+
+                // Capture shield restoration results from polish
+                if (polishShieldResults && polishShieldResults[j]) {
+                  if (!translations.__shieldResults) translations.__shieldResults = new Map();
+                  translations.__shieldResults.set(key, polishShieldResults[j]);
+                }
+
                 const persistentViolation = checkTerminologyViolations(key, improved, finalStrictTerms);
                 if (persistentViolation) {
                   console.error(`[GUARD] Kritischer Terminologie-Verstoss bleibt bestehen fuer: "${key.substring(0, 30)}..."`);
                 }
-                                
+
                 translations.set(key, improved);
                 batchUpdatePromises.push(saveTranslation(entry, improved, 2, {
                   provider: polishProvider === 'ab_multi' ? 'ab_polish' : 'polish_single',
@@ -1072,7 +1022,28 @@ function createTranslationRuntime(options) {
         }
       }
     }
-        
+
+    // ── Deep Polish Auto-Trigger ────────────────────────────────────────
+    if (!isAborting()) {
+      try {
+        const deepPolishCount = await _dbGet(
+          'SELECT COUNT(*) as cnt FROM translations WHERE target_lang = ? AND requires_deep_polish = 1 AND polish_status = ?',
+          [config.TARGET_LANG, 'pending']
+        );
+        if (deepPolishCount && deepPolishCount.cnt > 0) {
+          console.log(`[DEEP-POLISH] ${deepPolishCount.cnt} Eintraege warten auf Deep Polish. Starte automatisch...`);
+          // BUG-FS-004: Reset vor Deep Polish, damit Failures aus der Polish-Queue
+          // nicht den Deep-Polish-Lauf blockieren. Ohne diesen Reset wuerden 3
+          // Grammar-Failures im Polish-Teil dazu fuehren, dass ALLE Deep-Polish-
+          // Batches sofort uebersprungen werden (consecutiveGrammarFailures >= 3).
+          consecutiveGrammarFailures = 0;
+          await runDeepPolishBatch(config.TARGET_LANG);
+        }
+      } catch (e) {
+        // Non-critical
+      }
+    }
+
     translations.__stats = {
       cacheHits: reusedCacheCount,
       missing: missing.length,
@@ -1085,6 +1056,93 @@ function createTranslationRuntime(options) {
     return translations;
   }
 
+  // ── Deep Polish Batch ────────────────────────────────────────────────
+
+  async function runDeepPolishBatch(targetLang, batchSize = 20) {
+    const pending = await dbAll(
+      `SELECT source_text, translation, provider, quality_score, flag_reason, overwrite_fallback_used
+       FROM translations
+       WHERE target_lang = ? AND requires_deep_polish = 1 AND polish_status = 'pending'
+         AND NOT (overwrite_fallback_used = 1 AND translation = source_text)
+       ORDER BY quality_score ASC
+       LIMIT ?`,
+      [targetLang, batchSize * 5]
+    );
+
+    if (!pending || pending.length === 0) {
+      console.log('[DEEP-POLISH] Keine Eintraege mit pending Deep Polish.');
+      return { processed: 0, fixed: 0 };
+    }
+
+    console.log(`[DEEP-POLISH] ${pending.length} Eintraege mit pending Deep Polish gefunden. Verarbeite in Batches...`);
+
+    let processed = 0;
+    let fixed = 0;
+
+    for (let i = 0; i < pending.length; i += batchSize) {
+      if (isAborting()) break;
+      const batch = pending.slice(i, i + batchSize);
+      const entries = batch.map(row => ({
+        source: row.translation,
+        originalSource: row.source_text,
+        key: '',
+        type: 'GENERIC_STRING',
+        relativePath: '',
+        contextPacket: ''
+      }));
+
+      // QO-FIX-2: Retry-Mechanismus für Deep Polish Batches.
+      // Vorher: Bei Fehler sofort polish_status='failed' (2 Einträge betroffen).
+      // Jetzt: 1 Retry nach 5s Pause. Erst bei doppeltem Fehlschlag → 'failed'.
+      let batchSucceeded = false;
+      for (let attempt = 0; attempt < 2 && !batchSucceeded; attempt++) {
+        try {
+          if (attempt > 0) {
+            console.log(`[DEEP-POLISH] Retry #${attempt} für Batch (5s Pause)...`);
+            await sleep(5000);
+          }
+          const corrected = await fixGrammarBatch(entries, 'polish');
+
+          for (let j = 0; j < batch.length; j++) {
+            const row = batch[j];
+            const improved = corrected[j];
+            const wasImproved = improved !== row.translation;
+
+            await dbRun(
+              `UPDATE translations SET
+                  translation = ?,
+                  polish_status = 'completed',
+                  requires_deep_polish = 0,
+                  audit_stage = MAX(audit_stage, 2),
+                  quality_score = ?,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE source_text = ? AND target_lang = ?`,
+              [improved, scoreTranslationQuality(row.source_text, improved), row.source_text, targetLang]
+            );
+
+            if (wasImproved) fixed++;
+            processed++;
+          }
+          batchSucceeded = true;
+        } catch (e) {
+          console.warn(`[DEEP-POLISH] Batch fehlgeschlagen (Versuch ${attempt + 1}/2): ${e.message}`);
+          if (attempt >= 1) {
+            // Zweiter Fehlschlag → endgültig als failed markieren
+            for (const row of batch) {
+              await dbRun(
+                `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
+                [row.source_text, targetLang]
+              ).catch(() => {});
+            }
+          }
+        }
+      }
+    }
+
+    console.log(`[DEEP-POLISH] Abgeschlossen: ${processed} verarbeitet, ${fixed} verbessert.`);
+    return { processed, fixed };
+  }
+
   return {
     ensureTranslations,
     translateBatchWithRouting,
@@ -1093,6 +1151,7 @@ function createTranslationRuntime(options) {
     getBestAvailableQualityModel,
     parseBatchResponseWithMaps,
     buildBatchPromptForCurrentConfig,
+    runDeepPolishBatch,
     dispatcher
   };
 }

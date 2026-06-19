@@ -1,0 +1,317 @@
+{"s":"Bonus","t":"Bonus","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Cycle","t":"Zyklus","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Tilling","t":"Pflügen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tending","t":"Pflegen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Harvesting","t":"Ernten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Luck","t":"Glück","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Trees","t":"Bäume","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Chop","t":"Fällen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Animals","t":"Tiere","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Adults","t":"Erwachsene","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Skill","t":"Fähigkeit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Base Rate","t":"Grundrate","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Slaughter all","t":"Alle schlachten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Treatment","t":"Behandlung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Output","t":"Ausgabe","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Consumption","t":"Verbrauch","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Stored","t":"Gelagert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Fetchers","t":"Beschaffer","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Administration Problem","t":"Verwaltungsproblem","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Automate","t":"Automatisieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Accepting","t":"Akzeptieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Guestbook","t":"Gästebuch","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Daily global consumption estimate.","t":"Tägliche globale Verbrauchsschätzung.","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Allocated Crates/Total crates","t":"Zugewiesene Kisten / Gesamtkisten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Storing","t":"Speichern","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Fetch","t":"Abrufen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Fetching","t":"Abrufen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Capacity","t":"Kapazität","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Prioritize","t":"Priorisieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Pullers","t":"Zugvorrichtungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Paste settings","t":"Einstellungen einfügen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Push Destination","t":"Ziel für Push","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reserved","t":"Reserviert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Incoming","t":"Eingehend","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Delivering","t":"Liefernd","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Loaded","t":"Geladen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Knowledge","t":"Wissen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Education type:","t":"Bildungsart:","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Education Limit:","t":"Bildungsgrenze:","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Limit","t":"Grenze","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Experience","t":"Erfahrung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Mines","t":"Minen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Refining","t":"Verarbeitung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Crafting","t":"Handwerk","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Farms","t":"Farmen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Aquaculture","t":"Aquakultur","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Husbandry","t":"Tierhaltung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Military","t":"Militär","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Administration","t":"Verwaltung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Procreation","t":"Fortpflanzung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Decorations","t":"Dekorationen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Water","t":"Wasser","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Religion","t":"Religion","p":"native_runtime","f":"","q":94,"sg":2,"fl":0,"a":"source_reused"}
+{"s":"Distribution","t":"Verteilung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Entertainment","t":"Unterhaltung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Afterlife","t":"Jenseits","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Home","t":"Heimat","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Agriculture","t":"Landwirtschaft","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Government","t":"Regierung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Jobs","t":"Jobs","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Cleared","t":"Bereinigt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Materials","t":"Materialien","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Broken","t":"Gebrochen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Commute","t":"Pendeln","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Hauling","t":"Transport","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Equipment","t":"Ausrüstung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Services","t":"Dienstleistungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Throne Construction","t":"Thronbau","p":"native_runtime","f":"stale_retranslate","q":70,"sg":2,"fl":1,"a":null}
+{"s":"Daily Consumption","t":"Täglicher Verbrauch","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Possible","t":"Möglich","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Meals","t":"Mahlzeiten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Food","t":"Nahrung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Amount","t":"Menge","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Consumed","t":"Verbraucht","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Drinks","t":"Getränke","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Wares","t":"Waren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Children (Max)","t":"Kinder (max.)","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Respect","t":"Respekt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Buried","t":"Beigesetzt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Failed","t":"Fehlgeschlagen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Value","t":"Wert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Available Graves.","t":"Available Graves.","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Sacrificing","t":"Sacrificing","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Operational","t":"Operational","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Water Supply","t":"Water Supply","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Degrade","t":"Degrade","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Upgrade","t":"Upgrade","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Division","t":"Division","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Burial","t":"Burial","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Indoctrinate","t":"Indoctrinate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Education","t":"Education","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Environment","t":"Environment","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Government stats","t":"Government stats","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Housing","t":"Housing","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Needs","t":"Needs","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Demography","t":"Demography","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Followers","t":"Followers","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Access","t":"Access","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Quality","t":"Quality","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Temple","t":"Temple","p":"native_runtime","f":"","q":94,"sg":2,"fl":0,"a":"source_reused"}
+{"s":"Shrine","t":"Shrine","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Traits","t":"Traits","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Decree","t":"Decree","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Employment","t":"Employment","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Retirement age target","t":"Retirement age target","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Type","t":"Type","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Ammunition (Current)","t":"Ammunition (Current)","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Unlimited ammunition!","t":"Unlimited ammunition!","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Curfew","t":"Curfew","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Proximity","t":"Proximity","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Permission","t":"Permission","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Skinnydipping","t":"Skinnydipping","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Emergency","t":"Emergency","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Fulfillment","t":"Fulfillment","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Expectations","t":"Expectations","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Army","t":"Army","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Status","t":"Status","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Chosen Race","t":"Chosen Race","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Faction is:","t":"Faction is:","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Current Fulfillment: ","t":"Current Fulfillment: ","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Caravan","t":"Caravan","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Projectile","t":"Projectile","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Accuracy","t":"Accuracy","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Cadaver","t":"Cadaver","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Burial Site","t":"Burial Site","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Remains","t":"Remains","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Moisture","t":"Moisture","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Rich","t":"Rich","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Alluvium","t":"Alluvium","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Till","t":"Till","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Rock","t":"Rock","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Sand","t":"Sand","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Infertile","t":"Infertile","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"broken {0}","t":"broken {0}","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Flower","t":"Flower","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Tree","t":"Tree","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Stairs","t":"Stairs","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Shrooms","t":"Shrooms","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Deep Water","t":"Deep Water","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Bridge","t":"Bridge","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Clouds","t":"Clouds","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Downfall","t":"Downfall","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Growth","t":"Growth","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Ice","t":"Ice","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Precipitation","t":"Precipitation","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Drought","t":"Drought","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Snow","t":"Snow","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Temperature","t":"Temperature","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Thunder","t":"Thunder","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Wind","t":"Wind","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Current","t":"Current","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"green","t":"green","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Previous","t":"Previous","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Next","t":"Next","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Accept","t":"Accept","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Accident Rate","t":"Accident Rate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Activate","t":"Activate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Activated","t":"Activated","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Additive","t":"Additive","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Admin","t":"Admin","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Alert","t":"Alert","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"All","t":"All","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Ammunition","t":"Ammunition","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Area","t":"Area","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Armies","t":"Armies","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Artillery","t":"Artillery","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Assault","t":"Assault","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Attack","t":"Attack","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Attacking","t":"Attacking","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Infant","t":"Infant","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Infants","t":"Infants","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Back","t":"Back","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Balance","t":"Balance","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Base","t":"Base","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Besiege","t":"Besiege","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Besieging","t":"Besieging","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Biome","t":"Biome","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Boosts","t":"Boosts","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Bought","t":"Bought","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Buildings","t":"Buildings","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Buy","t":"Buy","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Buyers","t":"Buyers","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Campaigning","t":"Campaigning","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Scenario","t":"Scenario","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Capital","t":"Capital","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Civics","t":"Civics","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Clear","t":"Clear","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Close","t":"Close","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Conscriptable","t":"Conscriptable","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Conscripts","t":"Conscripts","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Consumption Rate","t":"Consumption Rate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Copy","t":"Copy","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Cost","t":"Cost","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Count","t":"Count","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Court","t":"Court","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Create","t":"Create","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Crime","t":"Crime","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Denari","t":"Denari","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Deactivate","t":"Deactivate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Deactivated","t":"Deactivated","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Decline","t":"Decline","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Defenses","t":"Defenses","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Deaths","t":"Deaths","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Deployable","t":"Deployable","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Destination","t":"Destination","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Diplomacy","t":"Diplomacy","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Disband","t":"Disband","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Distance","t":"Distance","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Distant Faction","t":"Distant Faction","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Bordering Faction","t":"Bordering Faction","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Drinkable","t":"Drinkable","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Earnings","t":"Earnings","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Edible","t":"Edible","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Edit","t":"Edit","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Effects","t":"Effects","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Emits","t":"Emits","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Employees","t":"Employees","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Encyclopedia","t":"Encyclopedia","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Equipped","t":"Equipped","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Event","t":"Event","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Expenses","t":"Expenses","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Exporting","t":"Exporting","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Faction","t":"Faction","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Factions","t":"Factions","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Factors","t":"Factors","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Favourite","t":"Favourite","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Fertility","t":"Fertility","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Filter","t":"Filter","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Fortifications","t":"Fortifications","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Fortified","t":"Fortified","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Fortifying","t":"Fortifying","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Free","t":"Free","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"From","t":"From","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Garrison","t":"Garrison","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Generate","t":"Generate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"High","t":"High","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":" History","t":" History","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Importable","t":"Importable","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Inbound","t":"Inbound","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Increase","t":"Increase","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Info","t":"Info","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Intercept","t":"Intercept","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Insulation","t":"Insulation","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Less","t":"Less","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"List","t":"List","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Locked","t":"Locked","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Losses","t":"Losses","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Low","t":"Low","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Maintenance","t":"Maintenance","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Max","t":"Max","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Menu","t":"Menu","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Messages","t":"Messages","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Minerals","t":"Minerals","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Minimum","t":"Minimum","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Missing","t":"Missing","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Modifiers","t":"Modifiers","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"More","t":"More","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Moving","t":"Moving","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Mods","t":"Mods","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Multipliers","t":"Multipliers","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Muster","t":"Muster","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Mustered","t":"Mustered","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Needed","t":"Needed","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Neighbours","t":"Neighbours","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Net","t":"Net","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Ruler","t":"Ruler","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Occupation","t":"Occupation","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Oddjobber","t":"Oddjobber","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Oddjobbers","t":"Oddjobbers","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Organisation","t":"Organisation","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Outbound","t":"Outbound","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Overlay","t":"Overlay","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Overlays","t":"Overlays","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Power","t":"Power","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Priority","t":"Priority","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Problem","t":"Problem","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Produced","t":"Produced","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Production","t":"Production","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Production Rate","t":"Production Rate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Progress","t":"Progress","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Projectiles","t":"Projectiles","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Properties","t":"Eigenschaften","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Prospect","t":"Vorschau","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Raiding","t":"Raiden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Raiders","t":"Raider","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Rarity","t":"Seltenheit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Rate","t":"Rate","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Realm","t":"Reich","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Reassign","t":"Neu zuweisen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Rebels","t":"Rebellen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Region","t":"Region","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Regions","t":"Regionen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reloading","t":"Nachladen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Requirement","t":"Anforderung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reset","t":"Zurücksetzen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Resource","t":"Ressource","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Resources","t":"Ressourcen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reviews","t":"Bewertungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Riches","t":"Reichtümer","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Search","t":"Suchen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Sell","t":"Verkaufen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Sellers","t":"Verkäufer","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Settings","t":"Einstellungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Settlement","t":"Siedlung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Showing","t":"Anzeigen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Sort","t":"Sortieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Specification","t":"Spezifikation","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Decay","t":"Verfall","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Spoils","t":"Verfallgut","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Start","t":"Starten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Stop","t":"Stoppen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Structures","t":"Strukturen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Subject","t":"Betreff","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Subjects","t":"Betreffs","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Support","t":"Unterstützung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Target","t":"Ziel","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Taxes","t":"Steuern","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}

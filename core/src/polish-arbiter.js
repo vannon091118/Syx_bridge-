@@ -16,8 +16,6 @@ function createPolishArbiter(deps = {}) {
     dispatcher,
     buildProofreadPrompt,
     getGuardedTerminology,
-    protectPlaceholders,
-    restorePlaceholders,
     restoreAndValidateTranslation,
     isLikelyTargetLanguageText,
     getGrammarContext,
@@ -47,8 +45,8 @@ function createPolishArbiter(deps = {}) {
     // 4. Target-language features detected
     if (isLikelyTargetLanguageText(restored)) score += 15;
 
-    // 5. No shield leaks
-    if (!/\[\[\d+\]\]/.test(restored) && !/__VAR\d+__/.test(restored)) score += 5;
+    // 5. No shield leaks — check legacy [[N]], modern __SHLD_N__, and DNT tokens
+    if (!/[\[\[]\d+[\]\]]|__SHLD_\d+__|_DNT_\d+_/.test(restored) && !/__VAR\d+__/.test(restored)) score += 5;
 
     return Math.max(0, Math.min(100, score));
   }
@@ -57,7 +55,7 @@ function createPolishArbiter(deps = {}) {
   function selectDiverseProviders(plan) {
     const families = {};
     for (const route of plan) {
-      const family = ['gemini', 'groq', 'openrouter', 'ollama', 'player2'].includes(route.provider)
+      const family = ['gemini', 'groq', 'openrouter', 'nvidia', 'fcm', 'ollama', 'player2'].includes(route.provider)
         ? route.provider
         : 'other';
       if (!families[family]) families[family] = [];
@@ -65,7 +63,7 @@ function createPolishArbiter(deps = {}) {
     }
 
     const selected = [];
-    const familyOrder = ['gemini', 'groq', 'openrouter', 'ollama', 'player2'];
+    const familyOrder = ['gemini', 'groq', 'openrouter', 'nvidia', 'fcm', 'ollama', 'player2'];
 
     // Pick first from each available family
     for (const family of familyOrder) {
@@ -98,7 +96,7 @@ function createPolishArbiter(deps = {}) {
         entries
       });
       const ms = Date.now() - startTime;
-      console.log(`[AB-POLISH] ${route.provider}/${route.model || 'auto'} abgeschlossen in ${ms}ms (${raw.length}/${entries.length} Eintraege)`);
+      console.log(`[AB-POLISH] ${route.provider}/${route.model || 'auto'} abgeschlossen in ${ms}ms (${entries.length} Eintraege)`);
       return { provider: route.provider, model: route.model, translations: raw, ms };
     } catch (e) {
       console.warn(`[AB-POLISH] ${route.provider}/${route.model || 'auto'} fehlgeschlagen: ${e.message}`);
@@ -112,6 +110,7 @@ function createPolishArbiter(deps = {}) {
     const winners = new Array(entryCount);
     const providerVotes = {}; // Track which provider won most
 
+    let silentFallbackCount = 0;
     for (let i = 0; i < entryCount; i++) {
       const entry = entries[i];
       const source = entry.originalSource || entry.source;
@@ -147,7 +146,17 @@ function createPolishArbiter(deps = {}) {
       }
 
       winners[i] = bestTranslation;
-      providerVotes[bestProvider] = (providerVotes[bestProvider] || 0) + 1;
+      if (bestProvider !== 'none') {
+        providerVotes[bestProvider] = (providerVotes[bestProvider] || 0) + 1;
+      }
+
+      // P2-Fix V2: Aggregierte Warnung statt per-Eintrag Console-Spam.
+      if (bestScore <= 0) silentFallbackCount++;
+    }
+
+    // P2-Fix V2 (Reviewer): Einmalige aggregierte Warnung statt 20+ identischer Zeilen.
+    if (silentFallbackCount > 0) {
+      console.warn(`[AB-POLISH] ${silentFallbackCount}/${entryCount} Eintraege: alle Varianten fehlgeschlagen (Score 0). Fallback auf unpolished source.`);
     }
 
     // Log the distribution
@@ -189,11 +198,11 @@ function createPolishArbiter(deps = {}) {
       return null;
     }
 
-    // 5. Shield each entry for validation
-    const shieldMaps = entries.map(entry => {
-      const shield = protectPlaceholders(entry.originalSource || entry.source);
-      return shield.placeholders;
-    });
+    // 5. (REMOVED — P2-Fix: Desynchronized shield maps.
+    // Vorher wurde hier ein SEPARATER Satz shieldMaps generiert, der vom
+    // proofread.shieldMaps (Schritt 4) abweichen konnte. pickBestPerEntry
+    // nutzt diese Maps zur Validierung — bei Abweichung gab es false-positive
+    // Score-0-Fails. Jetzt nutzen beide denselben Satz aus buildProofreadPrompt.)
 
     // 6. Fire parallel requests to all selected providers
     const results = await Promise.allSettled(
@@ -207,15 +216,18 @@ function createPolishArbiter(deps = {}) {
       .filter(r => r.status === 'fulfilled' && r.value !== null)
       .map(r => r.value);
 
-    if (successful.length === 0) {
-      console.warn('[AB-POLISH] Alle Provider fehlgeschlagen. Fallback auf Single-Provider Polish.');
+    // P2-Fix: Single-variant illusion. Wenn nur 1 Provider erfolgreich,
+    // ist die komplexe Vergleichslogik von pickBestPerEntry wertlos.
+    // Fallback zu fixGrammarBatch (Single-Provider-Polish).
+    if (successful.length < 2) {
+      console.warn(`[AB-POLISH] Nur ${successful.length} Provider erfolgreich. Fallback auf Single-Provider Polish.`);
       return null;
     }
 
     console.log(`[AB-POLISH] ${successful.length}/${candidates.length} Provider erfolgreich. Vergleiche Ergebnisse...`);
 
-    // 8. Pick best variant per entry
-    return pickBestPerEntry(entries, successful, shieldMaps, strictTerms);
+    // 8. Pick best variant per entry (uses proofread.shieldMaps from step 4)
+    return pickBestPerEntry(entries, successful, proofread.shieldMaps, strictTerms);
   }
 
   return { runAbPolishing };

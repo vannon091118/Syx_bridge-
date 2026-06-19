@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const inquirer = require('inquirer');
+const { exec, execSync } = require('child_process');
 
 // NOTE: No hardcoded vendor model names here.
 // The router always prefers 'auto' (runtime discovery) or the user-specified model.
@@ -13,6 +14,8 @@ const GROQ_FALLBACK_MODELS   = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile
 const OLLAMA_FALLBACK_MODELS = ['llama3.2', 'llama3.1', 'mistral', 'gemma3', 'gemma4', 'phi4'];
 const OLLAMA_DEFAULT_URL     = 'http://localhost:11434';
 const PLAYER2_DEFAULT_URL    = 'http://localhost:4315/v1';
+const FCM_DEFAULT_URL       = 'http://localhost:19280/v1';
+const NVIDIA_FALLBACK_MODELS  = ['nvidia/nemotron-mini-4b-instruct', 'nvidia/llama-3.3-nemotron-super-49b-v1', 'meta/llama-3.1-8b-instruct'];
 
 const MODEL_BLACKLIST = ['whisper', 'stt', 'tts', 'embedding', 'bert', 'vision', 'guard', 'moderation', 'rerank'];
 const MODEL_WHITELIST = ['llama', 'gemini', 'gpt', 'mixtral', 'gemma', 'claude', 'qwen', 'mistral', 'deepseek', 'yi'];
@@ -116,7 +119,7 @@ class ConfigRuntime {
 
   getProviderStatus() {
     const routerStats = this.router ? this.router.getAllProviderStatuses() : {};
-    const knownProviders = ['gemini', 'groq', 'openrouter', 'ollama', 'player2'];
+    const knownProviders = ['gemini', 'groq', 'openrouter', 'ollama', 'player2', 'nvidia', 'fcm'];
 
     // Also include any providers that have keys configured
     const configProviders = Object.keys(this.config)
@@ -138,7 +141,12 @@ class ConfigRuntime {
         }
       }
     }
-    return this.providerStats;
+    // Strip internal Sets before returning to GUI (JSON-safe)
+    const clean = {};
+    for (const [prov, stats] of Object.entries(this.providerStats)) {
+      clean[prov] = { valid: stats.valid || 0, invalid: stats.invalid || 0, total: stats.total || 0, rateLimited: !!stats.rateLimited, last429: stats.last429 || null, flaggedForReview: !!stats.flaggedForReview, lastErrorStatus: stats.lastErrorStatus || 0 };
+    }
+    return clean;
   }
 
   updateProviderRateLimit(provider, isLimited) {
@@ -280,6 +288,102 @@ class ConfigRuntime {
     }
   }
 
+  async fetchNvidiaModels() {
+    // Try live /v1/models endpoint first (OpenAI-compatible)
+    const key = this.getApiKey('nvidia');
+    if (key) {
+      try {
+        const response = await axios.get('https://integrate.api.nvidia.com/v1/models', {
+          headers: { Authorization: `Bearer ${key}` },
+          timeout: 10000
+        });
+        const models = (response.data.data || []).map(m => m.id).filter(isUsableTextModel).sort();
+        if (models.length > 0) return models;
+      } catch (e) {
+        // fall through to static list
+      }
+    }
+    return [...NVIDIA_FALLBACK_MODELS];
+  }
+
+
+  /**
+   * Pull live model rankings from free-coding-models (FCM).
+   * Strategy 1: Try FCM HTTP daemon API on port 19280 (fastest, no subprocess).
+   * Strategy 2: Fall back to CLI subprocess with --json --best.
+   * Strategy 3: Return [] if FCM is not installed or not running.
+   */
+  async fetchFcmModelRankings() {
+    // Strategy 1: FCM Daemon HTTP API (port 19280)
+    try {
+      const response = await axios.get('http://localhost:19280/api/models', { timeout: 3000 });
+      const data = response.data;
+      const list = Array.isArray(data) ? data : (data.models || data.data || []);
+      if (list.length > 0) {
+        return this._normalizeFcmModels(list);
+      }
+    } catch (e) {
+      // Daemon not running — try CLI
+    }
+    // Strategy 2: CLI subprocess
+    try {
+      try { execSync('where free-coding-models', { timeout: 2000, stdio: 'ignore' }); }
+      catch { return []; }
+      const raw = await new Promise((resolve, reject) => {
+        exec('free-coding-models --json --best', { timeout: 20000, encoding: 'utf8' }, (err, stdout) => {
+          if (err) reject(err); else resolve(stdout);
+        });
+      });
+      // Strip ANSI / warning lines before the JSON array
+      const match = raw.match(/(\[\s*\{[\s\S]*\])/m);
+      if (!match) return [];
+      const models = JSON.parse(match[1]);
+      if (!Array.isArray(models)) return [];
+      return this._normalizeFcmModels(models);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /** Normalize FCM model objects to SyxBridge-compatible format. */
+  _normalizeFcmModels(list) {
+    return list.map(m => ({
+      id: m.modelId || m.model || m.id || '',
+      label: m.label || m.modelId || m.id || '',
+      tier: m.tier || '',
+      ping: m.latestPing || m.avgPing || m.ping || m.avg || 999,
+      avgPing: m.avgPing || m.ping || 999,
+      stability: typeof m.stability === 'number' ? m.stability : (m.uptime || 0),
+      uptime: m.uptime || 0,
+      provider: m.provider || m.origin || '',
+      condition: m.condition || '',
+      verdict: m.verdict || '',
+      sweScore: m.sweScore || '',
+      context: m.context || '',
+      status: m.status || 'ok',
+      httpCode: m.httpCode || ''
+    })).filter(m => m.id);
+  }
+
+  /**
+   * Merge FCM live rankings into an existing model list.
+   * Sorts by: FCM tier > ping > SyxBridge rankModel score.
+   */
+  enhanceModelListWithFcm(modelList, fcmRankings) {
+    if (!fcmRankings || fcmRankings.length === 0) return modelList;
+    const fcmMap = new Map(fcmRankings.map(r => [r.id, r]));
+    const tierWeight = { 'S+': 100, 'S': 80, 'A+': 60, 'A': 50, 'B': 30, 'C': 10 };
+    return [...new Set(modelList)].sort((a, b) => {
+      const fa = fcmMap.get(a) || {};
+      const fb = fcmMap.get(b) || {};
+      const ta = tierWeight[fa.tier] || 0;
+      const tb = tierWeight[fb.tier] || 0;
+      if (ta !== tb) return tb - ta;
+      if ((fa.ping || 999) !== (fb.ping || 999)) return (fa.ping || 999) - (fb.ping || 999);
+      return rankModel(b) - rankModel(a);
+    });
+  }
+
   async fetchOpenRouterModels(freeOnly = false) {
     try {
       const key = this.getApiKey('openrouter');
@@ -342,6 +446,21 @@ class ConfigRuntime {
         });
         const text = response.data.choices?.[0]?.message?.content || '';
         return { provider, index, key: maskSecret(key), ok: /ok/i.test(text), detail: `chat ok (${OPENROUTER_FREE_MODEL})`, ms: `${Date.now() - startedAt}ms` };
+      }
+      if (provider === 'nvidia') {
+        // Use a small fast model for key validation
+        const testModel = NVIDIA_FALLBACK_MODELS.find(m => m.includes('8b')) || NVIDIA_FALLBACK_MODELS[2];
+        response = await axios.post('https://integrate.api.nvidia.com/v1/chat/completions', {
+          model: testModel,
+          messages: [{ role: 'user', content: 'Return OK.' }],
+          max_tokens: 8,
+          temperature: 0
+        }, {
+          headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+          timeout: 15000
+        });
+        const text = response.data.choices?.[0]?.message?.content || '';
+        return { provider, index, key: maskSecret(key), ok: /ok/i.test(text) || response.status === 200, detail: `chat ok (${testModel})`, ms: `${Date.now() - startedAt}ms` };
       }
       return { provider, index, key: maskSecret(key), ok: false, detail: 'Unbekannter Provider', ms: `${Date.now() - startedAt}ms` };
     } catch (e) {
@@ -479,6 +598,8 @@ class ConfigRuntime {
       else if (this.config.PRIMARY_PROVIDER === 'groq')  models = await this.fetchGroqModels();
       else if (this.config.PRIMARY_PROVIDER === 'openrouter') models = await this.fetchOpenRouterModels(true);
       else if (this.config.PRIMARY_PROVIDER === 'ollama') models = await this.fetchOllamaModels();
+      else if (this.config.PRIMARY_PROVIDER === 'nvidia')  models = await this.fetchNvidiaModels();
+      else if (this.config.PRIMARY_PROVIDER === 'fcm') { const rankings = await this.fetchFcmModelRankings(); models = rankings.map(r => r.id); }
       else if (this.config.PRIMARY_PROVIDER === 'player2') models = await this.fetchPlayer2Models();
     } catch (e) {}
 
@@ -595,6 +716,7 @@ class ConfigRuntime {
     this.config.PRIMARY_PROVIDER = providerSetup.primary_provider;
     if (providerSetup.gemini_key) this.config.GEMINI_KEYS = parseKeys(providerSetup.gemini_key);
     if (providerSetup.groq_key) this.config.GROQ_KEYS = parseKeys(providerSetup.groq_key);
+    if (providerSetup.nvidia_key) this.config.NVIDIA_KEYS = parseKeys(providerSetup.nvidia_key);
     if (providerSetup.openrouter_key) this.config.OPENROUTER_KEYS = parseKeys(providerSetup.openrouter_key);
 
     const modelSetup = await inquirer.prompt([
@@ -642,7 +764,7 @@ class ConfigRuntime {
   }
 
   async checkConfig() {
-    if (this.config.GEMINI_KEYS.length === 0 && this.config.GROQ_KEYS.length === 0 && this.config.OPENROUTER_KEYS.length === 0 && !['ollama', 'player2'].includes(this.config.PRIMARY_PROVIDER)) {
+    if (this.config.GEMINI_KEYS.length === 0 && this.config.GROQ_KEYS.length === 0 && this.config.OPENROUTER_KEYS.length === 0 && this.config.NVIDIA_KEYS.length === 0 && !['ollama', 'player2', 'fcm'].includes(this.config.PRIMARY_PROVIDER)) {
       await this.configure();
     } else {
       await this.ensureGroqModel();
@@ -653,10 +775,10 @@ class ConfigRuntime {
 
   async showApiStatus() {
     const checks = [];
-    for (const provider of ['gemini', 'groq', 'openrouter', 'ollama']) {
+    for (const provider of ['gemini', 'groq', 'openrouter', 'nvidia', 'ollama']) {
       const keys = this.config[`${provider.toUpperCase()}_KEYS`] || [];
       if (keys.length === 0) {
-        if (['gemini', 'groq', 'openrouter'].includes(provider)) {
+        if (['gemini', 'groq', 'openrouter', 'nvidia'].includes(provider)) {
           checks.push(Promise.resolve({ provider, index: 0, key: '(kein Key)', ok: false, detail: 'nicht konfiguriert', ms: '-' }));
         } else if (provider === 'ollama') {
           checks.push(this.checkLocalProvider('ollama'));
@@ -689,37 +811,94 @@ class ConfigRuntime {
 }
 
 /**
- * Single source of truth for writing .env files.
+ * BU-003: Single source of truth for writing the SyxBridge-managed .env keys.
  * Used by CLI (index.js) and config-wizard (ConfigRuntime.configure).
+ *
+ * Implementation note: this function used to overwrite the whole .env file
+ * with `fs.promises.writeFile`. That destroyed any user-added keys (LOG_LEVEL,
+ * custom OpenAI-compatible endpoints, NMT settings, etc.) on every save,
+ * because the file was rewritten from a fixed allow-list of ~25 keys.
+ *
+ * Fix: delegate to `persistSingleEnvVar()` for each known key. That helper
+ * preserves untouched comments, blank lines, and any unknown keys, so a
+ * user's custom additions survive an in-app config save.
  */
+const PERSISTED_KEYS = [
+  ['MOD_PATH',              (c) => firstDefined(c.MOD_ROOT)],
+  ['OUTPUT_PATH',           (c) => firstDefined(c.GAME_MOD_ROOT)],
+  ['TARGET_LANG',           (c) => firstDefined(c.TARGET_LANG)],
+  ['NATIVE_MODE',           (c) => String(!!c.NATIVE_MODE)],
+  ['GRAMMAR_CHECK',         (c) => String(!!c.GRAMMAR_CHECK)],
+  ['LOCAL_MODELS_ENABLED',  (c) => String(!!c.LOCAL_MODELS_ENABLED)],
+  ['NMT_LOCAL_ENABLED',     (c) => String(!!c.NMT_LOCAL_ENABLED)],
+  ['PRIMARY_PROVIDER',      (c) => firstDefined(c.PRIMARY_PROVIDER)],
+  ['PRIMARY_MODEL',         (c) => firstDefined(c.PRIMARY_MODEL)],
+  ['POLISHER_PROVIDER',     (c) => firstDefined(c.POLISHER_PROVIDER)],
+  ['POLISHER_MODEL',        (c) => firstDefined(c.POLISHER_MODEL)],
+  ['REPOLISH_BUDGET',       (c) => firstDefined(c.REPOLISH_BUDGET)],
+  ['AUDITOR_PROVIDER',      (c) => firstDefined(c.AUDITOR_PROVIDER)],
+  ['AUDITOR_MODEL',         (c) => firstDefined(c.AUDITOR_MODEL)],
+  ['GEMINI_KEY',            (c) => (c.GEMINI_KEYS || []).join(',')],
+  ['GROQ_KEY',              (c) => (c.GROQ_KEYS || []).join(',')],
+  ['OPENROUTER_KEY',        (c) => (c.OPENROUTER_KEYS || []).join(',')],
+  ['NVIDIA_KEY',            (c) => (c.NVIDIA_KEYS || []).join(',')],
+  ['OLLAMA_KEY',            (c) => (c.OLLAMA_KEYS || []).join(',')],
+  ['OLLAMA_URL',            (c) => firstDefined(c.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
+  ['FCM_URL',               (c) => firstDefined(c.FCM_URL, FCM_DEFAULT_URL)],
+  ['FCM_ENABLED',           (c) => String(!!c.FCM_ENABLED)],
+  ['PLAYER2_KEY',           (c) => (c.PLAYER2_KEYS || []).join(',')],
+  ['PLAYER2_ENABLED',       (c) => String(!!c.PLAYER2_ENABLED)],
+  ['PLAYER2_URL',           (c) => firstDefined(c.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
+  ['BATCH_SIZE',            (c) => firstDefined(c.BATCH_SIZE)]
+];
+
 async function persistConfigToEnv(config) {
-  const envPath = ENV_PATH;
-  const rows = [
-    ['MOD_PATH', firstDefined(config.MOD_ROOT)],
-    ['OUTPUT_PATH', firstDefined(config.GAME_MOD_ROOT)],
-    ['TARGET_LANG', firstDefined(config.TARGET_LANG)],
-    ['NATIVE_MODE', String(!!config.NATIVE_MODE)],
-    ['GRAMMAR_CHECK', String(!!config.GRAMMAR_CHECK)],
-    ['LOCAL_MODELS_ENABLED', String(!!config.LOCAL_MODELS_ENABLED)],
-    ['PRIMARY_PROVIDER', firstDefined(config.PRIMARY_PROVIDER)],
-    ['PRIMARY_MODEL', firstDefined(config.PRIMARY_MODEL)],
-    ['POLISHER_PROVIDER', firstDefined(config.POLISHER_PROVIDER)],
-    ['POLISHER_MODEL', firstDefined(config.POLISHER_MODEL)],
-    ['REPOLISH_BUDGET', firstDefined(config.REPOLISH_BUDGET)],
-    ['AUDITOR_PROVIDER', firstDefined(config.AUDITOR_PROVIDER)],
-    ['AUDITOR_MODEL', firstDefined(config.AUDITOR_MODEL)],
-    ['GEMINI_KEY', (config.GEMINI_KEYS || []).join(',')],
-    ['GROQ_KEY', (config.GROQ_KEYS || []).join(',')],
-    ['OPENROUTER_KEY', (config.OPENROUTER_KEYS || []).join(',')],
-    ['OLLAMA_KEY', (config.OLLAMA_KEYS || []).join(',')],
-    ['OLLAMA_URL', firstDefined(config.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
-    ['PLAYER2_KEY', (config.PLAYER2_KEYS || []).join(',')],
-    ['PLAYER2_ENABLED', String(!!config.PLAYER2_ENABLED)],
-    ['PLAYER2_URL', firstDefined(config.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
-    ['BATCH_SIZE', firstDefined(config.BATCH_SIZE)]
-  ];
-  const lines = rows.map(([key, value]) => `${key}="${String(value ?? '').replace(/"/g, '\\"')}"`);
-  await fs.promises.writeFile(envPath, `${lines.join('\n')}\n`, 'utf-8');
+  // ═══ SAFETY: Backup .env ONCE before the loop ═══
+  // Preserves original state in case the in-memory CONFIG has lost its keys.
+  const backupPath = ENV_PATH + '.backup';
+  try {
+    if (fs.existsSync(ENV_PATH)) {
+      fs.copyFileSync(ENV_PATH, backupPath);
+    }
+  } catch (_) { /* non-critical */ }
+
+  const failures = [];
+  for (const [key, extractor] of PERSISTED_KEYS) {
+    try {
+      await persistSingleEnvVar(key, extractor(config || {}));
+    } catch (e) {
+      // Single-key failure (Permission, Disk-Full, OS-EACCES waehrend eines
+      // Antivirus-Scans) darf nicht alle folgenden Keys unpersistiert lassen.
+      // Tradeoff gegen das alte writeFile-Atomic-Verhalten: im Partial-State
+      // bleiben User-Custom-Env-Vars erhalten, aber einzelne SyxBridge-Keys
+      // koennen veraltet sein. process.env ist synchron aktualisiert, daher
+      // reflektiert applyEnvToConfig() beim naechsten Start den live CONFIG.
+      failures.push({ key, error: e.message || String(e) });
+    }
+  }
+  if (failures.length > 0) {
+    console.warn(`[WARN] ${failures.length}/${PERSISTED_KEYS.length} .env-Keys konnten nicht persistiert werden:`);
+    for (const f of failures) console.warn(`  - ${f.key}: ${f.error}`);
+  }
+}
+
+/**
+ * Reads the current value of a key from the raw .env lines.
+ * Returns the unquoted value, or null if the key is not found.
+ */
+function readEnvValue(lines, key) {
+  const keyPrefix = `${key}=`;
+  for (const line of lines) {
+    if (line.startsWith(keyPrefix)) {
+      let val = line.slice(keyPrefix.length);
+      // Strip surrounding quotes if present
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      return val;
+    }
+  }
+  return '';
 }
 
 /**
@@ -742,6 +921,17 @@ async function persistSingleEnvVar(key, value) {
   if (fs.existsSync(envPath)) {
     const raw = await fs.promises.readFile(envPath, 'utf-8');
     lines = raw.split(/\r?\n/);
+  }
+
+  // ═══ SAFETY: Never blank out a non-empty key ═══
+  // If the new value is empty/falsy but the .env currently has a non-empty
+  // value for this key, preserve the existing value. This prevents
+  // persistConfigToEnv from wiping API keys when called with an in-memory
+  // CONFIG that loaded empty keys from a partially-corrupted .env.
+  const existingValue = readEnvValue(lines, safeKey);
+  if ((!safeValue || safeValue === '') && existingValue && existingValue.trim() !== '') {
+    console.warn(`[ENV-SAFETY] ${safeKey}: würde leeren Wert schreiben, aber .env hat nicht-leeren Wert — bewahre existierenden.`);
+    return { written: false, key: safeKey, value: existingValue, reason: 'preserved-non-empty' };
   }
 
   const keyPrefix = `${safeKey}=`;
@@ -772,6 +962,7 @@ module.exports = {
   ConfigRuntime,
   persistConfigToEnv,
   persistSingleEnvVar,
+  readEnvValue,
   parseEnvFlag,
   parseKeys,
   isUsableTextModel,

@@ -1,0 +1,337 @@
+{"s":",\r\n},\r\nsettlement.room.industry.woodcutter.Constructor: {\r\n\t","t":",\n},\nSettlement.room.industry.woodcutter.Constructor: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nsettlement.room.service.arena.grand.ArenaConstructor: {\r\n\t","t":",\n},\nSettlement.room.service.arena.grand.ArenaConstructor: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nsettlement.room.knowledge.library.ROOM_LIBRARY: {\r\n\t","t":",\n},\nSettlement.room.knowledge.library.ROOM_LIBRARY: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Click to open resource details, right click to go to warehouse.","t":"Klicken Sie, um die Ressourcendetails zu öffnen; rechtsklicken Sie, um zum Lager","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The layout of the room will make it more expensive to construct and maintain. Th","t":"Die Anordnung des Raums erhöht Bau‑ und Unterhaltskosten. Die gelben Quadrate ze","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nsettlement.room.military.training.ROOM_M_TRAINER: {\r\n\t","t":",\n},\nSettlement.room.military.training.ROOM_M_TRAINER: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Auto build walls around room.","t":"Errichte automatisch Wände um den Raum.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Places doorways on walls. Needed to make the room reachable. Doorways decrease i","t":"Platziert Türen in Wänden. Sie sind nötig, um den Raum zugänglich zu machen. Tür","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Expand room. Items can only be placed on the designated room area.","t":"Raum erweitern. Gegenstände dürfen ausschließlich auf dem dafür vorgesehenen Rau","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Expand room over existing structures","t":"Raum über vorhandenen Bauwerken erweitern.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The room does not have enough support as indicated by yellow tiles. It can be bu","t":"Der Raum weist, wie durch die gelben Kacheln angezeigt, zu wenig Stütze auf. Er ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This is a heavy room and relies on its foundation. Poor foundation will increase","t":"Dies ist ein schwerer Raum und hängt von seinem Fundament ab. Ein schlechtes Fun","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nsettlement.room.law.guard.Gui: {\r\n\t","t":"},\nsettlement.room.law.guard.Gui: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.home.UIHomeOdd: {\r\n\tname: ","t":"},\nview.sett.ui.home.UIHomeOdd: {\n\tName:","p":"ab_polish","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":",\r\n},\r\nsettlement.stats.law.Curfew: {\r\n\t","t":"},\nsettlement.stats.law.Curfew: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The room will be poorly insulated, and maintenance need will be higher as a cons","t":"Der Raum ist schlecht isoliert und der Wartungsbedarf ist dadurch höher. Schalte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.keyboard.KeyNames: {\r\n\tnone: ","t":"keine","p":"ab_polish","f":"low_quality_score","q":20,"sg":2,"fl":1,"a":"low_score"}
+{"s":"Average degradation amongst these rooms. Degradation affects a room negatively.","t":"Durchschnittliche Verschlechterung dieser Räume. Eine Verschlechterung wirkt sic","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"What time the work shift starts.","t":"Zu welcher Uhrzeit beginnt die Arbeitsschicht?","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"This room is employed all hours of the day.","t":"Dieser Raum ist rund um die Uhr in Betrieb.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Workers +{0}","t":"Arbeiter +{0}","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The technology for the room is locked, and it can't be maintained.","t":"Die Technologie für diesen Raum ist gesperrt und kann nicht gewartet werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Room Type","t":"Zimmertyp","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Insufficient workers allocated.","t":"Nicht genügend Arbeiter zugewiesen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Auto Employ","t":"Automatisches Anstellen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Let the AI adjust worker amount each day based on workload.","t":"Lassen Sie die KI die Anzahl der Arbeiter täglich an die Arbeitsbelastung anpass","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount that is estimated to be produced each day. The actual production can ","t":"Die Menge, die voraussichtlich pro Tag produziert wird. Die tatsächliche Produkt","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Change Recipe","t":"Rezept ändern","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Note that changing recipe will reset the room.","t":"Beachten Sie, dass bei einer Rezeptänderung der Raum zurückgesetzt wird.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Insufficient workers available. If there are idle subjects, these will soon sign","t":"Nicht genügend Arbeitskräfte verfügbar. Wenn unbeschäftigte Personen vorhanden s","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Produced This Year","t":"Diesjährige Produktion","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Proximity to raw materials is poor.","t":"Die Nähe zu Rohstoffen ist schlecht.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Workers -{0}","t":"Arbeiter -{0}","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Room is poorly insulated!","t":"Der Raum ist schlecht isoliert!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Required Maintenance (year)","t":"Erforderliche Wartung (Jahr)","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Actual employees / Target Employees. When you set the target, unemployed people ","t":"Ist‑Mitarbeiter / Soll‑Mitarbeiter. Wenn Sie das Ziel festlegen, melden sich Arb","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Internal storage is full and production is stalled. Have a warehouse fetch the p","t":"Der interne Speicher ist voll und die Produktion ist gestoppt. Lass ein Lagerhau","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Water Supply is gained from adjacent canals and drains that are connected to pum","t":"Die Wasserversorgung wird über benachbarte Kanäle und Abflüsse, die an Pumpen an","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set the work radius of this room. Subjects will look for work within the radius.","t":"Legen Sie den Arbeitsradius dieses Raums fest. Die Untertanen suchen innerhalb d","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Room is not reachable and will not work properly. Make sure there is a clear pat","t":"Der Raum ist nicht erreichbar und funktioniert nicht ordnungsgemäß. Stellen Sie ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Needs Work","t":"Benötigt Arbeit","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The overall access of your minions","t":"Der gesamte Zugriff Ihrer Diener","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The highest load of this service during a day. Once full, it means there aren't ","t":"Die maximale Auslastung dieses Dienstes an einem Tag. Ist sie voll, gibt es nich","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"All services operate within a radius. The radius is the max distance a subject i","t":"Alle Dienste wirken innerhalb eines Radius. Der Radius ist die maximale Entfernu","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This room depends on the moisture of its ground tiles. All tiles have a default ","t":"Dieser Raum ist von der Feuchtigkeit seiner Bodenfliesen abhängig. Jede Fliese h","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Upgrade all rooms once. Upgrading a room significantly increases performance. It","t":"Alle Räume einmal upgraden. Das Aufrüsten eines Raums erhöht dessen Leistung erh","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Downgrade this room. All resources will be lost.","t":"Diesen Raum herabstufen. Alle Ressourcen gehen dabei verloren.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"An rough estimate of how many subjects that can be served.","t":"Eine grobe Schätzung, wie viele Untertanen bedient werden können.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Room Blueprints","t":"Raumpläne","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"No Available Services","t":"Keine verfügbaren Dienste","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When subjects are assigned to workplaces, this is the master priority, and the h","t":"Wenn Untertanen Arbeitsplätze zugewiesen werden, gilt diese Priorität als oberst","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Adjust all by 1.","t":"Passt alle um 1 an.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Set all priorities based on work skill.","t":"Setze alle Prioritäten nach Arbeitsfertigkeit.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Pressure required per tile:","t":"Erforderlicher Druck pro Fliese:","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"No work is within the radius!","t":"Keine Arbeit im Umkreis!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Deactivated!","t":"Deaktiviert!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"A room that can be furnished must be selected.","t":"Ein möblierbarer Raum muss ausgewählt werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Work Priorities","t":"Arbeitsprioritäten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set all priorities based on fulfillment.","t":"Setze alle Prioritäten nach Erfüllung.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Are you sure you want to delete this room?","t":"Sind Sie sicher, dass Sie diesen Raum löschen möchten?","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current Available Max Level:","t":"Derzeit maximal erreichbares Level:","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Work groups let you favour the configuration of different species in specific ro","t":"Arbeitsgruppen ermöglichen es, die Zusammensetzung verschiedener Arten in bestim","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set priority for none","t":"Setze die Priorität auf keine fest.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set priority for All:","t":"Priorität für alle festlegen:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Do you wish to refurnish this room? Some progress of the current construction wi","t":"Möchten Sie dieses Zimmer neu einrichten? Ein Teil des aktuellen Baufortschritts","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Preferred By:","t":"Bevorzugt von:","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Allowed to consume","t":"Verzehr gestattet","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Not allowed to consume","t":"Verzehr verboten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount allowed to furnish a subject's home. More allowed and available will ","t":"Der Betrag, der für die Einrichtung eines Hauses zulässig ist. Mehr zulässige un","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Learning Days","t":"Lerntage","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set priority for everyone","t":"Setze Priorität für alle fest.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"How many days are needed to fully educate a subject. Depends on race and other f","t":"Wie viele Tage benötigt werden, um einen Bewohner vollständig auszubilden? Das h","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set all priorities to default.","t":"Alle Prioritäten auf Standard zurücksetzen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Aspiring Immigrants","t":"Angehende Einwanderer","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Some or all of the selected groups are not employed in the current room type, an","t":"Einige oder alle ausgewählten Gruppen sind im aktuellen Raumtyp nicht beschäftig","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on a workplaces.","t":"Muss an einem Arbeitsplatz platziert werden.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Turn on/off activity for this room.","t":"Aktivität dieses Raumes ein‑ bzw. ausschalten.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Age {0} to {1} : {2} Subjects","t":"Alter {0} bis {1}: {2} Untertanen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Refurnish Room. WARNING: All room progress will be lost and all employees fired.","t":"Zimmer neu einrichten. ACHTUNG: Der gesamte Fortschritt des Raumes geht verloren","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Automatically authorize new immigrants up until this amount.","t":"Neue Einwanderer bis zu diesem Betrag automatisch zulassen.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Allow/deny access for whole class","t":"Zugriff für die gesamte Klasse zulassen/verweigern","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Temple Boosts","t":"Tempel Boosts","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Projected fulfillment increase","t":"Erfüllung der Erfüllung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Options for a ruler to increase fulfillment.","t":"Optionen für einen Herrscher zur Steigerung der Zufriedenheit.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Cancel manually assigned punishment, and let it be decided by your law settings.","t":"Stornieren Sie manuell zugewiesene Strafen und lassen Sie die Entscheidung von I","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.standing.CatReligion: {\r\n\t","t":",\r\n},\r\nview.sett.ui.standing.CatReligion: {\r\n\t","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"Recognize Hero Status.","t":"Heldenstatus anerkennen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Click to elevate this subject into a position of power.","t":"Klicke, um diese Person in ein Amt zu erheben.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Click to recognize this subject as a hero of the people.","t":"Klicke, um diese Person als Helden des Volkes zu ehren.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"This subject is already recognized as a hero.","t":"Diese Person ist bereits als Held anerkannt.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Click to cancel action for {0} subjects.","t":"Klicke, um die Aktion für {0} Personen abzubrechen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This subject is already a noble one.","t":"Diese Person ist bereits adelig.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Cut off from the throne.","t":"Vom Thron abgeschnitten.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"On Strike, refuses to work","t":"Im Streik, verweigert die Arbeit.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Leisure Time.","t":"Freizeit.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Increase per day: {0}% / day","t":"Tägliche Steigerung: {0} % pro Tag","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Exposed to the temperature!","t":"Der Temperatur ausgesetzt!","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"This type of subject does not engage in this activities","t":"Diese Art von Subjekt nimmt nicht an diesen Aktivitäten teil.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Click to change punishment.","t":"Klicken Sie, um die Bestrafung zu ändern.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Pleads innocence. Wants to try case in court.","t":"Beteuert Unschuld. Möchte den Fall vor Gericht verhandeln.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Read up about current race in the tome of knowledge.","t":"Lesen Sie im Wissensband über die aktuelle Rasse.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on non-solid tiles.","t":"Muss auf nicht festen Fliesen platziert werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Action can currently not be performed.","t":"Aktion kann derzeit nicht ausgeführt werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Currently ill with {0}. Needs to recuperate.","t":"Derzeit an {0} erkrankt. Muss sich erholen.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Currently ill with {0}. Needs a hospital.","t":"Derzeit an {0} erkrankt. Benötigt ein Krankenhaus.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Has been found guilty in a court.","t":"Wurde vor Gericht für schuldig befunden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Blocked by structure. Dismantle it first.","t":"Durch eine Struktur blockiert. Demontiere sie zuerst.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Must not be placed on room.","t":"Darf nicht im Raum platziert werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on tree.","t":"Muss auf einem Baum platziert werden.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on water.","t":"Muss auf dem Wasser platziert werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on rock.","t":"Muss auf einem Felsen platziert werden.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on solid mountain.","t":"Muss auf festem Berggrund platziert werden.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Can't be placed on mountains or caves. Use mountain specific tools for this.","t":"Kann nicht auf Bergen oder in Höhlen platziert werden. Verwenden Sie dafür bergs","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Blocked by something.","t":"Durch ein Hindernis blockiert.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Road already exists there.","t":"Die Straße existiert dort bereits.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on structures. Walls, ceilings, fortifications or roads.","t":"Muss auf Bauwerken platziert werden: Mauern, Decken, Befestigungen oder Straßen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Water can only be dug where there is ground water.","t":"Wasser kann nur dort gegraben werden, wo Grundwasser vorhanden ist.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Edible vegetation must be ripe (Late Summer)!","t":"Essbare Pflanzen müssen reif sein (Spätsommer)!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Are you sure you want to abandon your current city and try your luck somewhere e","t":"Bist du sicher, dass du deine aktuelle Stadt aufgeben und dein Glück woanders ve","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The amount of odd-jobber you have is currently not a problem.","t":"Die Anzahl Ihrer Gelegenheitsarbeiter stellt derzeit kein Problem dar.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Your treasury is full. Piled up denarii fills no stomach. You should use it.","t":"Deine Schatzkammer ist voll. Aufgestapelte Denare sättigen keinen Magen. Du soll","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You have a lot of oddjobbers compared to your workforce. Give them something to ","t":"Im Vergleich zu Ihrer Belegschaft haben Sie zu viele Gelegenheitsarbeiter. Geben","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"No rooms currently have severe problems with workload.","t":"Derzeit gibt es in keinem Raum gravierende Auslastungsprobleme.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Offer artifacts from your reliquaries in exchange for their value in trade resou","t":"Bieten Sie Artefakte aus Ihren Reliquien im Tausch gegen deren Wert in Handelsre","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Make sure that all rooms are making the most out of their employees. If they are","t":"Stelle sicher, dass alle Räume ihre Arbeiter optimal einsetzen. Sind sie nicht r","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You are not spending excessive resources on technology. But remember to make sur","t":"Du gibst nicht übermäßig Ressourcen für Technologie aus, doch achte darauf, das ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You do not currently store any goods in excess.","t":"Sie lagern momentan keine überschüssigen Waren.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Some of your goods are stored excessively, currently rotting away in storage for","t":"Einige deiner Waren werden zu viel gelagert und verrotten nutzlos im Lager.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Resources are meant to be used. Only a few of them are beneficial to store, like","t":"Ressourcen sollen genutzt werden. Nur wenige davon sind sinnvoll zu lagern, etwa","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Division is currently attached to the world army '{0}'. It must be recalled in o","t":"Die Division ist derzeit der Weltarmee {0} zugeordnet. Sie muss zurückgerufen we","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Division is returning home to our capital. The soldiers will arrive in {0} days.","t":"Die Division kehrt in unsere Hauptstadt zurück. Die Soldaten werden in {0} Tagen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Supplies that are needed for general health. Initial supplies for 8 days of use ","t":"Vorräte, die für die allgemeine Gesundheit benötigt werden. Für einen Bedarf von","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Supplies that boosts morale. Will be sent if available automatically, but are no","t":"Vorräte, die die Moral steigern. Sie werden bei Verfügbarkeit automatisch gesend","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Warning: you currently do not have any operational army supply depots for the ne","t":"Achtung: Sie haben derzeit keine einsatzbereiten Armee‑Versorgungsdepots für die","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This division is currently training to reach the desired training level. Days le","t":"Diese Division trainiert derzeit, um das gewünschte Ausbildungsniveau zu erreich","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Conscripts are training and will be ready in {0} days.","t":"Wehrpflichtige werden ausgebildet und stehen in {0} Tagen bereit.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Since this agreement was drafted too much has changed.","t":"Seit der Ausarbeitung dieser Vereinbarung hat sich zu viel geändert.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The current stock of your export depots. These goods will be bought by a trade p","t":"Der aktuelle Bestand Ihrer Exportdepots. Diese Waren werden von einem Handelspar","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The combined buy capacity of your trade partners per day, and how much that you ","t":"Die kombinierte Kaufkapazität Ihrer Handelspartner pro Tag und der aktuell verka","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"When an export depot has priority-fetch enabled, it will fetch from storage site","t":"Wenn ein Exportdepot Prioritätsabruf aktiviert hat, holt es Waren von Lagerstätt","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Export workers will only priority-fetch when at least {0}% of our warehouse crat","t":"Exportarbeiter holen nur dann mit Priorität ab, wenn mindestens {0} % unserer La","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Make a custom order of this resource from the trade partner with the most favour","t":"Erteilen Sie eine Sonderbestellung dieser Ressource beim Handelspartner mit dem ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Make a speedy custom order of this resource from the trade partner that is close","t":"Bestellen Sie diese Ressource schnell bei dem Handelspartner, der am nächsten li","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The available space of your import depots for import and tribute. When trading w","t":"Der verfügbare Platz Ihrer Importdepots für Import und Tribut. Beim Handel mit F","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The combined sell capacity of your trade partners per day, and how much that you","t":"Die kombinierte Verkaufskapazität Ihrer Handelspartner pro Tag und der aktuell g","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The average global price, the total production rate without boosts, and the pric","t":"Der durchschnittliche globale Preis, die Gesamtproduktionsrate ohne Boosts und d","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Siege of {0}","t":"Belagerung von {0}","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"25. Religion","t":"Religion","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.room.UIRooms: {\r\n\t","t":"},\nview.sett.ui.room.UIRooms: {","p":"ab_polish","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":",\r\n},\r\nview.world.ui.region.ListAll: {\r\n\t","t":"},\nview.world.ui.region.ListAll: {","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.room.ModuleRadius: {\r\n\t","t":"},\nview.sett.ui.room.ModuleRadius: {","p":"ab_polish","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.standing.CatAccess: {\r\n\t","t":"},\nview.sett.ui.standing.CatAccess: {","p":"ab_polish","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.room.UIRoom: {\r\n\t","t":"},\nview.sett.ui.room.UIRoom: {","p":"ab_polish","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Some plebeians are displeased with your rule. As a result, they are packing thei","t":"Einige Plebejer sind mit deiner Herrschaft nicht zufrieden. Deshalb packen sie i","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"A large group of {RACE} have decided to leave your city, renouncing their citize","t":"Eine große Gruppe von {RACE} hat beschlossen, Ihre Stadt zu verlassen, ihre Staa","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n\teffect: ","t":"Wirkung:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} {1} years ago, at {2} years of age.","t":"{0} {1} vor Jahren, im Alter von {2} Jahren.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Teach your hunters how to make less noise while hunting to increase output speed","t":"Lehren Sie Ihre Jäger, wie man bei der Jagd weniger Lärm macht, um die Produktio","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Complex Recipes","t":"Komplexe Rezepte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Unlock recipes which make your hunters focus on different preys at the same time","t":"Entsperren Sie Rezepte, die Ihre Jäger dazu bringen, sich gleichzeitig auf versc","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Supply your hunters with bows, boosting production speed now that they can actua","t":"Versorgen Sie Ihre Jäger mit Bögen und steigern Sie so die Produktionsgeschwindi","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Hunter %r% Expanded","t":"Jäger %r% erweitert","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Supply your hunters with bows, boosting production speed now that they can actua","t":"Versorgen Sie Ihre Jäger mit Bögen und steigern Sie so die Produktionsgeschwindi","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Never Export slaves","t":"niemals Sklaven exportieren","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Export Capacity Used","t":"Genutzte Exportkapazität","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The gods have forsaken {0}, and the rains have stopped. If this keeps up, it wil","t":"Die Götter haben {0} verlassen, und der Regen hat aufgehört. Wenn das so bleibt,","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Administering a punishment for this crime has the following max potential ","t":"Die Verhängung einer Strafe für dieses Verbrechen hat das folgende maximale Pote","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The current punishment for this crime is is good will increase net {0}!","t":"Die aktuelle Strafe für dieses Verbrechen erhöht den guten Willen um netto {0}!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"turn off","t":"ausschalten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You have set the limit to never export slaves.","t":"Du hast die Grenze festgelegt, niemals Sklaven zu exportieren.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Limit is set to export all slaves","t":"Grenze setzen, um alle Sklaven zu exportieren","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Limit: {0}. (Export when you own more than {1} slaves.)","t":"Grenzwert: {0}. (Export, wenn Sie mehr als {1} Sklaven besitzen.)","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Export Capacity","t":"Ausfuhrkapazität","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Trade Quota Used.","t":"Handelsquote verwendet.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Export workers will only fetch from warehouses when at least {0}% of our warehou","t":"Exportarbeiter holen nur dann von Lagern ab, wenn mindestens {0} % unserer Lager","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"turn on","t":"einschalten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Tariff is a percentage applied to the trade price of a faction. Every nation emp","t":"Der Tarif ist ein Prozentsatz, der auf den Handelspreis einer Fraktion angewende","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"select","t":"Wählen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0}, {1} of {2},","t":"{0}, {1} von {2},","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"(Hold {0} to attack melee)","t":"(Halte {0} gedrückt, um im Nahkampf anzugreifen)","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Toggles running. Your troops will be faster, but tire much quicker.","t":"Schaltet das Laufen um. Deine Truppen werden schneller, ermüden jedoch schneller","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This punishment and crime combination is too harsh, and the net {0} will decreas","t":"Diese Straf‑ und Verbrechenskombination ist zu hart, und das Netto‑{0} würde sin","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"({0} increase for 100 captives)","t":"({0} Erhöhung für 100 Gefangene)","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Manually assign available captives to this punishment.","t":"Weise verfügbare Gefangene manuell dieser Strafe zu.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"To be Accepted","t":"Zu akzeptieren","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Double click to grant access to all immigrants. Right click to open species sett","t":"Doppelklick, um allen Einwanderern Zugang zu gewähren. Rechtsklick, um die Arten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Must be placed on a house or a house construction.","t":"Muss auf einem Haus oder einer Hauskonstruktion platziert werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Punishing a crime yields law, which in turn yields loyalty/submission. But it al","t":"Die Bestrafung eines Verbrechens erzeugt Gesetz, das wiederum Loyalität bzw. Unt","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This punishment is a good choice under the current circumstances and will increa","t":"Diese Strafe ist unter den aktuellen Umständen eine gute Wahl und erhöht das Net","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Click to cancel for {0} subjects. ({1} subjects are currently active).","t":"Klicken Sie, um für {0} Untertanen abzubrechen. (Derzeit sind {1} Untertanen akt","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Actual employees / Target Employees. When you set the target, unemployed people ","t":"Tatsächliche Mitarbeiter / Ziel-Mitarbeiter. Wenn du das Ziel festlegst, melden ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Click to apply for {0} subjects","t":"Klicke, um dich für {0} Untertanen zu bewerben","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Average boost from technology, race, and room properties of all your subjects wo","t":"Durchschnittlicher Bonus aus Technologie, Rasse und Raumeigenschaften aller Ihre","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The current and total amount of punishments in use.","t":"Die aktuelle und gesamte Anzahl der eingesetzten Strafen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Select All","t":"Alle auswählen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Only Relevant","t":"Nur Relevante","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"increase priority of all filtered work-groups in the row","t":"Priorität aller gefilterten Arbeitsgruppen in dieser Reihe erhöhen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"decrease priority of all filtered work-groups in the row","t":"Priorität aller gefilterten Arbeitsgruppen in dieser Reihe verringern.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"(highest)","t":"(höchste)","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"(lowest)","t":"(unterste)","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Increase Master priority of all filtered workplaces by 1","t":"Erhöhe die Master-Priorität aller gefilterten Arbeitsplätze um 1.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.room.ModulePunish: {\r\n\t","t":",\r\n},\r\nview.sett.ui.room.ModulePunish: {\r\n\t","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"Toggle usage for {0} prisoners.","t":"Verwendung für {0} Gefangene umschalten.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Select None","t":"Keine auswählen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Decrease Master priority of all filtered workplaces by 1","t":"Verringere die Master-Priorität aller gefilterten Arbeitsplätze um 1.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Filter Work Groups","t":"Arbeitsgruppen filtern","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} per item per year. Estimation: -{1} with current furnishing, and -{2} if the","t":"{0} pro Gegenstand pro Jahr. Schätzung: -{1} bei aktueller Einrichtung und -{2} ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Stats and settings related to consumable resources","t":"Statistiken und Einstellungen im Zusammenhang mit verbrauchbaren Ressourcen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Other population that count towards expectations, but not for fulfillment.","t":"Andere Bevölkerungsgruppen, die zu den Erwartungen zählen, jedoch nicht zur Erfü","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Soldiers out campaigning","t":"Soldaten im Einsatz","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Sets the max population desired from breeding. When breeding stops based on this","t":"Legt die maximale Bevölkerung fest, die durch Zucht erreicht werden soll. Sobald","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Forces your subjects to breed harder and faster.","t":"Zwingt deine Untertanen, stärker und schneller zu zeugen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Automatically execute this decree for {0} % of your population.","t":"Dieses Dekret wird automatisch für {0} % deiner Bevölkerung ausgeführt.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Automatically execute this decree when population is above {0} people.","t":"Dieses Dekret automatisch ausführen, wenn die Bevölkerung über {0} Personen lieg","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Decrease priority of all filtered work groups in the column.","t":"Verringere die Priorität aller gefilterten Arbeitsgruppen in der Spalte.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Assign Work Rroups","t":"Arbeitsgruppen zuweisen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n},\r\nview.sett.ui.room.priority.UIWorkPrio: {\r\n\t","t":"},\nview.sett.ui.room.priority.UIWorkPrio: {","p":"ab_polish","f":"structural_noise","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Increase priority of all filtered work groups in the column.","t":"Erhöhe die Priorität aller gefilterten Arbeitsgruppen in der Spalte.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Lets you assign Work Groups (species + class) to individual rooms. If the set pr","t":"Ermöglicht das Zuweisen von Arbeitsgruppen (Arten + Klasse) zu einzelnen Räumen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Currently caring for offspring. Can not work. Child will grow up in {0} days.","t":"Betreut derzeit Nachkommen und kann nicht arbeiten. Das Kind wird in {0} Tagen e","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Enlisted in the division: {0}, in the army {1}.","t":"Eingeschrieben in die Division: {0}, in die Armee {1}.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Is currently returning to the capitol, will arrive in home in {0} days.","t":"Kehrt gerade zur Hauptstadt zurück und wird in {0} Tagen zu Hause eintreffen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Nobles are crucial to your progress, offering big boosts to your subjects. Make ","t":"Adlige sind entscheidend für deinen Fortschritt und bieten große Vorteile für de","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"All nobles are assigned.","t":"Alle Adeligen sind zugewiesen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You have free slots / promotions for nobles.","t":"Du hast freie Plätze / Beförderungen für Adlige.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Clear Filters","t":"Filter entfernen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You are able to trade wares att any price, but it's in your interest to buy low ","t":"Du kannst Waren zu jedem Preis handeln, aber es ist in deinem Interesse, niedrig","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You are trading all goods at reasonable prices","t":"Du handelst alle Waren zu angemessenen Preisen.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"You are trading some goods at exorbitant prices.","t":"Du handelst einige Waren zu überhöhten Preisen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Serving in your armies abroad.","t":"Im Ausland.","p":"ab_polish","f":"","q":70,"sg":2,"fl":0,"a":null}
+{"s":"Show Family.","t":"Familie anzeigen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Set All","t":"Alle anzeigen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"If we find that our city is crumbling into dust, we can move to a different part","t":"Wenn wir feststellen, dass unsere Stadt in Staub zerbröckelt, können wir zu eine","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"First Name","t":"Vorname","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"You have some helpful advice to look through. It's located at the top-right port","t":"Du findest hilfreiche Ratschläge oben rechts in der Stadt‑UI.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Yearly Report","t":"Jahresbericht","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Available to be unlocked","t":"Verfügbar zum Freischalten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This technology will be a profitable investment, increasing production as if you","t":"Diese Technologie wird eine rentable Investition sein, die die Produktion erhöht","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Your affected industries are too small for this technology to be a good investme","t":"Ihre betroffenen Branchen sind zu klein, damit diese Technologie eine gute Inves","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n\tForget: ","t":"Vergiss:","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Days as infant: {0}, days as child: {1}.","t":"Tage als Säugling: {0}, Tage als Kind: {1}.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"High natural moisture spots have little need for additional irrigation, but more","t":"Gebiete mit hoher natürlicher Feuchtigkeit benötigen wenig zusätzliche Bewässeru","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This location is isolated. You will have less trade and less chance to forge an ","t":"Dieser Ort ist isoliert. Der Handel ist eingeschränkt und die Chancen, ein Reich","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The combined daily trade capacity of your trade partners, and how much that you ","t":"Die kombinierte tägliche Handelskapazität Ihrer Handelspartner sowie wie viel Si","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n\tCapacityNDesc: ","t":"KapazitätNDesc:","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Move this division to another army. The army must be on the same tile as the tar","t":"Verschiebe diese Division zu einer anderen Armee. Die Zielarmee muss sich auf de","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Unlocked Population","t":"Freigeschaltete Bevölkerung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Value Span","t":"Wertbereich","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"This faction produces resources, same as you, at a specific rate based on its ow","t":"Diese Fraktion produziert Ressourcen, wie Sie, mit einer bestimmten Rate, die au","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Personal Importance","t":"Persönliche Bedeutung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"And {0} Retinue","t":"Und {0} Retinue","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The price of a good is determined by the production rate, supply/demand, the fac","t":"Der Preis eines Gutes wird durch Produktionsrate, Angebot und Nachfrage, den Rei","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Traded (player)","t":"Handelt (Spieler)","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"How much a faction has traded with you and other factions. Supply and demand of ","t":"Wie viel eine Fraktion mit Ihnen und anderen Fraktionen gehandelt hat. Angebot u","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The size of a faction, and its production rate, and competence determines how mu","t":"Die Größe einer Fraktion, ihre Produktionsrate und ihre Kompetenz bestimmen, wie","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Target Amount","t":"Zielbetrag","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Traded Amount","t":"Gehandelter Betrag","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Current Amount","t":"Aktueller Betrag","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"The military might of this nation. High powered factions are harder to please.","t":"Die militärische Macht dieser Nation. Mächtige Fraktionen sind schwerer zufriede","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Power Balance compared to you","t":"Machtbilanz im Vergleich zu dir.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Assassination Target (click to cycle)","t":"Ziel für Attentat (klicken, um zu wechseln)","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Traded (total)","t":"Handelt (insgesamt)","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Haven Max Population","t":"Hafen – maximale Bevölkerung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Distance to Capitol","t":"Distanz zur Hauptstadt","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Shows each region's base capacity for species.","t":"Zeigt die Grundkapazität jeder Region für Arten.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Proximity is the physical distance from a region to your capital. It determines ","t":"Nähe ist die physische Entfernung einer Region zu deinem Hauptstädte. Sie bestim","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"At pop Target","t":"Bei Zielpopulation","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Squeeze this settlement for what it's got. Instantly delivering goods, but devas","t":"Erzwinge diese Siedlung, um sofort Waren zu liefern, doch zerstörend für die Reg","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The {0} is operating at low efficiency.","t":"Die {0} arbeitet mit geringem Wirkungsgrad.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Loyalty is at critical levels.","t":"Loyalität ist auf kritischem Niveau.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Health is at critical levels.","t":"Die Gesundheit ist auf kritischem Niveau.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Configure your own tweaks to the game.","t":"Passen Sie das Spiel nach Ihren Wünschen an.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"clear!","t":"Löschen!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The border guard, is an outpost that will enforce your local garrisons throughou","t":"Der Grenzwacht ist ein Außenposten, der deine lokalen Garnisonen im ganzen Reich","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Increases education and productivity globally.","t":"Erhöht Bildung und Produktivität im ganzen Reich.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"If full screen is selected, allow the window to iconify if it loses focus. When ","t":"Wenn der Vollbildmodus ausgewählt ist, darf das Fenster minimiert werden, wenn e","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"You are about to launch the game with mods enabled. Be prepared that vanilla fea","t":"Du startest das Spiel mit aktivierten Mods. Sei darauf vorbereitet, dass Vanilla","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Teach the people of regions how to apply the capital's scientific advances.","t":"Lehre die Bewohner der Regionen, die wissenschaftlichen Fortschritte des Reiches","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Sets a manual FPS cap on the game. Might interfere with Vsync.","t":"Setzt eine manuelle FPS-Kappe auf das Spiel. Könnte Vsync stören.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The combined sell quota of your trade partners per day, and how much that you ha","t":"Die kombinierten Verkaufsquoten deiner Handelspartner pro Tag sowie dein derzeit","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Do you wish to forget the following technologies? 50% of the points deallocated ","t":"Möchtest du die folgenden Technologien vergessen? 50 % der freigesetzten Punkte ","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Aruans are a species of horned, bipedal big cats adapted to warm, open regions. ","t":"Aruans sind eine Spezies horniger, zweibeiniger Großkatzen, die an warme, offene","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n],\r\nHAPPY_NO: [\r\n    ","t":",\r\n],\r\nHAPPY_NO: [\r\n    ","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"Aruan Nurseries","t":"Aruan-Kinderstätten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n],\r\nHAPPY_SOSO: [\r\n    ","t":",\r\n],\r\nHAPPY_SOSO: [\r\n    ","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"Aruans are a species of horned, bipedal great cats, standing roughly roughly hal","t":"Aruans sind eine Art gehornter, zweibeiniger Großkatzen, die etwa halb so groß w","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Aruan Nursery","t":"Aruanische Kinderstätte","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":",\r\n],\r\nNOTHING: [\r\n    ","t":",\r\n],\r\nNOTHING: [\r\n    ","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"A place where human babies are born and brought up. Each station is capable of b","t":"Ein Ort, an dem Menschenbabys geboren und aufgezogen werden. Jede Station kann e","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Wet Nurse","t":"Amme","p":"ab_polish","f":"","q":70,"sg":2,"fl":0,"a":null}
+{"s":"Tending to children.","t":"Kinderbetreuung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Amount of Cribs","t":"Anzahl der Kinderbetten","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Increases the rate at which humans are produced in Human Nurseries.","t":"Erhöht die Rate, mit der Menschen in menschlichen Kinderstuben geboren werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Increases birth rate.","t":"Erhöht die Geburtenrate.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Increases efficiency.","t":"Steigert die Effizienz.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Aruan upbringing","t":"Aruanische Erziehung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Decoration","t":"Dekoration","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Our city is now impressive enough to attract our first tourist. A {RACE} pilgrim","t":"Unsere Stadt ist jetzt beeindruckend genug, um unseren ersten Touristen anzuzieh","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Denari from sales","t":"Denari aus dem Verkauf","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Denari from purchases","t":"Denari aus Einkäufen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Goods Crafted","t":"Waren gefertigt","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Tunnels dug","t":"Tunnel","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Enemies killed","t":"Feinde getötet","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Battles Won","t":"Gewonnene Schlachten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Battles Lost","t":"Verlorene Schlachten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Invasions Won","t":"Gewonnene Invasionen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Invasions Lost","t":"Verlorene Invasionen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Royalties assassinated","t":"Lizenzen ermordet","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Kingdoms united","t":"Vereinigte Königreiche","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"all time","t":"die ganze Zeit","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Saving to disk, please wait.","t":"Speichern auf der Festplatte, bitte warten.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Mi lord, bandits have been spotted raiding our border settlements!","t":"Mein Herr, Banditen wurden gesichtet, die unsere Grenzbezirke überfallen!","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Slaves Freed","t":"Sklaven befreit","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Time Played","t":"Zeit gespielt","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Enslaved Population","t":"Versklavte Bevölkerung","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"preference","t":"bevorzugt","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Produced per day (estimation):","t":"Produziert pro Tag (Schätzung):","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Affected Races","t":"Betroffene Rassen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Supplies are needed by by certain conscripts and city troops to function. They a","t":"Versorgungen werden von bestimmten Rekruten und Stadttruppen benötigt, um ihre A","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This item increases morale by at most {0}% for the soldiers affected.","t":"Dieser Gegenstand erhöht die Moral der betroffenen Soldaten um höchstens {0} %.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"This is an essential supply for the affected soldiers, and low stocks will lead ","t":"Dies ist ein wesentlicher Vorrat für die betroffenen Soldaten, und geringe Vorrä","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The master sound volume","t":"Master-Soundvolumen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} Deposits","t":"{0} Lagerstätten","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Resources exist scattered on the map that are not yet stored and counted: ","t":"Ressourcen, die noch nicht auf der Karte gespeichert und gezählt wurden, existie","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The ambience volume","t":"Ambientevolumen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The brightness of the game.","t":"Die Helligkeit des Spiels.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Simulates the day and night cycle visually.","t":"Simuliert den Tag‑ und Nachtzyklus visuell.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"{0} min","t":"{0} min","p":"ab_polish","f":"stale_unflagged","q":25,"sg":2,"fl":1,"a":"source_reused|low_score"}
+{"s":"How often the game will auto-save.","t":"Wie oft das Spiel automatisch speichert.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"How many auto save files that will be kept.","t":"Wie viele Auto‑Speicherdateien behalten werden.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Scroll maps by touching the edges.","t":"Karten durch Berühren des Kartenrands scrollen.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Technologies unlocks various boosts and rooms.","t":"Technologien schalten verschiedene Verbesserungen und Räume frei.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have been born in your city.","t":"Bewohner, die in deiner Stadt geboren wurden.","p":"ab_polish","f":"","q":85,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have immigrated to your city.","t":"Bewohner, die in deine Stadt eingewandert sind.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"The music volume","t":"Musikvolumen","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Subjects that have been prisoners and are now pardoned and free citizens.","t":"Subjekte, die Gefangene waren und nun begnadigt und freie Bürger sind.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}
+{"s":"Soldiers that have returned from campaigning.","t":"Soldaten, die vom Feldzug zurückgekehrt sind.","p":"ab_polish","f":"","q":95,"sg":2,"fl":0,"a":null}

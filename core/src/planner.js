@@ -22,6 +22,7 @@ class Planner {
       cacheHits: 0,
       newTranslations: 0,
       qaFailures: 0,
+      shieldStats: { totalTokens: 0, totalReplaced: 0, totalUnrestored: 0, stringsWithLoss: 0 },
       activePhase: 'Idle',
       currentMod: '-',
       activeThreads: 0
@@ -45,6 +46,7 @@ class Planner {
     this.stats.cacheHits = 0;
     this.stats.newTranslations = 0;
     this.stats.qaFailures = 0;
+    this.stats.shieldStats = { totalTokens: 0, totalReplaced: 0, totalUnrestored: 0, stringsWithLoss: 0 };
         
     const runId = await this.initRun(mode);
     console.log(`\n[RUN] Starte Durchlauf #${runId} (Modus: ${mode.toUpperCase()})`);
@@ -139,6 +141,13 @@ class Planner {
       });
       if (result && typeof result === 'object') {
         this.stats.stringsExtracted += Number(result.stringsExtracted || 0);
+        const ss = result.shieldStats;
+        if (ss) {
+          this.stats.shieldStats.totalTokens += ss.totalTokens || 0;
+          this.stats.shieldStats.totalReplaced += ss.totalReplaced || 0;
+          this.stats.shieldStats.totalUnrestored += ss.totalUnrestored || 0;
+          this.stats.shieldStats.stringsWithLoss += ss.stringsWithLoss || 0;
+        }
       }
       // Tick CLI progress after each mod (filesScanned already includes new + cached)
       if (cli.isActive()) {
@@ -226,6 +235,13 @@ class Planner {
     console.log(`Cache Hits:       ${this.stats.cacheHits}`);
     console.log(`Neu übersetzt:    ${this.stats.newTranslations}`);
     console.log(`QA Warnungen:     ${this.stats.qaFailures}`);
+    const ss = this.stats.shieldStats;
+    if (ss && ss.totalTokens > 0) {
+      console.log(`Shield-Tokens:    ${ss.totalReplaced}/${ss.totalTokens} restored`);
+      if (ss.totalUnrestored > 0) {
+        console.log(`Shield-Verluste:  ${ss.totalUnrestored} Tokens in ${ss.stringsWithLoss} Strings`);
+      }
+    }
     console.log('='.repeat(30) + '\n');
   }
 }

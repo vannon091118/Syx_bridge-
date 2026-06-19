@@ -11,7 +11,11 @@ const exporter = require('./src/exporter');
 const UI = require('./src/ui');
 const dbManager = require('./src/db');
 const { createRuntimeOps } = require('./src/runtime-ops');
-const SongsOfSyxAdapter = require('./src/adapters/SongsOfSyxAdapter');
+// BU-002: SongsOfSyxPlugin extends GameAdapter and exposes the full
+// Songs-of-Syx surface (metadata, version dirs, classifyFile, formatMetadata, ...).
+// The legacy SongsOfSyxAdapter class has been removed — engine code consumes
+// the plugin through the GameAdapter interface.
+const SongsOfSyxPlugin = require('./src/plugins/SongsOfSyxPlugin');
 const { createTranslationRuntime } = require('./src/translation-runtime');
 const { 
   ConfigRuntime, 
@@ -38,6 +42,8 @@ const {
   buildProofreadPrompt,
   restoreAndValidateTranslation,
   translationLooksSafe,
+  translationCriticalCheck,
+  assessTranslationWarnings,
 } = require('./src/text-core');
 
 const { 
@@ -50,6 +56,7 @@ const {
 
 const GuiServer = require('./src/gui/server');
 const { registerGuiHandlers, readDisplayName, restoreBackup } = require('./src/gui-handlers');
+const { createPreflight } = require('./src/preflight');
 
 const { isArgosInstalled, ensureArgos } = require('./scripts/check_argos');
 const cleanupZombies = require('./scripts/cleanup_zombies');
@@ -71,7 +78,13 @@ let isAborting = false;
 let hasConfirmedNative = false;
 let runtimeOps;
 let translationRuntime;
-let gameAdapter;
+// BU-002: Single game-authority — the plugin IS the adapter. runtime-ops.js,
+// planner.js, and parser.js consume this through the GameAdapter interface,
+// while buildBatchPrompt / serializer hooks use it through the GamePlugin.
+let activePlugin = new SongsOfSyxPlugin();
+let gameAdapter = activePlugin;
+// Wire plugin into buildBatchPrompt for game-specific LLM prompts
+buildBatchPrompt._plugin = activePlugin;
 
 function envFirst(...names) {
   for (const name of names) {
@@ -97,13 +110,14 @@ let CONFIG = {
   GRAMMAR_CHECK: process.env.GRAMMAR_CHECK !== 'false', // BUG-004: Default true — ensures Polish/Audit runs for all entries
   GRAMMAR_PROMPT_FILE: 'grammar_context.txt',
   LOCAL_MODELS_ENABLED: parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, false),
+  NMT_LOCAL_ENABLED: parseEnvFlag(process.env.NMT_LOCAL_ENABLED, false),
     
   PRIMARY_PROVIDER: envFirst('PRIMARY_PROVIDER') || 'openrouter',
   PRIMARY_MODEL: envFirst('PRIMARY_MODEL') || 'auto',
-  POLISHER_PROVIDER: envFirst('POLISHER_PROVIDER') || 'openrouter',
+  POLISHER_PROVIDER: envFirst('POLISHER_PROVIDER') || '',  // '' = inherit from PRIMARY_PROVIDER below
   POLISHER_MODEL: envFirst('POLISHER_MODEL') || 'auto',
   REPOLISH_BUDGET: Number(process.env.REPOLISH_BUDGET || 50),
-  AUDITOR_PROVIDER: envFirst('AUDITOR_PROVIDER') || 'openrouter',
+  AUDITOR_PROVIDER: envFirst('AUDITOR_PROVIDER') || '',    // '' = inherit from PRIMARY_PROVIDER below
   AUDITOR_MODEL: envFirst('AUDITOR_MODEL') || 'auto',
     
   BATCH_SIZE: BATCH_SIZE,
@@ -111,15 +125,22 @@ let CONFIG = {
   GEMINI_KEYS: parseKeys(envFirst('GEMINI_KEY', 'GEMINI_KEYS')),
   GROQ_KEYS: parseKeys(envFirst('GROQ_KEY', 'GROQ_KEYS')),
   OPENROUTER_KEYS: parseKeys(envFirst('OPENROUTER_KEY', 'OPENROUTER_KEYS')),
+  NVIDIA_KEYS: parseKeys(envFirst('NVIDIA_KEY', 'NVIDIA_KEYS')),
   OLLAMA_KEYS: parseKeys(envFirst('OLLAMA_KEY', 'OLLAMA_KEYS')),
     
   OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+  FCM_URL: process.env.FCM_URL || 'http://localhost:19280/v1',
+  FCM_ENABLED: parseEnvFlag(process.env.FCM_ENABLED, true),
   PLAYER2_ENABLED: parseEnvFlag(process.env.PLAYER2_ENABLED, false),
   PLAYER2_URL: process.env.PLAYER2_URL || 'http://localhost:4315/v1',
   PLAYER2_KEYS: parseKeys(envFirst('PLAYER2_KEY', 'PLAYER2_KEYS')),
     
-  KEY_INDICES: { gemini: 0, groq: 0, openrouter: 0, ollama: 0 }
+  KEY_INDICES: { gemini: 0, groq: 0, openrouter: 0, nvidia: 0, ollama: 0 }
 };
+
+// ── Provider Inheritance: Polisher/Auditor inherit PRIMARY_PROVIDER if not set ──
+if (!CONFIG.POLISHER_PROVIDER) CONFIG.POLISHER_PROVIDER = CONFIG.PRIMARY_PROVIDER;
+if (!CONFIG.AUDITOR_PROVIDER) CONFIG.AUDITOR_PROVIDER = CONFIG.PRIMARY_PROVIDER;
 
 const configRuntime = new ConfigRuntime(CONFIG);
 const routingEngine = new Router(CONFIG, {
@@ -273,6 +294,7 @@ process.on('SIGINT', async () => {
 
 async function initDb() {
   await dbManager.init();
+  await dbManager.migrateRiskScore();
   setDb(dbManager.db());
 }
 
@@ -314,6 +336,7 @@ function applyEnvToConfig() {
   CONFIG.NATIVE_MODE = parseEnvFlag(process.env.NATIVE_MODE, CONFIG.NATIVE_MODE);
   CONFIG.GRAMMAR_CHECK = parseEnvFlag(process.env.GRAMMAR_CHECK, CONFIG.GRAMMAR_CHECK);
   CONFIG.LOCAL_MODELS_ENABLED = parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, CONFIG.LOCAL_MODELS_ENABLED);
+  CONFIG.NMT_LOCAL_ENABLED = parseEnvFlag(process.env.NMT_LOCAL_ENABLED, CONFIG.NMT_LOCAL_ENABLED);
   CONFIG.PRIMARY_PROVIDER = envFirst('PRIMARY_PROVIDER') || CONFIG.PRIMARY_PROVIDER;
   CONFIG.PRIMARY_MODEL = envFirst('PRIMARY_MODEL') || CONFIG.PRIMARY_MODEL;
   CONFIG.POLISHER_PROVIDER = envFirst('POLISHER_PROVIDER') || CONFIG.POLISHER_PROVIDER;
@@ -321,12 +344,18 @@ function applyEnvToConfig() {
   CONFIG.REPOLISH_BUDGET = Number(process.env.REPOLISH_BUDGET || CONFIG.REPOLISH_BUDGET);
   CONFIG.AUDITOR_PROVIDER = envFirst('AUDITOR_PROVIDER') || CONFIG.AUDITOR_PROVIDER;
   CONFIG.AUDITOR_MODEL = envFirst('AUDITOR_MODEL') || CONFIG.AUDITOR_MODEL;
+  // Re-inherit: if POLISHER/AUDITOR not explicitly set, fall back to PRIMARY
+  if (!envFirst('POLISHER_PROVIDER')) CONFIG.POLISHER_PROVIDER = CONFIG.PRIMARY_PROVIDER;
+  if (!envFirst('AUDITOR_PROVIDER')) CONFIG.AUDITOR_PROVIDER = CONFIG.PRIMARY_PROVIDER;
   CONFIG.BATCH_SIZE = Number(process.env.BATCH_SIZE || CONFIG.BATCH_SIZE);
   CONFIG.GEMINI_KEYS = parseKeys(envFirst('GEMINI_KEY', 'GEMINI_KEYS'));
   CONFIG.GROQ_KEYS = parseKeys(envFirst('GROQ_KEY', 'GROQ_KEYS'));
   CONFIG.OPENROUTER_KEYS = parseKeys(envFirst('OPENROUTER_KEY', 'OPENROUTER_KEYS'));
+  CONFIG.NVIDIA_KEYS = parseKeys(envFirst('NVIDIA_KEY', 'NVIDIA_KEYS'));
   CONFIG.OLLAMA_KEYS = parseKeys(envFirst('OLLAMA_KEY', 'OLLAMA_KEYS'));
   CONFIG.OLLAMA_URL = envFirst('OLLAMA_URL') || CONFIG.OLLAMA_URL;
+  CONFIG.FCM_URL = envFirst('FCM_URL') || CONFIG.FCM_URL;
+  CONFIG.FCM_ENABLED = parseEnvFlag(process.env.FCM_ENABLED, CONFIG.FCM_ENABLED);
   CONFIG.PLAYER2_ENABLED = parseEnvFlag(process.env.PLAYER2_ENABLED, CONFIG.PLAYER2_ENABLED);
   CONFIG.PLAYER2_URL = envFirst('PLAYER2_URL') || CONFIG.PLAYER2_URL;
   CONFIG.PLAYER2_KEYS = parseKeys(envFirst('PLAYER2_KEY', 'PLAYER2_KEYS'));
@@ -443,7 +472,12 @@ async function writeTranslatedFile(job, modOutputPath, translations, options = {
   const outPath = path.join(modOutputPath, job.relativePath);
   if (await shouldSkipFile(job.filePath, outPath, options)) return { skipped: true };
   console.log(`[ECHO] Schreibe: ${job.relativePath}`);
-  await exporter.writeTranslatedFile(job.filePath, job.content, job.replacements, translations, outPath);
+  const writeResult = await exporter.writeTranslatedFile(job.filePath, job.content, job.replacements, translations, outPath, activePlugin);
+  // Only mark as processed if the file was actually written (not blocked by critical syntax gate)
+  if (writeResult && writeResult.skipped) {
+    console.warn(`[WARN] ${job.relativePath} nicht geschrieben (kritischer Syntax-Fehler).`);
+    return { skipped: true, reason: writeResult.reason };
+  }
   await markProcessed(job.filePath, outPath);
   return { skipped: false };
 }
@@ -456,6 +490,41 @@ const createRuntimePlanner = () => new Planner(CONFIG, { translateMod: async (mo
 
 async function synchronize(planner, options = {}) {
   printHeader(options.dryRun ? 'Simulation (Dry Run)' : 'Automatische Synchronisation');
+
+  // ── RECOVERY: Stale processed_files when patches/ is missing ──────
+  // Scenario: fullReset() or manual deletion removed patches/
+  // but processed_files still has 401+ entries claiming "already written".
+  // Fix: auto-detect and clear the table so files are rewritten this sync.
+  if (!options.dryRun && !fs.existsSync(CONFIG.PATCH_ROOT)) {
+    const pfCount = await dbGet('SELECT COUNT(*) as cnt FROM processed_files');
+    if (pfCount && pfCount.cnt > 0) {
+      console.warn(`[RECOVERY] patches/ existiert nicht, aber ${pfCount.cnt} processed_files-Eintraege gefunden.`);
+      console.warn('[RECOVERY] Loesche processed_files — Dateien werden in diesem Sync neu geschrieben.');
+      await dbRun('DELETE FROM processed_files');
+      console.log(`[RECOVERY] ${pfCount.cnt} Eintraege geloescht.`);
+    }
+  }
+
+  // ── PREFLIGHT ANALYSIS ────────────────────────────────────────────
+  // Runs before every non-dry-run sync to check DB health.
+  // Repairs common issues automatically (<5% threshold).
+  // At >5%: warns but does NOT block — GUI shows repair button.
+  if (!options.dryRun) {
+    const preflight = createPreflight(dbManager);
+    const pfResult = await preflight.runPreflight({ gui: process.argv.includes('--gui') });
+    // Store warning for GUI access (e.g., blinking repair button)
+    if (pfResult.report && pfResult.report.dbWarning) {
+      global._preflightWarning = pfResult.report.dbWarning;
+      console.warn('[!] PREFLIGHT DB-Warnung — GUI-Repair-Button verfuegbar.');
+    } else {
+      global._preflightWarning = null;
+    }
+    // Only block on true critical (integrity check failure, not the >5% threshold)
+    if (!pfResult.ok) {
+      console.error('[!] Sync blockiert — PREFLIGHT hat kritische DB-Probleme gefunden.');
+      return;
+    }
+  }
   const activeMods = await getActiveMods();
   const modsToPatch = activeMods.filter(m => !m.endsWith(`_${CONFIG.TARGET_LANG}`) && m !== 'BridgeCore');
   if (modsToPatch.length === 0) {
@@ -663,7 +732,7 @@ async function main() {
   await initDbRo();
   await cleanupLegacyFolders();
 
-  gameAdapter = new SongsOfSyxAdapter();
+  // gameAdapter + activePlugin are initialized at module scope (safe — no DB/async deps)
 
   // readFileJobWithAdapter: wraps readFileJob to inject the adapter
   const readFileJobWithAdapter = (job) => readFileJob({ ...job, adapter: gameAdapter });
@@ -698,6 +767,8 @@ async function main() {
     classifyPath, 
     restoreAndValidateTranslation, 
     translationLooksSafe,
+    translationCriticalCheck,
+    assessTranslationWarnings,
     shouldTranslate, 
     stripJsonFence, 
     getGrammarContext, 

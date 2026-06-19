@@ -58,8 +58,11 @@ function countMatches(text, regex) {
  * Static heuristic risk score (0-22). Higher = needs better model.
  * Categories: Length + Placeholders + Sentences + Quotes + ProperNouns + Type
  *            + Grammar + PlaceholderTypes + Lore + Style
+ *
+ * @param {object} entry            Translation entry
+ * @param {string[]} [loreTerms=[]] Game-specific lore terms (from plugin.getLoreTerms())
  */
-function scoreTranslationRisk(entry) {
+function scoreTranslationRisk(entry, loreTerms = []) {
   const item = normalizeTranslationEntry(entry);
   const source = item.source;
   let score = 0;
@@ -117,11 +120,15 @@ function scoreTranslationRisk(entry) {
   score += placeholderDetailScore;
 
   // ── Lore Risk: game-specific proper nouns & factions ────────────────────
+  // loreTerms are plugin-supplied (e.g. SongsOfSyxPlugin.getLoreTerms()).
+  // No plugin → no lore bonus. Fully generic.
   let loreScore = 0;
   const properNounMatches = source.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3}\b/g) || [];
   if (properNounMatches.length >= 2) loreScore += 1;
-  if (/\b(kingdom|empire|clan|tribe|guild|order|house|dynasty|legion|court|realm|dominion)\b/i.test(source))
-    loreScore += 1;
+  if (loreTerms.length > 0) {
+    const loreRegex = new RegExp(`\\b(${loreTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'i');
+    if (loreRegex.test(source)) loreScore += 1;
+  }
   score += Math.min(2, loreScore);
 
   // ── Style Risk: imperative mood, emotive language, rhetorical ───────────

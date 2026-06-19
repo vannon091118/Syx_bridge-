@@ -1,0 +1,291 @@
+{"s":",\r\n},\r\nview.sett.ui.noble.NobleRow: {\r\n\t","t":",\r\n},\r\nview.sett.ui.noble.NobleRow: {","p":"google_free","f":"free_machine_translation|source_reused","q":25,"sg":0,"fl":1,"a":"low_score"}
+{"s":"Mini Panels","t":"Mini-Panels","p":"google_free","f":"free_machine_translation","q":75,"sg":0,"fl":1,"a":null}
+{"s":",\r\n\tDouble: ","t":",\r\n\tDoppelt:","p":"google_free","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"remove room","t":"Raum entfernen","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"undo","t":"rückgängig machen","p":"google_free","f":"free_machine_translation","q":75,"sg":0,"fl":1,"a":null}
+{"s":"items","t":"Artikel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Toggle overlay","t":"Overlay umschalten","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Workload is low","t":"Die Arbeitsbelastung ist gering","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Produced today","t":"Heute produziert","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Produced yesterday","t":"Gestern produziert","p":"google_free","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"Estimated this year","t":"Dieses Jahr geschätzt","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Produced last year","t":"Letztes Jahr produziert","p":"google_free","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"Upgrade all","t":"Aktualisieren Sie alle","p":"google_free","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"workforce & rooms","t":"Personal & Räume","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Assign work groups","t":"Weisen Sie Arbeitsgruppen zu","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Set priority for:","t":"Priorität festlegen für:","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Number of Rooms","t":"Anzahl der Zimmer","p":"google_free","f":"","q":85,"sg":1,"fl":0,"a":null}
+{"s":"Are you sure you wish to recognize this subject as a hero of the people?","t":"Sind Sie sicher, dass Sie dieses Thema als Helden des Volkes anerkennen möchten?","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Your status determines how many nobles you can elevate. To elevate more, you mus","t":"Ihr Status bestimmt, wie viele Adlige Sie befördern können. Um noch weiter aufzu","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Your status determines how many heroes you can recognize. To recognize more, you","t":"Ihr Status bestimmt, wie viele Helden Sie erkennen können. Um mehr zu erkennen, ","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Allow/deny access for Species","t":"Zugriff für Arten zulassen/verweigern","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Subject does not yet qualify for any Hero Roles.","t":"Das Subjekt ist noch nicht für Heldenrollen qualifiziert.","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Rename subject.","t":"Betreff umbenennen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Action not available for:","t":"Aktion nicht verfügbar für:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Set action for:","t":"Aktion festlegen für:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Other Services","t":"Andere Dienstleistungen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Are you sure you wish to elevate this subject to the rank of noble?","t":"Sind Sie sicher, dass Sie dieses Thema in den Rang eines Adligen erheben möchten","p":"google_free","f":"needs_polish","q":95,"sg":1,"fl":1,"a":null}
+{"s":"Go to workplace","t":"Gehen Sie zum Arbeitsplatz","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The subject is marked for this action, but the action has not yet been consummat","t":"Der Betreff ist für diese Aktion markiert, die Aktion wurde jedoch noch nicht ab","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Carried resource","t":"Mitgeführte Ressource","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This action has been consumed. Its effect will last for a few days while tamperi","t":"Diese Aktion wurde verbraucht. Die Wirkung hält nach dem Abklingen einige Tage a","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Starving to death.","t":"Verhungern.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Current Need","t":"Aktueller Bedarf","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"When a subject has spare time, they want to consume services. This is how freque","t":"Wenn ein Subjekt Freizeit hat, möchte es Dienste in Anspruch nehmen. Dies ist di","p":"google_free","f":"needs_polish","q":95,"sg":1,"fl":1,"a":null}
+{"s":"Related Services","t":"Verwandte Dienstleistungen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Mark as favourite","t":"Als Favorit markieren","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Sentenced to be:","t":"Verurteilt zu:","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Bleeding badly","t":"Blutet stark","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Blocked by other job.","t":"Durch anderen Job blockiert.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed on jobs.","t":"Muss auf Jobs platziert werden.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed on room.","t":"Muss im Raum platziert werden.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Max reached!","t":"Max erreicht!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Max dimension reached!","t":"Maximale Dimension erreicht!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed on edible vegetation!","t":"Muss auf essbarer Vegetation platziert werden!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed on broken walls or rooms.","t":"Muss an kaputten Wänden oder Räumen angebracht werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed on a cave.","t":"Muss in einer Höhle platziert werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Blocked by terrain!","t":"Durch Gelände blockiert!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed within map!","t":"Muss innerhalb der Karte platziert werden!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Needs at least 1 unblocked tile.","t":"Benötigt mindestens 1 nicht blockiertes Plättchen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Max size reached!","t":"Maximale Größe erreicht!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Needs to be in the same region.","t":"Muss in der gleichen Region sein.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"type","t":"Typ","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"rectangle","t":"Rechteck","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"hollow rectangle","t":"hohles Rechteck","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Blocked!","t":"Blockiert!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"line","t":"Linie","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"ellipse","t":"Ellipse","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"hollow ellipse","t":"hohle Ellipse","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"hollow hexagon","t":"hohles Sechseck","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"hexagon","t":"Hexagon","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"fill","t":"füllen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Potential Problems","t":"Mögliche Probleme","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Click to suppress this warning.","t":"Klicken Sie, um diese Warnung zu unterdrücken.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Click to activate this warning","t":"Klicken Sie, um diese Warnung zu aktivieren","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Will block other tile!","t":"Blockiert andere Kacheln!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"resettle","t":"umsiedeln","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"If you find that your city is crumbling into dust, we can move to a different pa","t":"Wenn Sie feststellen, dass Ihre Stadt zu Staub zerfällt, können wir in einen and","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"While oddjobbers are handy as builders and lending a hand where possible, they a","t":"Während Gelegenheitsjobber als Bauherren nützlich sind und, wenn möglich, mit an","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Must be placed on rooms or structures!","t":"Muss auf Räumen oder Bauwerken platziert werden!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed on items!","t":"Muss auf Gegenständen platziert werden!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"brush","t":"Bürste","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Must be placed in a region!","t":"Muss in einer Region platziert werden!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Will be blocked by other tile!","t":"Wird durch andere Kacheln blockiert!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Some rooms have problems with workload.","t":"In einigen Räumen gibt es Probleme mit der Arbeitsbelastung.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Money itself can not be eaten or utilized. It is but a temporary credit to be tr","t":"Geld selbst kann nicht gegessen oder genutzt werden. Es handelt sich lediglich u","p":"google_free","f":"needs_polish","q":95,"sg":1,"fl":1,"a":null}
+{"s":"You currently are not hording much wealth.","t":"Sie horten derzeit nicht viel Vermögen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Research and technology can be just as detrimental as beneficial. It's not simpl","t":"Forschung und Technologie können ebenso schädlich wie nützlich sein. Es geht nic","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"You have a very high ratio of research workers compared to your industry workers","t":"Ihr Anteil an Forschungsmitarbeitern ist im Vergleich zu Ihren Branchenmitarbeit","p":"google_free","f":"needs_polish","q":95,"sg":1,"fl":1,"a":null}
+{"s":"Having services always cost you resources one way or the other. As such, it's im","t":"Die Bereitstellung von Dienstleistungen kostet Sie auf die eine oder andere Weis","p":"google_free","f":"","q":95,"sg":1,"fl":0,"a":null}
+{"s":"Some of your services have low usage and are thus over-dimensioned","t":"Einige Ihrer Dienste weisen eine geringe Nutzung auf und sind daher überdimensio","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"/Item","t":"/Artikel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You get","t":"Du bekommst","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"{0} Gets","t":"{0} Ruft ab","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"We Give you","t":"Wir geben Ihnen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You give us","t":"Du gibst uns","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"This offer is no longer valid.","t":"Dieses Angebot ist nicht mehr gültig.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your services are properly dimensioned.","t":"Ihre Leistungen sind richtig dimensioniert.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You have accepted this offer.","t":"Sie haben dieses Angebot angenommen.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Attacking Structure","t":"Angriffsstruktur","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You have declined this offer.","t":"Sie haben dieses Angebot abgelehnt.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Not Mustered","t":"Nicht gemustert","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Unit has no valid position","t":"Das Gerät hat keine gültige Position","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Needs to Train","t":"Muss trainieren","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Fully Trained","t":"Voll ausgebildet","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Currently Training","t":"Derzeit Ausbildung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Supplies Health","t":"Liefert Gesundheit","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Supplies Morale","t":"Liefert Moral","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Not enough supplies to send out. Fill up your warehouses of essential army suppl","t":"Nicht genügend Vorräte zum Versenden. Füllen Sie Ihre Lager mit wichtigen Armeeg","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Inform us of your decision within a day.","t":"Teilen Sie uns Ihre Entscheidung innerhalb eines Tages mit.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There are no conscripts to train for this division.","t":"Für diese Division sind keine Wehrpflichtigen auszubilden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Declining this offer will change the faction's opinion of you by:","t":"Wenn Sie dieses Angebot ablehnen, ändert sich die Meinung der Fraktion über Sie ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Accepting this offer will change the faction's opinion of you by:","t":"Wenn Sie dieses Angebot annehmen, wird sich die Meinung der Fraktion über Sie än","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The agreement has expired.","t":"Die Vereinbarung ist abgelaufen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This army is currently not mustering, and will not train conscripts.","t":"Diese Armee stellt derzeit keine Truppen auf und wird keine Wehrpflichtigen ausb","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Trade Capacity","t":"Handelskapazität","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Show resources that are imported.","t":"Importierte Ressourcen anzeigen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Special Orders","t":"Sonderbestellungen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Depot Capacity","t":"Depotkapazität","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The minimum price you are willing to sell this resource for.","t":"Der Mindestpreis, zu dem Sie diese Ressource verkaufen möchten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Priority Limit","t":"Prioritätsbegrenzung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Import Settings","t":"Einstellungen importieren","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Current warehouse stock:","t":"Aktueller Lagerbestand:","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The maximum price you are willing to pay for this resource.","t":"Der Höchstpreis, den Sie für diese Ressource zu zahlen bereit sind.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Show resources that are exported.","t":"Ressourcen anzeigen, die exportiert werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The combined trade capacity of your trade partners, and how much that you have c","t":"Die kombinierte Handelskapazität Ihrer Handelspartner und wie viel Sie derzeit g","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Economy & Trade","t":"Wirtschaft & Handel","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Show resources not actively traded","t":"Ressourcen anzeigen, die nicht aktiv gehandelt werden","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Export Settings","t":"Exporteinstellungen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Minimum Treasury.","t":"Mindestkasse.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"You have a trade agreement with this faction, and trade is possible.","t":"Sie haben ein Handelsabkommen mit dieser Fraktion und Handel ist möglich.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You do not have a trade agreement with this faction. Trade is not possible.","t":"Sie haben kein Handelsabkommen mit dieser Fraktion. Ein Handel ist nicht möglich","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Click to go to the diplomacy screen for this faction.","t":"Klicken Sie hier, um zum Diplomatiebildschirm für diese Fraktion zu gelangen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"World log","t":"Weltprotokoll","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Your import level dictates how much that will be imported based on your warehous","t":"Ihr Importniveau bestimmt, wie viel importiert wird, basierend auf Ihrem Lagerbe","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Delete all read messages.","t":"Alle gelesenen Nachrichten löschen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"When selected, pauses the game and shows this type of message upon arrival.","t":"Wenn diese Option ausgewählt ist, wird das Spiel angehalten und beim Eintreffen ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Color Masks","t":"Farbmasken","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} {1} of {2}","t":"{0} {1} von {2}","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Titles can not be unlocked.","t":"Titel können nicht freigeschaltet werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Whenever you start a new game, you get to choose 5 unlocked titles.","t":"Immer wenn Sie ein neues Spiel starten, können Sie 5 freigeschaltete Titel auswä","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Title is currently unlocked and active.","t":"Der Titel ist derzeit freigeschaltet und aktiv.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Import to maintain warehouse stock at {0}% of total capacity ({1} items).","t":"Importieren, um den Lagerbestand bei {0} % der Gesamtkapazität ({1} Artikel) zu ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Title is currently unlocked. You can select it when starting a new game.","t":"Der Titel ist derzeit freigeschaltet. Sie können es auswählen, wenn Sie ein neue","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Load Default","t":"Standard laden","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ruler Name","t":"Name des Herrschers","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Game Desc.","t":"Spielbeschreibung.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Save as Default","t":"Als Standard speichern","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"100% Imports maximum to fill both warehouses and import depots.","t":"Maximal 100 % Importe, um sowohl Lager als auch Importdepots zu füllen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The minimum credits needed before a purchase is undertaken.","t":"Das Mindestguthaben, das benötigt wird, bevor ein Kauf getätigt wird.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Never import.","t":"Niemals importieren.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You will currently import {0} additional items.","t":"Sie importieren derzeit {0} zusätzliche Artikel.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Title is currently unavailable.","t":"Der Titel ist derzeit nicht verfügbar.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This bandit is currently at large, and is contemplating their next raid on us.","t":"Dieser Bandit ist derzeit auf freiem Fuß und denkt über seinen nächsten Überfall","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This bandit is currently raiding you.","t":"Dieser Bandit überfällt Sie gerade.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Armies encamped in your realm.","t":"Armeen lagerten in deinem Reich.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Potential Ransom","t":"Mögliches Lösegeld","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The potential ransom a raider sees fit to extort you with. Based on population a","t":"Das potenzielle Lösegeld, mit dem ein Räuber Sie erpressen möchte. Basiert auf B","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Surprise!","t":"Überraschung!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your capital is surrounded by regions where raiders can sneak in and surprise at","t":"Ihre Hauptstadt ist von Regionen umgeben, in die sich Räuber einschleichen und S","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Raiders can't surprise attack your city directly. This is good. They must pass t","t":"Räuber können Ihre Stadt nicht direkt überraschen. Das ist gut. Sie müssen Ihre ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"At Large!","t":"Auf freiem Fuß!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"In Hiding","t":"Im Versteck","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Hold {0} and click to disable this technology. The following points will be adde","t":"Halten Sie {0} gedrückt und klicken Sie, um diese Technologie zu deaktivieren. D","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Locked by Requirements","t":"Durch Anforderungen gesperrt","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Unable to Afford","t":"Unfähig, es sich zu leisten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Unlocking this tech will result in {0} more workers in the affected industries (","t":"Das Freischalten dieser Technologie führt zu {0} mehr Arbeitern in den betroffen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Do you wish to unlock the following:","t":"Möchten Sie Folgendes freischalten:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"For the cost of:","t":"Für die Kosten von:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Do you wish to forget the following technologies? 25% of the points deallocated ","t":"Möchten Sie die folgenden Technologien vergessen? 25 % der freigegebenen Punkte ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"No results","t":"Keine Ergebnisse","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The power of forces defending your city. This deters raiders.","t":"Die Macht der Kräfte, die Ihre Stadt verteidigen. Das schreckt Plünderer ab.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This bandit is but a memory and was brought to justice {0}.","t":"Dieser Bandit ist nur noch eine Erinnerung und wurde vor Gericht gestellt {0}.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Possible surprise attack","t":"Möglicher Überraschungsangriff","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This bandit does not have the strength to attack us currently and will leave us ","t":"Dieser Bandit hat derzeit nicht die Kraft, uns anzugreifen und wird uns vorerst ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"We are too insignificant and poor for this bandit to bother us.","t":"Wir sind zu unbedeutend und arm, als dass dieser Bandit uns stören könnte.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Additional armies encamped near your city.","t":"Zusätzliche Armeen lagerten in der Nähe Ihrer Stadt.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Regions that can be upgraded","t":"Regionen, die aktualisiert werden können","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Wrongful deaths","t":"Ungerechtfertigte Todesfälle","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rooms that have been broken and needs repair.","t":"Zimmer, die kaputt sind und repariert werden müssen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Supply Issues","t":"Versorgungsprobleme","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Some of our armies are low on crucial supplies. This can be due to supplies bein","t":"Einige unserer Armeen verfügen nicht mehr über lebenswichtige Vorräte. Dies kann","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Toggle Battle Mode","t":"Schalten Sie den Kampfmodus um","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Go to next tourist","t":"Gehen Sie zum nächsten Touristen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Click to toggle permission for race to visit and sightsee in your city.","t":"Klicken Sie hier, um die Erlaubnis für Rennen zum Besuchen und Besichtigen Ihrer","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Attracted by:","t":"Angezogen von:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Overwhelmingly Positive","t":"Überwältigend positiv","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Attracted (year)","t":"Angezogen (Jahr)","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Tome of Knowledge","t":"Wälzer des Wissens","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Different species likes/dislikes different aspects of layout and management. Gre","t":"Verschiedene Arten mögen bzw. mögen unterschiedliche Aspekte der Gestaltung und ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This is liked by the race. Higher value = more fulfillment.","t":"Das gefällt der Rasse. Höherer Wert = mehr Erfüllung.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This is disliked the race. Higher value = less fulfillment.","t":"Das ist dem Rennen unangenehm. Höherer Wert = weniger Erfüllung.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Different classes have mixed feelings about this.","t":"Verschiedene Klassen haben diesbezüglich gemischte Gefühle.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This race doesn't care about this value.","t":"Dieser Rasse ist dieser Wert egal.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Inclination towards different religions.","t":"Neigung zu verschiedenen Religionen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Determines a species population and location on the world map.","t":"Bestimmt eine Artenpopulation und den Standort auf der Weltkarte.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Amount of regions currently under siege","t":"Anzahl der derzeit belagerten Regionen","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Regions in trouble","t":"Regionen in Schwierigkeiten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Some subjects have died in ways that could have been prevented.","t":"Einige Probanden sind auf eine Weise gestorben, die hätte verhindert werden könn","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"New Rooms","t":"Neue Zimmer","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"New rooms that have been constructed.","t":"Neue Räume, die gebaut wurden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This species is not available for immigration.","t":"Diese Art steht nicht zur Einwanderung zur Verfügung.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Place Capital","t":"Platzieren Sie die Hauptstadt","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"All species have unique play styles, excel at different works, and have differen","t":"Alle Arten haben einzigartige Spielstile, zeichnen sich durch unterschiedliche W","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Initial Challenge","t":"Erste Herausforderung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Select Titles","t":"Wählen Sie Titel aus","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Pick 5 unlocked titles to boost your name.","t":"Wählen Sie 5 freigeschaltete Titel aus, um Ihren Namen zu steigern.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You may still pick some unlocked titles. Start anyway?","t":"Sie können noch einige freigeschaltete Titel auswählen. Trotzdem anfangen?","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Races completed (increases boost)","t":"Rennen abgeschlossen (erhöht den Boost)","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Regenerating terrain will reset your current world. Proceed?","t":"Durch die Regenerierung des Geländes wird Ihre aktuelle Welt zurückgesetzt. Fort","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"choose map type","t":"Wählen Sie den Kartentyp","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Generating new terrain will reset faction and regions. Continue?","t":"Durch die Generierung neuen Geländes werden Fraktion und Regionen zurückgesetzt.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"latitude","t":"Breite","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"northern","t":"nördlich","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"southern","t":"Süd-","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Random Seed","t":"Zufälliger Samen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Inspect World","t":"Welt inspizieren","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"High natural moisture spots have little need for irrigation. Low moisture spots ","t":"Stellen mit hoher natürlicher Feuchtigkeit erfordern kaum Bewässerung. Stellen m","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} do not prefer climate: {1}. It will be a bit harder to please them.","t":"{0} bevorzugen kein Klima: {1}. Es wird etwas schwieriger sein, es ihnen recht z","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"This location is isolated. Initially you will be left alone by other factions, b","t":"Dieser Ort ist isoliert. Zunächst werden Sie von anderen Fraktionen in Ruhe gela","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You will have few of your own species nearby, which might make expanding harder ","t":"Sie werden nur wenige Ihrer eigenen Spezies in der Nähe haben, was die Expansion","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"start","t":"Start","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Settling in this location is not possible.","t":"Eine Ansiedlung an diesem Standort ist nicht möglich.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Edit terrain","t":"Gelände bearbeiten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Select species","t":"Arten auswählen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"go to capital","t":"geh in die Hauptstadt","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"No conscripts are available in your realm.","t":"In Ihrem Reich sind keine Wehrpflichtigen verfügbar.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Have your city troops join this army.","t":"Lassen Sie Ihre Stadttruppen dieser Armee beitreten.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Hiring mercenaries is instant and they equip, feed and replenish themselves. The","t":"Das Anheuern von Söldnern erfolgt sofort und sie rüsten sich aus, ernähren sich ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Morale is gained by keeping the army well supplied and by winning battles. Moral","t":"Die Moral wird dadurch gestärkt, dass die Armee gut versorgt wird und Schlachten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Recruit the local soldiers. These use up the conscripts pool of your realm, and ","t":"Rekrutiere die örtlichen Soldaten. Diese verbrauchen den Rekrutenpool Ihres Reic","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"developer tools","t":"Entwicklertools","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Health is gained by keeping the army well supplied. Poor health will lead to des","t":"Gesundheit wird dadurch gewonnen, dass die Armee gut versorgt wird. Schlechte Ge","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Insufficient Conscripts available of selected race!","t":"Für die ausgewählte Rasse sind nicht genügend Wehrpflichtige verfügbar!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"NOTE: once a division has finished training, it will need to be supplied from yo","t":"HINWEIS: Sobald eine Division ihre Ausbildung abgeschlossen hat, muss sie aus de","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You don't have enough essential supplies stored in your warehouses to recruit th","t":"Sie verfügen nicht über genügend lebenswichtige Vorräte in Ihren Lagerhäusern, u","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You do not have any army supply depots to deliver essential supplies to this div","t":"Sie verfügen nicht über Versorgungsdepots der Armee, um diese Division mit leben","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Captain {0}'s","t":"Kapitän {0}s","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Auto resolve this battle. The result will be {0}. You will lose about {1} men an","t":"Diesen Kampf automatisch lösen. Das Ergebnis wird {0} sein. Sie werden etwa {1} ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This unit is defending and is given extra power due to their defensive position.","t":"Diese Einheit verteidigt und erhält aufgrund ihrer Verteidigungsposition zusätzl","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Our allies are about to engage an enemy host. Do we help them, or do we stand id","t":"Unsere Verbündeten sind dabei, einen feindlichen Heer anzugreifen. Helfen wir ih","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Take personal command and fight this battle on the field. The outcome will depen","t":"Übernimm das persönliche Kommando und kämpfe diesen Kampf auf dem Feld. Das Erge","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Partake in this battle but let your allies command it. The result will be {0}. Y","t":"Nehmen Sie an diesem Kampf teil, aber überlassen Sie ihn Ihren Verbündeten. Das ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Are you sure you wish to:","t":"Sind Sie sicher, dass Sie Folgendes möchten:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Disband {0} divisions?","t":"{0} Divisionen auflösen?","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Move this division to another army. The other army must be within 3 tiles.","t":"Verschieben Sie diese Division in eine andere Armee. Die andere Armee muss sich ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Disband entire army.","t":"Auflösung der gesamten Armee.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The amount of money needed to upkeep this army daily.","t":"Der Geldbetrag, der benötigt wird, um diese Armee täglich zu unterhalten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Army unit limit reached!","t":"Das Einheitenlimit der Armee ist erreicht!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"your annihilation","t":"Deine Vernichtung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Make a tactical retreat. Your allies will not engage, but your commanding force ","t":"Machen Sie einen taktischen Rückzug. Ihre Verbündeten werden nicht angreifen, ab","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Take personal command and fight this battle on the field. The outcome will depen","t":"Übernimm das persönliche Kommando und kämpfe diesen Kampf auf dem Feld. Das Erge","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Let the garrison fend for themselves and die in the defence of the city.","t":"Lassen Sie die Garnison für sich selbst sorgen und bei der Verteidigung der Stad","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The Sally of {0}","t":"Der Ausfall von {0}","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Our garrison is about to sally out to break the siege.","t":"Unsere Garnison steht kurz davor, auszubrechen, um die Belagerung zu durchbreche","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Fall Back","t":"Zurückgreifen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Abort the whole operation. No one will be harmed.","t":"Brechen Sie den gesamten Vorgang ab. Niemand wird zu Schaden kommen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Our armies are at the walls of an enemy settlement. Its garrison still defiant. ","t":"Unsere Armeen stehen an den Mauern einer feindlichen Siedlung. Seine Garnison is","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Continue the siege and wait. Eventually the defenders will starve and tire.","t":"Setzen Sie die Belagerung fort und warten Sie. Irgendwann werden die Verteidiger","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"After a day of siege, the defenders will start dying. After a full year, the def","t":"Nach einem Tag der Belagerung beginnen die Verteidiger zu sterben. Nach einem vo","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Decline to partake in this conflict and spare your men and the enemy at the expe","t":"Nehmen Sie nicht an diesem Konflikt teil und verschonen Sie Ihre Männer und den ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The city of {0} is captured my lord. What shall be the fate of its citizens?","t":"Die Stadt {0} ist erobert, mein Herr. Was wird das Schicksal seiner Bürger sein?","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Region Captured","t":"Region erfasst","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Lift and abort siege.","t":"Belagerung aufheben und abbrechen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Besiege Time.","t":"Belagerungszeit.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Grab what we can of valuables.","t":"Schnappen Sie sich, was wir an Wertsachen finden können.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Let your men blow off some steam after a tough siege. Spare none, leave no stone","t":"Lassen Sie Ihre Männer nach einer harten Belagerung etwas Dampf ablassen. Sparen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The enemy is about to take the city! Some of the defenders implore you to lead t","t":"Der Feind ist dabei, die Stadt einzunehmen! Einige der Verteidiger flehen Sie an","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The Last Stand of {0}","t":"Das letzte Gefecht von {0}","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Your forces are trapped, they can't retreat.","t":"Ihre Truppen sind gefangen, sie können sich nicht zurückziehen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Line the population up and ship the healthiest specimen to the capitol as slaves","t":"Stellt die Bevölkerung auf und verschifft das gesündeste Exemplar als Sklaven in","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Our mighty forces are about to engage an enemy host. What are your orders?","t":"Unsere mächtigen Streitkräfte sind dabei, einen feindlichen Heer anzugreifen. Wa","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The base sell price is proportional to the amount of the resource a faction has ","t":"Der Grundverkaufspreis ist proportional zur Menge der Ressource, die eine Frakti","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The power of this faction compared to you. The power is a mix of military might ","t":"Die Macht dieser Fraktion im Vergleich zu Ihnen. Die Macht ist eine Mischung aus","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The value of a deal is weighed by the faction's perception of the value of its c","t":"Der Wert eines Deals wird dadurch gewichtet, wie die Fraktion den Wert seiner Be","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The deal will be accepted","t":"Der Deal wird angenommen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The deal will not be accepted","t":"Der Deal wird nicht angenommen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The change of opinion of the faction's ruler if this deal is accepted.","t":"Die Meinungsänderung des Fraktionsführers, wenn dieser Deal angenommen wird.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You have nothing of worth to offer the faction.","t":"Sie haben der Fraktion nichts Wertvolles anzubieten.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Personal Importance:","t":"Persönliche Bedeutung:","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"search","t":"suchen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Moisture can increase production of buildings and determines how many subjects t","t":"Feuchtigkeit kann die Produktion von Gebäuden steigern und bestimmt, wie viele S","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This faction hates you to a degree that it is poisoning all other factions again","t":"Diese Fraktion hasst Sie so sehr, dass sie alle anderen Fraktionen gegen Sie ver","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"What do you wish to offer us?","t":"Was möchten Sie uns bieten?","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Allow the Faction to compose a deal that they feel comfortable with based on you","t":"Erlauben Sie der Fraktion, auf der Grundlage Ihrer Anforderungen einen Deal ausz","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Toll is the distance to this faction. This penalty can be decreased by building ","t":"Maut ist die Entfernung zu dieser Fraktion. Diese Strafe kann durch den Bau von ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The tariff penalty is based on the faction's opinion of you. Increase their opin","t":"Die Tarifstrafe richtet sich nach der Meinung der Fraktion über Sie. Steigern Si","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"How much that can be traded fairly with this faction per day before it increases","t":"Wie viel kann mit dieser Fraktion pro Tag fair gehandelt werden, bevor die Zölle","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The size of the region along with the fertility determines how many subjects it ","t":"Die Größe der Region bestimmt zusammen mit der Fruchtbarkeit, wie viele Subjekte","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This building has been constructed.","t":"Dieses Gebäude wurde gebaut.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This building can be upgrades.","t":"Dieses Gebäude kann aufgerüstet werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This building can be constructed.","t":"Dieses Gebäude kann gebaut werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Abandon Region","t":"Region aufgeben","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Do you wish to abandon this region? It will be turned over into the hands of reb","t":"Möchten Sie diese Region verlassen? Es wird in die Hände der Rebellen geraten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Give Autonomy","t":"Geben Sie Autonomie","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Do you wish to give this region autonomy and bestow upon it self-rule? The new f","t":"Möchten Sie dieser Region Autonomie und Selbstverwaltung verleihen? Die neue Fra","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There simply are no suitable faction rulers to appoint a new king here. Perhaps ","t":"Es gibt einfach keine geeigneten Fraktionsführer, die hier einen neuen König ern","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This resource is shipped annually in {0} days. Accumulated so far: {1}.","t":"Diese Ressource wird jährlich in {0} Tagen versendet. Bisher kumuliert: {1}.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enabling an edict has a global effect in your whole kingdom. The affected race w","t":"Die Ermächtigung eines Edikts hat globale Auswirkungen auf Ihr gesamtes Königrei","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Region has no soldiers to attack with.","t":"Die Region hat keine Soldaten, mit denen sie angreifen könnte.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Can't use garrison to attack outside of the region borders.","t":"Die Garnison kann nicht für Angriffe außerhalb der Regionsgrenzen eingesetzt wer","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Select an army within your regions' borders to attack.","t":"Wählen Sie eine Armee innerhalb der Grenzen Ihrer Region zum Angriff aus.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}

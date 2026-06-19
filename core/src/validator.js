@@ -39,26 +39,43 @@ function validateTags(source, target) {
 
 /**
  * Checks for common structural issues like unbalanced quotes or unusual length changes.
+ * Returns a flat array of issue strings (backward-compatible).
  */
 function checkStructure(source, target) {
-  const issues = [];
-    
-  // Balanced quotes (if source has even, target should have even)
+  const { critical, warnings } = classifyStructureIssues(source, target);
+  return [...critical, ...warnings];
+}
+
+/**
+ * Classifies structural issues by severity.
+ * - critical: would corrupt the file or crash the game engine
+ * - warnings: non-critical, should flag for Deep Polish but NOT block acceptance
+ * @returns {{ critical: string[], warnings: string[] }}
+ */
+function classifyStructureIssues(source, target) {
+  const critical = [];
+  const warnings = [];
+
+  // Quote balance: previously this was critical (blocked acceptance).
+  // Now downgraded to WARNING because translated text legitimately
+  // introduces quotes (e.g. German quotation marks, direct speech).
   const sourceQuotes = (source.match(/"/g) || []).length;
   const targetQuotes = (target.match(/"/g) || []).length;
   if (sourceQuotes % 2 !== targetQuotes % 2) {
-    issues.push('UNBALANCED_QUOTES');
+    warnings.push('UNBALANCED_QUOTES');
   }
 
-  // Extreme length difference (e.g. target is 3x longer or 4x shorter)
+  // Extreme length difference: also WARNING, not critical.
+  // Some translations legitimately expand (DE compound words) or
+  // contract (CJK) relative to English source.
   if (source.length > 10) {
     const ratio = target.length / source.length;
     if (ratio > 3 || ratio < 0.25) {
-      issues.push('EXTREME_LENGTH_CHANGE');
+      warnings.push('EXTREME_LENGTH_CHANGE');
     }
   }
 
-  return issues;
+  return { critical, warnings };
 }
 
 /**
@@ -104,12 +121,101 @@ function validateFileSyntax(sourceContent, targetContent) {
 /**
  * Calculates a QA score (0-100) for a translation.
  */
+/**
+ * Validates marker-level integrity of a translated file against its source.
+ * Checks that all markers (tags, placeholders, variables) from the source
+ * survive into the translated output with the same type-densities.
+ *
+ * Catches issues that validateFileSyntax() misses:
+ *   - <c:FF0000> tags that got dropped
+ *   - {0} {1} placeholders that were removed
+ *   - $VAR / __VAR0__ variables that were corrupted
+ *
+ * @param {string} sourceContent Original file content
+ * @param {string} targetContent Translated file content
+ * @param {Map<string,{replacedCount:number,totalTokens:number}>} [shieldRestoreResults]
+ *        Optional Map from source text to shield restoration stats.
+ *        When provided, checks for entries where replacedCount < totalTokens
+ *        (shield tokens that were never restored).
+ * @returns {{ valid: boolean, issues: string[], summary: object }}
+ */
+function validateFileMarkers(sourceContent, targetContent, shieldRestoreResults) {
+  const markerPattern = /<[^>]+>|__VAR\d+__|\{[^}]+\}|\$[A-Za-z0-9_]+|%[^%\s]+%/g;
+  const sourceMarkers = (sourceContent || '').match(markerPattern) || [];
+  const targetMarkers = (targetContent || '').match(markerPattern) || [];
+
+  const classifyType = (m) => {
+    if (m.startsWith('<')) return 'tag';
+    if (m.startsWith('{')) return 'placeholder';
+    return 'variable';
+  };
+
+  const buildTypeMap = (markers) => {
+    const map = {};
+    for (const m of markers) {
+      const type = classifyType(m);
+      map[type] = (map[type] || 0) + 1;
+    }
+    return map;
+  };
+
+  const sourceTypeMap = buildTypeMap(sourceMarkers);
+  const targetTypeMap = buildTypeMap(targetMarkers);
+  const issues = [];
+  let valid = true;
+
+  // Check source markers are preserved in target (by type-count)
+  for (const [type, count] of Object.entries(sourceTypeMap)) {
+    const targetCount = targetTypeMap[type] || 0;
+    if (count !== targetCount) {
+      valid = false;
+      issues.push(`MARKER_COUNT_MISMATCH: ${type} source=${count} target=${targetCount}`);
+    }
+  }
+
+  // Check for unexpected new markers in target (possible hallucination)
+  for (const [type, count] of Object.entries(targetTypeMap)) {
+    if (!sourceTypeMap[type]) {
+      issues.push(`UNEXPECTED_MARKER_TYPE: ${type} count=${count} (not in source)`);
+      valid = false;
+    }
+  }
+
+  // ── Shield Restoration Check ──────────────────────────────────────────
+  // If shieldRestoreResults (Map<sourceText, {replacedCount, totalTokens}>) is provided,
+  // check for entries where shield tokens were NOT fully restored.
+  // These would leak __SHLD_N__ tokens into the game file.
+  if (shieldRestoreResults && shieldRestoreResults.size > 0) {
+    let shieldFailCount = 0;
+    let totalShieldFail = 0;
+    for (const [, stats] of shieldRestoreResults) {
+      if (stats.replacedCount < stats.totalTokens) {
+        shieldFailCount++;
+        totalShieldFail += stats.totalTokens - stats.replacedCount;
+      }
+    }
+    if (shieldFailCount > 0) {
+      valid = false;
+      issues.push(`SHIELD_RESTORE_FAIL: ${shieldFailCount} Eintraege mit ${totalShieldFail} unrestored Tokens`);
+    }
+  }
+
+  return {
+    valid,
+    issues,
+    summary: {
+      source: { ...sourceTypeMap, total: sourceMarkers.length },
+      target: { ...targetTypeMap, total: targetMarkers.length }
+    }
+  };
+}
+
 function getQaScore(source, target) {
   if (!target || target.trim() === '') return 0;
   if (source === target && source.length > 5) return 50; // Suspected untranslated
 
-  // Check for shield leaks (unrestored tokens)
-  if (target.includes('[[') && target.includes(']]')) {
+  // Check for shield leaks (unrestored tokens — new __SHLD_ or legacy [[N]] format)
+  if (target.includes('__SHLD_') || (target.includes('[[') && target.includes(']]'))) {
     return 0; // Immediate failure, needs repair
   }
 
@@ -117,9 +223,16 @@ function getQaScore(source, target) {
   const issues = [];
     
   // Check if source had tokens but target lost them
-  const sourceTokens = (source.match(/\[\[\d+\]\]/g) || []).length;
-  const targetTokens = (target.match(/\[\[\d+\]\]/g) || []).length;
-  if (sourceTokens > 0 && targetTokens < sourceTokens) {
+  // Prüft BOTH legacy [[N]] and new __SHLD_N__ format
+  const sourceLegacyTokens = (source.match(/\[\[\d+\]\]/g) || []).length;
+  const sourceShieldTokens = (source.match(/__SHLD_\d+__/g) || []).length;
+  const targetLegacyTokens = (target.match(/\[\[\d+\]\]/g) || []).length;
+  const targetShieldTokens = (target.match(/__SHLD_\d+__/g) || []).length;
+  if (sourceLegacyTokens > 0 && targetLegacyTokens < sourceLegacyTokens) {
+    issues.push('SHIELD_TOKEN_LOST');
+    score -= 50;
+  }
+  if (sourceShieldTokens > 0 && targetShieldTokens < sourceShieldTokens) {
     issues.push('SHIELD_TOKEN_LOST');
     score -= 50;
   }
@@ -138,6 +251,8 @@ module.exports = {
   validatePlaceholders,
   validateTags,
   checkStructure,
+  classifyStructureIssues,
   getQaScore,
-  validateFileSyntax
+  validateFileSyntax,
+  validateFileMarkers
 };

@@ -3,18 +3,30 @@
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
+const dbRepair = require('../scripts/db_repair');
 
 /**
- * Reads the display name from a mod's _Info.txt file.
- * Falls back to the directory basename if no _Info.txt or NAME: field is found.
+ * Reads the display name from a mod's metadata file.
+ * Delegates file name and parsing to the adapter (v0.20 H6).
+ * Falls back to the directory basename if metadata is missing or invalid.
+ *
+ * @param {string} dirPath
+ * @param {object} [adapter]  GameAdapter/GamePlugin instance
  */
-function readDisplayName(dirPath) {
-  const infoPath = path.join(dirPath, '_Info.txt');
+function readDisplayName(dirPath, adapter) {
+  const metaFile = adapter?.getMetadataFileName?.() ?? '_Info.txt';
+  const infoPath = path.join(dirPath, metaFile);
   if (fs.existsSync(infoPath)) {
     try {
       const content = fs.readFileSync(infoPath, 'utf-8');
-      const match = content.match(/^\s*NAME:\s*"?(.*?)"?,?\s*$/im);
-      if (match) return match[1].trim();
+      if (adapter?.parseMetadata) {
+        const meta = adapter.parseMetadata(content);
+        if (meta && meta.NAME) return String(meta.NAME).trim();
+      } else {
+        // Generic fallback: look for NAME: "..." pattern
+        const match = content.match(/^\s*NAME:\s*\"?(.*?)\"?,?\s*$/im);
+        if (match) return match[1].trim();
+      }
     } catch (e) {}
   }
   return path.basename(dirPath);
@@ -84,6 +96,9 @@ function startStatsBroadcast(ctx) {
   let _cpuPrevTotal = null;
   let _cpuPrevIdle = null;
 
+  let lastHeartbeatMs = 0;
+  const HEARTBEAT_INTERVAL_MS = 2000;
+
   const broadcastStats = () => {
     let cpuPct = 0;
     try {
@@ -100,16 +115,22 @@ function startStatsBroadcast(ctx) {
     } catch (e) { cpuPct = 0; }
       
     const isCurrentlyRunning = ctx.planner.stats.activePhase !== 'Idle' && !ctx.getIsAborting();
+    const now = Date.now();
     const stats = { 
       ...ctx.planner.stats, 
       activeThreads: ctx.MAX_PARALLEL_FILES, 
       isRunning: isCurrentlyRunning,
-      sysLoad: { cpu: cpuPct, ram: Math.round((1 - os.freemem() / os.totalmem()) * 100) } 
+      sysLoad: { cpu: cpuPct, ram: Math.round((1 - os.freemem() / os.totalmem()) * 100) },
+      lastHeartbeat: now
     };
         
-    if (JSON.stringify(stats) !== JSON.stringify(lastStats)) {
+    const changed = JSON.stringify(stats) !== JSON.stringify(lastStats);
+    const heartbeatDue = (now - lastHeartbeatMs) >= HEARTBEAT_INTERVAL_MS;
+
+    if (changed || (isCurrentlyRunning && heartbeatDue)) {
       if (global.guiServer) global.guiServer.updateStatus(stats);
       lastStats = { ...stats };
+      if (heartbeatDue) lastHeartbeatMs = now;
     }
   };
   const broadcastTimer = setInterval(broadcastStats, 500);
@@ -236,14 +257,15 @@ function registerGuiHandlers(ctx) {
               }
             }
             const modPath = path.join(dirRoot, entry.name);
-            if (fs.existsSync(path.join(modPath, '_Info.txt'))) {
+            const metaFile = config._adapter?.getMetadataFileName?.() ?? '_Info.txt';
+            if (fs.existsSync(path.join(modPath, metaFile))) {
               const backupId = entry.name.replace(/[^a-z0-9_.-]/gi, '_');
               if (processedIds.has(backupId)) continue;
               processedIds.add(backupId);
               
               const backupPath = path.join(config.BACKUP_ROOT, `.backup_${backupId}_ORIGINAL`);
               const backupExists = fs.existsSync(backupPath);
-              const displayName = readDisplayName(modPath);
+              const displayName = readDisplayName(modPath, config._adapter);
               
               modsList.push({
                 id: entry.name,
@@ -333,11 +355,11 @@ function registerGuiHandlers(ctx) {
       const { source_text, target_lang } = data || {};
       if (!source_text || !target_lang) return callback([]);
       const current = await dbGet(
-        'SELECT translation, provider, quality_score, flagged, flag_reason, updated_at FROM translations WHERE source_text = ? AND target_lang = ?',
+        'SELECT translation, provider, quality_score, risk_score, flagged, flag_reason, updated_at FROM translations WHERE source_text = ? AND target_lang = ?',
         [source_text, target_lang]
       );
       const history = await dbAll(
-        'SELECT revision_id, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference, created_at FROM translation_revisions WHERE source_text = ? AND target_lang = ? ORDER BY revision_id DESC',
+        'SELECT revision_id, translation, source_text, provider, quality_score, risk_score, flagged, flag_reason, is_active, is_reference, created_at FROM translation_revisions WHERE source_text = ? AND target_lang = ? ORDER BY revision_id DESC',
         [source_text, target_lang]
       );
       const revisions = [];
@@ -347,6 +369,8 @@ function registerGuiHandlers(ctx) {
           translation: current.translation,
           provider: current.provider,
           quality_score: current.quality_score,
+          risk_score: current.risk_score || 0,
+          source_text,
           flagged: current.flagged,
           flag_reason: current.flag_reason,
           is_active: 1,
@@ -387,9 +411,9 @@ function registerGuiHandlers(ctx) {
           [source_text, target_lang]
         );
         await dbRun(
-          `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)`,
-          [source_text, target_lang, current.translation, current.provider || '', current.quality_score || 0, current.flagged || 0, current.flag_reason || '']
+          `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, risk_score, flagged, flag_reason, is_active, is_reference)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 0)`,
+          [source_text, target_lang, current.translation, current.provider || '', current.quality_score || 0, current.risk_score || 0, current.flagged || 0, current.flag_reason || '']
         );
       }
       await dbRun(
@@ -427,9 +451,35 @@ function registerGuiHandlers(ctx) {
       else if (provider === 'openrouter') models = await configRuntime.fetchOpenRouterModels(true);
       else if (provider === 'ollama') models = await configRuntime.fetchOllamaModels();
       else if (provider === 'player2') models = await configRuntime.fetchPlayer2Models();
+      else if (provider === 'nvidia') models = await configRuntime.fetchNvidiaModels();
+      else if (provider === 'fcm') {
+        // FCM: return live-ranked models as IDs
+        const rankings = await configRuntime.fetchFcmModelRankings();
+        models = rankings.map(r => r.id);
+      }
       const filtered = filterLLMs(models, provider === 'openrouter');
       callback(filtered.length > 0 ? filtered : models);
     } catch (e) { callback([]); }
+  });
+
+  global.guiServer.on('get-fcm-rankings', async (callback) => {
+    try {
+      const rankings = await configRuntime.fetchFcmModelRankings();
+      callback({ ok: true, rankings, daemonRunning: rankings.length > 0 });
+    } catch (e) {
+      callback({ ok: false, rankings: [], daemonRunning: false, error: e.message });
+    }
+  });
+
+  global.guiServer.on('check-api-key', async (data, callback) => {
+    try {
+      const { provider, key, index = 0 } = data || {};
+      if (!provider || !key) return callback({ ok: false, detail: 'Fehlende Parameter' });
+      const result = await configRuntime.checkCloudKey(provider, key, index);
+      callback(result);
+    } catch (e) {
+      callback({ ok: false, detail: e.message });
+    }
   });
 
   // ── P4: Multi-language model registry handlers ──
@@ -504,6 +554,37 @@ function registerGuiHandlers(ctx) {
       console.log(`[GUARD] Begriff geschuetzt: "${source}" -> "${target}"`);
     } catch (e) {
       console.error(`[!] Fehler beim Schuetzen des Begriffs: ${e.message}`);
+    }
+  });
+
+  // ── PREFLIGHT DB Warning & Repair (GUI blinking button) ──────────
+  global.guiServer.on('get-preflight-status', (callback) => {
+    // Returns the cached preflight warning from the last sync run.
+    // null = no issues, or object with { criticalPct, criticalIssues, ... }
+    callback(global._preflightWarning || null);
+  });
+
+  global.guiServer.on('run-db-repair', async (callback) => {
+    try {
+      let totalFixed = 0;
+      // Run all 5 repair functions (skip orphanedRevisions — rare, separate audit)
+      // dbRun (= dbManager.run) returns { changes } — exactly what repair functions expect
+      const r1 = await dbRepair.repairNativeStale(dbRun);
+      const r2 = await dbRepair.repairUnflaggedStale(dbRun);
+      const r3 = await dbRepair.repairShieldLeaks(dbRun);
+      const r4 = await dbRepair.repairLowScore(dbRun);
+      const r5 = await dbRepair.repairJavaNoise(dbRun);
+      totalFixed = r1 + r2 + r3 + r4 + r5;
+
+      console.log(`[DB-REPAIR] GUI-Repair: ${totalFixed} Eintraege repariert (nativeStale=${r1}, unflaggedStale=${r2}, shieldLeaks=${r3}, lowScore=${r4}, javaNoise=${r5})`);
+
+      // Clear the warning so the button disappears until next sync
+      global._preflightWarning = null;
+
+      callback({ ok: true, totalFixed, details: { nativeStale: r1, unflaggedStale: r2, shieldLeaks: r3, lowScore: r4, javaNoise: r5 } });
+    } catch (e) {
+      console.error(`[DB-REPAIR] Fehler: ${e.message}`);
+      callback({ ok: false, error: e.message });
     }
   });
 

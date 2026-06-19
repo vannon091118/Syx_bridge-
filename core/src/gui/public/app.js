@@ -49,7 +49,11 @@ let liveStats = {
   newTranslations: 0,
   qaFailures: 0,
   activeThreads: 0,
-  isRunning: false
+  isRunning: false,
+  subPhase: '',
+  batchN: 0,
+  totalBatches: 0,
+  lastHeartbeat: 0
 };
 let lastRunningState = false;
 let statusTimeout = null;
@@ -99,6 +103,46 @@ function tick(now) {
   if (runBtn) {
     runBtn.textContent = liveStats.isRunning ? 'STOP' : 'START';
     runBtn.className = liveStats.isRunning ? 'stop-btn' : '';
+  }
+
+  // SubPhase indicator — shows what the backend is doing RIGHT NOW
+  const subPhaseEl = document.getElementById('ui-sub-phase');
+  if (subPhaseEl) {
+    if (liveStats.isRunning && liveStats.subPhase) {
+      const phaseLabels = {
+        caching: 'Cache prüfen...',
+        native: 'Native Entscheidungen...',
+        translating: liveStats.totalBatches > 0
+          ? `LLM Batch ${liveStats.batchN}/${liveStats.totalBatches}...`
+          : 'LLM arbeitet...',
+        polishing: 'QA Optimierung...',
+        writing: 'Dateien schreiben...'
+      };
+      subPhaseEl.textContent = phaseLabels[liveStats.subPhase] || '';
+      subPhaseEl.style.display = 'block';
+    } else {
+      subPhaseEl.textContent = '';
+      subPhaseEl.style.display = 'none';
+    }
+  }
+
+  // Input lock — disable settings controls during run (except STOP)
+  const settingsInputs = document.querySelectorAll('#settings-dropdown input, #settings-dropdown select, #settings-dropdown button');
+  settingsInputs.forEach(el => {
+    if (el.id === 'main-run-btn') return;
+    el.disabled = liveStats.isRunning;
+    el.style.opacity = liveStats.isRunning ? '0.4' : '1';
+  });
+
+  // Heartbeat staleness — if lastHeartbeat > 5s old and running, show warning
+  const heartbeatAge = liveStats.lastHeartbeat ? (performance.now() - liveStats.lastHeartbeat) : 0;
+  if (liveStats.isRunning && heartbeatAge > 8000) {
+    if (subPhaseEl) {
+      subPhaseEl.textContent = '⏳ Warte auf Backend...';
+      subPhaseEl.style.color = 'var(--danger)';
+    }
+  } else if (subPhaseEl) {
+    subPhaseEl.style.color = '';
   }
 
   // Accurate Progress — mit Smoothing gegen Springen
@@ -393,7 +437,9 @@ function renderProviderStats() {
       gemini: 'Google Gemini — Texterkennung & Übersetzung. Rate-Limit bei 429.',
       groq: 'Groq Cloud — schnelle Inferenz mit Llama-Modellen. Kostenlos mit Account.',
       ollama: 'Ollama — Lokale KI-Modelle. Kein Cloud-Key nötig.',
-      player2: 'Player2 — Lokaler KI-Client auf dem Desktop (optional).'
+      player2: 'Player2 — Lokaler KI-Client auf dem Desktop (optional).',
+      nvidia: 'NVIDIA NIM — NeMo & Nemotron Modelle. nvapi-Key von build.nvidia.com.',
+      fcm: 'FCM (free-coding-models) — Live-Rankings von kostenlosen AI-APIs.'
     };
 
     html += `
@@ -443,6 +489,9 @@ function updateBatchRecommendation() {
   else if (provider === 'groq') rec = 22;
   else if (provider === 'gemini' && isLarge) rec = 36;
   else if (provider === 'gemini') rec = 24;
+  else if (provider === 'nvidia' && isLarge) rec = 28;
+  else if (provider === 'nvidia') rec = 22;
+  else if (provider === 'fcm') rec = 20; // FCM routes via local proxy
   else rec = 20;
 
   recEl.textContent = rec;
@@ -503,6 +552,8 @@ function connectLogs() {
     if (data.type === 'status') {
       liveStats = { ...liveStats, ...data.stats };
       updatePipeline(liveStats.activePhase || 'Idle');
+      // Reset heartbeat age tracking
+      if (data.stats && data.stats.lastHeartbeat) liveStats.lastHeartbeat = data.stats.lastHeartbeat;
     }
 
     if (data.type === 'payload') {
@@ -563,10 +614,11 @@ function renderKeySections() {
     { id: 'openrouter', label: 'OpenRouter', hint: 'Gratis-Tier: openrouter/free (kein Key nötig!)', keys: currentConfig.OPENROUTER_KEYS || [] },
     { id: 'groq',       label: 'Groq Cloud',  hint: 'Kostenlos mit Account',    keys: currentConfig.GROQ_KEYS || [] },
     { id: 'gemini',     label: 'Google Gemini', hint: 'Gemini API Key',          keys: currentConfig.GEMINI_KEYS || [] },
+    { id: 'nvidia',     label: 'NVIDIA NIM', hint: 'nvapi-... Key von build.nvidia.com', keys: currentConfig.NVIDIA_KEYS || [] },
     { id: 'ollama',     label: 'Ollama (optional Key)', hint: 'Nur wenn Ollama Auth aktiviert', keys: currentConfig.OLLAMA_KEYS || [] },
     { id: 'player2',    label: 'Player2 (optional Key)', hint: 'Lokaler KI-Client', keys: currentConfig.PLAYER2_KEYS || [] }
   ];
-    
+
   container.innerHTML = providers.map(p => {
     const rowsHtml = p.keys.map((k, idx) => {
       let name = `Key ${idx + 1}`;
@@ -579,7 +631,8 @@ function renderKeySections() {
       return `
         <div class="key-row" style="display:flex; gap:10px; margin-bottom:5px; align-items:center;">
           <input type="text" class="key-name" value="${name}" placeholder="Bezeichnung" style="flex:1; min-width:80px; max-width:120px; margin:0;">
-          <input type="text" class="key-val" value="${val}" placeholder="API Key" style="flex:4; margin:0; font-family: monospace; font-size:0.8rem;">
+          <input type="text" class="key-val" value="${val}" placeholder="API Key — z.B. sk-or-v1-..." style="flex:8; margin:0; font-family: monospace; font-size:0.85rem; min-width:300px; max-width:100%;">
+          <button onclick="checkSingleKey('${p.id}', this)" title="Key jetzt testen" style="padding: 5px 8px; background: #1a3a1a; border:1px solid var(--success); color:var(--success); flex:none; width:auto; margin:0; font-size:0.6rem;">TEST</button>
           <button onclick="this.parentElement.remove()" style="padding: 5px 10px; background: #c0392b; flex:none; width:auto; margin:0;">✕</button>
         </div>`;
     }).join('');
@@ -591,11 +644,15 @@ function renderKeySections() {
             <label class="stat-label" style="margin:0; font-size:0.8rem; color:var(--text); font-weight:bold;">${p.label}</label>
             <div style="font-size:0.65rem; color:var(--muted); margin-top:2px;">${p.hint}</div>
           </div>
-          <button onclick="addKeyRow('${p.id}')" style="padding: 4px 12px; font-size:0.75rem; background:var(--accent); color:black; width:auto; white-space:nowrap;">+ Key</button>
+          <div style="display:flex; gap:6px;">
+            <button onclick="checkAllKeys('${p.id}')" title="Alle Keys für ${p.label} testen" style="padding: 4px 10px; font-size:0.7rem; background:rgba(100,213,196,0.1); border:1px solid rgba(100,213,196,0.3); color:var(--success); width:auto; white-space:nowrap;">TEST ALL</button>
+            <button onclick="addKeyRow('${p.id}')" style="padding: 4px 12px; font-size:0.75rem; background:var(--accent); color:black; width:auto; white-space:nowrap;">+ Key</button>
+          </div>
         </div>
         <div id="keys-list-${p.id}">
           ${rowsHtml || '<div style="font-size:0.7rem; color:var(--muted); padding:4px 0;">Kein Key eingetragen</div>'}
         </div>
+        <div id="key-check-status-${p.id}" style="font-size:0.65rem; margin-top:4px;"></div>
       </div>
     `;
   }).join('');
@@ -611,7 +668,7 @@ function _addKeyRow(providerId) {
   div.style.cssText = 'display:flex; gap:10px; margin-bottom:5px;';
   div.innerHTML = `
     <input type="text" class="key-name" value="Key ${rowCount + 1}" placeholder="Name" style="flex:1;">
-    <input type="text" class="key-val" value="" placeholder="API Key" style="flex:3;">
+    <input type="text" class="key-val" value="" placeholder="API Key — z.B. sk-or-v1-..." style="flex:6; min-width:280px;">
     <button onclick="this.parentElement.remove()" style="padding: 5px 10px; background: #c0392b; flex:none;">X</button>
   `;
   list.appendChild(div);
@@ -632,11 +689,61 @@ async function _saveKeysFromModal() {
   currentConfig.GEMINI_KEYS     = getKeys('gemini');
   currentConfig.GROQ_KEYS       = getKeys('groq');
   currentConfig.OPENROUTER_KEYS = getKeys('openrouter');
+  currentConfig.NVIDIA_KEYS     = getKeys('nvidia');
   currentConfig.OLLAMA_KEYS     = getKeys('ollama');
   currentConfig.PLAYER2_KEYS    = getKeys('player2');
     
   await saveConfig(true);
   closeKeyModal();
+}
+
+// ── Auto API Key Checker ──────────────────────────────────────────────
+async function checkSingleKey(provider, btnEl) {
+  const row = btnEl.closest('.key-row');
+  if (!row) return;
+  const keyVal = row.querySelector('.key-val').value.trim();
+  if (!keyVal) { btnEl.textContent = '?'; btnEl.style.color = 'var(--muted)'; return; }
+  btnEl.textContent = '...';
+  btnEl.disabled = true;
+  try {
+    const res = await fetch('/api/key-check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider, key: keyVal, index: 0 })
+    });
+    const result = await res.json();
+    btnEl.textContent = result.ok ? '✓ OK' : '✗ FAIL';
+    btnEl.style.color = result.ok ? 'var(--success)' : 'var(--danger)';
+    btnEl.style.borderColor = result.ok ? 'var(--success)' : 'var(--danger)';
+    btnEl.title = result.detail || '';
+  } catch (e) {
+    btnEl.textContent = 'ERR';
+    btnEl.style.color = 'var(--danger)';
+  } finally {
+    btnEl.disabled = false;
+    setTimeout(() => { btnEl.textContent = 'TEST'; btnEl.style.color = 'var(--success)'; btnEl.style.borderColor = 'var(--success)'; }, 8000);
+  }
+}
+
+async function checkAllKeys(provider) {
+  const list = document.getElementById(`keys-list-${provider}`);
+  const statusEl = document.getElementById(`key-check-status-${provider}`);
+  if (!list) return;
+  const rows = list.querySelectorAll('.key-row');
+  if (rows.length === 0) { if (statusEl) statusEl.textContent = 'Keine Keys eingetragen.'; return; }
+  if (statusEl) statusEl.innerHTML = '<span style="color:var(--accent)">Prüfe alle Keys...</span>';
+  const results = [];
+  for (const row of rows) {
+    const btn = row.querySelector('button[onclick*="checkSingleKey"]');
+    if (btn) await checkSingleKey(provider, btn);
+    const val = row.querySelector('.key-val').value.trim();
+    const ok = btn ? btn.textContent.includes('✓') : false;
+    results.push({ val: val.substring(0,8) + '...', ok });
+  }
+  const passed = results.filter(r => r.ok).length;
+  if (statusEl) {
+    statusEl.innerHTML = `<span style="color:${passed === results.length ? 'var(--success)' : (passed > 0 ? 'var(--accent)' : 'var(--danger)')}">Ergebnis: ${passed}/${results.length} Keys gültig</span>`;
+  }
 }
 
 
@@ -769,7 +876,7 @@ async function fetchRevisions() {
             <div style="flex: 1;">
               <div style="font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-break: break-word; margin-bottom: 4px;">${rev.translation}</div>
               <div style="font-size: 0.6rem; color: var(--muted);">
-                ${rev.created_at || ''} | ${rev.provider || 'unbekannt'} | Score: <span style="color: ${qualityColor}">${rev.quality_score || 0}</span>${isRef}${isActive}
+                ${rev.created_at || ''} | ${rev.provider || 'unbekannt'} | Score: <span style="color: ${qualityColor}">${rev.quality_score || 0}</span> | Risk: <span style="color: ${(rev.risk_score || 0) >= 6 ? 'var(--danger)' : (rev.risk_score || 0) >= 2 ? 'var(--accent)' : 'var(--success)'}">${rev.risk_score || 0}</span> | Diff: <span style="color: var(--accent)">${rev.source_text ? Math.abs((rev.translation || '').length - (rev.source_text || '').length) : '—'}c</span>${isRef}${isActive}
                 ${rev.flagged ? ' | <span style="color: var(--danger);">Geflaggt: ' + (rev.flag_reason || 'ja') + '</span>' : ''}
               </div>
             </div>
@@ -829,6 +936,10 @@ async function onProviderChange() {
   const provider = document.getElementById('cfg-provider').value;
   const modelEl = document.getElementById('cfg-model');
   modelEl.innerHTML = '<option value="">Lade Modelle...</option>';
+
+  // FCM Provider-Hint anzeigen/verstecken
+  const fcmHint = document.getElementById('fcm-provider-hint');
+  if (fcmHint) fcmHint.style.display = provider === 'fcm' ? 'block' : 'none';
 
   try {
     const res = await fetch(`/api/models/${provider}`);
@@ -908,6 +1019,7 @@ async function loadInitialConfig() {
     const hasKeys = (currentConfig.GEMINI_KEYS?.length > 0) || 
                    (currentConfig.GROQ_KEYS?.length > 0) || 
                    (currentConfig.OPENROUTER_KEYS?.length > 0) ||
+                   (currentConfig.NVIDIA_KEYS?.length > 0) ||
                    currentConfig.PRIMARY_PROVIDER === 'ollama' ||
                    currentConfig.PRIMARY_PROVIDER === 'player2';
     
@@ -915,6 +1027,12 @@ async function loadInitialConfig() {
       console.log('[GUI] Keine API Keys gefunden. Oeffne Modal...');
       setTimeout(openKeyModal, 1000);
     }
+
+    // Check if NVIDIA key is configured
+    const hasNvidiaKey = (currentConfig.NVIDIA_KEYS?.length > 0);
+    const dotNv = document.getElementById('dot-nvidia');
+    if (dotNv) dotNv.className = hasNvidiaKey ? 'status-dot online' : 'status-dot';
+
   } catch (e) {
     console.error('Initial config load failed', e);
   }
@@ -928,6 +1046,31 @@ async function fetchHealth() {
 
     if (dotArgos) dotArgos.className = health.argos ? 'status-dot online' : 'status-dot';
     if (dotOllama) dotOllama.className = health.ollama ? 'status-dot online' : 'status-dot';
+
+    // FCM daemon dot — check both cached state AND direct daemon ping
+    const dotFcm = document.getElementById('dot-fcm');
+    if (dotFcm) {
+      // If rankings already confirmed daemon is running, use that
+      if (window._fcmDaemonRunning) {
+        dotFcm.className = 'status-dot online';
+      } else {
+        // Fallback: ping the FCM daemon API directly
+        fetch('http://localhost:19280/api/models', { signal: AbortSignal.timeout(2000) })
+          .then(r => { if (r.ok) { window._fcmDaemonRunning = true; dotFcm.className = 'status-dot online'; } })
+          .catch(() => { window._fcmDaemonRunning = false; dotFcm.className = 'status-dot'; });
+      }
+    }
+
+    // Footer FCM status dot
+    const footerFcm = document.getElementById('fcm-status-dot');
+    if (footerFcm) {
+      footerFcm.style.background = window._fcmDaemonRunning ? 'var(--success)' : '#666';
+      footerFcm.title = window._fcmDaemonRunning ? 'FCM Daemon aktiv (localhost:19280)' : 'FCM Daemon offline';
+    }
+
+    // NVIDIA dot: green if at least one key is configured
+    const dotNv = document.getElementById('dot-nvidia');
+    if (dotNv) dotNv.className = (currentConfig.NVIDIA_KEYS && currentConfig.NVIDIA_KEYS.length > 0) ? 'status-dot online' : 'status-dot';
 
     const dbTotalEl = document.getElementById('stat-db-total');
     if (dbTotalEl) dbTotalEl.textContent = health.dbTotal || 0;
@@ -1070,6 +1213,94 @@ async function _pullOllamaModel() {
 window.installArgosFromUI = _installArgosFromUI;
 window.installArgosLanguageFromUI = _installArgosLanguageFromUI;
 window.pullOllamaModel = _pullOllamaModel;
+window.checkSingleKey = checkSingleKey;
+window.checkAllKeys = checkAllKeys;
+
+// ── FCM Live Rankings Panel ───────────────────────────────────────────
+window._fcmDaemonRunning = false;
+
+async function refreshFcmRankings() {
+  const listEl = document.getElementById('fcm-rankings-list');
+  const badgeEl = document.getElementById('fcm-daemon-badge');
+  const btnEl = document.getElementById('fcm-refresh-btn');
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = '⌛'; }
+  try {
+    const res = await fetch('/api/fcm-rankings');
+    const data = await res.json();
+    window._fcmDaemonRunning = data.daemonRunning;
+    if (badgeEl) {
+      badgeEl.textContent = data.daemonRunning ? 'LIVE' : 'CLI';
+      badgeEl.style.background = data.daemonRunning ? 'rgba(100,213,196,0.2)' : 'rgba(216,151,60,0.2)';
+      badgeEl.style.color = data.daemonRunning ? 'var(--success)' : 'var(--accent)';
+      badgeEl.style.border = data.daemonRunning ? '1px solid rgba(100,213,196,0.3)' : '1px solid rgba(216,151,60,0.3)';
+    }
+    // Update FCM dot in header
+    const dotFcm = document.getElementById('dot-fcm');
+    if (dotFcm) dotFcm.className = data.rankings.length > 0 ? 'status-dot online' : 'status-dot';
+    renderFcmRankings(data.rankings);
+  } catch (e) {
+    if (listEl) listEl.innerHTML = '<div style="color:var(--danger); text-align:center; padding:8px;">FCM nicht erreichbar</div>';
+    if (badgeEl) { badgeEl.textContent = 'OFFLINE'; badgeEl.style.background = '#333'; badgeEl.style.color = '#999'; }
+  } finally {
+    if (btnEl) { btnEl.disabled = false; btnEl.textContent = '↻'; }
+  }
+}
+
+function renderFcmRankings(rankings) {
+  const listEl = document.getElementById('fcm-rankings-list');
+  if (!listEl) return;
+  if (!rankings || rankings.length === 0) {
+    listEl.innerHTML = '<div style="color:var(--muted); text-align:center; padding:10px;">Keine FCM-Daten verfügbar.<br><span style="font-size:0.6rem;">Starte den FCM-Daemon mit: <code style="color:var(--accent)">free-coding-models --daemon-bg</code></span></div>';
+    return;
+  }
+
+  const tierColors = { 'S+': '#7fff00', 'S': '#64d5c4', 'A+': '#d8973c', 'A': '#ffb961', 'B': '#a99b87', 'C': '#666' };
+  const statusColors = { 'ok': 'var(--success)', 'noauth': 'var(--accent)', 'error': 'var(--danger)' };
+
+  const html = rankings.slice(0, 30).map(m => {
+    const tc = tierColors[m.tier] || '#666';
+    const sc = statusColors[m.status] || 'var(--muted)';
+    const authOk = m.status !== 'noauth' && m.httpCode !== '401';
+    const pingLabel = m.ping < 999 ? `${m.ping}ms` : '-';
+    const stabLabel = m.stability > 0 ? `${m.stability}%` : '-';
+    return `
+      <div style="display:flex; align-items:center; gap:6px; padding:3px 4px; border-radius:3px; margin-bottom:2px; background:rgba(255,255,255,0.02); ${authOk ? '' : 'opacity:0.5;'}" 
+           title="${m.label || m.id}\nTier: ${m.tier}\nPing: ${pingLabel}\nStability: ${stabLabel}\nSWE: ${m.sweScore || '-'}\nContext: ${m.context || '-'}\nStatus: ${m.status || 'ok'}${m.verdict ? '\nVerdict: ' + m.verdict : ''}">
+        <span style="color:${tc}; font-weight:bold; font-size:0.65rem; min-width:24px;">${m.tier || '?'}</span>
+        <span style="flex:1; font-size:0.6rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${(m.label || m.id).substring(0, 28)}</span>
+        <span style="color:var(--muted); font-size:0.55rem; min-width:30px; text-align:right;">${pingLabel}</span>
+        <span style="color:${sc}; font-size:0.55rem;">${authOk ? '✓' : (m.httpCode || '?')}</span>
+        <button onclick="useModelFromFcm('${m.id.replace(/'/g,'\\\'')}')" title="Dieses Modell als Primary Model setzen" 
+          style="padding:1px 5px; font-size:0.5rem; width:auto; background:rgba(216,151,60,0.1); border:1px solid rgba(216,151,60,0.3); color:var(--accent); flex-shrink:0;">USE</button>
+      </div>`;
+  }).join('');
+  listEl.innerHTML = html || '<div style="color:var(--muted); text-align:center;">Keine Modelle gefunden</div>';
+}
+
+async function useModelFromFcm(modelId) {
+  const provEl = document.getElementById('cfg-provider');
+  const modelEl = document.getElementById('cfg-model');
+  if (!provEl || !modelEl) return;
+
+  // Route through FCM daemon proxy (localhost:19280/v1) — no API key needed
+  provEl.value = 'fcm';
+  await onProviderChange();
+
+  // Try to select the model in the dropdown
+  const opt = Array.from(modelEl.options).find(o => o.value === modelId);
+  if (opt) { opt.selected = true; }
+  else {
+    // Add it as a manual option
+    const newOpt = document.createElement('option');
+    newOpt.value = modelId;
+    newOpt.textContent = modelId;
+    newOpt.selected = true;
+    modelEl.appendChild(newOpt);
+  }
+  updateBatchRecommendation();
+}
+window.refreshFcmRankings = refreshFcmRankings;
+window.useModelFromFcm = useModelFromFcm;
 
 // Lifecycle — PERFORMANCE: Lazy-load heavy endpoints.
 // Only Health + Config + DB load immediately. Model-Status, Provider-Stats
@@ -1079,10 +1310,14 @@ window.pullOllamaModel = _pullOllamaModel;
 
 let _modelStatusInterval = null;
 let _providerStatusInterval = null;
+let _fcmRankingsInterval = null;
 
 // Core: Always active
 setInterval(fetchHealth, 5000);
 fetchHealth();
+// Preflight DB Warning: check every 30s (lightweight check, only reads cached value)
+setInterval(fetchPreflightStatus, 30000);
+fetchPreflightStatus();
 requestAnimationFrame(tick);
 loadInitialConfig();
 searchDb(''); // Initial DB Load (limited)
@@ -1095,17 +1330,111 @@ setInterval(() => {
   }).catch(() => {});
 }, 30000);
 
+// ── DB Repair Button — PREFLIGHT Warning mit Blink-Tiers ──────────────
+let _preflightWarning = null;
+
+async function fetchPreflightStatus() {
+  try {
+    const res = await fetch('/api/preflight-status');
+    const warning = await res.json();
+    _preflightWarning = warning;
+    updateDbRepairButton();
+  } catch (e) {
+    _preflightWarning = null;
+    updateDbRepairButton();
+  }
+}
+
+function updateDbRepairButton() {
+  const btn = document.getElementById('db-repair-btn');
+  if (!btn) return;
+
+  // Remove all tier classes
+  btn.classList.remove('tier-slowFade', 'tier-fade', 'tier-fastFade', 'tier-blinkAlarm');
+
+  if (!_preflightWarning || !_preflightWarning.blinkTier) {
+    btn.style.display = 'none';
+    return;
+  }
+
+  const w = _preflightWarning;
+  btn.style.display = 'block';
+  btn.classList.add(`tier-${w.blinkTier}`);
+  btn.title = `DB-Reparatur empfohlen: ${w.criticalIssues}/${w.totalEntries} kritische Einträge (${w.criticalPct}%)\n` +
+    `• ${w.unflaggedStale} ungeflaggte Stale\n` +
+    `• ${w.lowScore} Low-Score (<30)\n` +
+    `• ${w.nativeStale} Native Stale (erwartet)\n` +
+    `Klicken zum Reparieren — markiert Einträge für Re-Translation.`;
+}
+
+async function runDbRepair() {
+  const btn = document.getElementById('db-repair-btn');
+  if (!btn) return;
+  const confirmed = confirm(
+    `🔧 DATENBANK-REPARATUR\n\n` +
+    `${_preflightWarning.criticalIssues} Einträge werden für Re-Translation markiert.\n` +
+    `Keine Übersetzungen gehen verloren!\n\n` +
+    `• ${_preflightWarning.unflaggedStale} ungeflaggte Stale\n` +
+    `• ${_preflightWarning.lowScore} Low-Score\n` +
+    `• ${_preflightWarning.nativeStale} Native Stale\n\n` +
+    `Fortfahren?`
+  );
+  if (!confirmed) return;
+
+  btn.textContent = '⏳ REPARIERE...';
+  btn.disabled = true;
+  btn.classList.remove('tier-slowFade', 'tier-fade', 'tier-fastFade', 'tier-blinkAlarm');
+  btn.style.animation = 'none';
+  btn.style.opacity = '1';
+  btn.style.borderColor = 'var(--accent)';
+  btn.style.color = 'var(--accent)';
+
+  try {
+    const res = await fetch('/api/db-repair', { method: 'POST' });
+    const result = await res.json();
+    if (result.ok) {
+      _preflightWarning = null;
+      btn.style.display = 'none';
+      alert(`✅ Reparatur erfolgreich!\n\n${result.totalFixed} Einträge markiert:\n` +
+        `• ${result.details.nativeStale} Native Stale\n` +
+        `• ${result.details.unflaggedStale} Ungeflaggte Stale\n` +
+        `• ${result.details.lowScore} Low-Score\n\n` +
+        `Beim nächsten Sync werden diese Einträge neu übersetzt.`);
+    } else {
+      alert(`❌ Reparatur fehlgeschlagen: ${result.error || 'Unbekannter Fehler'}`);
+      btn.textContent = '🔧 DB-REPARATUR';
+      btn.disabled = false;
+      updateDbRepairButton();
+    }
+  } catch (e) {
+    alert(`❌ Fehler: ${e.message}`);
+    btn.textContent = '🔧 DB-REPARATUR';
+    btn.disabled = false;
+    updateDbRepairButton();
+  }
+}
+
+window.runDbRepair = runDbRepair;
+
+// FCM: Initial load (delayed to not block startup)
+setTimeout(refreshFcmRankings, 4000);
+// FCM: Auto-refresh every 60s in background (even when settings closed)
+setInterval(refreshFcmRankings, 60000);
+
 // Lazy: Model-Status + Provider-Stats only when Settings dropdown is open
 function startSettingsPolling() {
   if (_modelStatusInterval) return; // already running
   fetchModelStatus();
   fetchProviderStatus();
+  refreshFcmRankings();
   _modelStatusInterval = setInterval(fetchModelStatus, 10000);
   _providerStatusInterval = setInterval(fetchProviderStatus, 3000);
+  _fcmRankingsInterval = setInterval(refreshFcmRankings, 30000);
 }
 function stopSettingsPolling() {
   if (_modelStatusInterval) { clearInterval(_modelStatusInterval); _modelStatusInterval = null; }
   if (_providerStatusInterval) { clearInterval(_providerStatusInterval); _providerStatusInterval = null; }
+  if (_fcmRankingsInterval) { clearInterval(_fcmRankingsInterval); _fcmRankingsInterval = null; }
 }
 
 async function loadBackups() {

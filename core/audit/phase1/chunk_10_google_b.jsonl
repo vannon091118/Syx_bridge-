@@ -1,0 +1,291 @@
+{"s":"Are you sure you wish to declare war on {0} and attack {1} with your garrison?","t":"Sind Sie sicher, dass Sie {0} den Krieg erklären und {1} mit Ihrer Garnison angr","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"All exits are blocked. Can only sally out and attack the besieging army.","t":"Alle Ausgänge sind gesperrt. Kann nur einen Ausfall machen und die belagernde Ar","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enemies Killed","t":"Feinde getötet","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Sieges Won","t":"Belagerungen gewonnen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total amount of victories.","t":"Gesamtzahl der Siege.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"How much the other factions think this region is worth. This counts towards your","t":"Wie viel denken die anderen Fraktionen, dass diese Region wert ist? Dies zählt f","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Besieged!","t":"Belagert!","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Click to construct buildings.","t":"Klicken Sie, um Gebäude zu errichten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Assigned envoys","t":"Zugewiesene Gesandte","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Remove all constructed buildings?","t":"Alle errichteten Gebäude entfernen?","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total amount of defeats.","t":"Gesamtzahl der Niederlagen.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"consuming soldiers","t":"verzehrende Soldaten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":",\r\n\tartD: ","t":",\r\n\tartD:","p":"google_free","f":"free_machine_translation|source_reused","q":25,"sg":0,"fl":1,"a":"low_score"}
+{"s":"Days of Supply","t":"Liefertage","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Army supplies are low, and as a result {0} soldiers have deserted from {1}.","t":"Die Vorräte der Armee sind knapp, und als Folge davon sind {0} Soldaten aus {1} ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Mercenaries Displeased!","t":"Söldner unzufrieden!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"We are running low on Denari and can't pay our mercenaries. We need at least {0}","t":"Uns gehen die Denari aus und wir können unsere Söldner nicht bezahlen. Wir benöt","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Mercenaries leaving!","t":"Söldner ziehen ab!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Since you don't have enough credits to pay them, your hired mercenaries are leav","t":"Da Sie nicht über genügend Credits verfügen, um sie zu bezahlen, verlassen Ihre ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} forces have taken control of {1}.","t":"{0} Streitkräfte haben die Kontrolle über {1} übernommen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"An army of {0} defeated an army of {1} near {2}.","t":"Eine Armee von {0} besiegte eine Armee von {1} in der Nähe von {2}.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The city of {0} have been besieged by our enemies!","t":"Die Stadt {0} wurde von unseren Feinden belagert!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Region of {0} has fallen to our enemies.","t":"Die Region {0} ist unseren Feinden zum Opfer gefallen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Capital Relocated","t":"Hauptstadt verlegt","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The faction of {0} has moved its capital. Its people still resist.","t":"Die Fraktion von {0} hat ihre Hauptstadt verlegt. Die Menschen wehren sich immer","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Are you sure you wish to besiege {0} and declare war on the faction of {0}?","t":"Sind Sie sicher, dass Sie {0} belagern und der Fraktion von {0} den Krieg erklär","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total amount of sieges won.","t":"Gesamtzahl der gewonnenen Belagerungen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"More {0} join you","t":"Weitere {0} schließen sich Ihnen an","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Based on previous and recent victories and defeats. Affects morale on the battle","t":"Basierend auf früheren und jüngsten Siegen und Niederlagen. Beeinflusst die Mora","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total amount of casualties sustained.","t":"Gesamtzahl der erlittenen Opfer.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"We now have under our control a haven. Havens are bastions containing powerful r","t":"Wir haben jetzt einen Zufluchtsort unter unserer Kontrolle. Häfen sind Bastionen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Supplies low!","t":"Vorräte knapp!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Essential supplies have not been delivered to our army, affecting health. Low he","t":"Unsere Armee wurde nicht mit lebenswichtigen Gütern versorgt, was Auswirkungen a","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Total amount of enemies killed.","t":"Gesamtzahl der getöteten Feinde.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Since your worth has increased in the eyes of your {0}. More are willing to join","t":"Da Ihr Wert in den Augen Ihrer {0} gestiegen ist. Weitere sind bereit, sich Ihre","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} are leaving!","t":"{0} gehen!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Remove Completely","t":"Komplett entfernen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"There is no room for a single settlement on the map. Make sure there is at least","t":"Auf der Karte ist kein Platz für eine einzelne Siedlung. Stellen Sie sicher, das","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This area is isolated by the terrain. Make sure there is an open path to this pl","t":"Dieser Bereich ist durch das Gelände isoliert. Stellen Sie sicher, dass es einen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"delta","t":"Delta","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"normal","t":"Normal","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"deep","t":"tief","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Shows a clear view of factions and their loyalty towards you.","t":"Zeigt eine klare Sicht auf die Fraktionen und ihre Loyalität Ihnen gegenüber.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Shows a clear view of factions.","t":"Zeigt eine klare Sicht auf die Fraktionen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Shows the location of minerals.","t":"Zeigt den Standort von Mineralien an.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"show available paths","t":"Verfügbare Pfade anzeigen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"(Small)","t":"(Klein)","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"(Large)","t":"(Groß)","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"(Awesome)","t":"(Eindrucksvoll)","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Not enough","t":"Nicht genug","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Requirements not met","t":"Anforderungen nicht erfüllt","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Persecuting a species severely diminishes growth and decreases happiness.","t":"Die Verfolgung einer Art beeinträchtigt das Wachstum erheblich und verringert da","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The player capital can not reach all of the world map. Ships can not depart or e","t":"Das Spielerkapital kann nicht die gesamte Weltkarte erreichen. Schiffe können di","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Havens are smaller settlements that contain individuals of a specific race. They","t":"Zufluchtsorte sind kleinere Siedlungen, in denen sich Individuen einer bestimmte","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The {0} declares war on {1}","t":"Die {0} erklärt {1} den Krieg","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Since you've failed to uphold the standards of your {0} havens, many have now st","t":"Da Sie es versäumt haben, die Standards Ihrer {0} Zufluchtsorte einzuhalten, hab","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This landmark does not have a connected body. Landmarks must be connected. Landm","t":"Dieses Wahrzeichen hat keinen verbundenen Körper. Sehenswürdigkeiten müssen mite","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Place Player","t":"Spieler platzieren","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Forbid this species from immigrating and sends off any citizens to neighbouring ","t":"Verbieten Sie die Einwanderung dieser Art und schicken Sie alle Bürger in benach","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Pop. Target","t":"Pop. Ziel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Region Capacity","t":"Regionskapazität","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Region Population capacity.","t":"Region Bevölkerungskapazität.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"{0} changes master from {1} to {2}.","t":"{0} ändert den Master von {1} zu {2}.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Devastation comes from military actions. Devastated regions produce less, and ha","t":"Verheerende Folgen sind militärische Aktionen. Verwüstete Regionen produzieren w","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Proximity is the physical distance from a region to your capital. It determines ","t":"Unter Nähe versteht man die physische Entfernung einer Region zu Ihrer Hauptstad","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Distance to your capital. Distance affect trade prices.","t":"Entfernung zu Ihrer Hauptstadt. Die Entfernung beeinflusst die Handelspreise.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Health must be maintained at over 50% in a region, else there is a risk of disea","t":"Der Gesundheitszustand einer Region muss bei über 50 % gehalten werden, sonst be","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You have health moving towards more than 50% and need not fear an outbreak of di","t":"Ihr Gesundheitszustand nähert sich mehr als 50 % und Sie müssen keinen Krankheit","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You have health plummeting  below 50%, and an outbreak of disease is to be expec","t":"Ihr Gesundheitszustand sinkt unter 50 % und es ist mit einem Krankheitsausbruch ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This region is currently suffering from an outbreak of disease. You must increas","t":"Diese Region leidet derzeit unter einem Krankheitsausbruch. Sie müssen die Gesun","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Army presence","t":"Präsenz der Armee","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Species Biome","t":"Artenbiom","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Current Loyalty. Loyalty determines the chance of rebellion. Loyalty changes slo","t":"Aktuelle Loyalität. Loyalität bestimmt die Chance der Rebellion. Die Loyalität ä","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Ruling Species","t":"Herrschende Spezies","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Commit genocide and instantly rid yourself of this species. Will cause an outrag","t":"Begehen Sie Völkermord und beseitigen Sie diese Art sofort. Wird natürlich eine ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The region of {0} has suffered from low health and as a result there has been an","t":"Die Region {0} litt unter einem schlechten Gesundheitszustand und infolgedessen ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"HAIL MIGHTY DESPOT!","t":"Heil, mächtiger Despot!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You are about to enter the world of Syx.","t":"Sie sind dabei, die Welt von Syx zu betreten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This game is still in active development and some features might be changed, rem","t":"Dieses Spiel befindet sich noch in der aktiven Entwicklung und einige Funktionen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"If you're a pirate, no one will come after you. But when times are good, conside","t":"Wenn du ein Pirat bist, wird dich niemand verfolgen. Aber wenn die Zeiten gut si","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Suggestions and feedback are welcome.","t":"Anregungen und Feedback sind willkommen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Beware, if you are using mods, you play at your PC's own risk.","t":"Seien Sie vorsichtig, wenn Sie Mods verwenden, spielen Sie auf eigenes Risiko Ih","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"May the Astari guide your hand to swift victory...","t":"Mögen die Astari Ihre Hand zum schnellen Sieg führen ...","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"campaigns","t":"Kampagnen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"go!","t":"gehen!","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"credits","t":"Credits","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"hall of fame","t":"Ruhmeshalle","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"nobility","t":"Adel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"knights","t":"Ritter","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"citizens","t":"Bürger","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"showcases","t":"Vitrinen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"scenarios","t":"Szenarien","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"battles","t":"Schlachten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Troops that are stationed in a region which will defend it against attacks.","t":"Truppen, die in einer Region stationiert sind und diese gegen Angriffe verteidig","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Conscripts are candidates that can be trained into soldiers.","t":"Wehrpflichtige sind Kandidaten, die zu Soldaten ausgebildet werden können.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Taxes are generated from your subjects. Higher tax rate increases taxes, but dec","t":"Steuern werden von Ihren Untertanen generiert. Ein höherer Steuersatz erhöht die","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Religious differences","t":"Religiöse Unterschiede","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Painting world minimap","t":"Welt-Minikarte malen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Support towards your majesty. Low support increases the chance of rebellion. Whe","t":"Unterstützung für Ihre Majestät. Geringe Unterstützung erhöht die Wahrscheinlich","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"continue","t":"weitermachen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"quit","t":"aufhören","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"tutorial","t":"Tutorial","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"settings","t":"Einstellungen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"revert","t":"zurücksetzen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"random game","t":"Zufallsspiel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"easy","t":"einfach","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"hard","t":"hart","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Title unlocking is disabled when easier difficulty is selected.","t":"Das Freischalten von Titeln ist deaktiviert, wenn der einfachere Schwierigkeitsg","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Play the game like it's designed to play. Expect to spend hundreds of hours lear","t":"Spielen Sie das Spiel so, wie es zum Spielen gedacht ist. Rechnen Sie damit, Hun","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Play the game with a focus of battle and conquest.","t":"Spielen Sie das Spiel mit dem Fokus auf Kampf und Eroberung.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Focuses on building one's economy on trade and diplomatic relations.","t":"Konzentriert sich auf den Aufbau der eigenen Wirtschaft auf Handel und diplomati","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Focus on self-sufficiency","t":"Konzentrieren Sie sich auf Selbstversorgung","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Relax, build and conquer the world the way you want.","t":"Entspannen Sie sich, bauen und erobern Sie die Welt so, wie Sie es möchten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"For the few who have what it takes to be one of the greats.","t":"Für die wenigen, die das Zeug dazu haben, einer der ganz Großen zu sein.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Local Files","t":"Lokale Dateien","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Unsupported Mod","t":"Nicht unterstützter Mod","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"You are about to launch the game with code mods enabled. These mods contain code","t":"Sie sind dabei, das Spiel mit aktivierten Code-Mods zu starten. Diese Mods entha","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Starts the game in debug mode and will print extra information and diagnostics w","t":"Startet das Spiel im Debug-Modus und druckt bei Aktivierung zusätzliche Informat","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enables powerful tools in game that can be used to test things, or cheat.","t":"Aktiviert leistungsstarke Tools im Spiel, die zum Testen oder Betrügen verwendet","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"play","t":"spielen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"debug battle","t":"Debug-Kampf","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"editor","t":"Editor","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"quick battle","t":"schneller Kampf","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Enables linear filtering when the game is scaled.","t":"Aktiviert die lineare Filterung, wenn das Spiel skaliert wird.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Use normal maps and dynamic lightening","t":"Verwenden Sie Normalkarten und dynamische Aufhellung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Only works with the default english language. Replaces the fonts with open sans,","t":"Funktioniert nur mit der Standardsprache Englisch. Ersetzt die Schriftarten durc","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"default","t":"Standard","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"What audio device to use. If empty, the game can not find a device with openal s","t":"Welches Audiogerät soll verwendet werden? Wenn leer, kann das Spiel kein Gerät m","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The type of display to be created for the game.","t":"Die Art der Anzeige, die für das Spiel erstellt werden soll.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Which monitor to start the game in.","t":"Auf welchem ​​Monitor das Spiel gestartet werden soll.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"What resolution to use in full screen mode","t":"Welche Auflösung soll im Vollbildmodus verwendet werden?","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The width of the window","t":"Die Breite des Fensters","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The height of the window","t":"Die Höhe des Fensters","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Use borders and system decoration on the window","t":"Verwenden Sie Bordüren und Systemdekorationen am Fenster","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The scale of the game. Choose a bigger scale if the game is too small for you.","t":"Der Umfang des Spiels. Wählen Sie einen größeren Maßstab, wenn das Spiel zu klei","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Hold left mouse button to skip.","t":"Halten Sie zum Überspringen die linke Maustaste gedrückt.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A ferocious warrior who favors sheer strength over finesse.","t":"Ein wilder Krieger, der bloße Stärke der Finesse vorzieht.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enables vsync to reduce screen tearing. Can cause conflicts with NVidia GSync in","t":"Aktiviert Vsync, um Bildschirmrisse zu reduzieren. Kann zu Konflikten mit NVidia","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enables rich presence, that will send out information to other applications such","t":"Ermöglicht Rich Presence, das Informationen über Ihr Spiel an andere Anwendungen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Enables vsync that adapts to the current refresh rate. Only supported on some GP","t":"Aktiviert Vsync, das sich an die aktuelle Aktualisierungsrate anpasst. Wird nur ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"If full screen is selected, allow the window to iconify if it looses focus. When","t":"Wenn Vollbild ausgewählt ist, lassen Sie zu, dass das Fenster symbolisiert wird,","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Determines how the window floats on top of other applications. Might work differ","t":"Bestimmt, wie das Fenster über anderen Anwendungen schwebt. Funktioniert möglich","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A possible fix for borderless window and tabbing out if you have multiple monito","t":"Eine mögliche Lösung für randlose Fenster und Tab-Out, wenn Sie mehrere Monitore","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A charismatic performer who bolsters allies with song and story. Excels in diplo","t":"Ein charismatischer Künstler, der seine Verbündeten mit Liedern und Geschichten ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A devoted cleric serving Athur, steadfast and unwavering in faith.","t":"Ein hingebungsvoller Geistlicher, der Athur dient, standhaft und unerschütterlic","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Priest of Crator","t":"Priester von Krator","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"A devoted cleric serving Crator, inspiring resilience and order.","t":"Ein hingebungsvoller Geistlicher, der Crator dient und ihm Widerstandskraft und ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Priest of Shmalor","t":"Priester von Shmalor","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"A devoted cleric serving Shmalor, channeling faith to embolden allies.","t":"Ein hingebungsvoller Geistlicher, der Shmalor dient und seinen Glauben kanalisie","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A skilled hunter and archer, adept at surviving in the wilds.","t":"Ein erfahrener Jäger und Bogenschütze, der es versteht, in der Wildnis zu überle","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A nimble skirmisher who relies on speed and dexterity. Excels in Espionage.","t":"Ein flinker Scharmützler, der auf Geschwindigkeit und Geschicklichkeit setzt. He","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Player Level","t":"Spielerlevel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Leaving Party","t":"Abschied von der Partei","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Workshop that crafts magical artifacts for Heroes.","t":"Werkstatt, die magische Artefakte für Helden herstellt.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases effectiveness of artificers","t":"Erhöht die Wirksamkeit von Kunsthandwerkern","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Expected crafting throughput","t":"Erwarteter Herstellungsdurchsatz","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Internal storage for inputs.","t":"Interner Speicher für Eingaben.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Where subjects craft artifacts.","t":"Wo Probanden Artefakte herstellen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Adds efficiency to the room.","t":"Verleiht dem Raum Effizienz.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Output buffer where finished artifacts are placed.","t":"Ausgabepuffer, in dem fertige Artefakte platziert werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A Draw-bridge lets your subjects pass freely over small bodies of water untill r","t":"Mit einer Zugbrücke können Ihre Motive frei über kleine Gewässer fahren, bis sie","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A gate lets your subjects pass freely, while holding off enemies. They are a bit","t":"Ein Tor lässt Ihre Untertanen ungehindert passieren und hält gleichzeitig Feinde","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Priest of Aminion","t":"Priester von Aminion","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"A disciplined melee combatant trained for frontline battles.","t":"Ein disziplinierter Nahkämpfer, der für Frontkämpfe ausgebildet ist.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A devoted cleric serving Aminion, offering guidance and resolve to allies.","t":"Ein hingebungsvoller Geistlicher, der Aminion dient und seinen Verbündeten Führu","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A heavily armored champion who leads by example and holds the line.","t":"Ein schwer gepanzerter Champion, der mit gutem Beispiel vorangeht und die Linie ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Priest of Athur","t":"Priester von Athur","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Hinders enemies","t":"Behindert Feinde","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"For storage of artifacts.","t":"Zur Aufbewahrung von Artefakten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Wattle and Daub Building","t":"Wattle- und Daub-Gebäude","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Wattle and Daub Buildings","t":"Wattle- und Daub-Gebäude","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stores artifacts in special crates. Artifacts do not stack: each crate can hold ","t":"Bewahrt Artefakte in speziellen Kisten auf. Artefakte sind nicht stapelbar: Jede","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"A building method in which a woven lattice of wooden strips called ","t":"Eine Bauweise, bei der ein gewebtes Gitter aus Holzstreifen genannt wird","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Wattle and Daub Wall","t":"Flechtwerk und Kleckswand","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Clay Ceiling","t":"Lehmdecke","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Allows us to train archers.","t":"Ermöglicht uns die Ausbildung von Bogenschützen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Archery prowess","t":"Bogenschießen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Allows us to train our archers to be more deadly.","t":"Ermöglicht uns, unsere Bogenschützen zu trainieren, damit sie tödlicher sind.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Invaders will think twice before attacking your mighty walls studded with artill","t":"Eindringlinge werden es sich zweimal überlegen, bevor sie Ihre mächtigen, mit Ar","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Elevate your drill sergeants' abilities to turn out good troops in short order.","t":"Verbessern Sie die Fähigkeiten Ihrer Drill-Sergeants, um in kurzer Zeit gute Tru","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Defence Techniques","t":"Verteidigungstechniken","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases defence skill of our troops.","t":"Erhöht die Verteidigungsfähigkeiten unserer Truppen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Better methods increases morale.","t":"Bessere Methoden steigern die Moral.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Attack Techniques","t":"Angriffstechniken","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increases offence of our troops.","t":"Erhöht den Angriff unserer Truppen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"With some heads and other body-parts on spikes on our borders, we are able to de","t":"Mit einigen Köpfen und anderen Körperteilen auf Stacheln an unseren Rändern könn","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Allows us to build stone fortifications, the portcullis and drawbridge.","t":"Ermöglicht uns den Bau von Steinbefestigungen, Fallgittern und Zugbrücken.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Dedicated storage for artifacts. Each crate holds a single artifact for safe kee","t":"Spezieller Speicher für Artefakte. Jede Kiste enthält ein einzelnes Artefakt zur","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Display Case","t":"Vitrine","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Tending relics","t":"Relikte pflegen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The number of artifact crates.","t":"Die Anzahl der Artefaktkisten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Castles II","t":"Burgen II","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Handgonner Workshop advancement","t":"Weiterentwicklung der Handgonner-Werkstatt","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"02. Creating a world","t":"02. Eine Welt erschaffen","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Allows crafting of Bombards as a defensive and offensive placement.","t":"Ermöglicht die Herstellung von Bombarden als defensive und offensive Platzierung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nWelcome to the grand wiki guide to Songs of Syx.\r\n \r\nThis wiki aims to explain","t":"Willkommen beim großen Wiki-Leitfaden zu Songs of Syx.\r\n \r\nZiel dieses Wikis ist","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"More efficent handgonne production.","t":"Effizientere Handgonne-Produktion.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Allows us to build cut stone fortifications.","t":"Ermöglicht uns den Bau von Festungsanlagen aus behauenem Stein.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Allows crafting of Handgonnes and utilization for your divisions.","t":"Ermöglicht die Herstellung von Handgonnes und deren Verwendung für Ihre Division","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"03. Picking a species","t":"03. Eine Art auswählen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nHere are some of the more important time-saving shortcuts.\r\n \r\nShift-clicking ","t":"Hier sind einige der wichtigeren zeitsparenden Verknüpfungen.\r\n \r\nWenn Sie bei g","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"06. Menus","t":"06. Menüs","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nFrom the main capital screen, many important menus are just a click away.\r\n \r\n","t":"Vom Hauptbildschirm aus sind viele wichtige Menüs nur einen Klick entfernt.\r\n \r\n","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"07. How to Build","t":"07. Wie man baut","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nAfter placing a construction order, oddjobbers and other subjects lacking work","t":"Nach der Erteilung eines Bauauftrags beginnen Gelegenheitsarbeiter und andere Pe","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"09. Food and Agriculture","t":"09. Ernährung und Landwirtschaft","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"10. Getting more Population","t":"10. Mehr Bevölkerung gewinnen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"11. Logistics","t":"11. Logistik","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter is about ensuring goods end up where you want to.\r\n \r\nThe element","t":"In diesem Kapitel geht es darum, sicherzustellen, dass die Waren dort ankommen, ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"12. Happiness and Fulfillment","t":"12. Glück und Erfüllung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\n<c 219_255_077 Happiness> is mainly derived from fulfillment and increases loy","t":"<c 219_255_077 Happiness> leitet sich hauptsächlich von der Erfüllung ab und erh","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter explains how the output of most industries is determined and some","t":"In diesem Kapitel wird erläutert, wie die Produktion der meisten Industriezweige","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"14. Housing and Job Priorities","t":"14. Wohn- und Arbeitsprioritäten","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThe various priorities in Songs of Syx can seem daunting at first, but if you ","t":"Die verschiedenen Prioritäten in Songs of Syx können auf den ersten Blick entmut","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"15. Janitors and Maintenance","t":"15. Hausmeister und Wartung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nAlmost everything you build will require maintenance by janitors to prevent de","t":"Fast alles, was Sie bauen, muss von Hausmeistern gewartet werden, um eine Versch","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"16. Technology and Research","t":"16. Technologie und Forschung","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nFirst of all, you need to keep in mind one important thing about the research ","t":"Zunächst müssen Sie eine wichtige Sache beim Forschungssystem im Hinterkopf beha","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"17. Trade","t":"17. Handel","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThere are two kinds of trade: manual and automatic.\r\n \r\n<c 219_255_077 Manual ","t":"Es gibt zwei Arten des Handels: manuell und automatisch.\r\n \r\n<c 219_255_077 Manu","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"18. Tourists","t":"18. Touristen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nOnce your city reaches a certain size it will attract tourists.\r\n \r\nTourists c","t":"Sobald Ihre Stadt eine bestimmte Größe erreicht, wird sie Touristen anziehen.\r\n ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"19. Slavery","t":"19. Sklaverei","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nSlavery can have a huge influence on the design of your city and is a choice t","t":"Sklaverei kann einen großen Einfluss auf die Gestaltung Ihrer Stadt haben und is","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"20. Diplomacy","t":"20. Diplomatie","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nDealing with foreign empires will be covered here.\r\n \r\nA very important thing ","t":"Der Umgang mit fremden Imperien wird hier behandelt.\r\n \r\nEin sehr wichtiger Aspe","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"21. Law","t":"21. Gesetz","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"22. Roundness/Squareness","t":"22. Rundheit/Rechtwinkligkeit","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nRoundness and its counterpart, squareness, are liked by different species. Bot","t":"Rundheit und ihr Gegenstück, die Rechtwinkligkeit, werden von verschiedenen Arte","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"23. Health","t":"23. Gesundheit","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nHealth measures your subjects' overall resistance to disease. Smaller cities c","t":"Gesundheit misst die allgemeine Widerstandsfähigkeit Ihrer Probanden gegen Krank","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"24. Nobles","t":"24. Adlige","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nNobles are still subject to change. \r\n \r\nDepending on your level, you can appo","t":"Adlige können sich noch ändern. \r\n \r\nAbhängig von Ihrer Stufe können Sie Bürger ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nEveryone on Syx is religious and has a favorite god and their initial faith is","t":"Jeder auf Syx ist religiös und hat einen Lieblingsgott und sein ursprünglicher G","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"26. Education and Indoctrination","t":"26. Bildung und Indoktrination","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nEducation and indoctrination happen in universities and schools and can provid","t":"Bildung und Indoktrination finden an Universitäten und Schulen statt und können ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"27. Defense and Divisions","t":"27. Verteidigung und Divisionen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter is mostly about creating armies and training soldiers. <a BATTLE ","t":"In diesem Kapitel geht es hauptsächlich um die Aufstellung von Armeen und die Au","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"28. Raiders","t":"28. Räuber","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nRaiders are one of the main reasons for investing in an <a DEFENSE army>. They","t":"Raider sind einer der Hauptgründe für die Investition in ein <a DEFENSE army>. S","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"29. Battle","t":"29. Schlacht","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter is about commanding your soldiers in battles. You can find out ho","t":"In diesem Kapitel geht es darum, Ihre Soldaten in Schlachten zu befehligen. Wie ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"30. Combat Mechanics","t":"30. Kampfmechanik","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"\r\nThis chapter explains the combat mechanics and how the stats of your soldiers ","t":"In diesem Kapitel wird die Kampfmechanik erläutert und erläutert, wie sich die W","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nRegions can be acquired through either warfare or diplomacy. Regions support y","t":"Regionen können entweder durch Krieg oder Diplomatie erworben werden. Regionen u","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nBesides natural bodies of water, these things make up the water system: <c 219","t":"Neben natürlichen Gewässern bilden diese Dinge das Wassersystem: <c 219_255_077 ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nFarms are where subjects turn soil, water, sunlight and time into crops. The c","t":"Auf Bauernhöfen verwandeln Menschen Erde, Wasser, Sonnenlicht und Zeit in Nutzpf","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nPastures are a building in the agricultural section which specializes livestoc","t":"Weiden sind ein Gebäude im landwirtschaftlichen Bereich, das auf die Viehhaltung","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nRefiners are big and noisy processing rooms that turn raw materials into other","t":"Raffinerien sind große und laute Verarbeitungsräume, in denen Rohstoffe in ander","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: dexterity 1.2, social 1.1, inverse Honour 4.0","t":"Statistiken: Geschicklichkeit 1,2, Soziales 1,1, umgekehrte Ehre 4,0","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The speed at which a subject propagates naturally.","t":"Die Geschwindigkeit, mit der sich ein Subjekt auf natürliche Weise ausbreitet.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The submission of your slaves. Submission under 100% can read to escaped slaves,","t":"Die Unterwerfung deiner Sklaven. Eine Unterwerfung unter 100 % kann auf entflohe","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The loyalty of your plebeians. Loyalty under 100% can result in emigration, stri","t":"Die Loyalität Ihrer Plebejer. Eine Loyalität unter 100 % kann zu Abwanderung, St","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Happiness is fulfillment in proportion to expectations. Fulfillment is gained by","t":"Glück ist Erfüllung im Verhältnis zu den Erwartungen. Erfüllung wird durch die E","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"\r\nWorkshops are similar to Refiners, but they produce goods via individual craft","t":"Werkstätten ähneln Raffinerien, produzieren Waren jedoch durch individuelle Hand","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Natural Births /year","t":"Natürliche Geburten/Jahr","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: inverse honour -4, social 1.1","t":"Statistiken: umgekehrte Ehre -4, soziales 1.1","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Stats: workshop mechanic 1.2, inverse honour 5.0","t":"Statistiken: Werkstattmechaniker 1,2, umgekehrte Ehre 5,0","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The part at which a subject stays fertile.","t":"Der Teil, in dem ein Subjekt fruchtbar bleibt.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"in","t":"In","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Regional Supply Depot","t":"Regionales Versorgungsdepot","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Needed to supply regions on the world map with resources.","t":"Wird benötigt, um Regionen auf der Weltkarte mit Ressourcen zu versorgen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The amount of storage","t":"Die Speichermenge","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Where goods are stored.","t":"Wo Waren gelagert werden.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Increase the amount of Gov Points we can generate with estates without incurring","t":"Erhöhen Sie die Anzahl der Regierungspunkte, die wir mit Nachlässen generieren k","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Allows us to build more powerful regional centres and exert more control over ou","t":"Ermöglicht uns, mächtigere regionale Zentren aufzubauen und mehr Kontrolle über ","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rural Health","t":"Ländliche Gesundheit","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Allows us to offer more sanitation in our domain.","t":"Ermöglicht uns, mehr Hygiene in unserem Bereich anzubieten.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rural Health II","t":"Ländliche Gesundheit II","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Rural Health III","t":"Ländliche Gesundheit III","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Loving Subjects","t":"Liebevolle Themen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Gives us more loyalty from our regions.","t":"Gibt uns mehr Loyalität aus unseren Regionen.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Loving Subjects II","t":"Liebende Untertanen II","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Loving Subjects III","t":"Liebevolle Untertanen III","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Gathers more tax from our regions.","t":"Erhebt mehr Steuern von unseren Regionen.","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Tax Collection II","t":"Steuererhebung II","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The amount of workers that can be employed.","t":"Die Anzahl der Arbeitnehmer, die beschäftigt werden können.","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"This building can be used to send supplies to regions on the world map. Workers ","t":"Mit diesem Gebäude können Vorräte an Regionen auf der Weltkarte geschickt werden","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Delivering resources to regions","t":"Bereitstellung von Ressourcen für Regionen","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Regional Supply Depots","t":"Regionale Versorgungsdepots","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"mod","t":"Mod","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"The five brave knights fought the dragon [#0]","t":"Die fünf tapferen Ritter kämpften gegen den Drachen [#0]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Defend the great walls from invaders [#7]","t":"Verteidige die großen Mauern vor Eindringlingen [#7]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Trade five units of noble goods at the market [#8]","t":"Handeln Sie fünf Einheiten edler Güter auf dem Markt [#8]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Recruit fierce workers for the fierce mine [#9]","t":"Rekrutiere wilde Arbeiter für die wilde Mine [#9]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"The vast king has declared a feast [#4]","t":"Der große König hat ein Fest ausgerufen [#4]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Train three golden soldiers at the barracks [#3]","t":"Bilde drei goldene Soldaten in der Kaserne aus [#3]","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Harvest the dark wheat fields before winter [#2]","t":"Ernten Sie die dunklen Weizenfelder vor dem Winter [#2]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Research sacred technology in the library [#6]","t":"Erforsche heilige Technologie in der Bibliothek [#6]","p":"google_free","f":"","q":85,"sg":0,"fl":0,"a":null}
+{"s":"Build a new mighty workshop for your citizens [#1]","t":"Bauen Sie eine neue mächtige Werkstatt für Ihre Bürger [#1]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}
+{"s":"Explore the hidden forest to find treasure [#5]","t":"Erkunde den verborgenen Wald, um Schätze zu finden [#5]","p":"google_free","f":"","q":95,"sg":0,"fl":0,"a":null}

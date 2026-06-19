@@ -1,0 +1,317 @@
+{"s":"Threat","t":"Bedrohung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tech","t":"Technologie","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Timer","t":"Timer","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"To","t":"Nach","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Toll","t":"Großartig","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Total","t":"Vollständig","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tools","t":"Werkzeuge","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Tourist","t":"Tourist","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Tourists","t":"Touristen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Unavailable","t":"Nicht verfügbar","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Undo","t":"Rückgängig","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Unlocks","t":"Freischaltungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Unreachable","t":"Unerreichbar","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Upkeep","t":"Unterhalt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Used","t":"Verwendet","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"War","t":"Krieg","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Workforce","t":"Arbeitskraft","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"World","t":"Welt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Average Price","t":"Durchschnittspreis","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"delete","t":"Löschen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Goods","t":"Waren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"North","t":"Norden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"East","t":"Osten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"South","t":"Süden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"West","t":"Westen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Central","t":"Zentral","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Day","t":"Tag","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Days","t":"Tage","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Season","t":"Jahreszeit","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Seasons","t":"Jahreszeiten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Year","t":"Jahr","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Years","t":"Jahre","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Age","t":"Alter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Ages","t":"Alter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Hours","t":"Stunden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Minute","t":"Minute","p":"native_runtime","f":"stale_retranslate","q":80,"sg":0,"fl":1,"a":"source_reused|native_stale"}
+{"s":"Minutes","t":"Minuten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Second","t":"Sekunde","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Seconds","t":"Sekunden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Today","t":"Heute","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Retreat","t":"Rückzug","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Select Location","t":"Ort auswählen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"enter","t":"Eingabe","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"F{0}","t":"F{0}","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Up","t":"Hoch","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Down","t":"Runter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Left","t":"Links","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Right","t":"Rechts","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Select","t":"Auswählen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Show","t":"Anzeigen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Loose Formation","t":"Lockere Formation","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tight Formation","t":"Enge Formation","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Guard","t":"Wache","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Run","t":"Laufen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Minimap","t":"Minikarte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Center","t":"Zentrieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Rotate","t":"Drehen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Rotates things.","t":"Dreht Objekte.","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Decrease","t":"Verringern","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Quicksave","t":"Schnellspeichern","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Pause","t":"Pause","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Screenshot","t":"Screenshot","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Stats","t":"Statistiken","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Enter","t":"Betreten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Backspace","t":"Zurückspulen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Escape","t":"Esc","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"General","t":"Allgemein","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"options","t":"Optionen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"successfully overwritten","t":"Erfolgreich überschrieben","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"overwrite","t":"Überschreiben","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Delete Save?","t":"Speicher löschen?","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Delete Old","t":"Altes löschen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Regenerate","t":"Regenerieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Recall","t":"Zurückrufen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Fences","t":"Zäune","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Roads","t":"Straßen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Move","t":"Verschieben","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Construct","t":"Bauen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Planning","t":"Planung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Roadify","t":"Straßen bauen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Costs","t":"Kosten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Assign","t":"Zuweisen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Housed","t":"Belegt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Available Housing","t":"Verfügbares Wohnraum","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Target Rate","t":"Zielrate","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Current Rate","t":"Aktuelle Rate","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Punishment Settings","t":"Strafeneinstellungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Determent","t":"Abschreckung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"{0} construction","t":"{0}-Konstruktion","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Inspect","t":"Inspizieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Radius","t":"Radius","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Available Services","t":"Verfügbare Dienste","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Load","t":"Laden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Employed","t":"Beschäftigt","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Master Priority","t":"Hauptpriorität","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Bulk","t":"Menge","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Manage Law","t":"Gesetz verwalten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Educate","t":"Ausbilden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Authorize","t":"Autorisieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Auto","t":"Auto","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Average Age:","t":"Durchschnittsalter:","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Decrees","t":"Verordnungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Set Punishment","t":"Strafe festlegen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tasks","t":"Aufgaben","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Attraction","t":"Attraktion","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Center screen at subject.","t":"Bildschirm auf Ziel zentrieren.","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Offer","t":"Angebot","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Artifacts","t":"Artefakte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Inspect Faction.","t":"Fraktion untersuchen.","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Standing","t":"Ruf","p":"native_runtime","f":"stale_retranslate","q":70,"sg":2,"fl":1,"a":null}
+{"s":"Charging","t":"Aufladen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Aiming","t":"Zielen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Configuration","t":"Konfiguration","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Imports","t":"Importe","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Exports","t":"Exporte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Lowest","t":"Niedrigste","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Highest","t":"Höchste","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Unit","t":"Einheit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Best","t":"Beste","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Closest","t":"Nächste","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Title","t":"Titel","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Arrived","t":"Angekommen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Chosen","t":"Ausgewählt","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Background","t":"Hintergrund","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Foreground","t":"Vordergrund","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Pole","t":"Pol","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Border","t":"Grenze","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Player","t":"Spieler","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Faction Name","t":"Fraktionsname","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Ransom","t":"Lösegeld","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Raids","t":"Überfälle","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Attack Route","t":"Angriffsweg","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Distant","t":"Entfernt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Unlocked","t":"Entsperrt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Sieges","t":"Siege","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Broken Rooms","t":"Zerstörte Räume","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Poor","t":"Schlecht","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Mixed","t":"Gemischt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Liking","t":"Vorliebe","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Generate Terrain","t":"Gelände erzeugen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Customize Faction","t":"Fraktion anpassen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Random","t":"Zufällig","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"generate","t":"erzeugen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"regenerate","t":"neu erzeugen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Annihilation","t":"Auslöschung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Command","t":"Befehl","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Assist","t":"Unterstützung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Wait","t":"Warten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Lift","t":"Heben","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Enslave","t":"Versklaven","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Plunder","t":"Plündern","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Loot","t":"Beute","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Raze","t":"Zerstören","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Occupy","t":"Besetzen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Abandon","t":"Aufgeben","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Puppet","t":"Puppe","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Capture","t":"Gefangen nehmen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Execute","t":"Hinrichten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Release","t":"Freilassen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Replenish","t":"Nachfüllen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tradable","t":"Verhandelbar","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Barter","t":"Tausch","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Worth","t":"Wert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Available envoys","t":"Verfügbare Gesandte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Victories","t":"Siege","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Defeats","t":"Niederlagen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reputation","t":"Ruf","p":"native_runtime","f":"stale_retranslate","q":70,"sg":2,"fl":1,"a":null}
+{"s":"Daily Consumption:","t":"Täglicher Verbrauch:","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Desertion!","t":"Deserteur!","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Besieged","t":"Belagert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Settlement lost!","t":"Siedlung verloren!","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Haven controlled","t":"Zufluchtsort kontrolliert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Havens","t":"Zufluchtsorte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"village","t":"Dorf","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Landmark","t":"Wahrzeichen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"locate","t":"Lokalisieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Remove","t":"Entfernen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Name","t":"Name","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Centre","t":"Zentrum","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Paths","t":"Wege","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Produces","t":"Produziert","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Persecution","t":"Verfolgung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Massacre","t":"Massaker","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Representation","t":"Darstellung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Devastation","t":"Zerstörung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Borders","t":"Grenzen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reachable","t":"Erreichbar","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Outbreak","t":"Ausbruch","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Tax Rate","t":"Steuersatz","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Scripts","t":"Skripte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Difficulty","t":"Schwierigkeit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Normal","t":"Normal","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Warrior","t":"Krieger","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Homestead","t":"Hauptsitz","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Sandbox","t":"Sandbox","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Despot","t":"Despot","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Version","t":"Version","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Platform","t":"Plattform","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Saves","t":"Speicherstände","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Screenshots","t":"Screenshots","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Contact","t":"Kontakt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Launch","t":"Starten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Exit","t":"Beenden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Outdated","t":"Veraltet","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Author","t":"Autor","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Play","t":"Spielen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Cancel","t":"Abbrechen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Debug","t":"Debug","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Developer","t":"Entwickler","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Linear","t":"Linear","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Shading","t":"Schattierung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"VSync","t":"VSync","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Iconify","t":"Minimieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Audio","t":"Audio","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Screen","t":"Bildschirm","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Borderless","t":"Randlos","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Full","t":"Vollbild","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Windowed","t":"Fenstered","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Monitor","t":"Monitor","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Resolution","t":"Auflösung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Width","t":"Breite","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Height","t":"Höhe","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Scale","t":"Skalierung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Barbarian","t":"Barbar","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Bard","t":"Barde","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Fighter","t":"Kämpfer","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Knight","t":"Ritter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Aminion","t":"Aminion","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Athur","t":"Athur","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Crator","t":"Crator","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Shmalor","t":"Shmalor","p":"native_runtime","f":"stale_retranslate","q":25,"sg":0,"fl":1,"a":"source_reused|low_score|native_stale"}
+{"s":"Ranger","t":"Waldläufer","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Rogue","t":"Schurke","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Artificer","t":"Konstrukteur","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Artificers","t":"Konstrukteure","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Artificing","t":"Konstruktion","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Auxiliary Station","t":"Hilfsstation","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Drawbridge","t":"Zugbrücke","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Hinders momement","t":"Behinderte Bewegung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Palisade Gate","t":"Palissaden-Tor","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Palisade gates","t":"Palissaden-Tore","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Gate","t":"Tor","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Reliquary","t":"Reliquiar","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Reliquaries","t":"Reliquiare","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Custodian","t":"Verwalter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Archery","t":"Bogenschießen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Soldiering","t":"Militär","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Drilling","t":"Übung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Deterrents","t":"Abschreckungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Castles","t":"Burgen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Handgonnes","t":"Handkanonen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Bombards","t":"Bombarden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Guide","t":"Leitfaden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"01. Introduction","t":"Einführung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"08. Building a stable Settlement","t":"Aufbau einer stabilen Siedlung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"13. Production","t":"Produktion","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"31. Region Management","t":"Regionsverwaltung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"32. Water","t":"Wasser","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Rooms","t":"Räume","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Fisheries","t":"Fischereien","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Hunter","t":"Jäger","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Infrastructure","t":"Infrastruktur","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Woodcutter","t":"Holzfäller","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Pastures","t":"Weiden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Refiners","t":"Raffinerien","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Workshops","t":"Werkstätten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Reproduction Age","t":"Reproduktionsalter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Immigration Speed","t":"Einwanderungsgeschwindigkeit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Trust","t":"Vertrauen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Mass Emigrantion!","t":"Massenauswanderung!","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Terrorists","t":"Terroristen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Points Available","t":"Verfügbare Punkte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Effectiveness","t":"Wirksamkeit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Rumours","t":"Gerüchte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Honor","t":"Ehre","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Exposure","t":"Aussetzung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Protection","t":"Schutz","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Raider attraction","t":"Räuberanziehung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Misadventure","t":"Missgeschick","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Hypothermia","t":"Unterkühlung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Guards","t":"Wachen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Children (slave)","t":"Kinder (Sklaven)","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Parent","t":"Elternteil","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Parents","t":"Eltern","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Unconscious","t":"Bewusstlos","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Patrolling","t":"Patrouillieren","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Parenting","t":"Elternschaft","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Available Now","t":"Jetzt verfügbar","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Attracted","t":"Angezogen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Captives","t":"Gefangene","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Slaughter","t":"Abschlachtung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Input","t":"Eingabe","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Production speed","t":"Produktionsgeschwindigkeit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Consumption Bonus","t":"Verbrauchsbonus","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Available Executions","t":"Verfügbare Hinrichtungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Spectators","t":"Zuschauer","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Suspects","t":"Verdächtige","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Suspected Shapeshifter","t":"Verdächtiger Gestaltwandler","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Preferred","t":"Bevorzugt","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Surroundings","t":"Umgebung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Childhood","t":"Kindheit","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Adulthood","t":"Erwachsenenalter","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Enlightenment","t":"Erleuchtung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Decreed Punishment:","t":"Verordnete Strafe:","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Recent Persecutions","t":"Jüngste Verfolgungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Escapes","t":"Fluchten","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Tyranny","t":"Tyrannei","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Owned","t":"Im Besitz","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Imports available","t":"Verfügbare Importe","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Profit","t":"Gewinn","p":"native_runtime","f":"stale_retranslate","q":85,"sg":2,"fl":1,"a":null}
+{"s":"Exports available","t":"Verfügbare Exporte","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Stance","t":"Einstellung","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Divisions","t":"Divisionen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Arrests","t":"Verhaftungen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Apply","t":"Anwenden","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Selected","t":"Ausgewählt","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}
+{"s":"Punishments","t":"Strafen","p":"native_runtime","f":"stale_retranslate","q":95,"sg":2,"fl":1,"a":null}

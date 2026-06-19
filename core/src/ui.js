@@ -3,9 +3,13 @@ const inquirer = require('inquirer');
 /**
  * Displays the main menu and returns the selected action.
  */
-async function mainMenu(stats = {}) {
+async function mainMenu(stats = {}, plugin = null) {
+  const gameName = plugin?.getPromptContext?.()?.gameName ?? null;
+  const title = gameName
+    ? `${gameName.toUpperCase()} - AI BRIDGE BUILDER`
+    : 'AI BRIDGE BUILDER';
   console.log('\n' + '='.repeat(50));
-  console.log('       SONGS OF SYX - AI BRIDGE BUILDER');
+  console.log(`       ${title}`);
   console.log('='.repeat(50));
 
   if (stats.activePatches !== undefined) {

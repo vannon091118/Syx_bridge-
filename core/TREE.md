@@ -1,6 +1,6 @@
-# 🌳 Syx-Bridge v0.19.6 — Projekt-Struktur (TREE)
+# 🌳 Syx-Bridge v0.19.7 — Projekt-Struktur (TREE)
 
-> **Generiert:** 2026-06-19 | **Branch:** feat/parser-adapter-integration | **Version:** v0.19.6
+> **Generiert:** 2026-06-18 | **Branch:** prepare-0.20-wip | **Version:** v0.19.7
 
 ```
 SyxBridge_Live/                     # Root — Deployment-Verzeichnis
@@ -23,7 +23,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
 └── core/                           # ═══ Anwendung ═══
     │
     ├── index.js                    # ⭐ ENTRY POINT — CLI, Startup-Wizard, Orchestrator
-    ├── package.json                # v0.19.6, Dependencies: axios, dotenv, inquirer, sql.js, sqlite3
+    ├── package.json                # v0.19.7, Dependencies: axios, dotenv, inquirer, sql.js, sqlite3 + optional: @huggingface/transformers
     ├── package-lock.json
     ├── eslint.config.mjs           # ESLint-Konfiguration
     ├── LICENSE                     # MIT
@@ -69,7 +69,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │   ├── gate-counter.js             # Gate-Counter Metriken
     │   │
     │   │   ─── Konfiguration/Logging ───
-    │   ├── config-runtime.js           # .env-Parsing, persistSingleEnvVar(), CLI/GUI-Modus
+    │   ├── config-runtime.js           # .env-Parsing, persistSingleEnvVar(), NMT_LOCAL_ENABLED, CLI/GUI-Modus
     │   ├── context-packets.js          # Kontext-Pakete für LLM-Prompts
     │   ├── logger.js                   # Log-System (file + console)
     │   ├── diagnostics.js              # System-Diagnose (Provider-Check, DB-Check)
@@ -81,8 +81,8 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │   │
     │   │   ─── Game-spezifisch ───
     │   ├── sos-runtime.js              # SoS-Mod-Runtime (Room/Tech Overrides)
-    │   │
-    │   │   ─── GUI (Web-Interface) ───
+    │   │    │
+    │   ─── GUI (Web-Interface) ───
     │   └── gui/
     │       ├── server.js               # Express-Server — API-Endpunkte, DB-Browser, Revision-Modal
     │       └── public/
@@ -91,7 +91,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │
     │
     │   ══════════════════════════════════════════════
-    │   scripts/ — DevOps & Wartung (13 Scripts)
+    │   scripts/ — DevOps & Wartung (12 Scripts)
     │   ══════════════════════════════════════════════
     │
     ├── scripts/
@@ -107,22 +107,25 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │   ├── check_consistency.js         # Konsistenz-Checker (Versionen, Pfade, Archive)
     │   ├── sync-version.js             # Version-Synchronisation (7 Dateien)
     │   ├── release.js                  # Workshop-Release-Builder (ZIP)
+    │   ├── cleanup_argos_stale.js     # One-Off DB-Cleanup (stale Argos-Einträge)
     │   ├── package.js                  # Release-Paketierung
     │   ├── check_workshop_damage.ps1   # [PowerShell] Workshop-Schadensprüfung
-    │   ├── start.bat                   # Windows-Starter
-    │   └── vannon_test_run.js          # [gitignore] Persönlicher Test-Script
+    │   ├── warm-model.js               # NEU: NMT Model-Warmup (Transformers.js, ~1.2GB Download)
+    │   └── start.bat                   # [GELÖSCHT] Logik in Root start.bat konsolidiert (0.19.7-batfix)
     │
     │
-    │   ══════════════════════════════════════════════
-    │   tests/ — Test-Suiten (5 Dateien, 86 Assertions)
-    │   ══════════════════════════════════════════════
-    │
-    ├── tests/
-    │   ├── parser_smoke.js             # Parser-Tests (sos/raw/json, index/full/hash, \r\n)
-    │   ├── gate-counter-smoke.js       # Gate-Counter Unit-Tests
-    │   ├── e2e_p3_risk_scoring.js      # P3 Dynamic Risk Scoring E2E
-    │   ├── e2e_p5_sprachauswahl.js     # P5 Multi-Language Wizard E2E (31 Assertions)
-    │   └── e2e_bug1_native_mode.js     # Bug#1 Native-Mode E2E
+│   ══════════════════════════════════════════════
+│   tests/ — Test-Suiten (6 Dateien, 135+ Assertions)
+│   ══════════════════════════════════════════════
+│
+├── tests/
+│   ├── parser_smoke.js             # Parser-Tests (sos/raw/json, index/full/hash, \r\n)
+│   ├── gate-counter-smoke.js       # Gate-Counter Unit-Tests
+│   ├── validator-smoke.js          # validateFileMarkers Unit-Tests (49 Checks)
+│   ├── translation-runtime-smoke.js  # Translation-Runtime Smoke-Tests
+│   ├── e2e_p3_risk_scoring.js      # P3 Dynamic Risk Scoring E2E
+│   ├── e2e_p5_sprachauswahl.js     # P5 Multi-Language Wizard E2E (31 Assertions)
+│   └── e2e_bug1_native_mode.js     # Bug#1 Native-Mode E2E
     │
     │
     │   ══════════════════════════════════════════════
@@ -130,11 +133,6 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │   ══════════════════════════════════════════════
     │
     ├── docs/
-    │   ├── README.md                   # Technische Doku (API, Module, Routing-Pipeline)
-    │   ├── CHANGELOG.md                # Versionshistorie (v0.19.6)
-    │   ├── TODO.md                     # Priorisierte Fehlerbehebung (10 Tickets, P0 ✅)
-    │   ├── server_output.txt           # [gitignore] Server-Output
-    │   │
     │   └── plans/                      # ─── Aktive Pläne ───
     │       └── HARDENING-DRY-RUN-GATE-COUNTER_2026-06-16.md  # Referenziert von gate-counter.js Z56
     │
@@ -146,18 +144,16 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     ├── archive/
     │   ├── .gitkeep
     │   ├── docs/
-│   │   ├── ANALYSE_2026-06-19.md            # Doku-Validität + DB-Analyse (724 Einträge)
-│   │   ├── AUDIT_REPORT.md              # DB-Audit-Report
-│   │   ├── DB_REPORT_v0.19.5.D17.06.U17.06.md  # DB-Fehler-Report (archiviert)
-│   │   ├── LOG_REPORT_2026-06-19.md            # Log-Report + DB-Abgleich + Fehlerprüfung
-    │   │   ├── MASTER_DOC.md                # Architektur-Master-Doku (Referenz)
-    │   │   ├── PATCH_REVIEW_2026-06-16.md   # Patch-Review
-    │   │   ├── REPORT_v0.19.5_dry_run.md    # Dry-Run Fehler-Report
-    │   │   ├── SESSION_REPORT_v0.19.5-prerelease.md
-    │   │   ├── STATUS.md                    # Release-Status (historisch)
-    │   │   ├── TECHNICAL_REVIEW_2026-06-15.md # Tech-Review
-    │   │   ├── VISION.md                    # [gitignore] Projektvision
-    │   │   └── WORKSHOP_CHANGELOG.md         # User-facing Changelog (archiviert)
+    │   │   ├── MASTER_DOC.md                # Architektur-Master-Doku (AKTUELL)
+    │   │   ├── CHANGELOG.md                # Versionshistorie (AKTUELL)
+    │   │   ├── ANALYSE_2026-06-19.md       # Doku-Validität + DB-Analyse (Referenz)
+    │   │   ├── FULLSCAN_2026-06-19.md      # Vollständiger Code-Scan 215 Funktionen (Referenz)
+    │   │   ├── IMPORT_CHAIN_ISOLATION_2026-06-19.md  # 44 Import-Ketten (Referenz)
+    │   │   ├── LOG_REPORT_2026-06-19.md    # Log-Report + DB-Abgleich (Referenz)
+    │   │   ├── KNOWN_BUGS_REPORT_2026-06-19.md  # 17 Bugs (Referenz)
+    │   │   ├── DOC_CONSOLIDATION_2026-06-19.md  # Konsolidierungs-Protokoll
+    │   │   ├── HARDCODED_VALUES_NMT_2026-06-18.md  # NEU: NMT Hardcode-Bug-Report
+    │   │   └── FREEZE/                    # 18 archivierte Reports (keine gelöscht)
     │   ├── backups/
     │   ├── plans/                          # ─── Gefrorene Pläne (archiviert) ───
     │   │   ├── MULTI_LANGUAGE_MODEL_PLAN_2026-06-16.md

@@ -1,0 +1,39 @@
+feat: v0.19.7 -- PREFLIGHT Fix + Routing-Hardening + Error-Handler Smart + Docs
+
+PREFLIGHT Fix (core/src/preflight.js):
+- NATIVE_STALE von 5%-Blocking-Schwelle ausgeschlossen
+- criticalIssues = totalIssues - issues.nativeStale
+- 123 echte Issues (2.3%) auto-repariert statt Sync-Block
+- Soft-Warnung bei >50% NATIVE_STALE
+- Report: CRITICAL (excl. NATIVE_STALE) Zeile
+
+Routing-Hardening (core/src/router.js, core/src/dispatcher.js):
+- Argos CostClass 0->10 (absolute letzte Wahl)
+- Google_free CostClass 3->9
+- Nvidia auf Position 2 in candidatesByRole (alle Stages)
+- Groq auf Position 3 promoted
+- Dispatcher Tier 2: Nvidia vor openrouter/free injected
+- Client-Factory: Nvidia Batch 8-12->3-6 Items (50 TPM Schutz)
+
+Error-Handler Smart (core/src/router.js):
+- 429: Provider deaktiviert fuer ganzen Lauf
+- Wiederholter 429: flaggedForReview
+- Andere Fehler: eskalierender Cooldown x2 (10s->20s->40s->80s, cap 5min)
+- Gleicher Status wiederholt: flaggedForReview
+- isAvailable: Cooldown blockiert NICHT mehr (Key-Rotation uebernimmt)
+- reset(): Neue Felder zwischen Runs zurueckgesetzt
+
+Doku & Infra:
+- LLM-AGENTS-EntryPoint.md: +2 Patterns (External Research Siege, System-Build-Loop)
+- SESSION_REPORT 2026-06-18 PREFLIGHT-INPLACE
+- DB-Snapshots + Trend-Reports archiviert
+- Alte Reports nach FREEZE/ migriert
+- _Info.txt: Version 0.19.7
+- Neue Scripts: cleanup_argos_stale.js, reset_now.js, warm-model.js
+- Neue Module: translation-db.js, translation-quality.js, preflight.js
+- Plugin-System: GamePlugin.js, SongsOfSyxPlugin.js
+
+Dual-Path-Copy (core/src/runtime-ops.js):
+- Native Mode kopiert uebersetzte Dateien in BEIDE Verzeichnisse
+- Steam Workshop (Persistenz) + AppData/songsofsyx/mods (sofort ladbar)
+- path.sep-abgesicherter startsWith-Check verhindert False-Positives

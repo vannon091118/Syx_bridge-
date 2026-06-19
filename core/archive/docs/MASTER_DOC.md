@@ -1,7 +1,7 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 16.06.2026 (aktualisiert) | **Version:** v0.19.05b-19.06 | **Autor:** Vannon  
-**Destilliert aus:** README.md · TECHNICAL_REVIEW_2026-06-15.md · AUDIT_REPORT.md · STATUS.md · TODO.md · PATCH_REVIEW_2026-06-16.md · HARDENING-DRY-RUN-GATE-COUNTER.md
+**Stand:** 19.06.2026 | **Version:** v0.20-alpha.3 | **Autor:** Vannon
+**Destilliert aus:** 6 aktive Reports + FULLSCAN + IMPORT_CHAIN_ISOLATION + GUI-Refresh-Feeding-Session
 
 ---
 
@@ -9,9 +9,16 @@
 
 **SyxBridge** ist eine KI-gestützte Übersetzungs-Engine für *Songs of Syx*-Mods. Automatisiert den gesamten Workflow: Text extrahieren → übersetzen → auditieren → polieren → ausliefern.
 
-- **Sprache:** Node.js (v18+)  
-- **Dashboard:** Web-GUI auf `localhost:3000`  
-- **Status:** Alpha, Solo-Dev, aktive tägliche Nutzung  
+- **Sprache:** Node.js (v18+)
+- **Dashboard:** Web-GUI auf `localhost:3000`
+- **Status:** Alpha, Solo-Dev, aktive tägliche Nutzung
+- **Plugin-Architektur:** v0.20 Phase 1 abgeschlossen (8/8 Hardcodes entkoppelt)
+- **GUI-Refresh:** Heartbeat + SubPhase-Tracking + Input-Lock + Streaming Writes (NEU v0.20-alpha.3)
+- **NMT Local Provider:** Optionaler lokaler Übersetzer via `@huggingface/transformers` + NLLB-200 (NEU v0.19.7)
+- **PREFLIGHT Analysis:** Automatischer DB-Health-Check vor jedem Sync (NEU v0.19.7) — Integrity-Check, 6-Kategorie-Audit, Auto-Repair bei <5% Issues, Report nach `archive/docs/PREFLIGHT_LATEST.md`
+- **Dual-Path-Copy:** Native Mode kopiert übersetzte Dateien in BEIDE Verzeichnisse (NEU v0.19.7) — Steam Workshop (Persistenz) + AppData (sofort ladbar im Spiel)
+- **Routing-Hardening:** Argos CostClass 0→10 (letzte Wahl), Nvidia/Groq priorisiert, Tier 2 Nvidia-Injection (NEU v0.19.7)
+- **Error-Handler Smart:** 429→disable run, eskalierender Cooldown ×2, flaggedForReview (NEU v0.19.7)
 
 ---
 
@@ -23,86 +30,144 @@ Scan → Extract → Translate → Audit → Polish → Export
     [Risk-Scoring] [Gate-Counter-Telemetrie]
 ```
 
-### Provider (7 Stück)
+### Provider (9 Stück)
 | Provider | Typ | Nutzung |
 |---|---|---|
-| Gemini | Cloud (Google) | Übersetzung |
 | Groq | Cloud (Llama) | Primär-Provider |
 | OpenRouter | Cloud (Multi-Model) | Polish/Audit, Free-Tier-Fallback |
-| Ollama | Lokal | Fallback/Offline |
-| Player2 | Lokal (Desktop) | Optional |
+| Gemini | Cloud (Google) | Übersetzung |
+| NVIDIA NIM | Cloud (NVIDIA) | Unlimitiert (nur Key) |
+| FCM | Lokaler Proxy | Kostenloser Router-Daemon |
+| Ollama | Lokal | Fallback/Offline (Opt-in) |
+| Player2 | Lokal (Desktop) | Optional (Opt-in) |
 | Argos Translate | Lokal (Offline) | UI-Strings, Low-Risk |
+| NMT Local (Transformers.js) | Lokal (CPU) | Optional, Opt-in via NMT_LOCAL_ENABLED |
 | Google Translate Free | Cloud (Kostenlos) | UI-Strings |
 
-### Kernmodule (`core/src/`)
+### Kernmodule (`core/src/` — 26 Module, 215 Funktionen)
 | Datei | Funktion |
 |---|---|
-| `config-runtime.js` | Provider-Konfig, Key-Rotation, Model-Discovery, Dry-Run |
-| `dispatcher.js` | Risk-basiertes Routing (4 Tiers), Provider-Auswahl |
-| `runtime-ops.js` | Mod-Übersetzung, Native/Patch-Mode, Backup-System |
-| `exporter.js` | Datei-Export, Syntax-Validierung, BridgeCore-Bundling |
-| `validator.js` | Platzhalter-/Tag-Validierung, QA-Scoring (0–100) |
-| `polish-arbiter.js` | Multi-Provider A/B-Polishing mit Scoring |
-| `providers/client-factory.js` | Alle 7 Provider-Implementierungen + executeStageRequest (Gemini, Groq, OpenRouter, Ollama, Player2, Argos, Google Free) |
-| `gui-handlers.js` | REST API + SSE Event-Handler, DB-Suche, Revision-Restore, Backup-System |
-| `gate-counter.js` | Telemetrie: Trackt alle Gates, schreibt `runs.jsonl` (Dry-Run-Telemetrie, eigenständiges Modul) |
-| `text-core.js` | JSON-Reparatur, Translation-Apply |
-| `cli-progress.js` | Echtzeit-Fortschrittsanzeige (ETA, Durchsatz) |
-| `db.js` | SQLite-Cache, Translation-Revisions, Read-Only-Suche |
-| `router.js` | Provider-Routing, Key-Cooldown, Fallback-Ketten |
+| `translation-runtime.js` | Orchestrator: translateBatch, ensureTranslations, Deep Polish |
+| `translation-quality.js` | Scoring, Heuristiken, Guardrails (NEU v0.19.9) |
+| `translation-db.js` | DB/Cache/Glossary (NEU v0.19.9) |
+| `text-core.js` | Placeholder-Shield, Prompt-Bau, Quality-Checks |
+| `context-packets.js` | Static + Dynamic Risk Scoring |
+| `dispatcher.js` | Risk-basiertes Routing, Provider-Auswahl |
+| `providers/client-factory.js` | 9 Provider-Implementierungen |
+| `plugins/SongsOfSyxPlugin.js` | SoS-spezifische Logik (NEU v0.19.9) |
+| `adapters/SongsOfSyxAdapter.js` | SoS File-Format (NEU v0.19.5) |
+| `preflight.js` | DB-Health-Check: Integrity, 6-Kategorie-Audit, Auto-Repair, Reports (NEU v0.19.7) |
+| `router.js` | Provider-Routing, Capability Matrix, Error-Handler, flaggedForReview |
+| `config-runtime.js` | Provider-Konfig, Key-Rotation, Model-Discovery, NMT_LOCAL_ENABLED |
+| `gui-handlers.js` | REST API + SSE, DB-Suche, Revision-Restore, Heartbeat-Broadcast (NEU) |
+| `db.js` | SQLite WAL-Mode, Read-Only-Connection, Migrationen |
+| `exporter.js` | Datei-Export, Syntax-Validierung |
+| `validator.js` | Platzhalter-/Tag-Validierung, QA-Scoring |
+| `polish-arbiter.js` | Multi-Provider A/B-Polishing |
+| `cli-progress.js` | ASCII-Progress-Box (ETA, Provider live) |
+| `planner.js` | Laufplanung, CLI-Progress-Integration |
 
 ---
 
 ## 3. Status: Erreicht & Offen
 
-### ✅ Erreicht (v0.19.5)
-- Deep Polish A/B-System (parallel, scored)
-- JSON-Auto-Repair (OpenRouter/Groq)
-- Provider Capability Matrix
-- Risk Routing (5 Kategorien, dynamisches Scoring)
-- Translation Revisions (DB + GUI Restore)
-- CLI-Progress (Echtzeit-Indikatoren)
-- Gate-Counter-Telemetrie + Dry-Run-Modus
-- API-Key-Rotation mit Cooldowns
-- Native-Mode-Backup-System
-- Lokale LLM Opt-in (Sicherheit)
+### ✅ Erreicht (v0.20-wip)
+- **Phase 1A: Shield-Token-Format:** `[[N]]` → `__SHLD_N__` — 8 Dateien, kein SoS-Kollisionsrisiko mehr
+- **Phase 1B: restorePlaceholders Return + validateFileMarkers:** Rückgabe `{ restored, replacedCount, totalTokens }`, Marker-Level-Validierung (Tags, Placeholder, Variablen)
+- **Phase 2a: Gate-Counter Telemetrie:** `exporter:validateFileMarkers:keep/discard` Events
+- **Phase 2b: SHIELD_RESTORE_FAIL blockt Writes:** Schutz vor unrestored Shield-Tokens in game files
+- **Phase 2c: Unit-Tests:** 49 Checks für validateFileMarkers in validator-smoke.js
+- **Phase 3F (BUG-FS-003): DNT-Doppelshielding:** `_DNT_N_`-Layer für argos/google_free (non-LLM Provider)
+- **Fix: getPython() Priorität:** `python` vor `py`, Timeout 15s → 5s
+- **GUI-Refresh-Feeding:** Heartbeat-Timer (2s), SubPhase-Tracking (caching/native/translating/polishing/writing), Input-Lock im Run, Staleness-Detection
+- **Streaming Writes:** Per-File-Progress während writeTranslatedFile(), subPhase 'writing' an GUI
+- **Plugin-Architektur Phase 1:** 8/8 Hardcodes entkoppelt (H1-H8)
+- **3-Tier Accept/Reject:** translationCriticalCheck + assessTranslationWarnings
+- **Deep Polish Pipeline:** runDeepPolishBatch + Auto-Trigger
+- **NVIDIA NIM + FCM Provider:** 2 neue Provider
+- **activePlugin Init-Fix:** Modulebene statt main()
+- **shouldTranslate + extractStrings:** Structural-Noise-Filter (HistoryValue-Noise gefixt)
+- **33 Argos-Stale-Einträge gelöscht**
+- **Deep Polish A/B-System** (parallel, scored)
+- **JSON-Auto-Repair** (OpenRouter/Groq)
+- **Provider Capability Matrix** (9 Provider)
+- **Risk Routing** (5 Kategorien + Dynamic Risk)
+- **Translation Revisions** (DB + GUI Restore)
+- **CLI-Progress** (Echtzeit-Indikatoren)
+- **API-Key-Rotation** mit Cooldowns
+- **Native-Mode-Backup-System**
+- **Lokale LLM Opt-in** (Sicherheit)
+- **NMT Local Provider** (optional, @huggingface/transformers + NLLB-200)
 
-### ❌ Offene Bugs
+### 🔴 Offene Bugs
 | ID | Schwere | Beschreibung |
 |---|---|---|
-| P5 | Kritisch | Multi-Language-Wizard: `persistSingleEnvVar()` schreibt `.env` nicht im Live-E2E (Unit-Test ok, Live fails). Workaround: `.env` manuell editieren. |
-| P4 | Mittel | Visuelle Überarbeitung (Gradient Borders etc.) nur teilweise umgesetzt. |
+| F1 | P0 | Argos Python SyntaxError (spawnSync-Fix unwirksam) — kein Offline-Fallback |
+| F2 | P0 | `_dbGet is not a function` — Kompletter DB-Write-Verlust (Revision-Save wird still übersprungen) |
+| F3 | P2 | Exporter-Syntax 45× discard in Smoke-Tests |
+| F4 | P1 | 36.8% Stage 0 (nie auditiert) — 62.77% bereits Stage 2 (Verified) nach Cleanup |
+| F5 | P1 | 28.5% Stale Translations (1.016 Einträge) — Cache liefert source_reused aus |
 
 ### 🔧 Technische Schulden
-- `index.js` >1000 Zeilen → Refactoring nötig
-- `translations.db` WAL-Files evtl. unmerged → `PRAGMA wal_checkpoint(TRUNCATE)` vor nächstem Run
-- Namenskonventionen Gate-Counter uneinheitlich (dispatcher vs exporter vs validator)
-- Unnötige `try/catch` um `record()`-Aufrufe (record() wirft keine Exceptions)
+- `index.js` ~720 Zeilen → Refactoring nötig
+- 8 Hardcoded SoS-Elemente verbleiben im Core (H1-H8 im FULLSCAN dokumentiert)
+- Dead Code: `getQaScore()`, `listFormats()` (D1, D2)
 
 ---
 
-## 4. Behobene Bugs (Audit 15.06.)
+## 4. Plugin-Architektur (v0.20 Phase 1 — ABGESCHLOSSEN)
 
-Alle 8 kritischen Bugs aus dem Audit sind behoben:
-- **BUG-5:** Native Mode überschrieb Originale ohne Backup → Backup-System implementiert
-- **BUG-1/4:** `PLAYER2_KEYS`-Verlust + CLI/GUI-Konfig-Divergenz → `persistConfig` konsolidiert
-- **WARN-2/BUG-8:** Ollama/Player2-Abstürze in Audit/Polish → Provider-Capability-Matrix
-- **BUG-9:** Lokale LLMs ohne Opt-in → Explizites Opt-in erforderlich
-- OpenRouter JSON-Truncation → Auto-Repair in `text-core.js`
-- Testlauf "Extended Boostables": 4/4 Dateien erfolgreich
+### Was bereits im Plugin/Adapter ist
+- ✅ `serializeTranslation()` → SongsOfSyxPlugin
+- ✅ `getFileHeader()` (__OVERWRITE) → SongsOfSyxPlugin
+- ✅ `getPromptContext()` → SongsOfSyxPlugin (via `_plugin`)
+- ✅ `getPathRules()` → SongsOfSyxPlugin (H2)
+- ✅ `getLoreTerms()` → SongsOfSyxPlugin (H4)
+- ✅ `getGameTerms()` → SongsOfSyxPlugin (H5)
+- ✅ `classifyFile()`, `scanMod()`, `parseMetadata()` → SongsOfSyxAdapter
+- ✅ `getParserFormat()` → SongsOfSyxAdapter
+- ✅ `readDisplayName()` → Adapter-aware (H6)
+- ✅ `classifyFile()` Fallback entfernt (H7)
+- ✅ UI-Branding via Plugin (H8)
+
+### Was NOCH im Core steckt
+- **H1:** `buildProofreadPrompt()` — SoS-Editor-Prompt (Delegation an Plugin ausstehend)
+- **H3:** `buildBatchPrompt()` Fallback — generisch, aber Plugin-Injection funktioniert
 
 ---
 
-## 5. Minimax-Patch-Review (16.06.)
+## 5. DB-Stand (18.06.2026 — Live)
 
-Minimax integrierte Gate-Counter-Telemetrie + Dry-Run in 5 Dateien.  
-**Gefundene & behobene Probleme:**
-1. 🔴 **dispatcher.js:** Gate-Counter-Recording nach `return` → toter Code → **vor return verschoben**
-2. 🟡 **dispatcher.js:** Duplizierter try/catch → **entfernt**
-3. 🟡 **config-runtime.js:** Einrückungsfehler neue Exports → **korrigiert**
-4. 🟡 **config-runtime.js:** `isDryRun()` Einzeiler → **aufgeteilt**
+> **🔄 INPLACE-UPDATE:** Werte vom 19.06 (3.567 Einträge) auf aktuellen Stand 18.06 (5.447 Einträge) aktualisiert.
 
-**Testergebnis:** Alle 5 Dateien Syntax-OK, Smoke-Test 4/4 bestanden.
+| Metrik | Wert |
+|---|---|
+| Translations gesamt | 5.447 |
+| Stale (translation = source) | 1.672 (30.7%) |
+| Flagged | 988 (18.1%) |
+| Stage 2 (Verified) | 4.066 (74.6%) |
+| Glossary Terms | 1.040 |
+| Revisions | 16.281 (5.451 aktiv) |
+
+**Provider-Verteilung (Top 8):**
+| Provider | Einträge | Anteil |
+|----------|----------|--------|
+| native_runtime | 2.521 | 46.3% |
+| ab_polish | 1.394 | 25.6% |
+| google_free | 582 | 10.7% |
+| argos | 560 | 10.3% |
+| openrouter | 216 | 4.0% |
+| polish_single | 149 | 2.7% |
+| groq | 24 | 0.4% |
+| nvidia | 0 | 0.0% ⚠️ |
+
+### Stale-Reduktionsplan (READ-ONLY)
+| Prio | Strategy | Aufwand | Erwartung |
+|---|---|---|---|
+| P0 | needsRefresh erweitern | 15 Min | ~33 Einträge |
+| P1 | Re-Translation Queue | 2h | ~50-100 |
+| P2 | Post-Batch Detection | 1h | Preventiv |
+| P3 | isLikelyTargetLanguageText verbessern | 2-3h | ~50-100 |
 
 ---
 
@@ -110,40 +175,61 @@ Minimax integrierte Gate-Counter-Telemetrie + Dry-Run in 5 Dateien.
 
 | Prio | Phase | Aufgabe | Status |
 |---|---|---|---|
-| P1 | Architektur | – | ✅ Fertig |
-| P2 | Tech-Debt | Code Cleanup, verifiziert | ✅ Fertig |
-| P3 | Features | Dynamic Risk Scoring | 🔄 In Arbeit |
-| P3 | Features | Tier-A Optimierung (OpenRouter Free) | ⏳ Pending |
-| P3 | Features | Batch-Historie/Payload-Viewer | ⏳ Pending |
-| P3 | Features | Auto-Update DB → Glossaries | ⏳ Pending |
-| P3 | Features | Workshop-Builder | ⏳ Pending |
-| – | Parser | `parser.js` + Adapter-Integration (Phase 0) | ✅ Fertig |
-| P0 | v0.20 | Plugin-Controller / GameAdapter-Interface | 🔄 Phase 0 fertig, Phase 1 offen |
+| ✅ | v0.20 Phase 1 | Hardcode→Plugin (H1-H8) | ABGESCHLOSSEN |
+| ✅ | v0.19.7 | PREFLIGHT Analysis System | ABGESCHLOSSEN |
+| ✅ | v0.19.7 | Dual-Path-Copy (Native Mode) | ABGESCHLOSSEN |
+| ✅ | v0.19.7 | Routing-Hardening (Argos last, Nvidia first) | ABGESCHLOSSEN |
+| ✅ | v0.19.7 | Error-Handler Smart (429→disable, eskalierend) | ABGESCHLOSSEN |
+| 🔴 | v0.20 Phase 1 | H1: buildProofreadPrompt → Plugin | OFFEN |
+| 🟠 | v0.20 Phase 2 | SongsOfSyxAdapter deprecate | OFFEN |
+| 🟠 | v0.20 Phase 2 | RimWorld-Prototyp | OFFEN |
+| 🟡 | Stale | Cache-Invalidierung | PLANUNG |
+| 🟡 | Infra | Circuit-Breaker für Provider | OFFEN |
+| 🟢 | Tech-Debt | Dead Code entfernen (D1, D2) | OFFEN |
+| 🟢 | NMT | Router-Integration (10. Provider) | OFFEN |
+| 🟢 | NMT | GUI-Toggle + Hardcode-Entkopplung | OFFEN |
 
 ---
 
-## 7. Nächste Schritte (Priorität)
+## 7. Dokumentationsstruktur
 
-1. **WAL-Checkpoint:** `PRAGMA wal_checkpoint(TRUNCATE)` auf `translations.db`
-2. **P5-Bug fixen:** `persistSingleEnvVar()` cwd/Caching debuggen
-3. **P3 Risk Scoring:** E2E-Live-Test abschließen
-4. **Parser-Phase 1:** `raw`/`json` Parser `index`/`full`, `collectTextFiles` Adapter-aware, Unit-Tests
-5. **Namenskonventionen:** Gate-Counter-Namen vereinheitlichen
-6. **try/catch aufräumen:** Unnötige Blöcke um `record()` entfernen
-7. **`\n` → `String.fromCharCode(10)`:** Hardening in `config-runtime.js` nachziehen
+```
+core/archive/docs/
+├── MASTER_DOC.md             # ← DIESER REPORT (konsolidiert)
+├── CHANGELOG.md              # Versionshistorie
+├── LLM-AGENTS-EntryPoint.md  # Sub-Agent Referenz
+├── plans/                    # Aktive Implementierungspläne
+│   ├── HARDENING-DRY-RUN-GATE-COUNTER_2026-06-16.md
+│   └── TRANSLATION_RUNTIME_SPLIT_2026-06-18.md
+├── FREEZE/                   # 34 archivierte Session/Report-Dateien
+│   ├── AUDIT_REPORT.md
+│   ├── AUDIT_REPORT_2026-06-17.md
+│   ├── ANALYSE_2026-06-19.md
+│   ├── DB_AUDIT_2026-06-18.md
+│   ├── DB_BACKUP_PENDING.md
+│   ├── DB_REPORT_v0.19.5.D17.06.U17.06.md
+│   ├── DOC_CONSOLIDATION_2026-06-19.md
+│   ├── FULLSCAN_2026-06-19.md
+│   ├── HANDSHAKE_2026-06-17.md
+│   ├── HARDCODED_VALUES_NMT_2026-06-18.md
+│   ├── IMPORT_CHAIN_ISOLATION_2026-06-19.md
+│   ├── KNOWN_BUGS_REPORT_2026-06-19.md
+│   ├── LOG_REPORT_2026-06-19.md
+│   ├── PATCH_REVIEW_2026-06-16.md
+│   ├── REDUNDANCY_REPORT_2026-06-18.md
+│   ├── REPORT_v0.19.5_dry_run.md
+│   ├── SESSION_REPORT_*.md (6)
+│   ├── STATUS.md
+│   ├── TECHNICAL_REVIEW_2026-06-15.md
+│   ├── TREE.md
+│   ├── WORKSHOP_CHANGELOG.md
+│   └── README.md
+└── dbold/                    # DB-Snapshots
+    ├── DB_SNAPSHOT_2026-06-18.md
+    ├── DB_STATISTICS.md
+    └── DB_TREND_REPORT.md
+```
 
 ---
 
-## 8. Entwicklungsumgebung
-
-- **Repo:** `C:\Users\Vannon\Desktop\SyxBridge_Live`
-- **Start:** `start.bat` (installiert Dependencies + startet Dashboard)
-- **Env:** `.env` im Projekt-Root
-- **Datenbank:** `core/translations.db` (SQLite)
-- **Logs:** `log.txt`, `runs.jsonl`, `server_output.txt`
-- **Aktive Provider:** Groq (Primär), OpenRouter (Polish/Audit)
-- **Zielsprache:** German
-
----
-
-*Destilliert am 16.06.2026 (aktualisiert) – alle Einzeldokumente bleiben als Detailreferenz erhalten.*
+*Stand: 18.06.2026 — 34 obsolete Reports in FREEZE/ archiviert. DB: 5.447 Einträge. Version: v0.19.7.*

@@ -6,7 +6,6 @@ const {
   buildBatchPrompt,
   buildProofreadPrompt,
   placeholdersValid,
-  _translationLooksSafe,
   restoreAndValidateTranslation,
   extractReplacements,
   applyTranslations
@@ -31,7 +30,7 @@ function testTextCore() {
   const protectedValue = protectPlaceholders('Hunter %r% <c:FF0000>Ready</c> {0}');
   assert(protectedValue.protectedText.includes('[[0]]'));
   assert.strictEqual(
-    restorePlaceholders(protectedValue.protectedText, protectedValue.placeholders),
+    restorePlaceholders(protectedValue.protectedText, protectedValue.placeholders).restored,
     'Hunter %r% <c:FF0000>Ready</c> {0}'
   );
 
