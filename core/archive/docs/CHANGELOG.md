@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [INFO-BLOCK-KORRUPTION] - 2026-06-19 — EXTRACTOR: INFO-BLOCK VOR ÜBERSETZUNG GESCHÜTZT
+
+### Fixed (P0 — Datei-Korruption)
+- **BUG:** `extractStrings()` in `extractor.js` extrahierte Strings aus dem SoS `INFO: { ... }`-Metadatenblock (Display-Namen, Descriptions). `applyTranslations()` ersetzte diese dann mit deutschen Übersetzungen → Datei-Korruption: `__OVERWRITE: true,\nINFO: {\n\t"Wattle- und Daub-Gebäude",\n...`
+- **Root Cause:** `INFO:`-Block enthält Game-Engine-Metadaten die auf Englisch bleiben MÜSSEN. Der Regex in `extractStrings()` kannte keine Block-Grenzen.
+- **Fix:** `findClosingBrace()` (neu, Brace-Depth-Tracking) erkennt `INFO: { ... }`-Block-Grenzen. `extractStrings()` überspringt alle Matches innerhalb des Blocks. `(?:^|\n)\s*INFO\s*:\s*\{`-Regex (Line-Start-Requirement) verhindert False-Positives auf Content-Keys wie `BUILDING_INFO: "value"`.
+- **Datei:** `core/src/extractor.js` (+30 Zeilen: `findClosingBrace` + Block-Detection + Skip-Logik)
+- **Tests:** parser_smoke.js 26/26 PASS ✅
+- **Code-Review:** "Ship it" — Brace-Tracking-Edge-Case dokumentiert (Braces in Description-Text → low-risk da SoS-Metadaten reiner Fließtext).
+
+---
+
 ## [QUALITY-OFFENSIVE] - 2026-06-19 — CHIRURGISCHE FIXES MIT SIDE-EFFECT-ANALYSE
 
 ### FIX-1: needsRefresh für polish_single stale (577 Einträge)

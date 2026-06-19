@@ -49,9 +49,47 @@ function classifyString(key, value) {
 }
 
 /**
+ * Finds the matching closing brace for a given opening brace position.
+ * Tracks nested brace depth. Used to locate the end of the SoS INFO: { ... } block.
+ * @param {string} content
+ * @param {number} openBraceIndex  Position of the opening '{'
+ * @returns {number} Position of the matching '}', or -1 if unmatched
+ */
+function findClosingBrace(content, openBraceIndex) {
+  let depth = 1;
+  for (let i = openBraceIndex + 1; i < content.length && depth > 0; i++) {
+    if (content[i] === '{') depth++;
+    else if (content[i] === '}') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+/**
  * Extracts translatable strings from file content.
+ *
+ * SoS init files have an INFO: { ... } metadata block that contains display
+ * names and a description in English. The game engine reads this block directly
+ * — translating it would corrupt the file structure (BUG: INFO-Block-Korruption).
+ * Strings inside the INFO block are skipped during extraction.
  */
 function extractStrings(content) {
+  // ── Detect INFO: { ... } metadata block boundaries ──────────────────
+  // Pattern: INFO: { at line start (may have whitespace around colon).
+  // Requiring line-start prevents false positives on content keys like
+  // BUILDING_INFO: "value" (which would otherwise match \bINFO).
+  // Note: findClosingBrace() treats every { and } as structural — if an
+  // INFO description contains brace notation like {wood}, depth tracking
+  // would be thrown off. In practice, SoS INFO descriptions are plain
+  // English text, so this is low-risk.
+  const infoMatch = content.match(/(?:^|\n)\s*INFO\s*:\s*\{/);
+  const infoBlockStart = infoMatch ? infoMatch.index : -1;
+  const infoBlockEnd = infoBlockStart >= 0
+    ? findClosingBrace(content, infoBlockStart + infoMatch[0].indexOf('{'))
+    : -1;
+
   // KEY: prefix is OPTIONAL — captures both `KEY: "value"` and bare `"value"` strings.
   // Dictionary files (Dic.txt) and nested blocks use bare strings without keys.
   const regex = /(?:([a-zA-Z0-9_]+)\s*:\s*)?"((?:\\.|[^"\\])*)"/g;
@@ -59,6 +97,11 @@ function extractStrings(content) {
   let match;
     
   while ((match = regex.exec(content)) !== null) {
+    // ── Skip strings inside the INFO metadata block ──────────────────
+    // These are game-engine metadata (display names, descriptions) that
+    // must remain in English. Translating them corrupts the file.
+    if (infoBlockStart >= 0 && match.index >= infoBlockStart && match.index <= infoBlockEnd) continue;
+
     const key = match[1] || '';
     const rawValue = match[2];
     let unescapedValue = unescapeTextValue(rawValue);
