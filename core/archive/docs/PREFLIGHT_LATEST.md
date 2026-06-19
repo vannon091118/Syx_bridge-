@@ -1,6 +1,8 @@
 # 🛫 PREFLIGHT ANALYSIS
 
 > **2026-06-19 12:41:44** | Mode: **GUI** | Health: ✅ **HEALTHY** | undefinedms
+> ⚠️ **HINWEIS (DD-009):** Dieser Report wurde auf einer DB mit 6.658 Einträgen erstellt.
+> Die aktuelle Live-DB hat **1.508 Einträge** (DB-Reset). PREFLIGHT MUSS erneut laufen.
 
 ---
 

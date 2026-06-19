@@ -1,6 +1,7 @@
-# 📖 INDEX — core/src/ (27 Dateien, 11.535 LOC)
+# 📖 INDEX — core/src/ (27 Dateien, ~10.000 LOC)
 
 > **Generiert:** 2026-06-19 | **Version:** v0.20.0-pre-release
+> **Zuletzt verifiziert:** 2026-06-19 (Doku-Divergenz-Audit DD-007: 10.089 LOC, 243 Function/Class-Defs)
 > **Zweck:** Referenzbuch — jeder Agent findet hier Funktionen + Zeilennummern OHNE den gesamten Code durchsuchen zu müssen.
 > **Format:** DATEI:ZEILE_START-ZEILE_ENDE: FUNKTION — Kurzbeschreibung
 > **CHANGELOG-Refs:** Jede Funktion die im CHANGELOG erwähnt wird, hat ein [CL:TAG] Verweis.
@@ -614,5 +615,5 @@
 ---
 
 *📖 INDEX v0.20.0-pre-release — 2026-06-19*
-*27 Dateien, 11.535 LOC, ~180 Funktionen indexiert.*
+*27 Dateien, ~10.089 LOC, 243 Function/Class-Definitionen (verifiziert via wc -l + grep).*
 *Generiert durch Buffy (Codebuff) — Built accidentally. Runs intentionally.*

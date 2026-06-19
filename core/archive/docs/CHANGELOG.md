@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## [DOKU-DIVERGENZ-AUDIT] - 2026-06-19 — 14 DIVERGENZEN + 7 STIMMT NOCH
+
+### Summary
+- **DD-001:** Live-DB hat 1.508 Einträge (alle Docs: 6.294–6.675). DB wurde resettet.
+- **DD-002:** `_Info.txt` VERSION 0.19.7 → 0.20.0-pre-release korrigiert
+- **DD-003:** README: "7 AI Providers" → "9 AI Providers" (NVIDIA NIM + FCM ergänzt)
+- **DD-004:** TUTORIAL CostClasses: Nvidia=1 → Nvidia=4, Error-Handler Beschreibung korrigiert
+- **DD-005/DD-014:** TUTORIAL: NMT Local als "nicht im Router registriert" markiert
+- **DD-006:** README: "220 files, ~35k LOC" → "70 source files, ~10k LOC"
+- **DD-007:** INDEX.md: "11.535 LOC, ~180 Funktionen" → "~10.089 LOC, 243 Function/Class-Defs"
+- **DD-008:** README F.B: "✅ BEHOBEN" → "🔴 OFFEN (P1)" (Contract-Tests fehlen)
+- **DD-009:** PREFLIGHT_LATEST: Reset-Warnung ergänzt
+- **DD-010/DD-013:** MASTER_DOC + KNOWN_BUGS: DB-Reset-Hinweis ergänzt
+- **STIMMT NOCH (7):** Version, Provider-Count, Patch Mode, License, Opt-in, WAL-Mode, debug_payloads
+
+### Files Changed
+- `_Info.txt` — VERSION 0.19.7 → 0.20.0-pre-release
+- `README.md` — Provider 7→9, F.B OFFEN, LOC korrigiert (EN+DE)
+- `TUTORIAL.txt` — CostClasses, NMT Local (DE+EN)
+- `core/src/INDEX.md` — LOC + Function-Count korrigiert
+- `core/archive/docs/MASTER_DOC.md` — DB-Reset-Hinweis §5
+- `core/archive/docs/KNOWN_BUGS_REPORT.md` — DB-Reset-Hinweis §1+§5
+- `core/archive/docs/PREFLIGHT_LATEST.md` — Reset-Warnung
+- `core/archive/docs/DOKU_DIVERGENZ_AUDIT_2026-06-19.md` — NEU: Vollständiger Audit-Report
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### EFFORT TO NEXT SCOPE
+- **P0:** PREFLIGHT gegen aktuelle Live-DB (1.508) neu laufen lassen
+- **P1:** DB_TREND_REPORT Snapshot 20 (post-reset) anlegen
+- **P1:** sync-version.js als Release-Checkliste automatisieren
+
+---
+
 ## [WATERMARK-FIX] - 2026-06-19 — applyTranslations() WATERMARK-CODE REPARIERT
 
 ### Fixed (P0 — Feature-Totalschaden)

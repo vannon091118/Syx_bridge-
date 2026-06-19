@@ -2,7 +2,7 @@
 
 > **Typ:** Persistenter Bug-Triage-Report (fortschreiben, nicht überschreiben)
 > **Datum:** 2026-06-19 | **Methodik:** PHASE 0-4 (DB-Analyse → Subagent-Matrix → Clustering → Tendenzen → Priorisierung)
-> **Faktenbasis:** Live translations.db (6.675 Einträge) + 5 Subsystem-Code-Searcher + FORENSIC_FULLSCAN + PREFLIGHT_LATEST
+> **Faktenbasis:** Live translations.db (6.675 Einträge — ⚠️ VOR DB-Reset; aktuell: 1.508 Einträge) + 5 Subsystem-Code-Searcher + FORENSIC_FULLSCAN + PREFLIGHT_LATEST
 > **Grundregel:** Kein Fix in diesem Lauf — nur Finden, Beschreiben, Clustern.
 
 ---
@@ -516,9 +516,9 @@
 ## 5. DB-HEALTH SNAPSHOT (2026-06-19)
 ## ══════════════════════════════════════════
 
-| Metrik | DB-Feld | Wert | Ziel | Status |
+| Metrik | DB-Feld | Wert (VOR Reset) | Ziel | Status |
 |--------|---------|------|------|--------|
-| Total Einträge | — | 6.675 | — | 📊 |
+| Total Einträge | — | 6.675 (aktuell: 1.508) | — | 📊 |
 | Flagged | `translations.flagged` | 2.103 (31.5%) | <15% | 🔴 |
 | Stage 0 | `translations.audit_stage=0` | 978 (14.6%) | <5% | 🟡 |
 | Stage 2 | `translations.audit_stage=2` | 5.643 (84.5%) | >90% | 🟢 |

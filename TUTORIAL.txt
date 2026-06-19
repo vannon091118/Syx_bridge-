@@ -95,8 +95,8 @@ Phase 2: Extract
 Phase 3: Translate
   - 9 Provider stehen bereit (siehe unten)
   - Risk-basiertes Routing: niedrige Risk -> schneller Provider
-  - Cost-Klassen: Argos=10 (Fallback), Nvidia=1 (bevorzugt)
-  - Error-Handler: 429 -> disable run, eskalierender Cooldown
+  - Cost-Klassen: Argos=10 (Fallback), Groq=4, NVIDIA=4, Ollama=1
+  - Error-Handler: 429 -> eskalierender Cooldown (nicht mehr permanent disable)
 
 Phase 4: Audit
   - Quality-Score pro Eintrag (translationCriticalCheck)
@@ -127,6 +127,7 @@ Phase 6: Export
 | Player2           | Lokal-Desktop| Optional (Opt-in)                     |
 | Argos Translate   | Lokal Offline| UI-Strings, Low-Risk                  |
 | NMT Local         | Lokal CPU    | Optional, @huggingface/transformers   |
+|                   |              | (nicht im Router registriert)         |
 | Google Free       | Cloud Free   | UI-Strings, kein Key noetig           |
 
 Current LIVE Verteilung (Snapshot 17, 19.06.2026):
@@ -346,8 +347,8 @@ Phase 2: Extract
 Phase 3: Translate
   - 9 providers available (see below)
   - Risk-based routing: low risk -> fast provider
-  - Cost classes: Argos=10 (fallback), Nvidia=1 (preferred)
-  - Error handler: 429 -> disable run, escalating cooldown
+  - Cost classes: Argos=10 (fallback), Groq=4, NVIDIA=4, Ollama=1
+  - Error handler: 429 -> escalating cooldown (no longer permanent disable)
 
 Phase 4: Audit
   - Quality score per entry (translationCriticalCheck)
@@ -378,6 +379,7 @@ Phase 6: Export
 | Player2           | Local Desktop  | Optional (Opt-in)                      |
 | Argos Translate   | Local Offline  | UI strings, low risk                   |
 | NMT Local         | Local CPU      | Optional, @huggingface/transformers    |
+|                   |                | (not registered in router)             |
 | Google Free       | Cloud Free     | UI strings, no key needed              |
 
 Current LIVE distribution (Snapshot 17, 2026-06-19):

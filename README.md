@@ -43,8 +43,8 @@ You have Songs of Syx. You have 50 mods. They're all in English. You could manua
 <tr>
 <td width="50%">
 
-**🤖 7 AI Providers**
-Gemini · Groq · OpenRouter · Ollama · Player2 · Argos (offline) · Google Translate Free
+**🤖 9 AI Providers**
+Gemini · Groq · OpenRouter · NVIDIA NIM · FCM · Ollama · Player2 · Argos (offline) · Google Translate Free
 
 Automatic provider rotation with capability matrix. Each provider knows what it can do — and what it can't.
 
@@ -141,7 +141,7 @@ start.bat
 
 | Feature | Description |
 |---|---|
-| **7 Providers** | Gemini, Groq, OpenRouter, Ollama, Player2, Argos (offline), Google Translate Free |
+| **9 Providers** | Gemini, Groq, OpenRouter, NVIDIA NIM, FCM, Ollama, Player2, Argos (offline), Google Translate Free |
 | **Capability Matrix** | Each provider has defined capabilities (translate/audit/polish). No accidents. |
 | **Key Rotation** | Multiple keys per provider, automatic rotation on rate limits, 30–60s cooldown |
 | **Local Models Opt-in** | Ollama/Player2 locked by default (hardware protection). Explicit opt-in required. |
@@ -205,7 +205,7 @@ Syx_bridge-/
 |---|---|
 | **Version** | v0.20.0-pre-release |
 | **Maturity** | Alpha · Solo project · In daily use |
-| **Latest Release** | v0.20.0-pre-release (2026-06-19) — 220 files, ~35k LOC |
+| **Latest Release** | v0.20.0-pre-release (2026-06-19) — 70 source files, ~10k LOC |
 | **Limitations** | Patch Mode disabled — everything else works |
 
 <details>
@@ -214,7 +214,7 @@ Syx_bridge-/
 | ID | Issue | Severity |
 |----|-------|----------|
 | F.A | Live-Core `core/src/`-Drift vom Release-Snapshot (PR #5 änderte nur Vendored) | 🟡 P2 |
-| F.B | ~~Plugin-Boundary GamePlugin ↔ SongsOfSyxPlugin hat keine Boundary-Tests~~ | ✅ BEHOBEN |
+| F.B | Plugin-Boundary GamePlugin ↔ SongsOfSyxPlugin — keine Boundary-Tests | 🔴 OFFEN (P1) |
 | F.C | CodeRabbit-Auto-Fix aus PR #5 nicht manuell re-verifiziert | 🟠 P1 |
 | F.D | Audit-`.jsonl`-Daten committed — gehören die in `.gitignore`? | 🟢 P3 |
 
@@ -257,8 +257,8 @@ Du hast Songs of Syx. Du hast 50 Mods. Die sind alle auf Englisch. Du könntest 
 <tr>
 <td width="50%">
 
-**🤖 7 AI-Provider**
-Gemini · Groq · OpenRouter · Ollama · Player2 · Argos (offline) · Google Translate Free
+**🤖 9 AI-Provider**
+Gemini · Groq · OpenRouter · NVIDIA NIM · FCM · Ollama · Player2 · Argos (offline) · Google Translate Free
 
 Automatische Provider-Rotation mit Capability-Matrix. Jeder Provider weiß, was er kann — und was nicht.
 
@@ -355,7 +355,7 @@ start.bat
 
 | Feature | Beschreibung |
 |---|---|
-| **7 Provider** | Gemini, Groq, OpenRouter, Ollama, Player2, Argos (offline), Google Translate Free |
+| **9 Provider** | Gemini, Groq, OpenRouter, NVIDIA NIM, FCM, Ollama, Player2, Argos (offline), Google Translate Free |
 | **Capability Matrix** | Jeder Provider hat definierte Fähigkeiten (translate/audit/polish). Kein Unfall. |
 | **Key-Rotation** | Mehrere Keys pro Provider, automatische Rotation bei Rate-Limits, 30–60s Cooldown |
 | **Lokale Modelle Opt-in** | Ollama/Player2 standardmäßig gesperrt (Hardware-Schutz). Erst nach explizitem Opt-in. |
@@ -424,7 +424,7 @@ Syx_bridge-/
 |---|---|
 | **Version** | v0.20.0-pre-release |
 | **Reifegrad** | Alpha · Solo-Projekt · im Daily-Use |
-| **Letztes Release** | v0.20.0-pre-release (2026-06-19) — 220 Dateien, ~35k LOC |
+| **Letztes Release** | v0.20.0-pre-release (2026-06-19) — 70 Quellcode-Dateien, ~10k LOC |
 | **Einschränkungen** | Patch Mode deaktiviert — Rest funktioniert |
 
 <details>
@@ -433,7 +433,7 @@ Syx_bridge-/
 | ID | Fehler | Severity |
 |----|--------|----------|
 | F.A | Live-Core `core/src/`-Drift vom Release-Snapshot (PR #5 änderte nur Vendored) | 🟡 P2 |
-| F.B | ~~Plugin-Boundary GamePlugin ↔ SongsOfSyxPlugin hat keine Boundary-Tests~~ | ✅ BEHOBEN |
+| F.B | Plugin-Boundary GamePlugin ↔ SongsOfSyxPlugin — keine Boundary-Tests | 🔴 OFFEN (P1) |
 | F.C | CodeRabbit-Auto-Fix aus PR #5 nicht manuell re-verifiziert | 🟠 P1 |
 | F.D | Audit-`.jsonl`-Daten committed — gehören die in `.gitignore`? | 🟢 P3 |
 

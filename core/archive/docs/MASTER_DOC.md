@@ -84,6 +84,10 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ## 5. DB-Stand (Snapshot 18 — 19.06.2026) + Live-Drift
 
+> ⚠️ **DB-RESET 2026-06-19 (Doku-Divergenz-Audit DD-001):** Die Live-DB wurde nach Snapshot 19 auf ~1.508 Einträge zurückgesetzt.
+> Die unten stehenden Zahlen (6.540) sind historisch und beziehen sich auf den Zustand VOR dem Reset.
+> **Aktuell (2026-06-19):** 1.508 Einträge, 85.9% stale, 1.0% flagged, Ø Score 91.3, 5 aktive Provider.
+
 > ⚠️ **Erwartbare Drift (W6):** Dieser Snapshot (6.540 Einträge) wurde vor dem letzten PREFLIGHT-Pass erstellt.
 > Die Live-DB (MASTER_FREEZE §3) zeigt 6.658 Einträge (+118, Δ durch PREFLIGHT-Reparaturen).
 > **SSoT für aktuellen DB-Zustand:** `FREEZE/MASTER_FREEZE_v0.20.0_2026-06-19.md` §3 (Live-Query).
