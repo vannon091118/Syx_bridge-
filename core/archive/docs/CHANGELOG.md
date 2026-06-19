@@ -20,6 +20,60 @@
 
 ---
 
+## [BU-020] - 2026-06-19 — ABORTCONTROLLER FÜR ALLE EXTERNEN API-CALLS
+
+### Fixed (P1 — API-Quota-Verschwendung bei Abbruch)
+- **Problem:** Bei Ctrl+C wurde `isAborting = true` gesetzt, aber in-flight HTTP-Requests liefen bis zum Timeout (60-90s) weiter — API-Quota wurde verschwendet. Es gab keinen `AbortController`.
+- **Fix:** `AbortController` in `index.js` erstellt, auf SIGINT → `abortController.abort()`, frischer Controller für Cleanup. `config-runtime.js`: `withRetry()` fängt `CanceledError` ab und retried NICHT. `translation-runtime.js`: `CanceledError` in translatePhase/qaPhase/fixGrammarBatch catch-Blöcken erkannt (statt nur `e.message === 'ABORTED'`). `client-factory.js`: `signal: getAbortSignal()` an ALLEN 20+ `axios.post/get`-Aufrufen über alle 9 Batch-Funktionen + executeStageRequest (7 Provider). `callArgosBatch`: von blockierendem `spawnSync` auf asynchrones `spawn` + Promise + Signal-Listener refaktorisiert (AbortController killt Python-Subprozess).
+- **Ergebnis:** Ctrl+C bricht ALLE laufenden HTTP-Requests sofort ab — kein API-Quota-Verschwendung mehr durch 60-90s Timeouts. Auch lokales Argos (Python-Subprozess) wird via Signal-Listener gekillt.
+
+### Files Changed
+- `core/index.js` — AbortController erstellt + SIGINT-Handler + getAbortSignal an translationRuntime
+- `core/src/config-runtime.js` — withRetry CanceledError-Fast-Fail (kein Retry bei Abbruch)
+- `core/src/translation-runtime.js` — getAbortSignal durchgereicht + CanceledError in 3 catch-Blöcken
+- `core/src/providers/client-factory.js` — signal an allen 20+ axios-Aufrufen + callArgosBatch async spawn + safeSignal()-Guard
+- `core/src/providers/INDEX.md` — Zeilennummern + CHANGELOG-Ref aktualisiert
+
+### Tests
+- withRetry skips CanceledError: PASS (retries: 0) ✅
+- Catch-Block-Detection: ERR_CANCELED / axios.isCancel / ABORTED / normal — alle 4 PASS ✅
+- Factory-Smoke: 12 Funktionen erstellt, SIGNAL aborted: false ✅
+- Syntax-Check: ALL 4 files SYNTAX OK ✅
+- Code-Review: Nit Pick Nick — 4 Issues gefunden und behoben (safeSignal-Guard, ABORTED-Log, fixGrammarBatch-Check, Listener-Cleanup)
+
+### EFFORT TO NEXT SCOPE
+- **PUNKT 4:** BU-036-VERIFY — GOOGLE_FREE_ENABLED Execution-Beweis (~0.2h)
+- **PUNKT 5:** BU-023 — Plugin-Boundary Contract-Tests (~3h)
+
+## [BU-036] - 2026-06-19 — GOOGLE_FREE_ENABLED EXECUTION-VERIFIZIERT
+
+### Verified (RUNTIME-FLAG Execution-Beweis)
+- **Problem:** `GOOGLE_FREE_ENABLED` war im DOKU-DIVERGENZ-AUDIT als "⏳ PENDING" markiert — kein Execution-Beweis dass das Flag tatsächlich das Programmverhalten beeinflusst.
+- **Methode:** 11 automatisierte Tests gegen `router.hasAccess()` und `router.buildRoutePlan()`:
+  - `true` / unset → `hasAccess("google_free")` = true, google_free im translate-Plan
+  - `false` / `0` / `"false"` → `hasAccess("google_free")` = false, google_free aus translate-Plan ausgeschlossen
+  - Capability-Gate: google_free erscheint NUR in translate-Plänen, nie in audit/polish (google_free kann nur übersetzen)
+- **Ergebnis:** 11/11 Tests bestanden. `GOOGLE_FREE_ENABLED` ist jetzt RUNTIME-verifiziert (nicht nur Code-Review). Der Execution-Beweis schließt die Lücke aus dem DEAD_FLAG_REPORT: kein TOT-Flag mehr, kein DOKU-Flag — echtes RUNTIME-Flag mit verifizierter Wirkung.
+
+### Files Changed
+- `core/scripts/_verify_bu036.js` — Temporäres Verifikations-Script (11 Tests, nach Ausführung gelöscht)
+- `core/archive/docs/KNOWN_BUGS_REPORT.md` — BU-036 Verifikation: ⏳ PENDING → ✅ VERIFIZIERT
+
+### Tests
+- `GOOGLE_FREE_ENABLED=true`: hasAccess=true, in translate ✓, nicht in audit ✓, nicht in polish ✓
+- `GOOGLE_FREE_ENABLED=false`: hasAccess=false, isAvailable=false, translate-Plan ohne google_free ✓
+- `GOOGLE_FREE_ENABLED="false"` (String): hasAccess=false ✓
+- `GOOGLE_FREE_ENABLED=0` (Number): hasAccess=false ✓
+- unset (default): hasAccess=true ✓
+- Capability-Gate: google_free nur in translate-Plänen ✓
+
+### EFFORT TO NEXT SCOPE
+- **PUNKT 5:** BU-023 — Plugin-Boundary Contract-Tests (~3h)
+
+---
+
+---
+
 ## [VENDOR-DRIFT-SCRIPT] - 2026-06-19 — checkVendorDrift() als Standalone-Script implementiert
 
 ### Added

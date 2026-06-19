@@ -309,7 +309,7 @@
 - **Ursache:** R2-Fix implementierte `isEnabledFlag(GOOGLE_FREE_ENABLED, true)` in router.js, aber vergaß die Verdrahtung in config-runtime und GUI.
 - **Reproduzierbarkeit:** 100% — `GOOGLE_FREE_ENABLED=false` in .env hatte keinen Effekt.
 - **Status:** ✅ BEHOBEN — `GOOGLE_FREE_ENABLED` in PERSISTED_KEYS (config-runtime.js) + GUI-Toggle in renderProviderStats (app.js). Pattern identisch zu FCM_ENABLED/PLAYER2_ENABLED.
-- **Verifikation:** ⏳ PENDING — Flag im .env auf false setzen, App starten, router.hasAccess('google_free') muss false liefern.
+- **Verifikation:** ✅ VERIFIZIERT — 11/11 Tests bestanden via `node scripts/_verify_bu036.js`. `GOOGLE_FREE_ENABLED=false`/`0`/`"false"` schließt google_free korrekt aus translate-Plänen aus. `true`/unset lässt google_free zu. Feature ist RUNTIME-verifiziert, nicht nur Code-Review. Siehe CHANGELOG [BU-036].
 
 ### 🟢 BU-037 — dispatcher.js redundante Doppelprüfung (DOUBLE-CHECK)
 - **Symptom:** `uiCandidates` wurde via `isAvailable()` gefiltert aufgebaut. Danach wurde JEDER Kandidat erneut mit `isAvailable()` geprüft bevor Rückgabe.
