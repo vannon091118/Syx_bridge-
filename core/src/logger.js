@@ -5,7 +5,7 @@ const LOG_PATH = path.join(process.cwd(), 'log.txt');
 const RUNS_PATH = path.join(process.cwd(), 'runs.jsonl');
 // BU-027 Fix: debug_payloads.txt nach logs/ verlagern statt CWD.
 const LOGS_DIR = path.join(process.cwd(), 'logs');
-try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch (_) {}
+try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch (e) { console.error('[LOGGER] Konnte logs/ nicht anlegen:', e.message); }
 const DEBUG_PATH = path.join(LOGS_DIR, 'debug_payloads.txt');
 
 let dbInstance = null;
