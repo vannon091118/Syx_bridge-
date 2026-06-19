@@ -28,12 +28,12 @@
 ### Ergebnisse
 - **Tier-1-Fix VERIFIZIERT:** OpenRouter von 0.9% → 9.8% (+10x). Free-LLM-Provider werden jetzt vor google_free priorisiert.
 - **google_free komplett verdrängt:** 0 Einträge im neuen Run — freeLlmFirst-Kette funktioniert.
-- **DB-Health MASSIV verbessert:** Flagged 41.4% → 1.4%, Avg Score 81.0 → 91.3, Stage 0 24.5% → 13.7%.
+- **DB-Health MASSIV verbessert:** `translations.flagged` 41.4% → 1.4%, Ø `translations.quality_score` 81.0 → 91.3, `translations.audit_stage=0` 24.5% → 13.7%.
 - **85.9% Stale erklärbar:** 1.248/1.295 stale = native_runtime (Proper Nouns). Ohne native_runtime: 7.8% stale.
 - **🔴 NVIDIA Key Problem:** PRIMARY_PROVIDER=nvidia, Key SET, aber 0 Einträge. Key-Validierung nötig.
 - **🔴 Groq/Gemini nicht genutzt:** Keys konfiguriert, 0 Einträge. Routing-Priorität debuggen.
 - **92.2% Score 90+:** Qualität exzellent. 53 Low-Score (<30) werden durch BU-034-Fix automatisch geheilt.
-- **7 Deep-Polish-Pending** — Auto-Trigger heilt beim nächsten Run. 6 Failed brauchen manuellen Retry.
+- **7 `translations.requires_deep_polish=1` (pending)** — Auto-Trigger heilt beim nächsten Run. 6 `translations.polish_status='failed'` brauchen manuellen Retry.
 
 ### Report
 → `core/archive/dbold/DB_POSTRUN_ANALYSIS_2026-06-19.md`
@@ -104,8 +104,7 @@
 
 ## [STUFE2-QUICKBUGFIXES] - 2026-06-19 — 5 BUGFIXES (BU-034/021/028/029/027)
 
-### Fixed
-- **[BU-034] needsRefresh für Score<30 erweitert** (`translation-runtime.js` cachePhase):
+### Fixed  - **[BU-034] needsRefresh für `translations.quality_score<30` erweitert** (`translation-runtime.js` cachePhase):
   - Vorher: `data.qualityScore < 30 && data.translation === t` — nur stale entries (src=tgt) mit Score<30 wurden refreshed.
   - Jetzt: `data.qualityScore < 30` — JEDE Übersetzung mit Score<30 wird neu übersetzt, unabhängig ob stale.
   - Erwartung: 82 Low-Score-Einträge werden beim nächsten Run re-translatiert.
@@ -114,7 +113,7 @@
 - **[BU-021] 14x ALTER TABLE try/catch eliminiert** (`db.js` init):
   - Vorher: 14 `try { await run('ALTER TABLE ...') } catch {}` bei JEDEM Startup — 14 garantierte Fehler pro Start.
   - Jetzt: `addColumnIfMissing(table, column, type)` Helper via `PRAGMA table_info()` — prüft ob Spalte existiert BEVOR ALTER TABLE aufgerufen wird.
-  - 13 weitere `try/catch` zu `addColumnIfMissing()` konvertiert (processed_files.hash, glossary_terms.is_guarded/guarded_by, migrateRiskScore).
+  - 13 weitere `try/catch` zu `addColumnIfMissing()` konvertiert (`processed_files.hash`, `glossary_terms.is_guarded`/`guarded_by`, `translation_revisions.risk_score`).
   - Effekt: Sauberere Startup-Logs, ~14ms schneller (keine 14 fehlgeschlagenen SQL-Statements mehr).
 
 - **[BU-028] _properNounAllowlist dedupliziert** (`translation-runtime.js` translateBatch):

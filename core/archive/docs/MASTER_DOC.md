@@ -61,13 +61,13 @@ Scan → Extract → Translate → Audit → Polish → Export
 | F.B | P1 | Plugin-Boundary Contract-Tests fehlen | 🔴 OFFEN |
 | F.C | P1 | CodeRabbit-Auto-Fix unreviewed | 🔴 OFFEN |
 | #013 | P0 | Doc-/Live-Drift zwischen Snap 16/17 (163 Einträge) | 🟡 Beobachtung — Live-Run muss Klärung bringen |
-| #014 | — | **FALSIFIED ✅** — `quality_score` existiert (db.js:125, MASTER_FREEZE §3.2) | ✅ |
+| #014 | — | **FALSIFIED ✅** — `translations.quality_score` existiert (db.js:125, MASTER_FREEZE §3.2) | ✅ |
 | BU-018 | P1 | ~~ensureTranslations() 354-Zeilen-Monolith~~ | ✅ BEHOBEN — GOD-001: 5 Phasen-Funktionen (GOD-001) |
 | BU-021 | P2 | ~~14 ALTER TABLE bei jedem Startup~~ | ✅ BEHOBEN — addColumnIfMissing Helper (Stufe 2) |
 | BU-027 | P3 | ~~debug_payloads.txt in CWD~~ | ✅ BEHOBEN — Pfad nach logs/ verlagert (Stufe 2) |
 | BU-028 | P3 | ~~_properNounAllowlist dupliziert~~ | ✅ BEHOBEN — dedupliziert (Stufe 2) |
 | BU-029 | P3 | ~~console.warn bei leeren Caches~~ | ✅ BEHOBEN — console.log (Stufe 2) |
-| BU-034 | P1 | ~~polish_single Low-Score-Cluster~~ | ✅ BEHOBEN — needsRefresh erweitert (Stufe 2) |
+| BU-034 | P1 | ~~polish_single Low-Score-Cluster~~ | ✅ BEHOBEN — `translations.quality_score<30` triggert needsRefresh (Stufe 2) |
 
 ---
 
@@ -91,12 +91,12 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 *(Quelle: HANDSHAKE §2.2)*
 
-| Metrik | Wert |
-|---|---|
-| Translations gesamt | 6.540 |
-| Stale (source = target) | 2.240 (34.3%) |
-| Flagged | 2.444 (37.4%) |
-| Stage 0 / 1 / 2 | 1.608 / 75* / 4.857 (24.6% / 1.1%* / 74.3%) |
+| Metrik | DB-Feld | Wert |
+|---|---|---|
+| Translations gesamt | — | 6.540 |
+| Stale (source = target) | — | 2.240 (34.3%) |
+| Flagged | `translations.flagged` | 2.444 (37.4%) |
+| Stage 0 / 1 / 2 | `translations.audit_stage` | 1.608 / 75* / 4.857 (24.6% / 1.1%* / 74.3%) |
 
 *Stage 1 geschätzt (nicht per Live-Query verifiziert — Audit U-004)
 

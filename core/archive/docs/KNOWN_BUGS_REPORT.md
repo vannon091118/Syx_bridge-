@@ -54,7 +54,7 @@
 ---
 
 ### BU-006 — Google Free False-Positive Flagging (BUG-001)
-- **Symptom:** 98.1% aller google_free-Übersetzungen wurden als `free_machine_translation` geflaggt — inklusive korrekter Übersetzungen (567+ betroffen).
+- **Symptom:** 98.1% aller google_free-Übersetzungen wurden als `free_machine_translation` in `translations.flag_reason` eingetragen — inklusive korrekter Übersetzungen (567+ betroffen).
 - **Trigger:** Jeder Google-Translate-Free-Call.
 - **Betroffene Dateien:** `translation-runtime.js:314`.
 - **Ursache:** `inferFlagReason()` lief VOR `scoreTranslationQuality()` — pauschales Flagging ohne Score-Prüfung.
@@ -78,8 +78,8 @@
 - **Status:** ✅ BEHOBEN — Proper-Noun-Post-Filter nach Provider-Dispatch für argos/google_free.
 
 ### BU-009 — Stage 0 — 46% nie auditiert (BUG-004)
-- **Symptom:** 1.397+ Einträge in audit_stage=0 — nie durch QA-Pipeline gelaufen.
-- **Trigger:** `GRAMMAR_CHECK=false` Default in index.js.
+- **Symptom:** 1.397+ Einträge mit `translations.audit_stage=0` — nie durch QA-Pipeline gelaufen.
+- **Trigger:** `ENV.GRAMMAR_CHECK=false` Default in index.js.
 - **Betroffene Dateien:** `index.js:96`.
 - **Ursache:** Default war `false` → Polish-Loop nur bei explizitem Opt-in.
 - **Reproduzierbarkeit:** Bei jedem Run ohne GRAMMAR_CHECK=true.
@@ -262,24 +262,24 @@
 ---
 
 ### 🟠 BU-031 — 31.5% Flagged-Rate (DB-Health)
-- **Symptom:** 2.103 von 6.675 Einträgen geflaggt — viel zu hoch. Ziel <15%.
-- **Trigger:** `stale_retranslate` (1.876) als dominanter Flag-Grund.
+- **Symptom:** 2.103 von 6.675 Einträgen mit `translations.flagged=1` — viel zu hoch. Ziel <15%.
+- **Trigger:** `translations.flag_reason='stale_retranslate'` (1.876) als dominanter Flag-Grund.
 - **Betroffene Tabellen:** `translations`.
 - **Ursache:** `native_runtime`-Einträge (1.876 flagged) werden nicht re-evaluiert.
 - **Reproduzierbarkeit:** DB-Zustand, nicht Code-Bug.
 - **Status:** 🔴 OFFEN (P0-DB) — PREFLIGHT repariert, aber Flag-Rate bleibt hoch.
 
 ### 🟡 BU-032 — 14.6% Stage 0 (nie auditiert)
-- **Symptom:** 978 Einträge nie durch QA-Pipeline gelaufen.
-- **Trigger:** Frühere Runs ohne GRAMMAR_CHECK.
+- **Symptom:** 978 Einträge mit `translations.audit_stage=0` — nie durch QA-Pipeline gelaufen.
+- **Trigger:** Frühere Runs ohne `ENV.GRAMMAR_CHECK`.
 - **Betroffene Tabellen:** `translations`.
 - **Ursache:** Historisch (BUG-004 vor Fix).
 - **Reproduzierbarkeit:** DB-Zustand.
 - **Status:** 🟡 OFFEN (P1-DB) — Nächster Run auditiert (GRAMMAR_CHECK jetzt default true).
 
 ### 🟡 BU-033 — 22.9% aktive Revisions (7.806/34.119)
-- **Symptom:** Nur 22.9% der Revisionen haben `is_active=1` — Restore findet nur diese.
-- **Trigger:** Vor BUG-005-Fix gespeicherte Revisionen haben `is_active=0`.
+- **Symptom:** Nur 22.9% der Revisionen haben `translation_revisions.is_active=1` — Restore findet nur diese.
+- **Trigger:** Vor BUG-005-Fix gespeicherte Revisionen haben `translation_revisions.is_active=0`.
 - **Betroffene Tabellen:** `translation_revisions`.
 - **Ursache:** Historisch (BUG-005).
 - **Reproduzierbarkeit:** DB-Zustand.
@@ -289,7 +289,7 @@
 - **Symptom:** 82 polish_single Einträge mit Ø Score 25 — ungenügende Qualität.
 - **Trigger:** Polish-Single-Provider lieferte schwache Ergebnisse.
 - **Betroffene Tabellen:** `translations` (polish_single).
-- **Ursache:** Kein Re-Translate für Low-Score-Einträge.
+- **Ursache:** Kein Re-Translate für Einträge mit `translations.quality_score<30`.
 - **Reproduzierbarkeit:** DB-Zustand.
 - **Status:** ✅ BEHOBEN (Stufe 2) — `needsRefresh` erweitert: `data.qualityScore < 30` OHNE Bedingung `translation === t`.
 
@@ -408,10 +408,10 @@
 
 | Bug | Symptom | Historische Ursache |
 |-----|---------|---------------------|
-| BU-031 | 31.5% Flagged | native_runtime nie re-evaluiert |
-| BU-032 | 14.6% Stage 0 | GRAMMAR_CHECK default false |
-| BU-033 | 22.9% aktive Revisions | BUG-005 (is_active=0) |
-| BU-034 | 82 Low-Score polish_single | Polish-Qualität nie re-evaluiert |
+| BU-031 | 31.5% `translations.flagged` | native_runtime nie re-evaluiert |
+| BU-032 | 14.6% `translations.audit_stage=0` | ENV.GRAMMAR_CHECK default false |
+| BU-033 | 22.9% `translation_revisions.is_active=1` | BUG-005 (`is_active=0`) |
+| BU-034 | 82 Low-Score `translations.quality_score<30` | Polish-Qualität nie re-evaluiert |
 
 **Status:** 0/4 behoben (alle DB-Zustand — erfordern Re-Run, nicht Code-Fix).
 
@@ -516,19 +516,19 @@
 ## 5. DB-HEALTH SNAPSHOT (2026-06-19)
 ## ══════════════════════════════════════════
 
-| Metrik | Wert | Ziel | Status |
-|--------|------|------|--------|
-| Total Einträge | 6.675 | — | 📊 |
-| Flagged | 2.103 (31.5%) | <15% | 🔴 |
-| Stage 0 | 978 (14.6%) | <5% | 🟡 |
-| Stage 2 | 5.643 (84.5%) | >90% | 🟢 |
+| Metrik | DB-Feld | Wert | Ziel | Status |
+|--------|---------|------|------|--------|
+| Total Einträge | — | 6.675 | — | 📊 |
+| Flagged | `translations.flagged` | 2.103 (31.5%) | <15% | 🔴 |
+| Stage 0 | `translations.audit_stage=0` | 978 (14.6%) | <5% | 🟡 |
+| Stage 2 | `translations.audit_stage=2` | 5.643 (84.5%) | >90% | 🟢 |
 | Stale (src=tgt) | 811 native_runtime + 243 polish_single | <500 | 🟡 |
-| Low Score (<30) | 82 | 0 | 🟡 |
-| Deep Polish pending | 0 | 0 | 🟢 |
-| Polish failed | 33 | 0 | 🟡 |
-| Aktive Revisions | 7.806 (22.9%) | >90% | 🔴 |
-| Ø Quality Score | 80.6 | >85 | 🟢 |
-| SHIELD_LEAK | 0 | 0 | 🟢 |
+| Low Score (<30) | `translations.quality_score<30` | 82 | 0 | 🟡 |
+| Deep Polish pending | `translations.requires_deep_polish=1` | 0 | 0 | 🟢 |
+| Polish failed | `translations.polish_status='failed'` | 33 | 0 | 🟡 |
+| Aktive Revisions | `translation_revisions.is_active=1` | 7.806 (22.9%) | >90% | 🔴 |
+| Ø Quality Score | `translations.quality_score` | 80.6 | >85 | 🟢 |
+| SHIELD_LEAK | — | 0 | 0 | 🟢 |
 
 ---
 
