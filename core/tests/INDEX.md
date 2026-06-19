@@ -14,6 +14,7 @@
 | env-protection-smoke.js | — | 31/31 | .env-Protection-Test |
 | gate-counter-smoke.js | — | PASS | Gate-Counter Telemetrie |
 | parser_smoke.js | — | 26/26 | Parser (SoS, Raw, JSON) |
+| plugin-boundary-contract.js | 271 | 73/73 | **Contract-Test (BU-023)** — Dynamische Interface-Erkennung, 7 Funktionen |
 | plugin-boundary-smoke.js | 320 | 100/100 | **Plugin-Boundary** — 23 Methoden, 9 Sektionen |
 | translation-runtime-smoke.js | 540 | — | Translation-Runtime Smoke |
 | validator-smoke.js | — | 49/49 | **Validator** — 16 Tests, 49 Checks |
@@ -35,8 +36,22 @@
 | 267 | Test 8: Base Class Abstract Methods | 3 |
 | 270 | Test 9: Edge Cases null/undefined | 5 |
 
-**CHANGELOG-Ref (1× plugin-boundary-smoke.js):**
-- [CL:F.B] Plugin-Boundary Contract-Tests — 100/100 PASS, 23 Methoden verifiziert über 3 Ebenen
+**CHANGELOG-Ref (2× plugin-boundary):**
+- [CL:F.B] Plugin-Boundary Smoke — 100/100 PASS, 23 Methoden verifiziert über 3 Ebenen
+- [CL:BU-023] Plugin-Boundary Contract — 73/73 PASS, Dynamische Interface-Erkennung + Synthetischer Auto-Detection-Test
+
+### plugin-boundary-contract.js (271 LOC, 73 Checks)
+*Dynamischer Contract-Test: Interface-Extraktion via getOwnPropertyNames + 3 Verifikations-Layer*
+
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 38 | `extractInterface()` | Dynamische Interface-Extraktion (GameAdapter+GamePlugin) |
+| 80 | `verifyPluginContract(PluginClass, label, iface)` | Generische Contract-Verifikation (L1+L2+L3) |
+| 165 | `runSyntheticAutoDetectionTest()` | Synthetischer Test: Dummy-Methode → Auto-Fail beweist |
+| 199 | `runEdgeCaseTests()` | Null/undefined, Return-Types, Instance-Chain |
+
+**CHANGELOG-Ref (1× plugin-boundary-contract.js):**
+- [CL:BU-023] Dynamischer Contract-Test — 73/73 PASS, Interface-Änderungen werden sofort erkannt
 
 ### validator-smoke.js (49 Checks)
 *Verifiziert validateFileMarkers mit 16 Tests*
@@ -57,4 +72,4 @@
 
 ---
 
-*📖 Tests-INDEX v0.20.0 — 9 Dateien, 2.178 LOC, 7 Smoke-Tests, 2 E2E-Tests*
+*📖 Tests-INDEX v0.20.0 — 10 Dateien, 2.449 LOC, 7 Smoke-Tests, 1 Contract-Test, 2 E2E-Tests*

@@ -45,34 +45,97 @@
 - **PUNKT 4:** BU-036-VERIFY — GOOGLE_FREE_ENABLED Execution-Beweis (~0.2h)
 - **PUNKT 5:** BU-023 — Plugin-Boundary Contract-Tests (~3h)
 
-## [BU-036] - 2026-06-19 — GOOGLE_FREE_ENABLED EXECUTION-VERIFIZIERT
+## [BU-036] - 2026-06-19 — GOOGLE_FREE_ENABLED EXECUTION-BEWEIS (11 TESTS, RUNTIME-VERIFIZIERT)
 
-### Verified (RUNTIME-FLAG Execution-Beweis)
-- **Problem:** `GOOGLE_FREE_ENABLED` war im DOKU-DIVERGENZ-AUDIT als "⏳ PENDING" markiert — kein Execution-Beweis dass das Flag tatsächlich das Programmverhalten beeinflusst.
-- **Methode:** 11 automatisierte Tests gegen `router.hasAccess()` und `router.buildRoutePlan()`:
-  - `true` / unset → `hasAccess("google_free")` = true, google_free im translate-Plan
-  - `false` / `0` / `"false"` → `hasAccess("google_free")` = false, google_free aus translate-Plan ausgeschlossen
-  - Capability-Gate: google_free erscheint NUR in translate-Plänen, nie in audit/polish (google_free kann nur übersetzen)
-- **Ergebnis:** 11/11 Tests bestanden. `GOOGLE_FREE_ENABLED` ist jetzt RUNTIME-verifiziert (nicht nur Code-Review). Der Execution-Beweis schließt die Lücke aus dem DEAD_FLAG_REPORT: kein TOT-Flag mehr, kein DOKU-Flag — echtes RUNTIME-Flag mit verifizierter Wirkung.
+### Verified (RUNTIME-FLAG Execution-Beweis — 11/11 Tests bestanden)
+- **Ausgangslage:** `GOOGLE_FREE_ENABLED` war im DOKU-DIVERGENZ-AUDIT (DD-Audit) als „⏳ PENDING" markiert — kein Execution-Beweis, dass das Flag tatsächlich das Programmverhalten beeinflusst. Der Code war korrekt (`router.js:98` liest `this.config.GOOGLE_FREE_ENABLED`), die Verdrahtung existierte (`config-runtime.js` PERSISTED_KEYS + `app.js` GUI-Toggle), aber niemand hatte jemals nachgewiesen, dass `GOOGLE_FREE_ENABLED=false` google_free WIRKLICH aus den Route-Plänen ausschließt. Nach DOKU-FLAG/RUNTIME-FLAG-Trennung (Regel 18): eine RUNTIME-Flag-Behauptung ohne Execution-Beleg = per Definition nicht abgeschlossen.
+
+### Methode: 11 automatisierte Tests via Verifikations-Script
+Ein temporäres Node-Script (`scripts/_verify_bu036.js`) instanziierte den Router mit 5 verschiedenen Konfigurationen und prüfte `hasAccess("google_free")` sowie `buildRoutePlan("translate", items)`:
+
+**Konfiguration 1 — `GOOGLE_FREE_ENABLED=true` (explizit eingeschaltet)**
+- Test 1a: `hasAccess("google_free")` → `true` ✅
+- Test 1b: google_free erscheint im translate-Plan ✅
+- Test 1c: google_free erscheint NICHT im audit-Plan (Capability-Gate: google_free kann NUR übersetzen) ✅
+- Test 1d: google_free erscheint NICHT im polish-Plan ✅
+
+**Konfiguration 2 — `GOOGLE_FREE_ENABLED=false` (explizit ausgeschaltet)**
+- Test 2a: `hasAccess("google_free")` → `false` ✅
+- Test 2b: `isAvailable("google_free")` → `false` (kein Key-Check nötig, direkt gesperrt) ✅
+- Test 2c: translate-Plan enthält google_free NICHT ✅
+
+**Konfiguration 3 — `GOOGLE_FREE_ENABLED="false"` (String statt Boolean)**
+- Test 3: `hasAccess("google_free")` → `false` (String wird korrekt als falsy interpretiert) ✅
+
+**Konfiguration 4 — `GOOGLE_FREE_ENABLED=0` (Number 0)**
+- Test 4: `hasAccess("google_free")` → `false` (Number 0 wird korrekt als falsy interpretiert) ✅
+
+**Konfiguration 5 — unset (Default-Verhalten)**
+- Test 5: `hasAccess("google_free")` → `true` (Default = true, Backward-Compat) ✅
+
+### Ergebnis
+- **11/11 Tests bestanden.** `GOOGLE_FREE_ENABLED` ist jetzt RUNTIME-verifiziert — nicht nur Code-Review, sondern echter Execution-Beweis mit gemessenem Output.
+- **Flag-Typ bestätigt:** RUNTIME-FLAG — beeinflusst tatsächlich das Programmverhalten (`router.hasAccess()` und `router.buildRoutePlan()`).
+- **Kein TOT-Flag mehr:** Der DEAD_FLAG_REPORT listete `GOOGLE_FREE_ENABLED` als potenziell problematisch — jetzt ist es nachweislich lebendig.
+- Der Execution-Beweis schließt die letzte Lücke aus dem DOKU-DIVERGENZ-AUDIT für BU-036.
 
 ### Files Changed
-- `core/scripts/_verify_bu036.js` — Temporäres Verifikations-Script (11 Tests, nach Ausführung gelöscht)
-- `core/archive/docs/KNOWN_BUGS_REPORT.md` — BU-036 Verifikation: ⏳ PENDING → ✅ VERIFIZIERT
+- `core/scripts/_verify_bu036.js` — Temporäres Verifikations-Script (11 Tests, nach Ausführung gelöscht; Code siehe Commit `fb42f83`)
+- `core/archive/docs/KNOWN_BUGS_REPORT.md` — BU-036 Verifikation: ⏳ PENDING → ✅ VERIFIZIERT (mit Referenz auf diesen CHANGELOG-Eintrag)
 
 ### Tests
-- `GOOGLE_FREE_ENABLED=true`: hasAccess=true, in translate ✓, nicht in audit ✓, nicht in polish ✓
-- `GOOGLE_FREE_ENABLED=false`: hasAccess=false, isAvailable=false, translate-Plan ohne google_free ✓
-- `GOOGLE_FREE_ENABLED="false"` (String): hasAccess=false ✓
-- `GOOGLE_FREE_ENABLED=0` (Number): hasAccess=false ✓
-- unset (default): hasAccess=true ✓
-- Capability-Gate: google_free nur in translate-Plänen ✓
+| # | Konfiguration | Prüfung | Ergebnis |
+|---|--------------|---------|----------|
+| 1a | `true` | `hasAccess("google_free")` | `true` ✅ |
+| 1b | `true` | google_free in translate-Plan | ja ✅ |
+| 1c | `true` | google_free in audit-Plan | nein ✅ |
+| 1d | `true` | google_free in polish-Plan | nein ✅ |
+| 2a | `false` | `hasAccess("google_free")` | `false` ✅ |
+| 2b | `false` | `isAvailable("google_free")` | `false` ✅ |
+| 2c | `false` | google_free in translate-Plan | nein ✅ |
+| 3 | `"false"` (String) | `hasAccess("google_free")` | `false` ✅ |
+| 4 | `0` (Number) | `hasAccess("google_free")` | `false` ✅ |
+| 5 | unset (Default) | `hasAccess("google_free")` | `true` ✅ |
 
 ### EFFORT TO NEXT SCOPE
 - **PUNKT 5:** BU-023 — Plugin-Boundary Contract-Tests (~3h)
 
 ---
 
+## [BU-023] - 2026-06-19 — PLUGIN-BOUNDARY CONTRACT-TESTS (DYNAMISCHE INTERFACE-ERKENNUNG)
+
+### Added (P1 — BOUND-001: Keine Contract-Tests)
+- **Problem:** Interface-Änderungen in `GamePlugin` brachen `SongsOfSyxPlugin` unbemerkt. Es gab keinen Test, der automatisch erkennt, wenn eine neue Methode zum Interface hinzugefügt wird, aber in `SongsOfSyxPlugin` fehlt. Der bestehende `plugin-boundary-smoke.js` testete alle 23 Methoden, aber mit HARDCODED Listen — neue Methoden wurden nicht erkannt.
+- **Lösung:** Neuer `plugin-boundary-contract.js` (Contract-Test) mit DYNAMISCHER Interface-Erkennung:
+  - **Interface-Extraktion:** `Object.getOwnPropertyNames()` auf `GameAdapter.prototype` + `GamePlugin.prototype` — entdeckt ALLE Methoden automatisch, keine Hardcoded-Listen.
+  - **Drei Verifikations-Layer:** L1 Existence (Plugin MUSS jede Interface-Methode haben), L2 Override (abstrakte Methoden MÜSSEN via `hasOwnProperty` überschrieben sein), L3 Signature (Parameter-Count MUSS mit Interface übereinstimmen).
+  - **Synthetischer Auto-Detection-Test:** Fügt temporär eine Dummy-Methode zu `GamePlugin.prototype` hinzu, verifiziert dass sie im Interface erscheint UND dass `SongsOfSyxPlugin` sie NICHT hat, dann Cleanup. Beweist: neue Methoden werden SOFORT erkannt.
+  - **73/73 Checks bestanden** — 23 L1 + 15 L2 + 1 L2b + 23 L3 + 3 Synthetic + 8 Edge Cases.
+  - **Generische Factory:** `verifyPluginContract(PluginClass)` — wiederverwendbar für künftige Plugins (RimWorldPlugin etc.).
+
+### Fixed (Interface-Compliance)
+- `SongsOfSyxPlugin.applyPatchModifications()`: Signatur von 2 auf 3 Parameter erweitert (`infoObj, targetLanguage, patchNotice`). Der dritte Parameter `patchNotice` wird nicht verwendet, ist aber vom `GameAdapter`-Interface gefordert. Caller (`runtime-ops.js`) übergibt nur 2 Argumente → `patchNotice` ist `undefined`. Kommentar im Code erklärt die Interface-Compliance.
+
+### Files Changed
+- `core/tests/plugin-boundary-contract.js` — NEU: Dynamischer Contract-Test (271 LOC, 73 Checks, 7 Funktionen)
+- `core/src/plugins/SongsOfSyxPlugin.js` — `applyPatchModifications` Signatur 2→3 Parameter (+Kommentar)
+- `core/tests/INDEX.md` — Contract-Test-Eintrag hinzugefügt
+- `core/src/plugins/INDEX.md` — Boundary-Tests-Referenz aktualisiert
+- `core/archive/docs/KNOWN_BUGS_REPORT.md` — BU-023 Status: 🔴 OFFEN → ✅ BEHOBEN
+
+### Tests
+- Syntax-Check: ALL files OK ✅
+- Contract-Test: 73/73 PASS (L1:23, L2:15, L2b:1, L3:23, Synthetic:3, Edge:8) ✅
+- Synthetic Auto-Detection: Dummy-Methode erkannt + als fehlend identifiziert ✅
+- Plugin-Boundary-Smoke: 100/100 PASS (weiterhin) ✅
+- Code-Review: Nit Pick Nick — 3 Issues gefixt (Per-Check-Logging, L3 Adapter-Coverage, iface einmal berechnet)
+
+### EFFORT TO NEXT SCOPE
+- `missingConcrete` im Return-Objekt von `verifyPluginContract` ergänzen (Reviewer-Suggestion)
+- RimWorldPlugin durch `verifyPluginContract()` validieren (sobald existent)
+
 ---
+
 
 ## [VENDOR-DRIFT-SCRIPT] - 2026-06-19 — checkVendorDrift() als Standalone-Script implementiert
 

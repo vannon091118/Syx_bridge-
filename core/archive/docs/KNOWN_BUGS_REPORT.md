@@ -195,13 +195,13 @@
 - **Reproduzierbarkeit:** Statisch.
 - **Status:** 🟢 OFFEN (P3).
 
-### 🟡 BU-023 — Plugin-Boundary ohne Contract-Tests (BOUND-001)
+### ~~🟡 BU-023 — Plugin-Boundary ohne Contract-Tests (BOUND-001)~~ ✅ BEHOBEN
 - **Symptom:** Interface-Änderungen in `GamePlugin` brechen `SongsOfSyxPlugin` unbemerkt.
 - **Trigger:** Jede Änderung an `GamePlugin.js` Interface.
 - **Betroffene Dateien:** `plugins/GamePlugin.js`, `plugins/SongsOfSyxPlugin.js`.
 - **Ursache:** Kein Test-Framework — `throw new Error('Not implemented')` als informelle Guards.
 - **Reproduzierbarkeit:** Bei jedem Interface-Change.
-- **Status:** 🔴 OFFEN (P1) — F.B in MASTER_DOC.
+- **Status:** ✅ BEHOBEN — `plugin-boundary-contract.js`: Dynamische Interface-Erkennung via `Object.getOwnPropertyNames()`. 73/73 Checks. Synthetischer Auto-Detection-Test beweist: neue Methoden werden sofort erkannt. Signatur-Fix in `SongsOfSyxPlugin.applyPatchModifications()` (2→3 Parameter). Siehe CHANGELOG [BU-023].
 
 ### 🟡 BU-024 — CodeRabbit-Auto-Fix unreviewed (CODE-001)
 - **Symptom:** Automatische Änderungen aus PR #5 könnten unentdeckte Bugs enthalten.

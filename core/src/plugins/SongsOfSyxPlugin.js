@@ -86,7 +86,8 @@ class SongsOfSyxPlugin extends GamePlugin {
     });
   }
 
-  applyPatchModifications(infoObj, targetLanguage) {
+  applyPatchModifications(infoObj, targetLanguage, patchNotice) {
+    // patchNotice parameter unused — required by GameAdapter interface contract
     const patchSuffix = ` (${targetLanguage} Patch)`;
     const currentName = infoObj.NAME || 'BridgePatch';
     if (!currentName.endsWith(patchSuffix)) {
