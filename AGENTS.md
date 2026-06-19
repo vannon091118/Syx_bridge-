@@ -349,3 +349,74 @@ In `core/archive/dbold/` liegen zwei persistente Dokumente die bei jedem signifi
 | `DB_STATISTICS.md` | Statistische Durchschnittswerte, Median, KPIs über alle Snapshots | Nach jedem Snapshot-Vergleich |
 
 **Regel:** Nach jedem neuen Snapshot zuerst `DB_TREND_REPORT.md` um die neue Sektion erweitern, dann `DB_STATISTICS.md` neu berechnen.
+
+---
+
+## § WORKFLOW-AUTOMATION (Auto-Trigger)
+
+> **Ziel:** Automatisierte Verpflichtungen für Agenten, um Doku-Lücken proaktiv zu schließen.
+> **Siehe auch:** `core/archive/docs/WORKFLOW.md` — vollständiger Session-Lifecycle
+
+### Trigger: Code-Change
+Sobald eine Datei geändert oder eine Funktion modifiziert wird, löst dies sofort einen verpflichtenden Update-Task aus:
+1. Per-Folder `INDEX.md` auf korrekte Zeilennummern prüfen
+2. `CHANGELOG.md` mit `[CL:TAG]`-Verweis ergänzen
+**Regel:** Kein Code-Commit ohne Doc-Commit.
+
+### Trigger: Doku-Schwelle
+Wenn im Ordner `core/archive/docs/` mehr als 10 aktive temporäre Analysedokumente liegen, MUSS der Agent:
+1. Die aktuelle Aufgabe pausieren
+2. Den User auf die Notwendigkeit des Doku-Clean-Prozesses hinweisen (siehe `WORKFLOW.md` §3)
+
+### Trigger: DB-Schwelle
+Bei mehr als 100 geänderten DB-Einträgen triggert automatisch Regel 9 (User fragen bzgl. DB-Archivierung).
+
+---
+
+## § TRACEABILITY-GUARANTEES
+
+> **Ziel:** Mechanismus zur Verhinderung von Lücken, selbst bei Fehlern von Agenten. ("Fail-Closed" für Doku)
+> **Prinzip:** 3 unabhängige Schutzschichten — Code-INDEX → CHANGELOG → FREEZE_INDEX
+
+### Git-Log Fallback (Orphaned Code Recovery)
+Lässt sich die Herkunft einer Funktion nicht im `CHANGELOG.md` oder im Folder-`INDEX.md` finden (Orphaned Code), MUSS der Agent:
+1. Via `git blame` oder `git log -S <functionName>` den Ursprungscommit ermitteln
+2. Den Commit rückwirkend in CHANGELOG + INDEX eintragen
+3. Das `[CL:TAG]` für die Funktion nachtragen
+
+### Referenz-Integrität
+Jeder Code-Eintrag im Folder-INDEX **muss** mindestens einen `[CL:TAG]`-Verweis haben.
+Fehlt dieser, ist die Dokumentation korrupt und MUSS vor weiteren Feature-Arbeiten repariert werden.
+
+### Zero-Delete-Garantie
+Temporäre Entwicklungsdokumente werden NUR gelöscht wenn:
+1. Der Inhalt als Glossary-Eintrag im `FREEZE_INDEX.md` überführt wurde (mit Kausalität, Cross-Referenzen)
+2. Der `MASTER_FREEZE` die Löschung referenziert und begründet
+3. Eine 100%-Integritäts-Verifikation gegen den Code bestanden wurde
+4. Der User die Löschung explizit bestätigt hat
+
+### Defense in Depth
+Drei unabhängige Schichten garantieren Rekonstruierbarkeit:
+- **Schicht 1 (Code):** Per-Folder INDEX.md + `[CL:TAG]`-Verweise
+- **Schicht 2 (Log):** CHANGELOG.md — chronologisch, irreversibel
+- **Schicht 3 (Archiv):** FREEZE_INDEX.md — Glossary mit Kausalitäts-Ketten
+
+---
+
+## § SESSION-LIFECYCLE
+
+> **Ziel:** Jede Session beginnt und endet mit definierten Checkpoints. Keine offenen Enden.
+> **Referenz:** `core/archive/docs/WORKFLOW.md` — vollständige Session-Lifecycle-Dokumentation
+
+### Session-Start (Pflicht vor jeder Code-Arbeit)
+1. **Git-Working-Tree prüfen:** `git status --short` — muss clean sein
+2. **HANDSHAKE lesen:** Aktuellen `core/archive/docs/HANDSHAKE_*.md` lesen
+3. **PREFLIGHT prüfen:** `core/archive/docs/PREFLIGHT_LATEST.md` auf Blocking-Schwelle prüfen
+4. **Eskalation prüfen:** Bei aktiven Triggern → User fragen
+
+### Session-Ende (Pflicht vor Beendigung)
+Keine Session gilt als erfolgreich beendet, solange nicht:
+1. Ein neuer `HANDSHAKE_YYYY-MM-DD.md` (Übergabe-Spezifikation) für den nächsten Agenten geschrieben wurde
+2. Die Start/End-Checklisten aus `WORKFLOW.md` §2 erfüllt sind
+3. `CHANGELOG.md` und `MASTER_DOC.md` aktuell sind
+4. DB-Archivierung angeboten wurde (Regel 9)

@@ -61,7 +61,7 @@ Scan → Extract → Translate → Audit → Polish → Export
 | F.B | P1 | Plugin-Boundary Contract-Tests fehlen |
 | F.C | P1 | CodeRabbit-Auto-Fix unreviewed |
 | #013 | P0 | Doc-/Live-Drift zwischen Snap 16/17 (163 Einträge) |
-| #014 | P1 | `quality_score`-Spalte fehlt im Schema |
+| #014 | — | **FALSIFIED ✅** — `quality_score` existiert (db.js:125, MASTER_FREEZE §3.2) |
 
 ---
 
@@ -102,8 +102,9 @@ Scan → Extract → Translate → Audit → Polish → Export
 |---|---|---|
 | P0 | S1: REVIEW-BASE Naming-Bug fixen (#015) | ~15 Min |
 | P0 | S2: Erster echter v0.20 Live-Run & #013 Verifikation | ~60 Min |
-| P1 | S3: Schema-fix `quality_score` Spalte einführen (#014) | ~4-6h |
-| P1 | S4: Plugin-Boundary Contract-Tests (F.B) | ~3h |
+| — | S3: Schema-fix `quality_score` Spalte einführen | ✅ OBSOLET — Spalte existiert (db.js:125) |
+| P1 | S4: Snap-16 Re-Audit mit Score-Buckets | ~2h |
+| P1 | S5: Plugin-Boundary Contract-Tests (F.B) | ~3h |
 | P2 | S5: DB-Cleanup `stale_retranslate` | ~2h |
 | P2 | S6: Bidirektionaler Vendor-Sync Phase 2 (F.A) | ~3-4h |
 
@@ -138,21 +139,32 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ---
 
-## 9. Dokumentationsstruktur (Post-Konsolidierung)
+## 9. Dokumentationsstruktur (Post-Konsolidierung Run #2)
+
+> **Stand:** 2026-06-19 — 60 → 16 Dokumente (10 aktiv + 6 FREEZE)
+> **44 FREEZE-Dokumente gelöscht** nach 100% Integritäts-Verifikation (33/33 Claims).
+> Alle Inhalte im FREEZE_INDEX.md als Glossary-Einträge rekonstruierbar.
 
 ```
 core/archive/docs/
 ├── MASTER_DOC.md              # ← DIESER REPORT (konsolidiert)
-├── CHANGELOG.md               # Versionshistorie (LIVE)
+├── CHANGELOG.md               # Versionshistorie (LIVE, persistent)
 ├── PREFLIGHT_LATEST.md        # Letzter PREFLIGHT-Report (LIVE)
-├── LIVE_INDEX.md              # Index der 3 LIVE-Dokumente
+├── LIVE_INDEX.md              # Index der LIVE- + Meta-Dokumente
+├── WORKFLOW.md                # Agenten-Workflow (Session-Lifecycle, Doku-Clean, Eskalation)
+├── HANDSHAKE_2026-06-19.md    # Session-Übergabe (offene Punkte, DB-Stand, Roadmap)
+├── DIVERGENZ_REPORT.md        # Vendor-Drift-Analyse
+├── FORENSIC_FULLSCAN_v0.20_2026-06-19.md  # Forensischer Full-Scan
+├── REDUNDANZ_AUDIT_V2_2026-06-19.md       # Redundanz-Analyse
+├── DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md # Konsolidierungsbericht
+├── INTEGRITY_AUDIT_2026-06-19.md          # Integritäts-Verifikation (100%)
 ├── FREEZE/
-│   ├── FREEZE_INDEX.md        # Index der 5 FREEZE-Dokumente
-│   ├── FREEZE_SESSION_PROTOCOL.md      # 10 Sessions → 1 Dokument
-│   ├── FREEZE_AUDIT_CONSOLIDATED.md    # 15+ Audit/Bug-Reports → 1 Dokument
-│   ├── FREEZE_QUALITY_OFFENSIVE.md     # 5 QO-Dokumente → 1 Dokument
-│   ├── FREEZE_DB_HISTORY.md            # 8 DB-Snapshots → 1 Dokument
-│   └── FREEZE_REMAINING.md             # Rest + Plans → 1 Dokument
+│   ├── FREEZE_INDEX.md        # Das Buch — 48 Glossary-Einträge
+│   ├── MASTER_FREEZE_v0.20.0_2026-06-19.md  # Single Source of Truth
+│   ├── FREEZE_MASTER_CHECKLIST_2026-06-19.md # Verifikations-Checkliste
+│   ├── README.md              # Verzeichnis-Doku
+│   ├── TRANSLATION_RUNTIME_SPLIT_2026-06-18.md  # Archivierter Plan (umgesetzt)
+│   └── COMMIT_MSG_2026-06-18.txt                 # Archivierte Commit-Nachricht
 └── plans/
-    └── (aktive Pläne)
+    └── PHASE2_MARKER_INTEGRATION_2026-06-19.md   # Einziger offener Plan
 ```

@@ -1,5 +1,120 @@
 # CHANGELOG
 
+## [WORKFLOW-SYSTEM] - 2026-06-19 — WORKFLOW.MD + AGENTS.MD-TRACEABILITY (3 NEUE §§)
+
+### Added
+- **`core/archive/docs/WORKFLOW.md` (NEU):** Verbindlicher Core Workflow mit 6 Sektionen:
+  - §1 Design-Prinzipien (Defense in Depth, Fail-Closed, Reconstructability, Minimal Overhead)
+  - §2 Session-Lifecycle (Start/End-Checklisten für jeden Agenten)
+  - §3 Doku-Clean Prozess (5 Phasen, zwingend nach Release/3 Sessions/>10 Docs)
+  - §4 Traceability-Kette (3-Schichten-Garantie + Git-Log-Fallback-Mechanismus)
+  - §5 Eskalations-Trigger (8 Trigger, priorisiert nach Schwere)
+  - §6 Quick-Reference (Spickzettel für Agenten)
+
+### Changed
+- **`AGENTS.md` — 3 neue §§ (Regeln 1-17 unangetastet):**
+  - **§ WORKFLOW-AUTOMATION:** Auto-Trigger für Code-Change → INDEX+CHANGELOG-Update, Doku-Schwelle (>10 Docs), DB-Schwelle (>100 Einträge)
+  - **§ TRACEABILITY-GUARANTEES:** Git-Log-Fallback für Orphaned Code, Referenz-Integrität ([CL:TAG]-Pflicht), Zero-Delete-Garantie, Defense in Depth (3 Schichten)
+  - **§ SESSION-LIFECYCLE:** Session-Start-Pflichten (Git, HANDSHAKE, PREFLIGHT), Session-Ende-Pflichten (neuer HANDSHAKE, Checklisten, DB-Archivierung)
+
+### Kern-Innovation: Anti-Lücken-Mechanismus
+- Wenn Agent A Code ändert aber Doku vergisst → Agent B findet fehlendes [CL:TAG] im INDEX → MUSS via `git log -S` Commit nachtragen → Lücke geschlossen
+- Drei unabhängige Schutzschichten machen die Spur unzerstörbar
+
+### Files Changed
+- `core/archive/docs/WORKFLOW.md` — NEU
+- `AGENTS.md` — 3 neue §§ angehängt
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+---
+
+
+## [SESSION-CLEANUP] - 2026-06-19 — FREEZE-LÖSCHUNG (44 DOKUMENTE) + HANDSHAKE-KORREKTUREN + DOKU-VERSCHIEBUNG
+
+### FREEZE-Löschung (44 → 6)
+- **44 verifizierte FREEZE-Dokumente gelöscht** nach 100% Integritäts-Verifikation (INTEGRITY-AUDIT: 33/33 Claims code-verified)
+- **Alle 4 Doku-Clean-Kriterien** (AGENTS.md §15) erfüllt: Inhalt in FREEZE_INDEX überführt, MASTER_FREEZE referenziert, 100% Code-Verifikation, User-Bestätigung
+- **6 permanent verbleibend:** FREEZE_INDEX.md (48 Glossary-Einträge), MASTER_FREEZE_v0.20.0, FREEZE_MASTER_CHECKLIST, README.md, TRANSLATION_RUNTIME_SPLIT (archiviert), COMMIT_MSG_2026-06-18 (archiviert)
+- **Doku-Bestand nach Bereinigung:** 60 → 16 Dokumente (10 aktiv + 6 FREEZE)
+
+### HANDSHAKE-Korrekturen
+- **§2.2 DB-Schema:** Von "KEIN `quality_score`, KEIN `glossary`-Tabelle" → 14 Spalten + Bestätigung dass `quality_score` (db.js:125) und `glossary_terms` (db.js:230) existieren. Code-verified per MASTER_FREEZE §3.2
+- **§2.2 Anomalie #014:** Status von offen → **FALSIFIED ✅** mit Code-Evidence
+- **§8 Roadmap S3:** `Schema quality_score ergänzen` → **OBSOLET** (Spalte existiert bereits). Ersetzt durch `S4: Snap-16 Re-Audit mit Score-Buckets | ~2h`
+
+### Doku-Verschiebung
+- `plans/TRANSLATION_RUNTIME_SPLIT_2026-06-18.md` → `FREEZE/` (Plan vollständig in v0.19.9 implementiert)
+- `COMMIT_MSG_2026-06-18.txt` → `FREEZE/` (Inhalt im CHANGELOG, war als "nicht übernommen" markiert)
+
+### LIVE_INDEX-Update
+- **Meta-Dokumente-Sektion** hinzugefügt: WORKFLOW.md als verbindlicher Agenten-Workflow
+- **Regel aktualisiert:** "Maximal 3 LIVE-Dokumente" → "+ 1 Meta-Dokument (WORKFLOW.md)"
+- **Abdeckungstabelle** um Agent-Workflow-Zeile ergänzt
+
+### Files Changed
+- `core/archive/docs/FREEZE/` — 44 Dateien gelöscht, 6 verbleiben
+- `core/archive/docs/HANDSHAKE_2026-06-19.md` — §2.2 + §8 korrigiert
+- `core/archive/docs/plans/` — TRANSLATION_RUNTIME_SPLIT → FREEZE/
+- `core/archive/docs/COMMIT_MSG_2026-06-18.txt` → FREEZE/
+- `core/archive/docs/LIVE_INDEX.md` — Meta-Dokumente + WORKFLOW.md
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+---
+## [INTEGRITY-AUDIT] - 2026-06-19 — 100% DOKUMENTATIONS-INTEGRITÄT (33/33 CLAIMS CODE-VERIFIED)
+
+### Verifikation
+- **8 Code-Searcher + 1 Thinker-with-Files-Gemini** in 3 Wellen
+- **33 verifizierbare Claims** aus FREEZE_INDEX + MASTER_FREEZE gegen echten Code geprüft
+- **33/33 VERIFIED (100%)** — alle Claims durch Code-Marker mit exakten Zeilennummern bestätigt
+- **15 Claims** als nicht-verifizierbar klassifiziert (historische Laufzeit-Ereignisse, im FREEZE_INDEX dokumentiert)
+
+### Gap-Closing (3 initiale Lücken geschlossen)
+- **Dual-Path-Copy:** `fsp.cp()` bei `runtime-ops.js:243` + AppData-Logik bei `:392-406` verifiziert ✅
+- **NMT Local Provider:** `NMT_LOCAL_ENABLED` in `index.js:113` + `config-runtime.js:833` + `warm-model.js:12` + `start.bat:99` verifiziert ✅
+- **SongsOfSyxAdapter Deprecation:** 0 require/import/new Treffer + Bestätigung in `index.js:16` ✅
+
+### Ergebnis
+- **Lösch-Freigabe ERTEILT:** Alle 4 Doku-Clean-Kriterien (AGENTS.md §15) sind erfüllt
+- **44 FREEZE-Dokumente** können gelöscht werden nach User-Bestätigung
+- **0 ungeschlossene Lücken** verbleiben
+
+### Report
+→ `core/archive/docs/INTEGRITY_AUDIT_2026-06-19.md`
+
+### Files Changed
+- `core/archive/docs/INTEGRITY_AUDIT_2026-06-19.md` — NEU: Integritäts-Verifikations-Report
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+---
+
+## [DOKU-KONSOLIDIERUNG-RUN2] - 2026-06-19 — 5-PHASEN DESTILLATION (60→16 DOKUMENTE)
+
+### Konsolidierung
+- **60 Dokumente analysiert** (10 aktiv + 48 FREEZE + 2 Pläne) via 4 Thinker-with-Files-Gemini parallel
+- **5-Phasen-Workflow:** Bootstrap → Vollesung → Subagent-Matrix → Tendenzenanalyse → Destillation
+- **44 FREEZE-Dokumente** als löschbar identifiziert (alle 4 Doku-Clean-Kriterien erfüllt)
+- **9 Widersprüche** dokumentiert: 5 bereits aufgelöst (Run #1), 4 neu identifiziert (Run #2)
+- **Wachstumstrend:** +17.6% seit Run #1 (rückläufig von +27.5%)
+
+### Neue Erkenntnisse
+- **DB-Wert-Drift zwischen 3 Quellen:** MASTER_DOC §5 (Snap 18), MASTER_FREEZE §3 (Live), PREFLIGHT_LATEST — MASTER_FREEZE als SSoT empfohlen
+- **HANDSHAKE veraltet bei DB-Schema:** Sagt "KEIN quality_score" — Migration war erfolgreich, Spalte existiert
+- **TRANSLATION_RUNTIME_SPLIT Plan:** Als "nicht implementiert" markiert, aber Code zeigt es IST implementiert (v0.19.9)
+- **PHASE2_MARKER_INTEGRATION:** 6 Lücken, teilweise umgesetzt (2a/2b/2c im CHANGELOG), Rest offen
+
+### DB-Referenzwerte (keine Live-DB verfügbar)
+- MASTER_FREEZE: 6.658 Translations, 84% Stage 2, 35.2% Stale, 32.3% Flagged
+- MASTER_DOC (Snap 18): 6.540 Translations, 74.3% Stage 2, 34.3% Stale, 37.4% Flagged
+
+### Report
+→ `core/archive/docs/DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md`
+
+### Files Changed
+- `core/archive/docs/DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md` — NEU: Konsolidierungsbericht Run #2
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+---
+
 ## [INDEX-FALSIFIKATION] - 2026-06-19 — 100% RÜCKVERFOLGBARKEIT + CHANGELOG-ENRICHMENT
 > 🤖 *r/VibeCoding — From AI Agent to Governance: When your codebase documentation becomes self-aware and audits itself to 100% traceability.*
 > **Governance-Commit:** Regelwerk übernommen, INDEX-System falsifiziert, CHANGELOG-Chain geschlossen. Branch: `Governance`.

@@ -49,7 +49,7 @@
     git HEAD                       = eae4c81
     Active Vendored (Workshop)     = SyxBridge_v0.20.0-pre-release  (185 KB ZIP)
     Parallel Build-Linie (Review) = SyxBridge_v0.20.0-pre-review-base (~520 KB ZIP)
-    FREEZE-Archiv                  = core/archive/docs/FREEZE/  (33 Dokumente)
+    FREEZE-Archiv                  = core/archive/docs/FREEZE/  (6 Dokumente, 44 gelöscht nach 100% Integritäts-Verifikation)
 
   2.2 Live-DB (Snapshot 17 — 2026-06-19)
   ─────────────────────────────────────────────────────────────────────────────
@@ -59,10 +59,16 @@
     Stage 0 / 1 / 2                = 2.069 / 72 / 4.153 (32.9% / 1.1% / 66.0%)
     Empty Translations             = 0
     Distinct source_hash           = 6.012
-    Schema                     = `translations(id-PK, source, target_lang,
+    Schema                     = `translations(id-PK, source_text, target_lang,
                                        translation, polish_level, audit_stage,
-                                       source_hash, provider, flagged)` — KEIN
-                                       `quality_score`, KEIN `glossary`-Tabelle
+                                       source_hash, provider, flagged,
+                                       quality_score, last_checked_at, review_count,
+                                       stress_test_passed, stress_tested_at,
+                                       polish_status, requires_deep_polish,
+                                       overwrite_fallback_used)`
+                                       + `glossary_terms`-Tabelle
+                                       (Schema per MASTER_FREEZE §3.2 code-verified:
+                                       quality_score existiert, glossary_terms existiert)
   ─────────────────────────────────────────────────────────────────────────────
     Stale-Verteilung nach Provider (LIVE 17):
       native_runtime   = 1.973 (68.0% der eigenen Provider-Einträge = 🔴)
@@ -192,12 +198,12 @@
     Ursache: ein PREFLIGHT-Pass zwischen den Doc-Updates, nicht deklariert.
     Status: Beobachtung, kein Bug. Erste v0.20 Live-Run muss Klärung bringen.
 
-  Anomalie #014 (quality_score-Spalte fehlt im Schema)
-    Snapshot 16 dokumentierte Ø Score 84.4 + Buckets 0-29/30-69/70-79/80-89/90+
-    — aber `PRAGMA table_info(translations)` zeigt KEIN `quality_score`-Feld.
-    → Snap 17 dokumentiert Score-Distribution als N/A. Klärung: war der
-    Avg-Score in Snap 16 eine In-Memory-Aggregation des Scripts? Sidecar-JSON?
-    Audit-Notiz nötig.
+  Anomalie #014 (quality_score-Spalte — FALSIFIED ✅)
+    MASTER_FREEZE-Audit (2026-06-19) hat per PRAGMA table_info bestätigt:
+    `quality_score`-Spalte EXISTIERT in Live-DB (Migration via db.js:125 erfolgreich).
+    `glossary_terms`-Tabelle existiert ebenfalls (db.js:230).
+    HANDSHAKE §2.2-Schema war veraltet (Snap-17-Stand vor Migration).
+    → Status: FALSIFIED. Korrigiert in MASTER_FREEZE §3.2 + INTEGRITY_AUDIT_2026-06-19.
 
   Anomalie #015 (REVIEW-BASE Naming-Bug — pending)
     Script akzeptiert `${version}-review-base` aber `version` selbst
@@ -309,14 +315,14 @@
   --------+---------+-------------------------------------------------------+--------------
   P0      | 🟡     | REVIEW-BASE Naming-Bug (Anomalie #015) fixen          | 15 Min Run
   P0      | 🔴     | Anomalie #013 verifizieren (erster v0.20 Live-Run)     | 60 Min Run
-  P1      | 🟡     | Schema `quality_score` ergänzen + Snap-16 re-konstruieren | 4-6h
+  P1      | ✅     | Schema `quality_score` existiert bereits (db.js:125, MASTER_FREEZE §3.2) | —
+  P1      | 🟡     | S4: Snap-16 Re-Audit mit Score-Buckets | ~2h
   P1      | 🟢     | F.C CodeRabbit-Auto-Fix-Smoke-Hook vor Merge           | 1-2h
   P1      | 🟡     | F.B Plugin-Boundary Contract-Tests                     | 3h
   P2      | 🟡     | Bidirektionaler Vendor-Sync (F.A erweitert)            | 3-4h
   P2      | 🟢     | DB-Cleanup für 1.507 stale_retranslate                 | 2h
   P2      | 🟢     | Snapshot-18 nach echtem v0.20-Live-Run                | 30 Min
-  P3      | 🟢     | EFFORT-zu-Next-Scope-Doku konsolidieren (dieser Doc)  | 30 Min
-  P3      | 🟢     | HANDSHAKE_2026-06-17.md entweder anlegen oder als "leer" markieren | 5 Min
+  P3      | 🟢     | EFFORT-zu-Next-Scope-Doku konsolidieren               | 30 Min
 
   Legende: 🔴 aktiv blockierend | 🟡 relevant | 🟢 nice-to-have
 
@@ -385,13 +391,17 @@
       Verifikation: Provider-Shift stimmt mit erwartetem Live-Traffic
                     überein (native_runtime Anteil steigt nicht >50%).
   ──────────────────────────────────────────────────────────────────────────
-  S3. Schema-fix: `quality_score` Spalte (P1 🟡, ~4-6h)
-      Vorbedingung: Migration in `core/src/db.js` erweitern.
-      Deliverable: `translations` hat `quality_score INT DEFAULT NULL`.
-                   translation-runtime.js schreibt Score bei jedem Eintrag.
-                   Snap 16 Re-Audit mit reproduzierbaren Score-Buckets.
+  S3. ✅ OBSOLET — Schema `quality_score` existiert bereits (P0 erledigt)
+      Spalte `quality_score` existiert (db.js:125, MASTER_FREEZE §3.2).
+      `glossary_terms`-Tabelle existiert (db.js:230).
+      Kein Schema-Fix nötig.
   ──────────────────────────────────────────────────────────────────────────
-  S4. F.C CodeRabbit-Smoke-Hook (P1 🟢, ~1-2h)
+  S4. Snap-16 Re-Audit mit Score-Buckets (P1 🟡, ~2h)
+      Vorbedingung: Live-DB mit quality_score-Spalte.
+      Deliverable: Reproduzierbare Score-Verteilung nach Buckets (0-29,
+                   30-69, 70-89, 90-100) für Snap 16.
+  ──────────────────────────────────────────────────────────────────────────
+  S5. F.C CodeRabbit-Smoke-Hook (P1 🟢, ~1-2h)
       Vorbedingung: CI-Workflow existiert (oder wird erstellt).
       Deliverable: `npm run redteam_baseline` als Pre-Merge-Gate. Auto-Fix-
                    Commits triggern Reviewer-Prompt.
@@ -428,17 +438,22 @@
   11. KONTAKT-SCHNITTSTELLEN & HANDOVER-ANLAGEN
 ────────────────────────────────────────────────────────────────────────────────
 
-    Aktuelle Doku-Verzeichnisse:
+    Aktuelle Doku-Verzeichnisse (Post-Konsolidierung Run #2 — 60→16):
       core/archive/docs/                Master-Doku-Wurzel
-        ├── MASTER_DOC.md               konsolidierter Stand v0.20-alpha.3
-        ├── CHANGELOG.md                versions-history (live)
+        ├── MASTER_DOC.md               konsolidierter Stand v0.20.0-pre-release
+        ├── CHANGELOG.md                versions-history (live, persistent)
         ├── HANDSHAKE_2026-06-19.md     <== DIESER DOC
+        ├── WORKFLOW.md                 Agenten-Workflow (Session-Lifecycle, Doku-Clean)
+        ├── LIVE_INDEX.md               Index der LIVE- + Meta-Dokumente
+        ├── PREFLIGHT_LATEST.md         letzter PREFLIGHT-Report (LIVE)
+        ├── INTEGRITY_AUDIT_2026-06-19.md   Integritäts-Verifikation (100%)
+        ├── DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md  Konsolidierungsbericht
+        ├── DIVERGENZ_REPORT.md         Vendor-Drift-Analyse
+        ├── FORENSIC_FULLSCAN_v0.20_2026-06-19.md   Forensischer Full-Scan
+        ├── REDUNDANZ_AUDIT_V2_2026-06-19.md        Redundanz-Analyse
         ├── LLM-AGENTS-EntryPoint.md    Sub-Agent-Referenz
-        ├── PREFLIGHT_LATEST.md         aktuelle PREFLIGHT-Ausgabe
-        ├── preflight_history.log       PREFLIGHT-Historie
-        ├── COMMIT_MSG_2026-06-18.txt   letzter Commit-Text
-        ├── FREEZE/                    33 archivierte Reports
-        └── plans/                      2 aktive Phase-Plans
+        ├── FREEZE/                     6 Dokumente (44 gelöscht, Inhalte im FREEZE_INDEX rekonstruierbar)
+        └── plans/                      PHASE2_MARKER_INTEGRATION (einziger offener Plan)
 
     Persistente DB-Doku (core/archive/dbold/):
       ├── DB_TREND_REPORT.md            Snapshots 1-17, Anomalien #001-#015
