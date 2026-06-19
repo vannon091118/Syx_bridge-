@@ -75,11 +75,6 @@ const LANG_CODES = {
 
 // Global State
 let isAborting = false;
-// BU-020: AbortController for cancelling in-flight HTTP requests on SIGINT.
-// Each axios call in client-factory.js receives this signal. When the user
-// presses Ctrl+C, abortController.abort() cancels ALL pending API calls
-// immediately, saving API quota that would otherwise be wasted on timeouts.
-let abortController = new AbortController();
 let hasConfirmedNative = false;
 let runtimeOps;
 let translationRuntime;
@@ -294,11 +289,6 @@ process.on('SIGINT', async () => {
   }
   console.log('\n[!] Abbruch angefordert. Beende laufende Aufgaben sauber...');
   isAborting = true;
-  // BU-020: Cancel all in-flight HTTP requests immediately via AbortController.
-  // This saves API quota that would otherwise be consumed by 60-90s timeouts.
-  abortController.abort();
-  // Create a fresh AbortController for any cleanup operations (stopOllama, etc.)
-  abortController = new AbortController();
   await stopOllama();
 });
 
@@ -789,9 +779,6 @@ async function main() {
     dbAll, 
     dbRun,
     isAborting: () => isAborting,
-    // BU-020: Pass AbortController signal so provider clients can cancel
-    // in-flight HTTP requests when the user presses Ctrl+C.
-    getAbortSignal: () => abortController.signal,
     langCodes: LANG_CODES, defaults: {}, batchSize: BATCH_SIZE,
     isArgosInstalled: () => isArgosInstalled()
   });

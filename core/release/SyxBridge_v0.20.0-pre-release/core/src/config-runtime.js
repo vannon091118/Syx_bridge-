@@ -504,10 +504,6 @@ class ConfigRuntime {
         return await fn();
       } catch (e) {
         lastError = e;
-        // BU-020: AbortController — cancelled requests must NOT be retried.
-        // axios.isCancel checks for legacy Cancel objects; code === 'ERR_CANCELED'
-        // catches modern Axios AbortError; name === 'CanceledError' is the safe fallback.
-        if (axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') throw e;
         const status = e.response && e.response.status;
         const retryable = !status || status === 429 || status >= 500;
         if (!retryable || attempt === 3) break;

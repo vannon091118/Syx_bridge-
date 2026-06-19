@@ -42,9 +42,6 @@ function createTranslationRuntime(options) {
     dbAll,
     dbRun,
     isAborting,
-    // BU-020: AbortController signal passed through to provider clients
-    // so in-flight HTTP requests can be cancelled on Ctrl+C.
-    getAbortSignal,
     langCodes,
     isArgosInstalled
   } = options;
@@ -66,9 +63,7 @@ function createTranslationRuntime(options) {
     getModelForProvider, getGeminiModelName, getGrammarContext,
     stripJsonFence, restoreAndValidateTranslation, restorePlaceholders,
     parseBatchResponseWithMaps,
-    buildBatchPromptForCurrentConfig,
-    // BU-020: Pass AbortController signal to provider clients
-    getAbortSignal
+    buildBatchPromptForCurrentConfig
   });
   const { normalizeWhitespace, getBatchProfile } = clients;
 
@@ -610,8 +605,6 @@ function createTranslationRuntime(options) {
       }
       return parsed;
     } catch (e) {
-      // BU-020: AbortController — CanceledError must break immediately, not count as failure.
-      if (axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') throw e;
       consecutiveGrammarFailures++;
       console.warn(`[!] Grammatik-Korrektur fehlgeschlagen (${consecutiveGrammarFailures}/3): ${extractErrorMessage(e)}`);
       if ((e.response ? e.response.status : 0) === 429) {
@@ -883,7 +876,7 @@ function createTranslationRuntime(options) {
           cli.tick(ctx.translations.size, ctx.uniqueTexts.length);
         }
       } catch (e) {
-        if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
+        if (e.message === 'ABORTED') break;
         console.error(`[!] Batch fehlgeschlagen: ${extractErrorMessage(e)}`);
         const failPromises = [];
         for (const item of currentBatch) {
@@ -1039,7 +1032,7 @@ function createTranslationRuntime(options) {
             batchUpdatePromises.push(learnGlossary(key, improved, entry));
           }
         } catch (e) {
-          if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
+          if (e.message === 'ABORTED') break;
           console.warn(`[!] QA-Korrektur Batch fehlgeschlagen: ${e.message}`);
         }
       }

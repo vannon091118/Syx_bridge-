@@ -1,0 +1,47 @@
+{
+  "name": "syx-bridge",
+  "version": "0.20.0-pre-release",
+  "releaseVersion": "0.20.0-pre-release",
+  "description": "AI-powered translation bridge for Songs of Syx mods. Optimized for V71.",
+  "main": "index.js",
+  "scripts": {
+    "warm-model": "node scripts/warm-model.js",
+    "lint": "eslint . --fix",
+    "test:syntax": "node scripts/check_syntax.js",
+    "testline": "npm run lint && npm run test:syntax && node scripts/redteam_baseline.js && node scripts/reconstruct.js",
+    "test": "npm run testline",
+    "reconstruct": "node scripts/reconstruct.js",
+    "release": "node scripts/release.js",
+    "sync": "node scripts/sync-version.js",
+    "sync:dry": "node scripts/sync-version.js --dry-run",
+    "consistency": "node scripts/check_consistency.js",
+    "package": "node scripts/package.js",
+    "workshop": "node scripts/workshop_export.js",
+    "audit:db": "node scripts/db_audit.js"
+  },
+  "keywords": [
+    "songs-of-syx",
+    "translation",
+    "ai",
+    "llm",
+    "gemini",
+    "groq"
+  ],
+  "author": "Vannon",
+  "license": "MIT",
+  "optionalDependencies": {
+    "@huggingface/transformers": "4.2.0"
+  },
+  "dependencies": {
+    "axios": "1.17.0",
+    "dotenv": "16.3.1",
+    "inquirer": "8.2.7",
+    "sql.js": "1.14.1",
+    "sqlite3": "6.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.4.1",
+    "globals": "17.6.0"
+  }
+}

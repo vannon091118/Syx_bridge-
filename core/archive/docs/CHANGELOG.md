@@ -1,5 +1,51 @@
 # CHANGELOG
 
+## [AGENTS-PLAYBOOK] - 2026-06-19 — FIX-KATEGORIEN & WORKFLOW-PROMPTS integriert
+
+### Added (AGENTS.md — 5 neue §§ nach Orchestrations-Patterns)
+- **§ FIX-KATEGORIEN & WORKFLOW-PROMPTS:** 🟢 Standard-Fall, 🟡 Spezialfall, 🔴 Notfall — standardisierte Prompts mit ROLLE, ABLAUF, WIDERLEGUNGSPROBE, REPORT und ABSCHLUSS pro Kategorie.
+- **§ DOKU-DIVERGENZ-AUDIT (🔵):** Vollständiger Prompt für Doku-vs-Code-Abgleich mit Vier-Stationen-Kette (DIVERGENZ→URSACHE→LANGZEITLÖSUNG→NUTZEN).
+- **§ SEQUENZIELLER PRIOLISTEN-ABARBEITER (🟣):** Strikt sequenzielle Abarbeitung einer Prioliste mit 6 Phasen (Klassifizierung→Flag-Typ→Ausführung→Widerlegung→Report→Abschluss).
+- **§ BOOTSTRAP FULL-SCAN MASTER (⚫):** Erzeugt Prioliste aus dem Nichts (Vollinventur→Dedup→Priorisierung) und übergibt an 🟣.
+- **§ HISTORISCHE REFERENZ-BEISPIELE:** BU-035–039 + Flag-Taxonomie als Musterfälle.
+
+### Files Changed
+- `AGENTS.md` — 5 neue §§ eingefügt (nach Orchestrations-Patterns, vor Regeln)
+- `core/archive/docs/AGENTS.md` — SSOT-Kopie synchronisiert
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### EFFORT TO NEXT SCOPE
+- ~~`checkVendorDrift()` als Script implementieren~~ ✅ Erledigt (siehe nächster Eintrag)
+- `SYXBRIDGE_FIX_AUDIT_PROMPTS_2026-06-19.md` aus Session-Inhalt erstellen
+
+---
+
+## [VENDOR-DRIFT-SCRIPT] - 2026-06-19 — checkVendorDrift() als Standalone-Script implementiert
+
+### Added
+- **`core/scripts/check_vendor_drift.js` (310 LOC, 6 Funktionen):**
+  - Vergleicht Live-Core Source-Dateien (`core/src/`, `start.bat`, `core/index.js` etc.) gegen das Release-Bundle (`core/release/SyxBridge_vX.XX/`)
+  - SHA256-basierter Vergleich mit 5 Finding-Kategorien: DRIFT, MISSING_SOURCE, MISSING_FROM_RELEASE, ORPHANED, STALE_MANIFEST
+  - Automatische Erkennung des neuesten Release-Verzeichnisses (oder --release Flag)
+  - Review-Base vs Runtime-Release-Erkennung via `.build-manifest.json`
+  - Exit-Code 1 bei Drift → blockiert 🟡 Spezialfall-Abschluss (wie in AGENTS.md gefordert)
+  - Scripts-Scan für core/scripts/ auf fehlende Dateien im Release
+
+### Files Changed
+- `core/scripts/check_vendor_drift.js` — NEU
+- `core/scripts/INDEX.md` — Eintrag + Funktionsliste hinzugefügt
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### Tests
+- Syntax-Check: SYNTAX OK ✅
+- Dry-Run gegen `SyxBridge_v0.20.0-pre-review-base`: 31 Errors, 4 Warnings — korrekt erkannt (AGENTS.md-Edit + neue Scripts = erwarteter Drift)
+
+### EFFORT TO NEXT SCOPE
+- `npm run release` ausführen um aktuellen Drift aufzulösen
+- `check_vendor_drift.js` in den 🟡 Spezialfall-Workflow integrieren (aktuell nur via AGENTS.md referenziert)
+
+---
+
 ## [BU-040] - 2026-06-19 — NMT_LOCAL_ENABLED VERWAIST removed from PERSISTED_KEYS
 
 ### Fixed (DEAD_FLAG_REPORT VERWAIST → REMOVED)

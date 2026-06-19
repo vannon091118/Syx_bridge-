@@ -683,6 +683,37 @@ ab_polish:        76     0     0   224   979 —     —   1.147 1.262 1.262 1.3
 
 ---
 
+### 🌱 Snapshot 20: 2026-06-19 (Post-DB-Reset + PREFLIGHT Diagnostics) — LIVE translations.db
+
+| Metrik | Wert | Δ zum 19. Snapshot |
+|--------|------|-------------------|
+| Translations gesamt | **1.508** | **−5.150 (−77.3%)** 🔴 DB-RESET |
+| Stale (translation = source) | **1.295 (85.9%)** | **−1.049, aber Rate +50.7 pp** 🔴 |
+| Flagged | **15 (1.0%)** | **−2.137 (−99.3%)** ✅ |
+| Stage 0 (audit_stage=0) | 207 (13.7%) | −774 |
+| Stage 1 (audit_stage=1) | — | — |
+| Stage 2 (audit_stage=2) | 1.265 (83.9%) | −4.327 |
+| Ø Quality-Score | **91.3** | +10.6 ✅ |
+| Glossary Terms | 64 | −1.331 |
+| Revisions total | 4.693 | −26.653 |
+| Revisions active | 1.552 (33.1%) | — |
+| Processed Files | 401 | +2 |
+| **Provider:** native_runtime | **1.248 (82.8%)** | −1.481 |
+| **Provider:** openrouter | 148 (9.8%) | +88 |
+| **Provider:** argos | 100 (6.6%) | −266 |
+| **Provider:** ab_polish | 8 (0.5%) | −1.362 |
+| **Provider:** native_fallback | 4 (0.3%) | −2 |
+
+**PREFLIGHT Diagnostics (BU-035, erstmals gemessen):**
+| Diagnostic | Count |
+|------------|-------|
+| NEVER_CHECKED (last_checked_at IS NULL) | 0 |
+| NEVER_STRESS_TESTED (stress_tested_at IS NULL) | 1.508 (100%) |
+
+**Kontext:** DB wurde nach Snapshot 19 auf ~1.508 Einträge zurückgesetzt (User-Bestätigung: absichtlich). Dies ist die neue Baseline. 5 Provider aktiv (vs 9 in Snap 19). native_runtime dominiert mit 82.8%. Stale-Rate 85.9% — erwartet bei frischer DB ohne echte Übersetzungen. PREFLIGHT warnte bei 5.0% critical threshold (76 Issues). BU-035 Diagnostics funktionieren korrekt: neverChecked=0 (alle Einträge haben last_checked_at), neverStressTested=1508 (kein Stress-Test gelaufen).
+
+---
+
 ## 🔄 Wie dieses Dokument aktualisieren
 
 1. **Nach jedem größeren Run:** Neue Sektion unten anfügen (Format wie oben)

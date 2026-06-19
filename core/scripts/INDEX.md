@@ -11,6 +11,7 @@
 | build-review-base.js | 311 | 1 | Review-Base-Builder (Release-Snapshot) |
 | check_argos.js | 175 | 7 | Argos-Installation prüfen/installieren |
 | check_consistency.js | 323 | 7 | Konsistenz-Checks (Naming, Env, Versionen) |
+| check_vendor_drift.js | 310 | 6 | **Vendor-Drift** — Live-Core vs Release-Bundle |
 | check_syntax.js | 30 | 1 | Syntax-Check aller JS-Dateien |
 | check_workshop_damage.ps1 | — | — | PowerShell: Workshop-Schaden prüfen |
 | cleanup_argos_stale.js | 90 | 3 | Argos-Stale-Einträge bereinigen |
@@ -74,4 +75,18 @@
 
 ---
 
-*📖 Scripts-INDEX v0.20.0 — 20 Dateien, 3.589 LOC*
+### check_vendor_drift.js (310 LOC)
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 68 | `findLatestRelease()` | Letztes Release-Verzeichnis finden |
+| 76 | `isReviewBase(releaseDir)` | Review-Base vs Runtime-Release erkennen |
+| 84 | `releaseToSource(relPath, dir)` | Release-Pfad → Source-Pfad mappen |
+| 137 | `walkRelease(dir, baseDir)` | Release-Verzeichnis rekursiv scannen |
+| 152 | `checkVendorDrift(target?)` | Haupt-Check: DRIFT/MISSING/ORPHANED/STALE_MANIFEST |
+| 301 | CLI | Argument-Parsing (--release) |
+
+**CHANGELOG-Ref:** [CL:AGENTS-PLAYBOOK] 🟡 Spezialfall — checkVendorDrift() als Pflicht-Check vor Abschluss
+
+---
+
+*📖 Scripts-INDEX v0.20.0 — 21 Dateien, 3.899 LOC*
