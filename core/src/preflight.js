@@ -88,7 +88,12 @@ function createPreflight(dbManager) {
 
     // ── 4. Count issues by category ─────────────────────────────────
     const issues = await countIssues();
-    const totalIssues = Object.values(issues).reduce((a, b) => a + b, 0);
+    // DIAGNOSTIC fields (neverChecked, neverStressTested) are informational only —
+    // exclude from the threshold sum to prevent false-positive repair triggers.
+    const diagnosticKeys = new Set(['neverChecked', 'neverStressTested']);
+    const totalIssues = Object.entries(issues)
+      .filter(([k]) => !diagnosticKeys.has(k))
+      .reduce((sum, [, v]) => sum + v, 0);
 
     // NATIVE_STALE is expected behavior (native_runtime means "no translation needed").
     // It is excluded from the blocking threshold to prevent false-positive sync blocks.
@@ -125,9 +130,11 @@ function createPreflight(dbManager) {
       const repairResults = await runRepairs(issues);
       report.repairs = repairResults;
 
-      // Re-count after repair
+      // Re-count after repair (exclude diagnostic fields from sum)
       const afterIssues = await countIssues();
-      const afterTotal = Object.values(afterIssues).reduce((a, b) => a + b, 0);
+      const afterTotal = Object.entries(afterIssues)
+        .filter(([k]) => !diagnosticKeys.has(k))
+        .reduce((sum, [, v]) => sum + v, 0);
       report.issuesAfter = { ...afterIssues, total: afterTotal };
 
       const fixed = totalIssues - afterTotal;
@@ -182,14 +189,20 @@ function createPreflight(dbManager) {
       shieldLeaks,
       lowScore,
       javaNoise,
-      orphanedRevs
+      orphanedRevs,
+      neverChecked,
+      neverStressTested
     ] = await Promise.all([
       q1("SELECT COUNT(*) as c FROM translations WHERE provider='native_runtime' AND source_text=translation AND flagged=0"),
       q1("SELECT COUNT(*) as c FROM translations WHERE source_text=translation AND flagged=0 AND provider NOT IN ('native_runtime','native_proper_noun','native_non_translatable')"),
       q1("SELECT COUNT(*) as c FROM translations WHERE (translation LIKE '%__SHLD_%' OR translation LIKE '%[[%' OR translation LIKE '%]]%') AND flag_reason NOT LIKE '%shield_leak%'"),
       q1("SELECT COUNT(*) as c FROM translations WHERE quality_score < 30 AND quality_score > 0 AND flagged=0"),
       q1("SELECT COUNT(*) as c FROM translations WHERE (source_text LIKE '%view.sett%' OR source_text LIKE '%world.map%') AND flagged=0"),
-      q1("SELECT COUNT(*) as c FROM translation_revisions WHERE source_text NOT IN (SELECT source_text FROM translations)")
+      q1("SELECT COUNT(*) as c FROM translation_revisions WHERE source_text NOT IN (SELECT source_text FROM translations)"),
+      // DIAGNOSTIC (BU-035a): entries never validated — last_checked_at IS NULL
+      q1("SELECT COUNT(*) as c FROM translations WHERE last_checked_at IS NULL"),
+      // DIAGNOSTIC (BU-035b): entries never stress-tested — stress_tested_at IS NULL
+      q1("SELECT COUNT(*) as c FROM translations WHERE stress_tested_at IS NULL")
     ]);
 
     return {
@@ -198,7 +211,9 @@ function createPreflight(dbManager) {
       shieldLeaks: (shieldLeaks && shieldLeaks.c) || 0,
       lowScore: (lowScore && lowScore.c) || 0,
       javaNoise: (javaNoise && javaNoise.c) || 0,
-      orphanedRevisions: (orphanedRevs && orphanedRevs.c) || 0
+      orphanedRevisions: (orphanedRevs && orphanedRevs.c) || 0,
+      neverChecked: (neverChecked && neverChecked.c) || 0,
+      neverStressTested: (neverStressTested && neverStressTested.c) || 0
     };
   }
 
@@ -293,6 +308,13 @@ function createPreflight(dbManager) {
       `| ORPHANED_REVISIONS | ${report.issues.orphanedRevisions || 0} |`,
       `| **TOTAL** | **${report.issues.total || 0}** |`,
       `| **CRITICAL (excl. NATIVE_STALE)** | **${report.issues.critical || 0}** |`,
+      '',
+      '## Diagnostics',
+      '',
+      '| Diagnostic | Count | Info |',
+      '|------------|-------|------|',
+      `| NEVER_CHECKED (last_checked_at IS NULL) | ${report.issues.neverChecked || 0} | Entries saved but never re-validated via enrichWithContext |`,
+      `| NEVER_STRESS_TESTED (stress_tested_at IS NULL) | ${report.issues.neverStressTested || 0} | Entries without stress-test result |`,
     ];
 
     // Repairs applied

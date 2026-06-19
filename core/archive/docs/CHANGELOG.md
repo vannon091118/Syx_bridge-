@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## [BU-035] - 2026-06-19 — TOT FLAGS FIXED: last_checked_at + stress_tested_at integrated as PREFLIGHT diagnostics
+
+### Fixed (DEAD_FLAG_REPORT TOT → AKTIV)
+- **[BU-035a] `last_checked_at` — was TOT (written, never read):**
+  - **Problem:** Column set to `CURRENT_TIMESTAMP` in every `saveTranslation()` UPSERT but never read anywhere — zero diagnostic value.
+  - **Fix:** Added diagnostic query in `preflight.js countIssues()`: `WHERE last_checked_at IS NULL` — surfaces entries saved but never re-validated. Reported as "Diagnostics" section in PREFLIGHT_LATEST.md.
+  - **Classification change:** TOT → AKTIV (diagnostic read in PREFLIGHT).
+
+- **[BU-035b] `stress_tested_at` — was TOT (written, never read):**
+  - **Problem:** Column set to `CURRENT_TIMESTAMP` in `saveStressTestResult()` but never read — `stress_test_passed` is read but `stress_tested_at` was ignored.
+  - **Fix:** Added diagnostic query in `preflight.js countIssues()`: `WHERE stress_tested_at IS NULL` — surfaces entries without stress-test results.
+  - **Classification change:** TOT → AKTIV (diagnostic read in PREFLIGHT).
+
+### Technical Detail
+- Diagnostic fields are excluded from `totalIssues`/`criticalIssues` threshold sums via `Object.entries().filter()` to prevent false-positive repair triggers.
+- No schema changes — both columns remain in the DB with their existing write paths unchanged.
+
+### Files Changed
+- `core/src/preflight.js` — 2 new diagnostic queries + Diagnostics report section
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### Tests
+- Syntax-Check: 56/56 PASS ✅
+- Code-Review: Nit Pick Nick — "Ship it" (after filter-based fix for unused variables)
+
+### EFFORT TO NEXT SCOPE
+- **P0:** PREFLIGHT gegen aktuelle Live-DB (1.508) neu laufen lassen
+- **P1:** DB_TREND_REPORT Snapshot 20 (post-reset) anlegen
+
+---
+
 ## [DOKU-DIVERGENZ-AUDIT] - 2026-06-19 — 14 DIVERGENZEN + 7 STIMMT NOCH
 
 ### Summary
