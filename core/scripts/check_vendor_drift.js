@@ -235,8 +235,8 @@ function checkVendorDrift(targetRelease) {
         addFinding('DRIFT', 'ERROR', mapping.sourcePath, rf.relPath,
           `Release neuer als Source — wurde Release direkt editiert? Änderungen gehören in core/src/`);
       } else {
-        addFinding('DRIFT', 'WARN', mapping.sourcePath, rf.relPath,
-          'Inhalt abweichend (gleiche mtime, unterschiedlicher Hash)');
+        addFinding('DRIFT', 'ERROR', mapping.sourcePath, rf.relPath,
+          'Inhalt abweichend (gleiche mtime, unterschiedlicher Hash) — REBUILD NÖTIG');
       }
     }
 
