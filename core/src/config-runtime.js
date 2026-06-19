@@ -846,6 +846,7 @@ const PERSISTED_KEYS = [
   ['OLLAMA_URL',            (c) => firstDefined(c.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
   ['FCM_URL',               (c) => firstDefined(c.FCM_URL, FCM_DEFAULT_URL)],
   ['FCM_ENABLED',           (c) => String(!!c.FCM_ENABLED)],
+  ['GOOGLE_FREE_ENABLED',   (c) => String(!!c.GOOGLE_FREE_ENABLED)],
   ['PLAYER2_KEY',           (c) => (c.PLAYER2_KEYS || []).join(',')],
   ['PLAYER2_ENABLED',       (c) => String(!!c.PLAYER2_ENABLED)],
   ['PLAYER2_URL',           (c) => firstDefined(c.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
