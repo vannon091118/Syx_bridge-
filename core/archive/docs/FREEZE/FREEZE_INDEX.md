@@ -33,8 +33,9 @@
 20. [INTEGRITY_AUDIT_2026-06-19 — Vollarchivierung (4)](#20-integrity_audit_2026-06-19--vollarchivierung)
 21. [DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 — Vollarchivierung (3)](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung)
 22. [CONTROL_TOWER_AUDIT_2026-06-19 — Vollarchivierung (3)](#22-control_tower_audit_2026-06-19--vollarchivierung)
+23. [REALITY_AUDIT_2026-06-19 — Vollarchivierung (3)](#23-reality_audit_2026-06-19--vollarchivierung)
 
-> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4+3+3 = **136 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
+> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4+3+3+3 = **139 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
 
 ---
 
@@ -1168,6 +1169,41 @@
 - **Zusammenfassung:** Multi-Agenten Control-Tower-Audit: 3 Thinker-with-Files-Gemini + 2 Code-Searcher + 1 Basher. 3 Wellen (Discovery → Verifikation → Synthese). 7 Hidden Failures, 41 stille Catch-Blöcke, 8 SkipTruth-Risiken, 10 reale Code-Änderungen, 8 aktive Risiken. Bereits als DC-002 in FREEZE_INDEX §13 katalogisiert.
 - **Ursache der Obsoleszenz:** 100 % der Findings beziehen sich auf Code-Stand vom 19.06. Snapshot-17-Basis. Alle kritischen Findings (F2 BU-034, F6 NVIDIA) in späteren Sessions adressiert.
 - **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-002) + §22 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 23. REALITY_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Reality-Audit, alle Findings überholt.
+> **Quelle:** `core/archive/docs/REALITY_AUDIT_2026-06-19.md` (Realitätsabgleich, 100 % OBSOLETE)
+> **Regel:** Einmaliger Reality-Check vom 19.06. — 18 Claims, 8 Drift-Findings, alle durch spätere Entwicklung überholt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 RA-001 — CODE TRUTH: 8 Dateien + DOC TRUTH: 18 Claims
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Code-Doku-Abgleich
+- **Zusammenfassung:** 8 Code-Dateien auf tatsächlichen Stand geprüft: db.js (addColumnIfMissing + Shield-Leak/Auto-Guard), dispatcher.js (freeLlmFirst + NVIDIA-Fix), router.js (CostClass + 429-Cooldown), logger.js (logs/-Pfad), translation-runtime.js (BU-034/028/029 + GOD-001), SongsOfSyxPlugin.js (ZWSP), text-core.js (WATERMARK BROKEN + duplicate require), exporter.js (Indentation). 18 Doku-Behauptungen gegen Code verifiziert — 18/18 ✅.
+- **Ursache der Obsoleszenz:** Code-Stand vom 19.06. Watermark-Code wurde in V0.21 P0-1 adressiert. Alle Bugfixes (BU-034/028/029) sind committed und weiterentwickelt. addColumnIfMissing hat jetzt 18 statt 13 Migrationen.
+- **LIVE-Ersatz:** CHANGELOG [STUFE2] + V0.21_SCOPE.md + aktueller Code
+- **Status:** ✅ Archiviert
+
+### 📋 RA-002 — DRIFT D1–D8 + Veränderung (13 Unstaged + 6 Untracked)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Drift-Inventur
+- **Zusammenfassung:** 8 Drift-Findings: D1 Watermark BROKEN (P0), D2 duplicate require (P2), D3 Indentation (P2), D4 ZWSP undokumentiert (P2), D5 PREFLIGHT HEALTHY (P1), D6 ROUTING_AUDIT alt (P1), D7 DB-Divergenz 5 Quellen (P1), D8 PRIORISIERUNG veraltet (P3). 13 Unstaged Changes + 6 Untracked Files dokumentiert (PRIORISIERUNG, TRIPLE_AUDIT, PRODUCT_PROTECTION, analyze_snapshots, watermark-config, verify_watermark).
+- **Ursache der Obsoleszenz:** D1 → V0.21 P0-1. D5 → PREFLIGHT wurde mehrfach aktualisiert. D6 → ROUTING_AUDIT noch LIVE (eigenes Quelldokument). D7 → DB-Stand durch V0.21-Audit (9.492) überholt. Unstaged-Changes sind längst committed.
+- **LIVE-Ersatz:** CHANGELOG.md + V0.21_SCOPE.md + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+### 📋 RA-003 — Gesamtdokument: REALITY_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Reality Audit: Direkte Code-Lesung + Doku-Cross-Referenz. 8 Code-Dateien, 12 Doku-Artefakte. 18 Claims verifiziert, 8 teilweise, 1 defekt (Watermark), 0 falsified. Verifikations-Bilanz: 18 ✅, 8 ⚠️, 1 🔴. Bereits als DC-011 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Findings beziehen sich auf Code- und Doku-Stand vom 19.06. Watermark-Defekt (D1) in V0.21 adressiert. Alle anderen Findings durch Code-Evolution überholt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-011) + §23 (diese Einträge)
 - **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
 
 ---

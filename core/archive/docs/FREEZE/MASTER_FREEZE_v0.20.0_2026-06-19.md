@@ -391,6 +391,17 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | CT-002 | §3 Delta-Ledger: 10 Code + 6 Doku | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
 | CT-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
 
+### REALITY_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (18 Claims + 8 Drift + 13 Unstaged) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Reality-Check vom 19.06., Watermark-Defekt in V0.21 adressiert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| RA-001 | CODE TRUTH: 8 Dateien + DOC TRUTH: 18 Claims | [FREEZE_INDEX §23](#23-reality_audit_2026-06-19--vollarchivierung) |
+| RA-002 | DRIFT D1–D8 + Veränderung | [FREEZE_INDEX §23](#23-reality_audit_2026-06-19--vollarchivierung) |
+| RA-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §23](#23-reality_audit_2026-06-19--vollarchivierung) |
+
 ### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
 
 > **Regel:** Eine FREEZE-Datei wird NUR gelöscht wenn:
