@@ -310,6 +310,7 @@
 - **Reproduzierbarkeit:** 100% — `GOOGLE_FREE_ENABLED=false` in .env hatte keinen Effekt.
 - **Status:** ✅ BEHOBEN — `GOOGLE_FREE_ENABLED` in PERSISTED_KEYS (config-runtime.js) + GUI-Toggle in renderProviderStats (app.js). Pattern identisch zu FCM_ENABLED/PLAYER2_ENABLED.
 - **Verifikation:** ✅ VERIFIZIERT — 11/11 Tests bestanden via `node scripts/_verify_bu036.js`. `GOOGLE_FREE_ENABLED=false`/`0`/`"false"` schließt google_free korrekt aus translate-Plänen aus. `true`/unset lässt google_free zu. Feature ist RUNTIME-verifiziert, nicht nur Code-Review. Siehe CHANGELOG [BU-036].
+- **Index.js Gap geschlossen (2026-06-20):** Zusätzlich zur PERSISTED_KEYS + GUI-Toggle-Verdrahtung wurde `GOOGLE_FREE_ENABLED` jetzt auch im initialen CONFIG-Block (`index.js:143`) und in `applyEnvToConfig()` (`index.js:381`) ergänzt. Vorher wurde der `.env`-Wert nie beim Start geladen — jetzt wird `parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, true)` korrekt ausgewertet.
 
 ### 🟢 BU-037 — dispatcher.js redundante Doppelprüfung (DOUBLE-CHECK)
 - **Symptom:** `uiCandidates` wurde via `isAvailable()` gefiltert aufgebaut. Danach wurde JEDER Kandidat erneut mit `isAvailable()` geprüft bevor Rückgabe.
@@ -335,8 +336,8 @@
 - **Betroffene Dateien:** `NUL` (Root).
 - **Ursache:** Versehentlicher Redirect als echte Datei committed.
 - **Reproduzierbarkeit:** Statisch — Datei war nicht git-tracked.
-- **Status:** ✅ BEHOBEN — Datei von Disk gelöscht (`rm NUL`).
-- **Verifikation:** ✅ `ls NUL` liefert 'No such file or directory'.
+- **Status:** ✅ BEHOBEN — Datei von Disk gelöscht (`rm NUL`). Verifikation: `dir NUL` auf Windows zeigt nur den system-immanenten Device-Name (NUL ist reserviert), keine echte Datei.
+- **Verifikation:** ✅ `dir NUL` zeigt Windows-Device-Name (system-immanent, keine echte Datei). Git-Status: clean. 0 Treffer in `git ls-files`.
 
 ---
 

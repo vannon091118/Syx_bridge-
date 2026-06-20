@@ -170,7 +170,7 @@ Syx_bridge-/
 │
 ├── core/                      # The engine
 │   ├── index.js               # Entry point (CLI + GUI mode)
-│   ├── package.json           # v0.20.0-pre-release, rotation, cooldown, discovery
+│   ├── package.json           # v0.20.0, rotation, cooldown, discovery
 │   │   ├── text-core.js       # Shielding, prompt building, JSON parsing
 │   │   ├── context-packets.js # Risk scores
 │   │   ├── glossary.js        # Terminology memory

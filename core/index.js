@@ -140,6 +140,7 @@ let CONFIG = {
   OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
   FCM_URL: process.env.FCM_URL || 'http://localhost:19280/v1',
   FCM_ENABLED: parseEnvFlag(process.env.FCM_ENABLED, true),
+  GOOGLE_FREE_ENABLED: parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, true),
   PLAYER2_ENABLED: parseEnvFlag(process.env.PLAYER2_ENABLED, false),
   PLAYER2_URL: process.env.PLAYER2_URL || 'http://localhost:4315/v1',
   PLAYER2_KEYS: parseKeys(envFirst('PLAYER2_KEY', 'PLAYER2_KEYS')),
@@ -377,6 +378,7 @@ function applyEnvToConfig() {
   CONFIG.OLLAMA_URL = envFirst('OLLAMA_URL') || CONFIG.OLLAMA_URL;
   CONFIG.FCM_URL = envFirst('FCM_URL') || CONFIG.FCM_URL;
   CONFIG.FCM_ENABLED = parseEnvFlag(process.env.FCM_ENABLED, CONFIG.FCM_ENABLED);
+  CONFIG.GOOGLE_FREE_ENABLED = parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, CONFIG.GOOGLE_FREE_ENABLED);
   CONFIG.PLAYER2_ENABLED = parseEnvFlag(process.env.PLAYER2_ENABLED, CONFIG.PLAYER2_ENABLED);
   CONFIG.PLAYER2_URL = envFirst('PLAYER2_URL') || CONFIG.PLAYER2_URL;
   CONFIG.PLAYER2_KEYS = parseKeys(envFirst('PLAYER2_KEY', 'PLAYER2_KEYS'));
