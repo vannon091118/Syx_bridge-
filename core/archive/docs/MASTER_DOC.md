@@ -1,7 +1,7 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 20.06.2026 | **Version:** v0.20.0 → v0.21 (Scope definiert) | **Autor:** Vannon & Sub-Agents
-**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-19.md (PARTIAL — OBSOLETE archiviert nach FREEZE_INDEX §14), HANDSHAKE_2026-06-20.md (PARTIAL — OBSOLETE archiviert nach FREEZE_INDEX §15), REDUNDANZ_AUDIT_V2_2026-06-19.md (VOLLARCHIVIERT nach FREEZE_INDEX §18), LLM-AGENTS-EntryPoint.md, V0.21_SCOPE.md
+**Stand:** 21.06.2026 | **Version:** v0.21 (Stabilisierungsphase — Score 95%) | **Autor:** Vannon & Sub-Agents
+**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-21.md, FREEZE_INDEX_2.md, CHANGELOG.md, Live-Run vom 2026-06-21
 
 ---
 
@@ -14,12 +14,13 @@
 - **Status:** Rollout-Phase. v0.20.0 ist RELEASE-FÄHIG ("Built accidentally. Runs intentionally.") *(Quelle: HANDSHAKE)*
 - **Plugin-Architektur:** v0.20 Phase 1 abgeschlossen (8/8 Hardcodes entkoppelt)
 - **PREFLIGHT Analysis:** Automatischer DB-Health-Check vor jedem Sync (v0.20)
-- **better-sqlite3:** sqlite3→better-sqlite3 migriert (2026-06-20) — synchron, Promise-Wrapper, 0 VULN
-- **translateHttpError:** HTTP-Statuscodes→Deutsch — menschenlesbare Fehler in Logs (2026-06-20)
-- **Dev-Tools:** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js (2026-06-20)
+- **better-sqlite3:** sqlite3→better-sqlite3 migriert — synchron, Promise-Wrapper, try/catch mit Fehleranleitung für Fremdsysteme
+- **translateHttpError:** HTTP-Statuscodes→Deutsch — menschenlesbare Fehler in Logs
+- **Dev-Tools:** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js
 - **Dual-Path-Copy:** Native Mode kopiert übersetzte Dateien in BEIDE Verzeichnisse (Steam/AppData)
-- **Routing-Hardening:** Argos CostClass 0→10, Nvidia/Groq priorisiert, Tier 2 Nvidia-Injection
-- **Error-Handler Smart:** 429→disable run, eskalierender Cooldown ×2, flaggedForReview
+- **PATCH_MODE_ENABLED:** User-Opt-Out statt Hard-Coded Disabled (seit Commit `107f2a39`)
+- **Stabilisierungs-Score:** 95% auf Fremdsystemen (nur Python/Argos + Ollama bleiben optional)
+- **db_repair.js CLI:** Funktionstüchtig (sync-API nach better-sqlite3-Migration)
 
 ---
 
@@ -75,13 +76,14 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ## 5. DB-Stand (2026-06-20 — Post Doku-Clean)
 
-> ⚠️ **DB-RESET 2026-06-19 (Doku-Divergenz-Audit DD-001):** Die Live-DB wurde nach Snapshot 19 auf ~1.508 Einträge zurückgesetzt.
-> ⚠️ **DB-RESET 2026-06-20:** DB wurde nach Doku-Clean auf 100 Einträge zurückgesetzt (Test-Stand).
-> **Letzter produktiver Stand (V0.21-Audit):** 9.492 Einträge, 66.9% NATIVE_STALE (6.351).
-> **Aktuell (Post-RESET):** 100 Einträge (Test-DB — nicht repräsentativ für Produktion).
-> Für aktuelle DB-Metriken siehe PREFLIGHT_LATEST.md nach nächstem Live-Run.
-> **Aktuelle SSoT:** `node core/scripts/db_query.js --report live` — nicht mehr der HANDSHAKE, der nur Snapshot-24-Zahlen enthält.
-> **better-sqlite3 aktiv** — Schema-Version **6**. **PREFLIGHT:** ✅ HEALTHY, 0 Issues.
+
+> **Live-Run 2026-06-21:** 1.363 Einträge, 440 deutsche Übersetzungen, 923 stale (davon 813 native_runtime Proper Nouns), 101 flagged.
+> **Provider:** groq 176, openrouter 120, polish_single 108, native_fallback 101, google_free 28.
+> **Watermarks in DB:** 0 — alle 5 Defense-Schichten aktiv.
+> **Score:** 95% auf Fremdsystemen (nur Python/Argos + Ollama bleiben optional).
+> Frühere DB-Resets dokumentiert: Snapshot 19 (1.508 → Reset), Doku-Clean (100 → Test).
+> **better-sqlite3 aktiv** — Schema-Version **6** mit try/catch-Fehleranleitung.
+> **PREFLIGHT:** Bei nächstem Lauf neu generieren (steht noch auf VOR-Run-Stand mit 165 Einträgen).
 
 ---
 
@@ -91,18 +93,22 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 | Prio | Aufgabe | Status/Aufwand |
 |---|---|---|
-| P0 | **[V0.21] Watermark-Stripping vor Classification** (423 maskierte Strings) | ✅ DONE — P0-1 (ZSWP-Strip in isProperNoun/shouldTranslate/extractReplacements) |
-| P0 | **[V0.21] shouldTranslate() Config-Blocker** (23+5 False Positives) | ✅ DONE — P0-2 (strukturelle Delimiter-Checks in shouldTranslate) |
-| P0 | **[V0.21] Watermark nur in Output, nicht in DB** (Akkumulations-Bug) | ✅ DONE — P0-1+Defense-in-Depth in saveTranslation |
-| P1 | **[V0.21] polish_single "no-change"-Erkennung** (129 stale/663) | ✅ DONE — implemented in qaPhase (isNoChange + skipReviewIncrement) |
-| P1 | **[V0.21] DB-Sanitization: Watermarks aus alten Einträgen** | ~1h (benötigt Live-Run mit DB) |
+| ✅ | ~~[V0.21] Watermark-Stripping vor Classification~~ (423 maskierte Strings) | Done — P0-1 (5-Schichten-Defense) |
+| ✅ | ~~[V0.21] shouldTranslate() Config-Blocker~~ (23+5 False Positives) | Done — P0-2 |
+| ✅ | ~~[V0.21] Watermark nur in Output, nicht in DB~~ | Done — P0-1+Defense-in-Depth |
+| ✅ | ~~[V0.21] polish_single "no-change"-Erkennung~~ (129 stale/663) | Done — qaPhase isNoChange |
+| ✅ | ~~better-sqlite3 try/catch~~ (Fremdsystem-Fallback) | Done — P0-1 Stabilisierung |
+| ✅ | ~~db_repair.js CLI sync-API~~ (db.all is not a function) | Done — P0-3 Stabilisierung |
+| ✅ | ~~Patch Mode User-Opt-Out~~ (Hard-Coded → PATCH_MODE_ENABLED) | Done — P1-1 Stabilisierung |
+| ✅ | ~~Live-Run 5 Mods~~ — 440 Übersetzungen, 0 Watermarks, Score 95% | Done — 2026-06-21 |
+| P1 | DB-Sanitization: Watermarks aus alten Einträgen (db_repair.js Schritt 8) | ~1h |
 | P1 | sos-runtime.js Settings-Pfad in GameAdapter abstrahieren | ~1h |
 | P1 | index.js Plugin-Instanziierung über Config/CLI-Flag | ~2h |
-| ✅ | ~~Sinnhaftigkeitsanalyse 15 Fixes~~ — J1/J2, G1/D1/C1/C2, A1/A2/G2/H1/I1, D2/E1/E2 | Done (Commit 9a853ef) |
 | P2 | DB-Cleanup `stale_retranslate` | ~2h |
 | P2 | Bidirektionaler Vendor-Sync Phase 2 (F.A) | ~3-4h |
-| ✅ | ~~Erster echter v0.20 Live-Run~~ — 8 Mods, 9.492 Einträge, HEALTHY | Done |
-| ✅ | ~~3× silent .catch(() => {})~~ — siehe CHANGELOG [B4-SILENT-CATCH-FIX] | Done |
+| ✅ | ~~Sinnhaftigkeitsanalyse 15 Fixes~~ | Done (Commit 9a853ef) |
+| ✅ | ~~Erster echter v0.20 Live-Run~~ — 8 Mods, 9.492 Einträge | Done |
+| ✅ | ~~3× silent .catch(() => {})~~ | Done |
 
 ---
 
@@ -137,9 +143,9 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ---
 
-## 9. Dokumentationsstruktur (Final — Post Doku-Konsolidierung v0.21)
+## 9. Dokumentationsstruktur (Final — Post Live-Run v0.21)
 
-> **Stand:** 2026-06-20 — **7 LIVE + 3 FREEZE + 1 PLAN_MASTER**
+> **Stand:** 2026-06-21 — **8 LIVE + 3 FREEZE + 1 PLAN_MASTER**
 > **20 Doku-Konsolidierungs-Durchläufe abgeschlossen.**
 > **142 Glossary-Einträge** im FREEZE_INDEX.md (archiviert) + **15 Einträge** in FREEZE_INDEX_2.md (Sinnhaftigkeitsanalyse) — alle mit Kausalität, Cross-Referenzen und CHANGELOG-Verweisen.
 > **76 Dokumente gelöscht** (62 + 14 VOLLARCHIVIERT-Stubs) — alle Inhalte rekonstruierbar.

@@ -438,6 +438,8 @@
 | 2026-06-21 | Patch Mode Origin Trace | 1 Ursprung recherchiert | `bfba48b` | 24 (dieses Dokument) |
 | 2026-06-21 | GRAMMAR_CHECK Verification | 1 False-Alarm korrigiert | — | 25 (dieses Dokument) |
 | 2026-06-21 | Stabilisierungs-Scope | 1 Scope-Dokument (9 Tasks, ~9h) | `d497225` | 26 (dieses Dokument) |
+| 2026-06-21 | P0-1/P0-3/P1-1 Stabilisierung | 3 Fixes (better-sqlite3 try/catch, db_repair sync-API, Patch Mode Opt-Out) | `1d89544` | 27 (dieses Dokument) |
+| 2026-06-21 | Live-Run 5 Mods | 440 Übersetzungen, 0 Watermarks, Score 95% | — | 28 (dieses Dokument) |
 
 ---
 
@@ -454,6 +456,47 @@
 - **Cross-Referenzen:** `BYPASS_AUDIT_2026-06-21.md`, `FEATURE_VERIFICATION_2026-06-21.md`, `STABILISIERUNGS_SCOPE_2026-06-21.md`
 - **Status:** ✅ SCOPE DEFINIERT — Commit `d497225`, noch keine Implementierung
 - **LIVE-Vorhanden:** `core/archive/docs/STABILISIERUNGS_SCOPE_2026-06-21.md` (178 Zeilen, 9 Tasks, ~9h)
+
+---
+
+## 11. P0-1/P0-3/P1-1 Stabilisierung — "3 Fixes, 85% → 95%"
+
+### 🎯 P0-1/P0-3/P1-1 STABILISIERUNG — Session 2026-06-21
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental-workbench
+- **Kategorie:** System-Stabilisierung — Fremdsystem-Kompatibilität + User-Opt-Out
+- **Zusammenfassung:** Drei Fixes aus dem 9-Punkte-Stabilisierungs-Plan umgesetzt. better-sqlite3 crashte auf Fremdsystemen ohne C++ Build-Tools — try/catch mit klarer 3-Schritt-Fehleranleitung. db_repair.js CLI warf `db.all is not a function` seit better-sqlite3-Migration — Callback-Wrapper auf `db.prepare(sql).all()` umgestellt. Patch Mode war seit 2026-06-15 hard-coded deaktiviert — jetzt User-Opt-Out via `PATCH_MODE_ENABLED` in `.env` mit Persistenz in `PERSISTED_KEYS`.
+- **Kausalität:** BYPASS_AUDIT + FEATURE_VERIFICATION identifizierten 9 Bypass-Stellen die Fremdsysteme blockieren. P0-1: better-sqlite3 Native-Compilation scheitert ohne Build-Tools (−5%). P0-3: Callback-API existiert nicht mehr seit sqlite3→better-sqlite3 (−2%). P1-1: Hard-Coded Disabled seit Commit `107f2a39` (−3%).
+- **Fix-Details:**
+  - **P0-1 (`db.js`):** `require('better-sqlite3')` in try/catch. Bei Fehler: klare Meldung mit 3 Lösungswegen (npm rebuild, Visual Studio Build Tools, prebuild-install). Kein kryptisches "Cannot find module" mehr.
+  - **P0-3 (`db_repair.js`):** `const q = (sql, params) => new Promise(...)` + `db.all(sql, params, callback)` → `const q = (sql, params) => db.prepare(sql).all(...(params || []))`. Drei Wrapper (`q`, `q1`, `run`) auf sync-API umgestellt.
+  - **P1-1 (`app.js`, `index.js`, `config-runtime.js`):** `PATCH_MODE_ENABLED=false` als Default. `loadInitialConfig()` force-NATIVE_MODE nur wenn `!PATCH_MODE_ENABLED`. `togglePatchOverride()` prüft Config vor Toggle. `updateModeUI()` zeigt deaktivierten Zustand in muted-Farben. Persistenz via `PERSISTED_KEYS` in `.env`.
+- **Cross-Referenzen:** `db.js`, `db_repair.js`, `app.js`, `index.js`, `config-runtime.js`
+- **Status:** ✅ ABGESCHLOSSEN — 3/3 Fixes implementiert, Commit `1d89544`
+- **LIVE-Vorhanden:** Alle Fixes in den genannten 5 Dateien
+- **Verifikation:** Syntax 5/5 OK, Code-Review 2× deepseek (Runde 1 fand PERSISTED_KEYS-Lücke + loadInitialConfig force-Gate, Runde 2 bestätigt), verify_commit_msg.js PASS
+- **Score:** 85% → 95% (+5% better-sqlite3, +2% db_repair, +3% Patch Mode)
+
+---
+
+## 12. Live-Run 5 Mods — "440 Übersetzungen, 0 Watermarks"
+
+### 🚀 LIVE-RUN 5 MODS — Session 2026-06-21
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental-workbench
+- **Kategorie:** E2E-Verifikation — Backup-Restore → Workshop/AppData → SyxBridge Run → Übersetzung
+- **Zusammenfassung:** Vollständiger Live-Run mit 5 Mods nach Backup-Restore. 3 English-Originals aus `core/backups/` wiederhergestellt (Hunter Expanded 3133779397, Heroes of Syx 3641940853, Onari Race 3745652499) + 2 weitere im Launcher aktive Mods. Workshop/AppData-Dual-Copy erfolgreich. Keine _Info.txt-Korruption, keine Watermarks in der DB, alle Übersetzungen syntaktisch intakt.
+- **Kausalität:** User-Auftrag: Workshop-Content löschen, via SteamCMD redownloaden (manuell), dann SyxBridge mit QA-Loop auf Kopien anwenden. Workshop wurde mit English-Originals aus Backups wiederhergestellt statt Steam-Redownload (SteamCMD nicht installiert).
+- **Pipeline-Ergebnis:**
+  - **Provider-Fallback:** OpenRouter 429 → Key-Rotation → Groq übernahm
+  - **Native Mode:** 40 Dateien Workshop + 40 AppData (Dual-Copy)
+  - **DB:** 165 → 1.363 Einträge (+1.198), 440 deutsche Übersetzungen
+  - **Provider-Verteilung:** native_runtime 813 (Proper Nouns), groq 176, openrouter 120, polish_single 108, native_fallback 101, google_free 28
+  - **Watermarks:** 0 in DB (alle 5 Schichten aktiv)
+  - **Sample-QA:** "The ability for a subject to endure cold temperatures." → "Die Fähigkeit eines Subjekts, kalte Temperaturen zu ertragen" (Groq q=95)
+- **Mod-Verifikation:** Alle _Info.txt intakt, keine "Nicht unterstützte Mod"-Fehler. Problem war ein Launcher-Cache-Problem, kein SyxBridge-Problem.
+- **Cross-Referenzen:** `runtime-ops.js` (Dual-Path-Copy), `translation-runtime.js` (Pipeline), `translation-db.js` (saveTranslation Watermark-Defense)
+- **Status:** ✅ ABGESCHLOSSEN — 440 Übersetzungen, messbarer Erfolg, keine Korruption
+- **LIVE-Vorhanden:** Übersetzungen in AppData + Workshop, DB mit 1.363 Einträgen
+- **Verifikation:** DB-Query 1.363 Einträge, Provider-Verteilung, Sample-QA, _Info.txt-Vergleich (5-Wege gegen Source-Mod Vargen Race)
 
 ---
 
