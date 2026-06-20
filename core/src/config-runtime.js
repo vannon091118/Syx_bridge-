@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 const { exec, execSync } = require('child_process');
 
 // NOTE: No hardcoded vendor model names here.
@@ -84,10 +84,19 @@ function filterLLMs(models, freeOnly = false) {
 function getDefaultModelForProvider(provider) {
   // Return 'auto' for cloud providers so runtime discovery picks the best model.
   // For OpenRouter we always start with the free tier.
+  // ⚠️ Groq: 'auto' ist KEIN gültiger Modellname bei Groq (anders als OpenRouter).
+  // Bei Nicht-Primary-Provider-Nutzung (freeLlmFirst-Fallback) wurde 'auto'
+  // literal an die API gesendet → 404. Fix: konkreten Fallback statt 'auto'.
   if (provider === 'openrouter') return OPENROUTER_FREE_MODEL;
   if (provider === 'ollama')     return OLLAMA_FALLBACK_MODELS[0];
-  return 'auto'; // gemini, groq, player2 → runtime discovery
+  if (provider === 'groq')       return GROQ_FALLBACK_MODELS[0];
+  // Gemini: hat ebenfalls kein 'auto'-Routing wie OpenRouter.
+  // 'gemini-2.5-flash-lite' ist das aktuelle, lebende Leichtgewicht (siehe checkCloudKey).
+  if (provider === 'gemini')     return 'gemini-2.5-flash-lite';
+  return 'auto'; // player2 → runtime discovery (OpenAI-compatible 'auto')
 }
+
+const { translateHttpError } = require('./router');
 
 function maskSecret(value) {
   if (!value) return '(kein Key)';
@@ -465,7 +474,10 @@ class ConfigRuntime {
       return { provider, index, key: maskSecret(key), ok: false, detail: 'Unbekannter Provider', ms: `${Date.now() - startedAt}ms` };
     } catch (e) {
       const status = e.response ? e.response.status : 'offline';
-      return { provider, index, key: maskSecret(key), ok: false, detail: `${status}: ${e.message}`, ms: `${Date.now() - startedAt}ms` };
+      // translateHttpError() aus router.js — dieselbe Mapping-Logik wie handleFailure()
+      const errInfo = translateHttpError(status === 'offline' ? 0 : status);
+      const fallback = errInfo.severity === 'unknown' ? `: ${e.message}` : '';
+      return { provider, index, key: maskSecret(key), ok: false, detail: `${errInfo.meaning} (${status})${fallback}`, ms: `${Date.now() - startedAt}ms` };
     }
   }
 
@@ -493,7 +505,9 @@ class ConfigRuntime {
       };
     } catch (e) {
       const status = e.response ? e.response.status : 'offline';
-      return { provider, ok: false, detail: `${status}: ${e.message}`, ms: `${Date.now() - startedAt}ms` };
+      const errInfo = translateHttpError(status === 'offline' ? 0 : status);
+      const fallback = errInfo.severity === 'unknown' ? `: ${e.message}` : '';
+      return { provider, ok: false, detail: `${errInfo.meaning} (${status})${fallback}`, ms: `${Date.now() - startedAt}ms` };
     }
   }
 
@@ -504,6 +518,10 @@ class ConfigRuntime {
         return await fn();
       } catch (e) {
         lastError = e;
+        // BU-020: AbortController — cancelled requests must NOT be retried.
+        // axios.isCancel checks for legacy Cancel objects; code === 'ERR_CANCELED'
+        // catches modern Axios AbortError; name === 'CanceledError' is the safe fallback.
+        if (axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') throw e;
         const status = e.response && e.response.status;
         const retryable = !status || status === 429 || status >= 500;
         if (!retryable || attempt === 3) break;
@@ -630,88 +648,76 @@ class ConfigRuntime {
     console.log('\n========================================\n  AI BRIDGE KONFIGURATION\n========================================');
     console.log('Hinweis: Mehrere API Keys koennen kommagetrennt eingegeben werden.');
         
-    const strategy = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'mode',
-        message: 'WÃ¤hle den Ãœbersetzungs-Modus:',
-        choices: [
-          { name: 'AI API (Cloud Modelle)', value: 'api' },
-          { name: 'Offline / Argos (Komplett lokal)', value: 'local' },
-          { name: 'Hybrid (API Fallback auf lokal)', value: 'hybrid' }
-        ]
-      }
-    ]);
+    const strategy = await prompts({
+      type: 'select',
+      name: 'mode',
+      message: 'WÃ¤hle den Ãœbersetzungs-Modus:',
+      choices: [
+        { title: 'AI API (Cloud Modelle)', value: 'api' },
+        { title: 'Offline / Argos (Komplett lokal)', value: 'local' },
+        { title: 'Hybrid (API Fallback auf lokal)', value: 'hybrid' }
+      ]
+    });
+    if (!strategy.mode) return;
 
-    const providerSetup = await inquirer.prompt([
-      {
-        type: 'list',
+    const providerSetup = {};
+    if (strategy.mode !== 'local') {
+      const pp = await prompts({
+        type: 'select',
         name: 'primary_provider',
         message: 'Haupt-Anbieter fÃ¼r Ãœbersetzungen:',
-        default: this.config.PRIMARY_PROVIDER,
-        when: () => strategy.mode !== 'local',
+        initial: ['ollama','openrouter','player2','groq','gemini'].indexOf(this.config.PRIMARY_PROVIDER),
         choices: [
-          { name: 'Ollama (Lokal)', value: 'ollama' },
-          { name: 'OpenRouter (Free zuerst)', value: 'openrouter' },
-          { name: 'Player2 (Desktop)', value: 'player2' },
-          { name: 'Groq (Llama 3.3)', value: 'groq' },
-          { name: 'Gemini (Google)', value: 'gemini' }
+          { title: 'Ollama (Lokal)', value: 'ollama' },
+          { title: 'OpenRouter (Free zuerst)', value: 'openrouter' },
+          { title: 'Player2 (Desktop)', value: 'player2' },
+          { title: 'Groq (Llama 3.3)', value: 'groq' },
+          { title: 'Gemini (Google)', value: 'gemini' }
         ]
-      },
-      {
-        type: 'input',
-        name: 'ollama_key',
-        message: 'Ollama API Key(s) [optional, kommagetrennt]:',
-        mask: '*',
-        when: (a) => a.primary_provider === 'ollama',
-        default: (this.config.OLLAMA_KEYS || []).join(',')
-      },
-      {
-        type: 'input',
-        name: 'gemini_key',
-        message: 'Gemini API Key(s) [kommagetrennt]:',
-        mask: '*',
-        when: (a) => a.primary_provider === 'gemini' && this.config.GEMINI_KEYS.length === 0,
-        validate: async (input) => {
-          const keys = parseKeys(input);
-          if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
-          for (const k of keys) {
-            if (!await this.testApiKey('gemini', k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
-          }
-          return true;
+      });
+      if (!pp.primary_provider) return;
+      providerSetup.primary_provider = pp.primary_provider;
+
+      if (providerSetup.primary_provider === 'ollama') {
+        const r = await prompts({ type: 'text', name: 'ollama_key', message: 'Ollama API Key(s) [optional, kommagetrennt]:', initial: (this.config.OLLAMA_KEYS || []).join(',') });
+        providerSetup.ollama_key = r.ollama_key;
+      }
+
+      // Helper: validate API keys (async — prompts validate must be sync, so we validate after)
+      const validateKeys = async (provider, input) => {
+        const keys = parseKeys(input);
+        if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
+        for (const k of keys) {
+          if (!await this.testApiKey(provider, k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
         }
-      },
-      {
-        type: 'input',
-        name: 'groq_key',
-        message: 'Groq API Key(s) [kommagetrennt]:',
-        mask: '*',
-        when: (a) => a.primary_provider === 'groq' && this.config.GROQ_KEYS.length === 0,
-        validate: async (input) => {
-          const keys = parseKeys(input);
-          if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
-          for (const k of keys) {
-            if (!await this.testApiKey('groq', k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
-          }
-          return true;
-        }
-      },
-      {
-        type: 'input',
-        name: 'openrouter_key',
-        message: 'OpenRouter API Key(s) [kommagetrennt]:',
-        mask: '*',
-        when: (a) => a.primary_provider === 'openrouter' && this.config.OPENROUTER_KEYS.length === 0,
-        validate: async (input) => {
-          const keys = parseKeys(input);
-          if (keys.length === 0) return 'Bitte mindestens einen Key eingeben.';
-          for (const k of keys) {
-            if (!await this.testApiKey('openrouter', k)) return `Key ungÃ¼ltig: ${k.substring(0, 8)}...`;
-          }
-          return true;
+        return true;
+      };
+
+      if (providerSetup.primary_provider === 'gemini' && this.config.GEMINI_KEYS.length === 0) {
+        const r = await prompts({ type: 'text', name: 'gemini_key', message: 'Gemini API Key(s) [kommagetrennt]:' });
+        if (r.gemini_key) {
+          const v = await validateKeys('gemini', r.gemini_key);
+          if (v !== true) { console.log(v); return; }
+          providerSetup.gemini_key = r.gemini_key;
         }
       }
-    ]);
+      if (providerSetup.primary_provider === 'groq' && this.config.GROQ_KEYS.length === 0) {
+        const r = await prompts({ type: 'text', name: 'groq_key', message: 'Groq API Key(s) [kommagetrennt]:' });
+        if (r.groq_key) {
+          const v = await validateKeys('groq', r.groq_key);
+          if (v !== true) { console.log(v); return; }
+          providerSetup.groq_key = r.groq_key;
+        }
+      }
+      if (providerSetup.primary_provider === 'openrouter' && this.config.OPENROUTER_KEYS.length === 0) {
+        const r = await prompts({ type: 'text', name: 'openrouter_key', message: 'OpenRouter API Key(s) [kommagetrennt]:' });
+        if (r.openrouter_key) {
+          const v = await validateKeys('openrouter', r.openrouter_key);
+          if (v !== true) { console.log(v); return; }
+          providerSetup.openrouter_key = r.openrouter_key;
+        }
+      }
+    }
 
     this.config.PRIMARY_PROVIDER = providerSetup.primary_provider;
     if (providerSetup.gemini_key) this.config.GEMINI_KEYS = parseKeys(providerSetup.gemini_key);
@@ -719,42 +725,45 @@ class ConfigRuntime {
     if (providerSetup.nvidia_key) this.config.NVIDIA_KEYS = parseKeys(providerSetup.nvidia_key);
     if (providerSetup.openrouter_key) this.config.OPENROUTER_KEYS = parseKeys(providerSetup.openrouter_key);
 
-    const modelSetup = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'primary_model',
-        message: 'Haupt-Modell:',
-        choices: async () => {
-          console.log(`[INFO] Lade Modelle fÃ¼r ${this.config.PRIMARY_PROVIDER}...`);
-          let models = [];
-          if (this.config.PRIMARY_PROVIDER === 'gemini') models = await this.fetchGeminiModels();
-          else if (this.config.PRIMARY_PROVIDER === 'groq') models = await this.fetchGroqModels();
-          else if (this.config.PRIMARY_PROVIDER === 'openrouter') models = await this.fetchOpenRouterModels(true);
-          else if (this.config.PRIMARY_PROVIDER === 'ollama') models = await this.fetchOllamaModels();
-          else if (this.config.PRIMARY_PROVIDER === 'player2') models = await this.fetchPlayer2Models();
-                    
-          const filtered = filterLLMs(models, this.config.PRIMARY_PROVIDER === 'openrouter');
-          return filtered.length > 0 ? filtered : models;
-        }
-      }
-    ]);
+    // Load models for selected provider
+    console.log(`[INFO] Lade Modelle fÃ¼r ${this.config.PRIMARY_PROVIDER}...`);
+    let modelChoices = [];
+    try {
+      let models = [];
+      if (this.config.PRIMARY_PROVIDER === 'gemini') models = await this.fetchGeminiModels();
+      else if (this.config.PRIMARY_PROVIDER === 'groq') models = await this.fetchGroqModels();
+      else if (this.config.PRIMARY_PROVIDER === 'openrouter') models = await this.fetchOpenRouterModels(true);
+      else if (this.config.PRIMARY_PROVIDER === 'ollama') models = await this.fetchOllamaModels();
+      else if (this.config.PRIMARY_PROVIDER === 'player2') models = await this.fetchPlayer2Models();
+      const filtered = filterLLMs(models, this.config.PRIMARY_PROVIDER === 'openrouter');
+      const final = filtered.length > 0 ? filtered : models;
+      modelChoices = final.map(m => ({ title: m, value: m }));
+    } catch (e) { /* fallback below */ }
+    const modelSetup = await prompts({
+      type: 'select',
+      name: 'primary_model',
+      message: 'Haupt-Modell:',
+      choices: modelChoices.length > 0 ? modelChoices : [{ title: 'auto', value: 'auto' }]
+    });
+    if (!modelSetup.primary_model) return;
 
     this.config.PRIMARY_MODEL = modelSetup.primary_model;
 
-    const extraSetup = await inquirer.prompt([
+    const extraSetup = await prompts([
       {
-        type: 'input',
+        type: 'text',
         name: 'target_lang',
         message: 'Ziel-Sprache:',
-        default: this.config.TARGET_LANG
+        initial: this.config.TARGET_LANG
       },
       {
         type: 'confirm',
         name: 'native_mode',
         message: 'Native Mode (Originaldateien Ã¼berschreiben)?',
-        default: this.config.NATIVE_MODE
+        initial: this.config.NATIVE_MODE
       }
     ]);
+    if (!extraSetup.target_lang) return;
 
     this.config.TARGET_LANG = extraSetup.target_lang;
     this.config.NATIVE_MODE = extraSetup.native_mode;
@@ -830,7 +839,8 @@ const PERSISTED_KEYS = [
   ['NATIVE_MODE',           (c) => String(!!c.NATIVE_MODE)],
   ['GRAMMAR_CHECK',         (c) => String(!!c.GRAMMAR_CHECK)],
   ['LOCAL_MODELS_ENABLED',  (c) => String(!!c.LOCAL_MODELS_ENABLED)],
-  ['NMT_LOCAL_ENABLED',     (c) => String(!!c.NMT_LOCAL_ENABLED)],
+  // NMT_LOCAL_ENABLED removed (BU-040): was VERWAIST — no provider client, router entry, or dispatcher path existed.
+  // warm-model.js remains as roadmap v0.23. Re-add here when NMT provider is implemented.
   ['PRIMARY_PROVIDER',      (c) => firstDefined(c.PRIMARY_PROVIDER)],
   ['PRIMARY_MODEL',         (c) => firstDefined(c.PRIMARY_MODEL)],
   ['POLISHER_PROVIDER',     (c) => firstDefined(c.POLISHER_PROVIDER)],
@@ -846,10 +856,12 @@ const PERSISTED_KEYS = [
   ['OLLAMA_URL',            (c) => firstDefined(c.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
   ['FCM_URL',               (c) => firstDefined(c.FCM_URL, FCM_DEFAULT_URL)],
   ['FCM_ENABLED',           (c) => String(!!c.FCM_ENABLED)],
+  ['GOOGLE_FREE_ENABLED',   (c) => String(!!c.GOOGLE_FREE_ENABLED)],
   ['PLAYER2_KEY',           (c) => (c.PLAYER2_KEYS || []).join(',')],
   ['PLAYER2_ENABLED',       (c) => String(!!c.PLAYER2_ENABLED)],
   ['PLAYER2_URL',           (c) => firstDefined(c.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
-  ['BATCH_SIZE',            (c) => firstDefined(c.BATCH_SIZE)]
+  ['BATCH_SIZE',            (c) => firstDefined(c.BATCH_SIZE)],
+  ['GAME',                  (c) => firstDefined(c.GAME, 'songs_of_syx')],
 ];
 
 async function persistConfigToEnv(config) {

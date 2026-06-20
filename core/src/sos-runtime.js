@@ -32,10 +32,10 @@ function stringifySoSConfig(originalContent, mods) {
 /**
  * Reads the active mods from LauncherSettings.txt.
  */
-async function getActiveMods() {
-  if (!fs.existsSync(SETTINGS_PATH)) return [];
+async function getActiveMods(settingsPath = SETTINGS_PATH) {
+  if (!fs.existsSync(settingsPath)) return [];
   try {
-    const content = await fsp.readFile(SETTINGS_PATH, 'utf-8');
+    const content = await fsp.readFile(settingsPath, 'utf-8');
     return parseSoSConfig(content).mods;
   } catch (e) {
     console.error(`[!] Fehler beim Lesen von LauncherSettings: ${e.message}`);
@@ -47,11 +47,11 @@ async function getActiveMods() {
  * Updates LauncherSettings.txt to enable/disable BridgeCore and clean up patches.
  */
 async function syncLauncherSettings(options) {
-  const { activePatchesCount, targetLang, nativeMode } = options;
-  if (!fs.existsSync(SETTINGS_PATH)) return;
+  const { activePatchesCount, targetLang, nativeMode, settingsPath = SETTINGS_PATH } = options;
+  if (!fs.existsSync(settingsPath)) return;
 
   try {
-    const content = await fsp.readFile(SETTINGS_PATH, 'utf-8');
+    const content = await fsp.readFile(settingsPath, 'utf-8');
     const { mods } = parseSoSConfig(content);
         
     const cleanMods = mods.filter(m => 
@@ -67,7 +67,7 @@ async function syncLauncherSettings(options) {
     }
         
     const newContent = stringifySoSConfig(content, newMods);
-    await fsp.writeFile(SETTINGS_PATH, newContent, 'utf-8');
+    await fsp.writeFile(settingsPath, newContent, 'utf-8');
     console.log(`[INFO] LauncherSettings.txt wurde aktualisiert (${activePatchesCount > 0 && !nativeMode ? 'BridgeCore aktiv' : 'BridgeCore entfernt'}).`);
   } catch (e) {
     console.error(`[!] Fehler beim Aktualisieren von LauncherSettings: ${e.message}`);

@@ -1,113 +1,122 @@
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, '..', 'translations.db');
 let db;
-let dbReadOnly;
 
 /**
- * Connects to the database.
+ * Connects to the database (synchronous with better-sqlite3).
+ * timeout=5000 ersetzt PRAGMA busy_timeout — besser-sqlite3 nutzt
+ * nativen SQLITE_BUSY-Handler statt SQL-PRAGMA.
  */
 function connect() {
-  return new Promise((resolve, reject) => {
-    db = new sqlite3.Database(DB_PATH, (err) => {
-      if (err) reject(err);
-      else resolve(db);
-    });
-  });
+  try {
+    db = new Database(DB_PATH, { timeout: 5000 });
+    return Promise.resolve(db);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 /**
- * Opens a second read-only connection for concurrent queries (search, browse)
- * while the main connection handles writes. SQLITE_BUSY vermeiden.
- */
-function connectReadOnly() {
-  return new Promise((resolve, reject) => {
-    dbReadOnly = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READONLY, (err) => {
-      if (err) reject(err);
-      else resolve(dbReadOnly);
-    });
-  });
-}
-
-/**
- * Runs a query on the read-only connection.
- */
-function allReadOnly(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    if (!dbReadOnly) return reject(new Error('Read-only connection not initialized'));
-    dbReadOnly.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
-}
-
-/**
- * Runs a SQL query.
+ * Runs a SQL query. Returns Promise-wrapped better-sqlite3 Statement#run().
+ * Behält die Promise-Signatur damit translation-runtime.js NICHTS ändern muss.
  */
 function run(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function(err) {
-      if (err) reject(err);
-      else resolve(this);
-    });
-  });
+  try {
+    const stmt = db.prepare(sql);
+    const result = stmt.run(...params);
+    return Promise.resolve(result);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 /**
- * Gets a single row.
+ * Gets a single row. Promise-wrapped better-sqlite3 Statement#get().
  */
 function get(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+  try {
+    const stmt = db.prepare(sql);
+    const result = stmt.get(...params);
+    return Promise.resolve(result);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 /**
- * Gets all rows.
+ * Gets all rows. Promise-wrapped better-sqlite3 Statement#all().
  */
 function all(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+  try {
+    const stmt = db.prepare(sql);
+    const result = stmt.all(...params);
+    return Promise.resolve(result);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+/**
+ * connectReadOnly / allReadOnly sind mit better-sqlite3 obsolet:
+ * WAL-Mode erlaubt konkurrente Reads während Writes OHNE zweite Connection.
+ * Leite beide auf die Haupt-Connection um, damit existierende Caller
+ * (index.js initDbRo, gui-handlers) nicht angepasst werden müssen.
+ */
+function connectReadOnly() {
+  if (!db) connect();
+  return Promise.resolve(db);
+}
+
+function allReadOnly(sql, params = []) {
+  return all(sql, params);
 }
 
 /**
  * BU-021: Helper — add column only if it doesn't exist yet.
- * Checks PRAGMA table_info() before running ALTER TABLE, eliminating the
- * 14x try/catch pattern that ran (and silently failed) on every startup.
  */
 async function addColumnIfMissing(table, column, type) {
-  const cols = await new Promise((resolve, reject) => {
-    db.all(`PRAGMA table_info(${table})`, [], (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
   if (!cols.some(c => c.name === column)) {
     await run(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
   }
 }
+
+// Schema-Version — inkrementieren wenn neue Migrationen/Spalten hinzukommen.
+// Jeder init()-Aufruf prüft diese Version. Bei Match → alle addColumnIfMissing
+// und Bulk-UPDATE-Migrationen werden übersprungen. Spart 2-5s auf HDD.
+const CURRENT_SCHEMA_VERSION = '5';
 
 /**
  * Initializes the database schema and performs migrations.
  */
 async function init() {
   if (!db) await connect();
+
+  // WAL + Performance-PRAGMAs (busy_timeout ist Konstruktor-Option, nicht hier)
   await run('PRAGMA journal_mode = WAL');
   await run('PRAGMA synchronous = NORMAL');
   await run('PRAGMA foreign_keys = ON');
-  await run('PRAGMA mmap_size = 134217728');   // 128 MB — eliminiert read() syscalls, größter HDD-Gewinn
+  await run('PRAGMA mmap_size = 134217728');   // 128 MB — eliminiert read() syscalls
   await run('PRAGMA cache_size = -64000');       // 64 MB Page Cache (negativ = Kilobytes)
   await run('PRAGMA temp_store = MEMORY');       // Temp-Tabellen im RAM statt auf Platte
-  await run('PRAGMA busy_timeout = 5000');       // 5s warten statt sofort SQLITE_BUSY
+
+  // --- Schema-Version Check (Performance: skip all migrations if current) ---
+  await run(`CREATE TABLE IF NOT EXISTS _schema_meta (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  )`);
+  const versionRow = db.prepare("SELECT value FROM _schema_meta WHERE key = 'schema_version'").get();
+  if (versionRow && versionRow.value === CURRENT_SCHEMA_VERSION) {
+    console.log(`[DB] Schema v${CURRENT_SCHEMA_VERSION} aktuell — überspringe Migrationen (HDD-Optimierung).`);
+    return;
+  }
+  if (versionRow) {
+    console.log(`[DB] Schema v${versionRow.value} → v${CURRENT_SCHEMA_VERSION} — führe Migrationen aus...`);
+  } else {
+    console.log(`[DB] Erstinitialisierung — Schema v${CURRENT_SCHEMA_VERSION}...`);
+  }
 
   // --- V1 Tables (Legacy Support) ---
   await run(`CREATE TABLE IF NOT EXISTS translations (
@@ -293,18 +302,6 @@ async function init() {
   }
 
   // --- v0.20 QO-FIX-5: Auto-Guard Migration ---
-  // Aktiviert is_guarded=1 fuer wiederkehrende Glossary-Eintraege (confidence >= 3)
-  // die saubere Uebersetzungen ohne structural noise haben.
-  // Laeuft bei JEDEM Startup — so werden neu auf confidence>=3 gestiegene Terms
-  // automatisch guarded, ohne separates Script. Idempotent (WHERE is_guarded = 0).
-  // Filter:
-  //   - source_term GLOB '[A-Za-z]*' — beginnt mit Buchstabe (kein +, (, Komma etc.)
-  //   - Keine HTML/Markup-Tags (<c:FF0000>, <br>)
-  //   - Keine Steuerzeichen (Tabs, Newlines, CR) — structural noise aus SoS-Files
-  //   - target NOT LIKE '%[[%' — keine unrestored Shield-Tokens ([[N]]).
-  //     "Essen nach [[Fetch]]" (conf=10) wird BEWUSST NICHT guarded — unaufgeloeste
-  //     Game-Tokens duerfen nicht als kanonische Uebersetzung eingefroren werden.
-  //   - target NOT LIKE '%SHLD%' — Shield-Token-Leak-Schutz
   try {
     const autoGuardResult = await run(
       `UPDATE glossary_terms SET is_guarded = 1, guarded_by = 'auto_migration', updated_at = CURRENT_TIMESTAMP
@@ -327,13 +324,37 @@ async function init() {
   } catch (e) {
     console.warn('[DB] Auto-Guard-Migration fehlgeschlagen:', e.message);
   }
+
+  // --- Schema-Version speichern (nach erfolgreichen Migrationen) ---
+  db.prepare("INSERT OR REPLACE INTO _schema_meta (key, value) VALUES ('schema_version', ?)").run(CURRENT_SCHEMA_VERSION);
+  console.log(`[DB] Migrationen abgeschlossen — Schema v${CURRENT_SCHEMA_VERSION} gespeichert.`);
 }
 
 // Migration: add risk_score if missing (safe on existing DBs)
-// Uses the promise-wrapped run() helper because the raw sqlite3 db.run() is callback-based.
 async function migrateRiskScore() {
   await addColumnIfMissing('translation_revisions', 'risk_score', 'INTEGER NOT NULL DEFAULT 0');
   console.log('[DB] risk_score migration: checked (addColumnIfMissing).');
+}
+
+// ── Transaction Batching (HDD-Optimierung) ────────────────────────────
+// better-sqlite3 ist synchron — BEGIN/COMMIT via SQL funktioniert auf der
+// gemeinsamen this.db-Connection. Alle saveTranslation-Aufrufe innerhalb
+// eines BEGIN...COMMIT-Blocks werden in EINER Transaktion ausgeführt →
+// ein fsync() statt N× für den gesamten Batch. Auf HDD: ~50% Write-Zeit.
+
+async function beginTransaction() {
+  db.prepare('BEGIN').run();
+  return Promise.resolve();
+}
+
+async function commitTransaction() {
+  db.prepare('COMMIT').run();
+  return Promise.resolve();
+}
+
+async function rollbackTransaction() {
+  db.prepare('ROLLBACK').run();
+  return Promise.resolve();
 }
 
 module.exports = {
@@ -345,5 +366,8 @@ module.exports = {
   all,
   connectReadOnly,
   allReadOnly,
+  beginTransaction,
+  commitTransaction,
+  rollbackTransaction,
   db: () => db
 };

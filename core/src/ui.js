@@ -1,4 +1,4 @@
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 
 /**
  * Displays the main menu and returns the selected action.
@@ -17,53 +17,53 @@ async function mainMenu(stats = {}, plugin = null) {
   }
   console.log('='.repeat(50));
 
-  return await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'action',
-      message: 'Hauptmenue:',
-      choices: [
-        { name: 'Auto-Sync (Aktive Mods patchen)', value: 'sync' },
-        { name: 'Patches verwalten (Ein-/Ausschalten)', value: 'manage' },
-        { name: 'QA Check (Datenbank pruefen)', value: 'qa' },
-        { name: 'Integritaets-Audit (Cache reparieren)', value: 'audit-integrity' },
-        { name: 'Vollstaendiger Reset (Plan B)', value: 'full_reset' },
-        { name: 'Konfiguration (API / Modelle)', value: 'config' },
-        { name: 'Beenden', value: 'exit' }
-      ]
-    }
-  ]);
+  const result = await prompts({
+    type: 'select',
+    name: 'action',
+    message: 'Hauptmenue:',
+    choices: [
+      { title: 'Auto-Sync (Aktive Mods patchen)', value: 'sync' },
+      { title: 'Patches verwalten (Ein-/Ausschalten)', value: 'manage' },
+      { title: 'QA Check (Datenbank pruefen)', value: 'qa' },
+      { title: 'Integritaets-Audit (Cache reparieren)', value: 'audit-integrity' },
+      { title: 'Vollstaendiger Reset (Plan B)', value: 'full_reset' },
+      { title: 'Konfiguration (API / Modelle)', value: 'config' },
+      { title: 'Beenden', value: 'exit' }
+    ]
+  });
+  // Ctrl+C returns {} from prompts — treat as exit
+  if (!result.action) return { action: 'exit' };
+  return result;
 }
 
 /**
  * Displays a mod selection list.
  */
 async function selectMod(mods) {
-  return await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'modId',
-      message: 'Waehle eine Mod aus:',
-      choices: mods.map(m => ({
-        name: `${m.name.padEnd(30)} [${m.status || 'READY'}]`,
-        value: m.id
-      }))
-    }
-  ]);
+  const result = await prompts({
+    type: 'select',
+    name: 'modId',
+    message: 'Waehle eine Mod aus:',
+    choices: mods.map(m => ({
+      title: `${m.name.padEnd(30)} [${m.status || 'READY'}]`,
+      value: m.id
+    }))
+  });
+  // Ctrl+C returns {} from prompts — return empty for caller to handle
+  if (!result.modId) return {};
+  return result;
 }
 
 /**
  * Displays a confirmation prompt.
  */
 async function confirm(message, defaultValue = false) {
-  const { ok } = await inquirer.prompt([
-    {
-      type: 'confirm',
-      name: 'ok',
-      message,
-      default: defaultValue
-    }
-  ]);
+  const { ok } = await prompts({
+    type: 'confirm',
+    name: 'ok',
+    message,
+    initial: defaultValue
+  });
   return ok;
 }
 

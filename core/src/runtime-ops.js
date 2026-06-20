@@ -113,7 +113,7 @@ function createRuntimeOps(options) {
     fs,
     fsp,
     path,
-    inquirer,
+    prompts,
     exporter,
     ensureTranslations,
     mapLimit,
@@ -200,14 +200,12 @@ function createRuntimeOps(options) {
         // Already confirmed in this run — silent.
       } else if (!isGuiMode && !isAutoMode && stdinIsTty && !persistedExists) {
         // First-time interactive CLI: ask the user.
-        const confirm = await inquirer.prompt([
-          {
-            type: 'confirm',
-            name: 'proceed',
-            message: 'Möchtest du fortfahren? (Sicherheits-Backup wird angelegt)',
-            default: true
-          }
-        ]);
+        const confirm = await prompts({
+          type: 'confirm',
+          name: 'proceed',
+          message: 'Möchtest du fortfahren? (Sicherheits-Backup wird angelegt)',
+          initial: true
+        });
 
         if (!confirm.proceed) {
           console.log('[ABBRUCH] Native Mode abgebrochen.');

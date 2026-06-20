@@ -38,7 +38,7 @@
 | 39 | `formatMetadata(infoObj)` | _Info.txt generieren |
 | 59 | `getCoreModFolderName()` | → `'BridgeCore'` |
 | 63 | `getCoreModMetadata(sosMajorVersion)` | BridgeCore-Metadata |
-| 80 | `applyPatchModifications(infoObj, targetLanguage)` | Patch-Name+DESC |
+| 80 | `applyPatchModifications(infoObj, targetLanguage, patchNotice)` | Patch-Name+DESC (3. Parameter Interface-Compliance) |
 | 91 | `getBackupDirectoryName(originalName)` | → `.backup_NAME_ORIGINAL` |
 | 95 | `isBackupDirectory(dirName)` | `.backup_` Check |
 | 99 | `isVersionDirectory(dirName)` | `/^V\d+$/i` Check |
@@ -56,12 +56,15 @@
 | 242 | `getGameTerms()` | 9 Begriffe (battle, room, ...) |
 | 253 | `getPathRules()` | bio/specific→proper_noun, room/→ui_string, ... |
 
-**CHANGELOG-Ref (3× SongsOfSyxPlugin):**
+**CHANGELOG-Ref (4× SongsOfSyxPlugin):**
 - [CL:0.19.9] Erstellt — vollständige SoS-Implementierung (23 Methoden)
 - [CL:0.20.0-alpha.1] getLoreTerms (12 SoS-Lore), getGameTerms (9 Gameplay), getPathRules (SoS-Pfadregeln)
 - [CL:0.20.0-alpha.2] H1 ProofreadPrompt via getPromptContext()
+- [CL:BU-023] applyPatchModifications Signatur 2→3 Parameter (Interface-Compliance)
 
-**Boundary-Tests:** `core/tests/plugin-boundary-smoke.js` — 100/100 PASS (23 Methoden, 9 Test-Sektionen)
+**Boundary-Tests:**
+- `core/tests/plugin-boundary-smoke.js` — 100/100 PASS (23 Methoden, 9 Test-Sektionen)
+- `core/tests/plugin-boundary-contract.js` — 73/73 PASS (Dynamische Interface-Erkennung, BU-023)
 
 ---
 

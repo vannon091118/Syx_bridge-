@@ -52,6 +52,14 @@ class GameAdapter {
   // ── File System & Structure ─────────────────────────────────────────────
 
   /**
+   * Returns the path to the game's launcher settings file.
+   * Used by sos-runtime.js to read/write active mods list.
+   * Each concrete plugin overrides this with the game-specific path.
+   * @returns {string} Absolute path to launcher settings file
+   */
+  getLauncherSettingsPath() { throw new Error('Not implemented: getLauncherSettingsPath'); }
+
+  /**
    * @param {string} originalName Original mod folder name
    * @returns {string} Backup directory name
    */

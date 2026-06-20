@@ -5,7 +5,7 @@ const LOG_PATH = path.join(process.cwd(), 'log.txt');
 const RUNS_PATH = path.join(process.cwd(), 'runs.jsonl');
 // BU-027 Fix: debug_payloads.txt nach logs/ verlagern statt CWD.
 const LOGS_DIR = path.join(process.cwd(), 'logs');
-try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch (_) {}
+try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch (e) { console.error('[LOGGER] Konnte logs/ nicht anlegen:', e.message); }
 const DEBUG_PATH = path.join(LOGS_DIR, 'debug_payloads.txt');
 
 let dbInstance = null;
@@ -37,10 +37,12 @@ function writeLog(level, args) {
   }
 
   if (dbInstance) {
-    // Non-blocking database logging
-    dbInstance.run('INSERT INTO logs (level, message, timestamp) VALUES (?, ?, ?)', [level, message, timestamp], (err) => {
-      if (err) originalConsole.error('[DB LOG ERROR]', err.message);
-    });
+    // Non-blocking database logging (better-sqlite3: prepare + run, sync)
+    try {
+      dbInstance.prepare('INSERT INTO logs (level, message, timestamp) VALUES (?, ?, ?)').run(level, message, timestamp);
+    } catch (err) {
+      originalConsole.error('[DB LOG ERROR]', err.message);
+    }
   }
 }
 

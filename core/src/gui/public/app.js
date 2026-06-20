@@ -421,6 +421,7 @@ function renderProviderStats() {
 
   providers.forEach(provider => {
     if (provider === 'player2' && !currentConfig.PLAYER2_ENABLED) return;
+    if (provider === 'google_free' && !currentConfig.GOOGLE_FREE_ENABLED) return;
     
     const reqs = providerStats[provider] || { pass: 0, fail: 0 };
     const api = apiProviderStatus[provider] || { valid: 0, total: 0, rateLimited: false };

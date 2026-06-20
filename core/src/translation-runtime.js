@@ -41,7 +41,13 @@ function createTranslationRuntime(options) {
     _dbGet,
     dbAll,
     dbRun,
+    beginTransaction,
+    commitTransaction,
+    rollbackTransaction,
     isAborting,
+    // BU-020: AbortController signal passed through to provider clients
+    // so in-flight HTTP requests can be cancelled on Ctrl+C.
+    getAbortSignal,
     langCodes,
     isArgosInstalled
   } = options;
@@ -63,7 +69,9 @@ function createTranslationRuntime(options) {
     getModelForProvider, getGeminiModelName, getGrammarContext,
     stripJsonFence, restoreAndValidateTranslation, restorePlaceholders,
     parseBatchResponseWithMaps,
-    buildBatchPromptForCurrentConfig
+    buildBatchPromptForCurrentConfig,
+    // BU-020: Pass AbortController signal to provider clients
+    getAbortSignal
   });
   const { normalizeWhitespace, getBatchProfile } = clients;
 
@@ -276,7 +284,9 @@ function createTranslationRuntime(options) {
         }
 
         for (const [source, result] of stressResult.stressResults) {
-          saveStressTestResult(source, result.passed).catch(() => {});
+          saveStressTestResult(source, result.passed).catch(e => {
+            console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
+          });
         }
 
         console.log(`[DISPATCH] ${stressPassedCount}/${entries.length} via Google Free, ${entries.length - stressPassedCount} via LLM-Pipeline.`);
@@ -295,7 +305,9 @@ function createTranslationRuntime(options) {
         for (const [source, result] of stressResult.stressResults) {
           const entry = entryBySource.get(source);
           if (entry) entry.riskScore = result.dynamicRisk;
-          saveStressTestResult(source, result.passed).catch(() => {});
+          saveStressTestResult(source, result.passed).catch(e => {
+            console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
+          });
         }
         const escalated = dispatcher.resolveTranslateRoute(entries);
         resolvedRoute.provider = escalated.provider;
@@ -605,6 +617,8 @@ function createTranslationRuntime(options) {
       }
       return parsed;
     } catch (e) {
+      // BU-020: AbortController — CanceledError must break immediately, not count as failure.
+      if (axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') throw e;
       consecutiveGrammarFailures++;
       console.warn(`[!] Grammatik-Korrektur fehlgeschlagen (${consecutiveGrammarFailures}/3): ${extractErrorMessage(e)}`);
       if ((e.response ? e.response.status : 0) === 429) {
@@ -815,6 +829,11 @@ function createTranslationRuntime(options) {
           }
         }
 
+        // Begin transaction BEFORE the save-loop for this batch (HDD optimization)
+        // Alle saveTranslation-Aufrufe in diesem Batch werden in EINER
+        // Transaktion ausgeführt → 1 fsync() statt N× auf HDD.
+        try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] Begin fehlgeschlagen: ${e.message}`); }
+
         for (let j = 0; j < currentBatch.length; j++) {
           const entry = currentBatch[j];
           const source = entry.source;
@@ -871,14 +890,21 @@ function createTranslationRuntime(options) {
           savePromises.push(learnGlossary(source, translated, entry));
         }
         for (const p of savePromises) { await p; }
+        
+        // Commit all saveTranslation calls in ONE transaction (HDD optimization)
+        try { await commitTransaction(); } catch (e) { console.warn(`[TRANSACTION] Commit fehlgeschlagen: ${e.message}`); try { await rollbackTransaction(); } catch {} }
         if (cli.isActive()) {
           cli.updateBatch(batchNumber, totalBatches, result.provider, result.model);
           cli.tick(ctx.translations.size, ctx.uniqueTexts.length);
         }
       } catch (e) {
-        if (e.message === 'ABORTED') break;
+        // Rollback any open transaction from the failed save-loop (HDD optimization)
+        try { await rollbackTransaction(); } catch {}
+        if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
         console.error(`[!] Batch fehlgeschlagen: ${extractErrorMessage(e)}`);
         const failPromises = [];
+        // Begin transaction BEFORE fail-path save-loop (HDD optimization)
+        try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] Fail Begin fehlgeschlagen: ${e.message}`); }
         for (const item of currentBatch) {
           ctx.translations.set(item.source, item.source);
           const isPN = isProperNoun(item.source) || classifyPath(item.relativePath) === 'proper_noun';
@@ -924,6 +950,8 @@ function createTranslationRuntime(options) {
           });
         }
         await Promise.all(failPromises);
+        // Commit fail-path saveTranslation calls in ONE transaction (HDD optimization)
+        try { await commitTransaction(); } catch (e) { console.warn(`[TRANSACTION] Fail Commit fehlgeschlagen: ${e.message}`); try { await rollbackTransaction(); } catch {} }
         if (cli.isActive()) cli.addErr(currentBatch.length);
       }
     }
@@ -962,6 +990,9 @@ function createTranslationRuntime(options) {
       const flags = await flagPotentialErrors(batchValues);
       const problematicIdx = [];
       const batchUpdatePromises = [];
+
+      // Begin transaction BEFORE the polish save-loop (HDD optimization)
+      try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] QA Begin fehlgeschlagen: ${e.message}`); }
 
       for (let j = 0; j < batchKeys.length; j++) {
         const key = batchKeys[j];
@@ -1032,11 +1063,16 @@ function createTranslationRuntime(options) {
             batchUpdatePromises.push(learnGlossary(key, improved, entry));
           }
         } catch (e) {
-          if (e.message === 'ABORTED') break;
+          // Rollback any open transaction from failed polish (HDD optimization)
+          try { await rollbackTransaction(); } catch {}
+          if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
           console.warn(`[!] QA-Korrektur Batch fehlgeschlagen: ${e.message}`);
         }
       }
       await Promise.all(batchUpdatePromises);
+      // Commit all polish saveTranslation calls in ONE transaction (HDD optimization)
+      // Skip commit if transaction was rolled back (e.g. problematicIdx processing failed)
+      try { await commitTransaction(); } catch (e) { console.warn(`[TRANSACTION] QA Commit fehlgeschlagen: ${e.message}`); try { await rollbackTransaction(); } catch {} }
     }
   }
 
@@ -1128,6 +1164,7 @@ function createTranslationRuntime(options) {
 
     let processed = 0;
     let fixed = 0;
+    let deepPolishUpdateFailures = 0;  // B4: Aggregierter Zaehler fuer final-gescheiterte polish_status='failed'-Updates
 
     for (let i = 0; i < pending.length; i += batchSize) {
       if (isAborting()) break;
@@ -1179,18 +1216,43 @@ function createTranslationRuntime(options) {
           if (attempt >= 1) {
             // Zweiter Fehlschlag → endgültig als failed markieren
             for (const row of batch) {
-              await dbRun(
-                `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
-                [row.source_text, targetLang]
-              ).catch(() => {});
+              // B4-Fix (BU-020-Wiederholungsfall): Silent .catch(() => {})
+              // erzeugt Dead-Loop wenn das UPDATE selbst fehlschlaeft.
+              // Der Eintrag bleibt polish_status='pending' und wird bei
+              // JEDEM Deep-Polish-Lauf erneut versucht, verbraucht jedes
+              // Mal API-Credits ohne jemals zu terminieren.
+              // Jetzt: 3 Retry-Versuche fuer das UPDATE, mit Source-Text
+              // im Log fuer manuelle Nachverfolgung. Bei endgueltigem
+              // Fehlschlag: critical error loggen.
+              let updateSucceeded = false;
+              for (let updateAttempt = 0; updateAttempt < 3 && !updateSucceeded; updateAttempt++) {
+                try {
+                  await dbRun(
+                    `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
+                    [row.source_text, targetLang]
+                  );
+                  updateSucceeded = true;
+                } catch (updateErr) {
+                  if (updateAttempt < 2) {
+                    console.warn(`[DEEP-POLISH] polish_status='failed' UPDATE fehlgeschlagen (Versuch ${updateAttempt + 1}/3) fuer "${(row.source_text || '').substring(0, 40)}": ${updateErr.message} — retry in 500ms...`);
+                    await sleep(500);
+                  } else {
+                    console.error(`[DEEP-POLISH] KRITISCH: polish_status='failed' UPDATE endgueltig fehlgeschlagen fuer "${(row.source_text || '').substring(0, 40)}" — Eintrag bleibt pending und wird bei naechstem Run erneut versucht. DB-Integritaet pruefen!`);
+                    deepPolishUpdateFailures++;
+                  }
+                }
+              }
             }
           }
         }
       }
     }
 
+    if (deepPolishUpdateFailures > 0) {
+      console.error(`[DEEP-POLISH] WARNUNG: ${deepPolishUpdateFailures} Eintraege konnten nicht als 'failed' markiert werden — manuelle Nacharbeit noetig (DB-Integritaet pruefen!).`);
+    }
     console.log(`[DEEP-POLISH] Abgeschlossen: ${processed} verarbeitet, ${fixed} verbessert.`);
-    return { processed, fixed };
+    return { processed, fixed, updateFailures: deepPolishUpdateFailures };
   }
 
   return {
