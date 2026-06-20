@@ -76,7 +76,7 @@ const PROPER_NOUN_DENY_COMMON_ENGLISH = new Set([
 ]);
 
 function isProperNoun(text) {
-  const value = String(text || '').trim();
+  const value = String(text || '').replace(/[\u200B\u200C]/g, '').trim();  // P0-1: Watermarks strippen vor Check
   // QUAL-OFFENSIVE Fix #3: Denylist für englische Gemeinwörter
   // Vorher: Jedes Wort das mit Großbuchstaben beginnt, <40 Zeichen lang ist
   // und keine Satzzeichen enthält, wurde als ProperNoun klassifiziert → nie übersetzt.
@@ -115,7 +115,7 @@ function classifyPath(relativePath, plugin) {
 }
 
 function shouldTranslate(text) {
-  const value = String(text || '').trim();
+  const value = String(text || '').replace(/[\u200B\u200C]/g, '').trim();  // P0-1: Watermarks strippen vor Check
   if (!value) return false;
     
   if (!/[a-zA-Z]/.test(value)) return false;
@@ -123,12 +123,17 @@ function shouldTranslate(text) {
   if (/^[\w.-]+\.(png|jpg|jpeg|webp|gif|dds|wav|ogg|mp3|json|xml|ini|txt)$/i.test(value)) return false;
   if (/^[a-z0-9_.:-]+$/i.test(value) && /[_./:-]/.test(value) && !/\s/.test(value)) return false;
   // Reject structural noise: strings starting with SoS file structure characters
-  // (comma, semicolon, colon, tab). Note: value is already .trim()\'d, so no need
-  // for ^\s* or ^[\r\n] checks — those are dead code after trim.
-  if (/^[,:;]/.test(value)) return false;
+  // (comma, semicolon, colon, tab, closing brace/bracket). Note: value is already .trim()\'d.
+  // P0-2: } und ] hinzugefuegt zum strukturellen Delimiter-Check (Config-Block-Fragmente).
+  if (/^[,:;}\]\[]/.test(value)) return false;
   // Reject strings that are just a key name + colon with no actual content
   // (e.g. "HistoryValue:", "Type:"). These are SoS structural keys, not translatable text.
   if (/^[A-Za-z_][A-Za-z0-9_]*:\s*$/.test(value)) return false;
+  // P0-2: Reject standalone config key + structural delimiter patterns.
+  // Matches: HEAL1: { or ARMY_NAMES: [ — Config block/array openers with
+  // nothing meaningful after the delimiter. The $ anchor ensures
+  // we don't block legitimate text like "TYPE: {RACE_CITY} damage".
+  if (/^[A-Z_][A-Z0-9_]*:\s*[\[\{]\s*$/.test(value)) return false;
   // Reject Java package/class notation (e.g. "view.sett.ui.room.UIRoom: {",
   // "world.map.landmark.WorldLandmarks: {"). Pattern: 3+ lowercase dot-separated
   // segments followed by an uppercase class name. Safe for SoS translations.
@@ -486,7 +491,7 @@ function extractReplacements(content, relativePath = '') {
   const replacements = [];
   let match;
   while ((match = regex.exec(content)) !== null) {
-    const value = unescapeTextValue(match[1]);
+    const value = unescapeTextValue(match[1]).replace(/[\u200B\u200C]/g, '');
     if (shouldTranslate(value, relativePath)) {
       replacements.push({
         full: match[0],

@@ -1,5 +1,111 @@
 # CHANGELOG
 
+## [V0.21-P0-FIXES] - 2026-06-20 — P0-1/P0-2/P0-3: Watermark-Stripping, Config-Blocker, Output-Only
+
+Nach dem dritten Kaffee und vier Sub-Agenten später: Alle drei P0-Release-Blocker sind durch. Und weisst du was das Beste ist? P0-3 brauchte keinen einzigen neuen Code. Die fünf Schichten aus P0-1 haben den Watermark-Fluss so dicht gemacht dass die DB von alleine sauber bleibt. Das ist die Art von Architektur die man feiert wenn sie hält — Defense-in-Depth die tatsächlich verteidigt.
+
+### P0-1: Watermark-Stripping — 5-Schichten-Defense
+423 Watermark-maskierte Strings. Jeder Re-Run hat neue ZWSP/ZWNJ-Marker in den Source-Text auf Disk injiziert. Beim nächsten Run: "Oh, der Text ist ja schon Deutsch" → stale → nie wieder übersetzt. Der Teufelskreis.
+
+**Layer 1 (Choke-Point):** `extractor.js` `unescapeTextValue()` — Strip bei Disk-Lesezugriff. ALLE Extraktions-Pfade (`extractStrings`, `extractReplacements`, `parser.js`) gehen durch diese Funktion. Ein Fix, alle Pfade geschützt.
+
+**Layer 2 (Classification):** `text-core.js` `isProperNoun()` — Strip vor Proper-Noun-Erkennung. Verhindert dass "DragonSpire[ZWSP]" als "nicht Proper Noun" (weil unsichtbares Zeichen) durchrutscht.
+
+**Layer 3 (Classification):** `text-core.js` `shouldTranslate()` — Strip vor Übersetzungs-Entscheidung. Verhindert dass "Wir sollten[ZWSP] kampfbereit sein" als "schon Deutsch" klassifiziert wird.
+
+**Layer 4 (DB-Grenze):** `translation-db.js` `saveTranslation()` — Strip von `sourceText` vor INSERT. Letzte Verteidigungslinie — selbst wenn Wasserzeichen Layer 1-3 überleben, kommen sie nicht in die DB.
+
+**Layer 5 (DB-Grenze):** `translation-db.js` `saveTranslation()` — Strip von `translation`-Wert. LLMs können theoretisch ZWSP/ZWNJ aus dem Prompt übernehmen oder selbst generieren.
+
+### P0-2: shouldTranslate() Config-Blocker
+23 LOW_SCORE_FLAGGED + 5 STRUCTURAL_TRUNCATED. Config-Syntax-Fragmente wie `},\nHEAL1: {\nNAME:` wurden an Provider geschickt und kamen als `}` zurück. Zwei neue Regex-Regeln:
+
+**Regel 1:** `/^[,:;}\]\[]/` — `}` und `]` zum strukturellen Delimiter-Check hinzugefügt. Blockt Config-Block-Fragmente die mit schließenden Klammern starten.
+
+**Regel 2:** `/^[A-Z_][A-Z0-9_]*:\s*[\[\{]\s*$/` — Standalone KEY: `{`/`[` Blocker mit `$` Anchor. Blockt `HEAL1: {` und `ARMY_NAMES: [` aber NICHT `TYPE: {RACE_CITY} damage`. Der `$` Anchor war die Idee des Code-Reviewers — ohne ihn wäre jeder Placeholder am Satzanfang fälschlich geblockt worden.
+
+### P0-3: Watermark Output-Only — Kein neuer Code nötig
+Die Analyse ergab: Watermarks werden NUR in `applyTranslations()`→Disk injiziert. Alle 5 DB-Schreibpfade (translate, native, qa, fail, deep-polish) gehen durch `saveTranslation()` mit Layer-4/5-Strip. Die DB bleibt sauber. P0-3 = ✅ durch P0-1 abgedeckt.
+
+### Verifikation
+- P0-1: 6/6 Watermark-Strip-Tests passed (unescapeTextValue, isProperNoun, shouldTranslate)
+- P0-2: 12/12 shouldTranslate Tests passed (Config-Syntax geblockt, legitime Texte akzeptiert)
+- P0-3: Code-Flussanalyse — kein Bypass-Pfad gefunden, Watermarks existieren nur in Output-Dateien
+- Syntax-Check: extractor.js, text-core.js, translation-db.js alle OK
+- Code-Review: 2× code-reviewer-deepseek (P0-1 + P0-2), Thinker-Analyse P0-1
+
+### Files Changed
+- `core/src/extractor.js` — unescapeTextValue() Watermark-Strip (+1 Zeile)
+- `core/src/text-core.js` — isProperNoun() + shouldTranslate() Watermark-Strip + 2 Config-Blocker-Regeln (+8 Zeilen)
+- `core/src/translation-db.js` — saveTranslation() Watermark-Strip für translation-Wert (+4 Zeilen)
+- `core/archive/docs/V0.21_SCOPE.md` — P0-1/2/3 als DONE markiert, §6 P0-Abschluss hinzugefügt
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### EFFORT TO NEXT SCOPE
+- P1-1: polish_single "no-change"-Erkennung (~1h)
+- P1-2: Non-native stale Counter-Reset (~0.5h)
+- P1-3: DB-Sanitization: Watermarks aus alten Einträgen entfernen (~1h)
+
+---
+
+## [V0.21-SCOPE] - 2026-06-20 — Scope-Definition: "Immer liefern, nie restaurieren"
+
+Na gut. Nach dem Live-Test und der Proper-Noun-Verifikation standen wir da mit 9.492 Einträgen und einer ganzen Reihe unbequemer Wahrheiten. 423 Watermark-maskierte Strings die als stale getarnt waren. 194 Non-Native Stale die nie hätten passieren dürfen. 23 shouldTranslate-False-Positives die Config-Syntax als übersetzbar durchgehen ließen. Und der User sagte: "RESTORE ist die einzige Funktion die nie genutzt werden muss." Das ist kein Bug-Report mehr — das ist eine Philosophie.
+
+### V0.21 Scope-Grundprinzipien
+1. **RESTORE als Safety-Net:** Vollfunktionstüchtig aber nie genutzt. Der primäre Pfad MUSS so zuverlässig sein dass RESTORE nur in der Theorie existiert.
+2. **Qualität = optional, Lesbarkeit = Pflicht:** Deep-Polish ist Nice-to-have. Score ≥ 50 = lesbar = akzeptiert. Score < 50 MUSS gefixt werden. Aber eine schlechte Übersetzung ist besser als keine.
+3. **Zero Result Difference:** Verschiedene Szenarien → verschiedene Qualität (ok). Aber IMMER ein valides Ergebnis. Nie leer, nie error, nie korrupt.
+
+### Audit-Ergebnisse (Live-DB, 9.492 Einträge)
+- 🔴 **Watermark-Akkumulation (P0):** 423 Einträge — ZWSP/ZWNJ Injection maskiert übersetzte Strings als stale. Jeder Re-Run fügt neue Marker hinzu. Source-Text auf Disk korumpiert.
+- 🔴 **shouldTranslate False Positives (P0):** 23+5 Einträge — Config-Syntax (`},\nHEAL1: {\n\tNAME:`) wird als übersetzbar klassifiziert. Provider kürzen sie auf `}`.
+- 🔴 **Non-Native Stale (P1):** 194 Einträge — polish_single 19.5% stale (129/663). Keine "no-change"-Erkennung.
+- ⚠️ **MAX_REV_EXCEEDED (P1):** 1.299 Symptom der obigen Fehlerquellen.
+
+### P0 Fixes (Release-Blocker)
+- Watermark-Stripping vor Classification (~2h)
+- shouldTranslate() Config-Blocker (~1h)
+- Watermark nur in Output, nicht in DB (~3h)
+
+### Files Changed
+- `core/archive/docs/V0.21_SCOPE.md` — NEU: Vollständiges Scope-Dokument mit Audit-Ergebnissen, Fehlerquellen-Priorisierung, RESTORE-Philosophie, Qualitäts-Definition
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+- `core/archive/docs/MASTER_DOC.md` — V0.21 Roadmap-Eintrag in §6
+
+### Tests
+- DB-Verifikation: 5 parallele Checks durchgeführt (Fehlerquellen-Verteilung, Watermark-Probe, shouldTranslate-Extraction, Review-Count-Verteilung, Classification-Check)
+- Quellcode-Review: text-core.js, translation-quality.js, watermark-config.js, translation-runtime.js gelesen
+- Thinker-Analyse: V0.21 Scope-Design mit Priorisierung + Lösungsvorschläge
+
+### EFFORT TO NEXT SCOPE
+- P0-1: Watermark-Stripping in extractReplacements/normalizeWhitespace implementieren
+- P0-2: shouldTranslate() Regex-Regeln für Config-Syntax erweitern
+- P0-3: Watermark-Injection von DB-Source auf Output-Only umstellen
+
+---
+
+## [SCHEMA-FIX] - 2026-06-20 — Schema Version 5→6 + db_query.js PRAGMA-Fix
+
+Rate mal wer vergessen hat die Schema-Version hochzuzählen als die placeholder_review_count Spalte dazukam? Richtig. Wir. Das Resultat: `init()` sah `schema_version = '5'` in der DB, sagte "passt schon", und übersprang ALLE Migrationen — inklusive der brandneuen Spalte die P4 eigentlich bräuchte. Die Spalte existierte also nur im Code, nicht in der Datenbank. Wunderbar.
+
+Dazu kam dass `db_query.js` `PRAGMA table_info()` als Run-Query behandelte statt als SELECT — gab `{changes: 0}` zurück statt der Spaltenliste. Schön zum Debuggen wenn man nicht weiß was los ist.
+
+### Fixed
+- `db.js:89`: CURRENT_SCHEMA_VERSION '5' → '6'. Nächster `init()`-Aufruf führt alle Migrationen einmal aus (addColumnIfMissing ist idempotent), speichert dann v6.
+- `db_query.js:93`: SELECT-Regex um `PRAGMA|EXPLAIN|WITH|SHOW` erweitert. PRAGMA table_info() liefert jetzt Zeilen statt Run-Result.
+
+### Files Changed
+- `core/src/db.js` — Schema Version 5→6 (+1 Zeile)
+- `core/scripts/db_query.js` — PRAGMA-Regex-Fix (+1 Zeile)
+
+### Tests
+- Syntax-Check: db.js + db_query.js OK
+- Code-Review: Nit Pick Nick — "Safe. addColumnIfMissing ist idempotent, kein Risiko für existierende DBs."
+- DB-Verifikation: Migration v5→v6 ausgeführt, placeholder_review_count existiert (CID 19), 8.506 Einträge korrekt initialisiert
+
+---
+
 ## [REVIEW-LIMIT-PIPELINE] - 2026-06-20 — P1/P2/P3: Review-Limit konfigurierbar, Critical-Reject-Loop gebrochen, Fail-Path fair
 
 Drei Bugs, eine Session, null externe Dependencies. Das ist die Art von Fix die man feiert wenn sie durch ist — nicht weil sie spektakulär ist, sondern weil sie drei verschiedene Wege eliminiert auf denen das System sich selbst sabotiert hat.
@@ -20,20 +126,32 @@ Drei Bugs, eine Session, null externe Dependencies. Das ist die Art von Fix die 
 - `translation-runtime.js` (translatePhase catch-block): skipReviewIncrement=true im Fail-Path meta. Provider-Fehler (429/5xx/Timeout) zaehlen nicht als Uebersetzungsfehler
 - `translation-db.js` (saveTranslation): reviewIncrement = meta.skipReviewIncrement ? 0 : 1. INSERT und UPSERT nutzen die Variable statt hardcoded 1
 
+### P4: Separate Placeholder/Quality Review-Counters
+- `db.js`: Neue Spalte `placeholder_review_count INTEGER NOT NULL DEFAULT 0` via `addColumnIfMissing` Migration
+- `translation-db.js` (saveTranslation): 5 Änderungen:
+  - `isPlaceholderError` erkennt `shield_leak` im flagReason
+  - Guard prüft BEIDE Counter unabhängig: `review_count` für Quality-Fehler, `placeholder_review_count` für Placeholder-Fehler
+  - Counter-Routing: shield_leak → `placeholderIncrement=1, reviewIncrement=0`; Quality → `reviewIncrement=1, placeholderIncrement=0`
+  - UPSERT: `placeholder_review_count` als neue Spalte (16 Params: 14 INSERT + 2 UPSERT)
+  - Recovery: resettet beide Counter + neuer Flag `max_placeholder_revisions`
+- `translation-runtime.js` — Keine Änderungen (nutzt `saveTranslation` via `meta.flagReason`)
+
 ### Files Changed
 - `core/src/config-runtime.js` — PERSISTED_KEYS: MAX_REVIEW_COUNT + REVIEW_RECOVERY_HOURS
+- `core/src/db.js` — placeholder_review_count Migration (+51 LOC)
 - `core/src/index.js` — CONFIG + applyEnvToConfig: 2 neue Keys
-- `core/src/translation-db.js` — MAX_REVIEW_COUNT konfigurierbar, recoverTerminatedEntries(), skipReviewIncrement (+189 LOC)
+- `core/src/translation-db.js` — MAX_REVIEW_COUNT konfigurierbar, recoverTerminatedEntries(), skipReviewIncrement, P4 Counter-Routing, Guard-Logik (+21 LOC)
 - `core/src/translation-runtime.js` — P2 critical_reject Loop-Breaker, P3 skipReviewIncrement, Recovery-Wiring (+89 LOC)
 - `core/src/INDEX.md` — Zeilennummern + CHANGELOG-Refs aktualisiert
 
 ### Tests
 - Syntax-Check: ALL 4 files SYNTAX OK
-- Code-Review: Nit Pick Nick — P1 overwrite_fallback_used Fix verifiziert, P2 Loop-Break korrekt, P3 Parameter-Count 14/14 bestaetigt
+- Code-Review: Nit Pick Nick — P1 overwrite_fallback_used Fix verifiziert, P2 Loop-Break korrekt, P3 Parameter-Count 14/14 bestaetigt, P4 Parameter-Count 16/16 bestaetigt, Counter-Routing Logik korrekt
+- DB-Verification: 1.318 max_revisions_exceeded Kandidaten für Recovery, 0 aktive Loops, Review-Count-Verteilung gesund
 
 ### EFFORT TO NEXT SCOPE
-- DB-Snapshot vor/nach Live-Run um P1/P2/P3 Wirksamkeit zu verifizieren
-- P4: Placeholder-Fehler und Quality-Fehler sollten getrennte Review-Counters haben
+- Live-Run um P1 Recovery + P2 Loop-Break + P4 Counter-Routing in Aktion zu sehen
+- DB-Snapshot nach Live-Run (Vorher-Snapshot archiviert: `translations_2026-06-20_184605_pre-p1p2p3-verify.db`)
 
 ---
 

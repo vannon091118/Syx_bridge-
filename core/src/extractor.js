@@ -14,7 +14,8 @@ function unescapeTextValue(value) {
   return String(value || '')
     .replace(/\\n/g, '\n')
     .replace(/\\"/g, '"')
-    .replace(/\\\\/g, '\\');
+    .replace(/\\\\/g, '\\')
+    .replace(/[\u200B\u200C]/g, '');  // P0-1: Watermarks (ZWSP/ZWNJ) sofort bei Disk-Lesezugriff vernichten
 }
 
 /**

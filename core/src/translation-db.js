@@ -201,7 +201,16 @@ function createTranslationDb(options) {
   }
 
   async function saveTranslation(entry, translation, polishLevel = 0, meta = {}) {
-    const sourceText = typeof entry === 'string' ? entry : entry.source;
+    // P0-1 FIX: Strip watermarks (ZWSP/ZWNJ) at DB boundary.
+    // Defense-in-Depth alongside text-core.js extractReplacements() strip.
+    // Prevents watermarked legacy entries from being saved/re-queried.
+    const sourceText = (typeof entry === 'string' ? entry : entry.source).replace(/[\u200B\u200C]/g, '');
+
+    // P0-1: Auch den translation-Wert von Watermarks säubern.
+    // LLMs können ZWSP/ZWNJ aus dem Source-Text übernehmen oder selbst generieren.
+    if (typeof translation === 'string') {
+      translation = translation.replace(/[\u200B\u200C]/g, '');
+    }
 
     // DEFENSIVE: Reject shield tokens at the DB boundary.
     // This is the last line of defense — if [[0]] wasn't restored upstream,

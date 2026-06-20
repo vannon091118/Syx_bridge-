@@ -1,7 +1,7 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 20.06.2026 | **Version:** v0.20.0 | **Autor:** Vannon & Sub-Agents
-**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-19.md, HANDSHAKE_2026-06-20.md, REDUNDANZ_AUDIT_V2_2026-06-19.md, LLM-AGENTS-EntryPoint.md
+**Stand:** 20.06.2026 | **Version:** v0.20.0 → v0.21 (Scope definiert) | **Autor:** Vannon & Sub-Agents
+**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-19.md, HANDSHAKE_2026-06-20.md, REDUNDANZ_AUDIT_V2_2026-06-19.md, LLM-AGENTS-EntryPoint.md, V0.21_SCOPE.md
 
 ---
 
@@ -89,12 +89,17 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 | Prio | Aufgabe | Status/Aufwand |
 |---|---|---|
-| P0 | Erster echter v0.20 Live-Run (manueller Test ausstehend) | ~60 Min |
+| P0 | **[V0.21] Watermark-Stripping vor Classification** (423 maskierte Strings) | ✅ DONE — P0-1 |
+| P0 | **[V0.21] shouldTranslate() Config-Blocker** (23+5 False Positives) | ✅ DONE — P0-2 |
+| P0 | **[V0.21] Watermark nur in Output, nicht in DB** (Akkumulations-Bug) | ✅ DONE — durch P0-1 abgedeckt |
+| P1 | **[V0.21] polish_single "no-change"-Erkennung** (129 stale/663) | ~1h |
+| P1 | **[V0.21] DB-Sanitization: Watermarks aus alten Einträgen** | ~1h |
 | P1 | sos-runtime.js Settings-Pfad in GameAdapter abstrahieren | ~1h |
 | P1 | index.js Plugin-Instanziierung über Config/CLI-Flag | ~2h |
-| P2 | ~~3× silent .catch(() => {}) mit Logging versehen~~ ✅ Erledigt — siehe CHANGELOG [B4-SILENT-CATCH-FIX] | ~0.5h |
 | P2 | DB-Cleanup `stale_retranslate` | ~2h |
 | P2 | Bidirektionaler Vendor-Sync Phase 2 (F.A) | ~3-4h |
+| ✅ | ~~Erster echter v0.20 Live-Run~~ — 8 Mods, 9.492 Einträge, HEALTHY | Done |
+| ✅ | ~~3× silent .catch(() => {})~~ — siehe CHANGELOG [B4-SILENT-CATCH-FIX] | Done |
 
 ---
 
@@ -131,7 +136,8 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ## 9. Dokumentationsstruktur (Post Doku-Clean v0.20.0)
 
-> **Stand:** 2026-06-20 — 12 LIVE-Dokumente + FREEZE-Archiv mit 81 Glossary-Einträgen.
+> **Stand:** 2026-06-20 — 13 LIVE-Dokumente + FREEZE-Archiv mit 81 Glossary-Einträgen.
+> **NEU:** V0.21_SCOPE.md — Scope-Definition "Immer liefern, nie restaurieren" mit Audit-Ergebnissen.
 > **62 Dokumente gelöscht** (44 aus vorherigen Runden + 18 Audit-Reports dieser Runde).
 > **18 Audit-Reports in FREEZE_INDEX.md §13 überführt** und aus dem LIVE-Verzeichnis gelöscht.
 > Alle Inhalte im FREEZE_INDEX.md als Glossary-Einträge rekonstruierbar.
