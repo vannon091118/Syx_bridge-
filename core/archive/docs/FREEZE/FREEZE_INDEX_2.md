@@ -17,8 +17,9 @@
 5. [Bagatellen — D2, E1, E2 (P3)](#5-bagatellen--d2-e1-e2)
 6. [Doku-Divergenz-Audit (🔵) — 7 DD-Einträge (2026-06-20)](#6-doku-divergenz-audit--7-dd-einträge)
 7. [V0.21 P0 Defense-in-Depth — normalizeWhitespace (2026-06-21)](#7-v021-p0-defense-in-depth--normalizewhitespace)
+8. [Patch Mode Hard-Coded Disabled — Origin Trace (2026-06-21)](#8-patch-mode-hard-coded-disabled--origin-trace)
 
-> **Gesamtzahl dieser Runde:** 15 Fixes + 7 DD-Korrekturen + 1 P0 Hardening, Commits `9a853ef` + `bcb6e1e` + `c1517ef` + `6cb5efb`
+> **Gesamtzahl dieser Runde:** 15 Fixes + 7 DD-Korrekturen + 1 P0 Hardening + 1 Bypass-Audit + 1 Origin-Trace, Commits `9a853ef` + `bcb6e1e` + `c1517ef` + `6cb5efb` + `575db6c`
 
 ---
 
@@ -395,6 +396,22 @@
 
 ---
 
+## 8. Patch Mode Hard-Coded Disabled — Origin Trace
+
+### ⚠️ RISK-1 — Patch Mode bei jedem GUI-Start auf NATIVE_MODE gezwungen
+- **Datum:** 2026-06-21 (dokumentiert) | **Eingeführt:** 2026-06-15 (Commit `107f2a39`)
+- **Kategorie:** Feature-Deaktivierung (geplant, dokumentiert nach BYPASS-AUDIT)
+- **Zusammenfassung:** In `gui/public/app.js:994-998` (`loadInitialConfig()`) wird NATIVE_MODE bei JEDEM GUI-Start auf `true` gezwungen. Selbst wenn der Server NATIVE_MODE=false speichert, überschreibt die GUI es sofort und sendet die Korrektur an den Server zurück. Der Patch-Mode ist faktisch tot — nur über ein doppelt bestätigtes Kontrollfeld (`togglePatchOverride()`) temporär aktivierbar.
+- **Ursprung:** Commit `107f2a39` (Vannon, 2026-06-15) — "fix: Patch Mode deaktiviert + Kontrollfeld + Pre-existing onclick-Bugs gefixt". Der Patch-Mode wurde als "NICHT ZUVERLÄSSIG" eingestuft: unvollständige Übersetzungen, mögliche Beschädigung der Mod-Struktur. Mit demselben Commit wurden das Kontrollfeld-Override und die GUI-Warnungen eingeführt.
+- **Kausalität:** Der Patch-Mode (separate .patch-Dateien statt Inplace-Überschreibung) funktionierte instabil. Statt ihn zu fixen, wurde er deaktiviert und ein Override-Mechanismus für Testzwecke geschaffen.
+- **Betroffene Dateien:** `core/src/gui/public/app.js:994-1003` (force-native), `app.js:275-302` (togglePatchOverride), `app.js:314-318` (_toggleMode Sperre)
+- **Cross-Referenzen:** `BYPASS_AUDIT_2026-06-21.md` §6 RISK-1, `runtime-ops.js:176` (NATIVE_MODE Check)
+- **Status:** ⚠️ DOKUMENTIERT — Patch Mode deaktiviert, Ursprung via `git blame` identifiziert. Keine Änderung nötig (Design-Entscheidung), aber jetzt mit voller Audit-Trace.
+- **Git Blame:** `107f2a39` (Vannon, 2026-06-15) — Zeilen 994-1003
+- **Verifikation:** `git blame -L 980,1025 core/src/gui/public/app.js` → 107f2a39, `git log -1 --format="%B" 107f2a39` → "fix: Patch Mode deaktiviert + Kontrollfeld + Pre-existing onclick-Bugs gefixt"
+
+---
+
 ## 📋 Abgeschlossene Sessions
 
 | Datum | Session | Fixes | Commit | FREEZE-Einträge |
@@ -402,6 +419,8 @@
 | 2026-06-20 | Sinnhaftigkeitsanalyse | 15 (P0×2, P1×5, P2×5, P3×3) | `9a853ef` | 1-15 (dieses Dokument) |
 | 2026-06-20 | Doku-Divergenz-Audit (🔵) | 7 DD-Einträge | `bcb6e1e` | 16-22 (dieses Dokument) |
 | 2026-06-21 | V0.21 P0 Defense-in-Depth | 1 Härtung (normalizeWhitespace) | `6cb5efb` | 23 (dieses Dokument) |
+| 2026-06-21 | BYPASS-AUDIT Projekt-weit | 36 Bypasses dokumentiert | `575db6c` | — |
+| 2026-06-21 | Patch Mode Origin Trace | 1 Ursprung recherchiert | — | 24 (dieses Dokument) |
 
 ---
 
