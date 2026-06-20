@@ -16,8 +16,9 @@
 4. [Mittlere Fixes — A1, A2, G2, H1, I1 (P2)](#4-mittlere-fixes--a1-a2-g2-h1-i1)
 5. [Bagatellen — D2, E1, E2 (P3)](#5-bagatellen--d2-e1-e2)
 6. [Doku-Divergenz-Audit (🔵) — 7 DD-Einträge (2026-06-20)](#6-doku-divergenz-audit--7-dd-einträge)
+7. [V0.21 P0 Defense-in-Depth — normalizeWhitespace (2026-06-21)](#7-v021-p0-defense-in-depth--normalizewhitespace)
 
-> **Gesamtzahl dieser Runde:** 15 Fixes + 7 DD-Korrekturen, Commits `9a853ef` + `bcb6e1e`
+> **Gesamtzahl dieser Runde:** 15 Fixes + 7 DD-Korrekturen + 1 P0 Hardening, Commits `9a853ef` + `bcb6e1e` + `c1517ef` + `6cb5efb`
 
 ---
 
@@ -379,12 +380,28 @@
 
 ---
 
+## 7. V0.21 P0 Defense-in-Depth — normalizeWhitespace
+
+### 🛡️ P0-4 — normalizeWhitespace() Watermark-Stripping (Defense-in-Depth)
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental-workbench
+- **Kategorie:** Defense-in-Depth-Härtung (V0.21 P0 Ergänzung)
+- **Zusammenfassung:** normalizeWhitespace() in client-factory.js — die zentrale Utility-Funktion für Textvergleiche (genutzt von isLikelyTargetLanguageText, scoreTranslationQuality, inferFlagReason) — hatte KEIN Watermark-Stripping. Legacy-DB-Einträge mit ZWSP/ZWNJ wurden bei src===tgt-Vergleichen nicht erkannt. Fix: eine Zeile `.replace(/[\u200B\u200C]/g, '')` VOR der Whitespace-Normalisierung.
+- **Kausalität:** Die primären Verteidigungsschichten (extractReplacements, saveTranslation, shouldTranslate, isProperNoun) strippen Watermarks an allen Entry-Points. normalizeWhitespace ist die letzte Instanz vor dem Vergleich — wenn ein Legacy-Eintrag die primären Schichten umgeht (z.B. via getCachedTranslations aus alter DB), war er ungeschützt.
+- **Fix:** `String(text || '').replace(/[\u200B\u200C]/g, '').replace(/\s+/g, ' ').trim()` — ZWSP/ZWNJ VOR Whitespace-Normalisierung entfernen. Reihenfolge entscheidend: erst unsichtbare Null-Breite-Marker, dann sichtbare Whitespace-Normalisierung.
+- **Cross-Referenzen:** `client-factory.js`, `translation-quality.js` (isLikelyTargetLanguageText, scoreTranslationQuality, inferFlagReason), `translation-runtime.js` (qaPhase clean-Funktion)
+- **Status:** ✅ Gefixt — Commit `6cb5efb`
+- **LIVE-Vorhanden:** `client-factory.js:25-36`
+- **Verifikation:** 4 Smoke-Tests 175+ Checks 0 Fehler, Code-Review Nit Pick Nick approved, Syntax-Check OK
+
+---
+
 ## 📋 Abgeschlossene Sessions
 
 | Datum | Session | Fixes | Commit | FREEZE-Einträge |
 |-------|---------|-------|--------|-----------------|
 | 2026-06-20 | Sinnhaftigkeitsanalyse | 15 (P0×2, P1×5, P2×5, P3×3) | `9a853ef` | 1-15 (dieses Dokument) |
 | 2026-06-20 | Doku-Divergenz-Audit (🔵) | 7 DD-Einträge | `bcb6e1e` | 16-22 (dieses Dokument) |
+| 2026-06-21 | V0.21 P0 Defense-in-Depth | 1 Härtung (normalizeWhitespace) | `6cb5efb` | 23 (dieses Dokument) |
 
 ---
 
