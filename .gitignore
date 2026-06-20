@@ -22,5 +22,23 @@ archive/docs/VISION.md
 core/.env.e2e-live-backup
 core/.env.backup
 
+# Dev-Tools (internal only, removed from GitHub)
+core/scripts/
+core/tests/
+core/release/
+core/archive/dbold/
+core/archive/backups/
+# core/archive/assets/ — NICHT ignoriert: Banner.png + Screenshots für README
+core/archive/plans/
+V70/
+V71/
+
 # Windows reserved device name
 nul
+
+# Commit-Message Temporary (RULE 3)
+core/.commit_msg.txt
+
+# Root Docs (Proxy-Kopien, nicht auf GitHub)
+WORKFLOW.md
+LLM-AGENTS-EntryPoint.md

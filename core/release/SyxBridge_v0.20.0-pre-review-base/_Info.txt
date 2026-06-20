@@ -1,7 +1,0 @@
-VERSION: "0.19.7",
-GAME_VERSION_MAJOR: 71,
-GAME_VERSION_MINOR: 19,
-NAME: "syx-bridge",
-DESC: "Open start.bat from steamapps/workshop/content/1162750/3742975754. Use any API key from Groq or OpenRouter for fast and free translation. Grab a coffee and play SoS mods in your native language. Local only.",
-AUTHOR: "Vannon",
-INFO: "Happy native modding.",

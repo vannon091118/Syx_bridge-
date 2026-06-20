@@ -16,7 +16,7 @@
 - **PREFLIGHT Analysis:** Automatischer DB-Health-Check vor jedem Sync (v0.20)
 - **better-sqlite3:** sqlite3→better-sqlite3 migriert (2026-06-20) — synchron, Promise-Wrapper, 0 VULN
 - **translateHttpError:** HTTP-Statuscodes→Deutsch — menschenlesbare Fehler in Logs (2026-06-20)
-- **Dev-Tools:** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js (2026-06-20)
+- **Dev-Tools (intern, nicht auf GitHub):** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js
 - **Dual-Path-Copy:** Native Mode kopiert übersetzte Dateien in BEIDE Verzeichnisse (Steam/AppData)
 - **Routing-Hardening:** Argos CostClass 0→10, Nvidia/Groq priorisiert, Tier 2 Nvidia-Injection
 - **Error-Handler Smart:** 429→disable run, eskalierender Cooldown ×2, flaggedForReview
@@ -113,6 +113,8 @@ Scan → Extract → Translate → Audit → Polish → Export
 - **Regel 1 Overdrive:** "Ich werde Gemini nicht rein lassen." – Defensiver, langfristiger Code-Ansatz.
 - **External Research Siege:** Bei unklaren Bugs 10-15 Sub-Agents massiv-parallel.
 - **DB-Backup:** Vor und nach kritischen Fixes wird `translations.db` komprimiert archiviert.
+
+**⚠️ Dev-Tools entfernt (nur noch lokal):** `core/scripts/`, `core/tests/`, `core/release/`, `core/archive/{dbold,backups,assets,plans}/`, `V70/`, `V71/` — nicht mehr auf GitHub, um Angriffsfläche zu minimieren.
 
 ---
 
