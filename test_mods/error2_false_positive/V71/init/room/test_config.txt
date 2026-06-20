@@ -1,0 +1,48 @@
+__OVERWRITE: true,
+
+ROOM1: {
+	NAME: "Schmiede",
+	DESC: "Eine einfache Schmiede zur Waffenproduktion."
+},
+
+HEAL1: {
+	NAME: "Heilungsraum",
+	DESC: "Hier werden Verwundete versorgt."
+},
+
+view.menu.ScKeys: {
+	nameBig: "Einstellungen",
+	nameSmall: "Optionen"
+},
+
+ARMY_NAMES: [
+	"Legion des Lichts",
+	"Dunkle Garde"
+],
+
+BUILDING_TYPES: {
+	TYPE_WOOD: "Holzhuette",
+	TYPE_STONE: "Steingebaeude"
+},
+
+RESOURCE_NAMES: [
+	"Eisen",
+	"Holz",
+	"Stein"
+],
+
+FACTION_LIST: {
+	FACTION_1: "Koenigreich des Nordens",
+	FACTION_2: "Freie Staedte"
+},
+
+MENU_MAIN: {
+	btnNewGame: "Neues Spiel",
+	btnLoad: "Laden",
+	btnOptions: "Einstellungen"
+},
+
+TERRAIN_NAMES: {
+	PLAINS: "Ebene",
+	MOUNTAINS: "Gebirge"
+}

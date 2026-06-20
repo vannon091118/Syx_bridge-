@@ -1,0 +1,6 @@
+VERSION: "1.0.0",
+GAME_VERSION_MAJOR: 71,
+GAME_VERSION_MINOR: 0,
+NAME: "Config False Positive Test",
+DESC: "Test-Mod fuer shouldTranslate() False-Positive-Bug. Enthaelt Config-Syntax die nicht uebersetzt werden sollte.",
+AUTHOR: "SyxBridge Diagnostics"

@@ -1,0 +1,5 @@
+version:1.0.0
+NAME: "English Complex Translation Test"
+DESC: "Tests English-to-German translation of complex strings with multiple {VARIABLE} placeholders"
+GAME: V71.0
+TYPE: error6_english_complex

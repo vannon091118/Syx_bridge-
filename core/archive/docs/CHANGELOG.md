@@ -1,5 +1,48 @@
 # CHANGELOG
 
+## [FULLTEST-RUN-ENGLISH] - 2026-06-21 — E2E Fulltest mit English-Source-Mods: 27 fresh translations, DB 141→165, 0 Watermarks
+
+Der erste Fulltest mit German-Mods war eine Enttäuschung — 92% stale weil die Test-Mods schon auf Deutsch waren. Also hab ich zwei neue English-Source-Mods gebaut und den Test wiederholt. Diesmal mit echten Übersetzungen. Und es hat funktioniert.
+
+### English Test Mods (NEU)
+- **error5_english_text:** 8 Tech-Strings in English — "We should be prepared for every battle." → "Wir sollten für jedes Gefecht vorbereitet sein."
+- **error6_english_complex:** 4 Tech-Strings mit {VARIABLEN} in English — testet Placeholder-Shielding während echter Übersetzung
+
+### Fulltest Ergebnis (English→German)
+- **44 translatable strings** über 3 Mods (text-heavy EN, script-heavy, complex EN)
+- **27 fresh translations** — 0% stale auf neue Einträge (vs 92% stale beim German-Run)
+- **DB: 141→165 (+24)** — Stale unverändert bei 138 (neue Einträge sind ALLE fresh)
+- **Pipeline: 129.6s** E2E, Provider-Fallback funktionierte (429→Key-Rotation)
+- **Watermark-Audit: 0/0** — P0-1 und P0-3 Verteidigung hielt bei echten Übersetzungen
+- **Sample-QA:** "We should be prepared for every battle." → "Wir sollten für jedes Gefecht vorbereitet sein."
+
+### Test-Infrastruktur
+- **tests/fulltest_run.js** — Comprehensive E2E-Test: 6 Phasen (Scan→DB before→Pipeline→QA comparison→DB after→Watermark audit)
+- **tests/v21_p0_live_verify.js** — 22-Test-Suite ohne API-Calls (P0-1/2/3/4 + J1/J2/G1)
+- Beide Tests nutzen `NODE_PATH=core/node_modules` für Dependency-Resolution
+
+### Files Changed
+- `test_mods/error5_english_text/` — NEU: English text-heavy mod (8 Strings)
+- `test_mods/error6_english_complex/` — NEU: English complex mod (4 Strings mit {PLACEHOLDERN})
+- `test_mods/error1_watermark_mask/` — Erweitert 4→8 Strings
+- `test_mods/error2_false_positive/` — Erweitert 5→10 Config-Patterns
+- `tests/fulltest_run.js` — NEU: Comprehensive E2E test script
+- `tests/v21_p0_live_verify.js` — NEU: 22-test verification suite
+- `core/src/providers/client-factory.js` — P0-4: normalizeWhitespace Watermark-Stripping
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+- `core/archive/docs/FREEZE/FREEZE_INDEX_2.md` — §7 + Session-Tabelle aktualisiert
+
+### Tests
+- v21_p0_live_verify.js: 22/22 PASS
+- fulltest_run.js: Pipeline completed, 27 fresh translations, 0 watermarks
+
+### EFFORT TO NEXT SCOPE
+- DB-Sanitization: Watermarks aus alten DB-Einträgen entfernen
+- Live-Run mit G1-Trigger (API-Fehler provozieren um polish_status='failed' zu verifizieren)
+- Commit aller Test-Assets + Doku-Update
+
+---
+
 ## [P1-2-NON-NATIVE-STALE] - 2026-06-20 — Non-native stale Counter-Reset: review_count nur bei echtem Übersetzungsversuch
 
 Der simpelste Fix dieser Session. Fünf Zeilen. Aber er schließt eine Lücke die seit Monaten existiert: Wenn ein Provider (Groq, OpenRouter, polish_single, whatever) den englischen Originaltext als "Übersetzung" zurückgibt — warum auch immer — dann hat kein echter Übersetzungsversuch stattgefunden. Trotzdem hat `saveTranslation()` den review_count um 1 hochgezählt. Jedes Mal.

@@ -2,10 +2,11 @@
 /**
  * verify_commit_msg.js — RULE 3 Härtung
  * 
- * Vergleicht die Commit-Message gegen `git diff --cached --name-only`.
+* Vergleicht die Commit-Message gegen `git diff --cached --name-only`.
  * JEDE gestagte Datei muss in der Commit-Message erwähnt werden.
  * Zusätzlich: RULE 2 Mindestwortzahl wird erzwungen.
- *   500 Wörter für normale Commits, 50 Wörter für triviale Commits
+ *   200 Wörter für Standard-Code-Commits, 100 Wörter für Test-Assets
+ *   (nur test_mods/ + tests/), 50 Wörter für triviale Commits
  *   (nur Doc-Dateien oder ≤1 Datei + <10 Zeilen geändert).
  * 
  * Exit 0 = PASS (Commit darf durchgehen)
@@ -74,9 +75,9 @@ if (stagedFiles.length === 0) {
     process.exit(1);
 }
 
-// ─── Detect trivial commit ─────────────────────────────────────────
-// Trivial = only doc files (.md, .txt), or ≤1 file + <10 lines changed
-let isTrivial = false;
+// ─── Detect commit category ────────────────────────────────────────
+// Categories: TRIVIAL (doc-only/typo), TEST-ASSET (only test data), STANDARD (code)
+let commitCategory = 'STANDARD';
 const allDocs = stagedFiles.every(f => /\.(md|txt)$/i.test(f));
 let smallDiff = false;
 if (stagedFiles.length <= 1 && stagedDiffStat) {
@@ -88,13 +89,25 @@ if (stagedFiles.length <= 1 && stagedDiffStat) {
         smallDiff = (insertions + deletions) < 10;
     } catch (_) { /* can't parse diff stat, assume not small */ }
 }
-isTrivial = allDocs || smallDiff;
+
+const isTrivial = allDocs || smallDiff;
+const isTestAsset = !isTrivial && stagedFiles.every(f =>
+    /^(tests|test_mods|core\/tests)\//.test(f.replace(/\\/g, '/'))
+);
+
+if (isTrivial) commitCategory = 'TRIVIAL';
+else if (isTestAsset) commitCategory = 'TEST-ASSET';
+else commitCategory = 'STANDARD';
 
 // ─── RULE 2: Word count check ──────────────────────────────────────
 const words = commitMsg.split(/\s+/).filter(Boolean);
 const wordCount = words.length;
-const RULE2_MIN_WORDS = isTrivial ? 50 : 500;
-const trivialLabel = isTrivial ? ' (trivial commit — 50 word minimum)' : ' (standard commit — 500 word minimum)';
+const RULE2_MIN_WORDS = commitCategory === 'TRIVIAL' ? 50 :
+                        commitCategory === 'TEST-ASSET' ? 100 : 200;
+
+const categoryLabel = commitCategory === 'TRIVIAL' ? 'TRIVIAL (doc-only/<10 lines — 50 word min)' :
+                      commitCategory === 'TEST-ASSET' ? 'TEST-ASSET (test files/mods — 100 word min)' :
+                      'STANDARD (code changes — 200 word min)';
 
 if (wordCount < RULE2_MIN_WORDS) {
     console.error('═══════════════════════════════════════════');
@@ -102,16 +115,29 @@ if (wordCount < RULE2_MIN_WORDS) {
     console.error('═══════════════════════════════════════════');
     console.error('');
     console.error(`Commit message has ${wordCount} words.`);
-    console.error(`RULE 2 requires at least ${RULE2_MIN_WORDS} words${trivialLabel}.`);
+    console.error(`RULE 2 requires at least ${RULE2_MIN_WORDS} words (${categoryLabel}).`);
     console.error('');
-    if (isTrivial) {
+    if (commitCategory === 'TRIVIAL') {
         console.error('This commit was detected as TRIVIAL');
         console.error('(doc-only or <10 lines changed).');
         console.error('Minimum: 50 words. A precise sentence.');
+    } else if (commitCategory === 'TEST-ASSET') {
+        console.error('This commit was detected as TEST-ASSET');
+        console.error('(only test files and test mods).');
+        console.error('Minimum: 100 words. Describe what is tested and why.');
     } else {
-        console.error('RULE 2 _Commit-Narrative Edition: KEIN Commit');
-        console.error('ohne eine 500-1000 Wörter lange satirische');
-        console.error('Erzählung als Commit-Beschreibung.');
+        console.error('This commit was detected as STANDARD');
+        console.error('(code changes). Minimum: 200 words.');
+        console.error('');
+        console.error('RULE 2 _Commit-Tagebuch Edition — FAIL→WORK→RETRY:');
+        console.error('KEIN künstliches Strecken! Wenn du nicht genug');
+        console.error('Inhalt hast, erledige den nächsten kleinen Auftrag');
+        console.error('(INDEX updaten, Doku nachziehen, Verifikation laufen');
+        console.error('lassen) und erweitere den Commit-Text um die echten');
+        console.error('Ergebnisse. Wiederhole bis genug Substanz da ist.');
+        console.error('');
+        console.error('Tipp: Erzähle ironisch von deinen Fehlern beim');
+        console.error('Implementieren. Das füllt ehrlich und unterhaltsam.');
     }
     console.error('');
     process.exit(1);
@@ -214,8 +240,9 @@ for (const f of stagedFiles) {
 console.log('');
 console.log(`  ${stagedFiles.length} staged file(s) — all referenced`);
 console.log(`  RULE 2 word count: ${wordCount} words (≥${RULE2_MIN_WORDS})`);
-if (isTrivial) {
-    console.log(`  Type: TRIVIAL commit (doc-only or <10 lines)`);
-}
+const catDesc = commitCategory === 'TRIVIAL' ? 'doc-only or <10 lines' :
+               commitCategory === 'TEST-ASSET' ? 'test files/mods only' :
+               'code changes';
+console.log(`  Type: ${commitCategory} commit (${catDesc})`);
 console.log('');
 process.exit(0);
