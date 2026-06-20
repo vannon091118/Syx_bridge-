@@ -264,6 +264,28 @@ PRAGMA busy_timeout = 5000;      -- 5s
 
 ### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
 
+### HANDSHAKE_2026-06-19 Partielle Archivierung (2026-06-20)
+
+> **Aktion:** 12 OBSOLETE Sektionen aus HANDSHAKE_2026-06-19.md ins Buch überführt.
+> **Begründung:** ~60 % des HANDSHAKE waren historisch/erledigt. v0.20 ist released, DB-Stand Snapshot 17 ist uralt, Bugs F.B/F.D/#013/#014/#015 sind behoben, Timeline + Git-Verlauf sind im CHANGELOG. ACTIVE-Anteile (F.A, F.C, Architektur, Workflow-Regeln, Re-Entry-Pfad) bleiben im Dokument.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| HH-001 | §1 Executive Summary | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-002 | §2.1 Version-Layer + §2.2 DB Snapshot 17 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-003 | §2.5 Sandbox-Cleanup | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-004 | §3 Bewegungen Timeline | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-005 | §4 F.B Contract-Tests | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-006 | §4 F.D + #013/#014/#015 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-007 | §7 Git-Verlauf | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-008 | §8 Erledigte Prio-Punkte | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-009 | §10 S1/S2/S3/S5(F.B)/S8 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-010 | §12 Signoff | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-011 | §2.4 Naming-Bug #015 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-012 | §2.2 Provider-Verteilung Snap 17 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+
+### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
+
 > **Regel:** Eine FREEZE-Datei wird NUR gelöscht wenn:
 > 1. ✅ Inhalt nachweislich ohne Konflikt in LIVE umgesetzt
 > 2. ✅ Relevante Daten in LIVE vorhanden ODER als obsolet markiert

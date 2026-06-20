@@ -5,7 +5,7 @@
 > Jeder gelöschte FREEZE-Eintrag wird hier als Glossary-Eintrag überführt — MIT Kausalität, Beobachtungen, Cross-Referenzen.
 > **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 20.06.2026) lückenlos nachvollzogen werden.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
-> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports = **67 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
+> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports + 12 HANDSHAKE-Einträge = **79 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
 
 ---
 
@@ -24,8 +24,9 @@
 11. [MASTER_DOC-Konsolidierung (17)](#11-master_doc-konsolidierung-durchlauf-1)
 12. [Doku-Divergenz-Fixes (2)](#12-doku-divergenz-fixes-2026-06-20)
 13. [Doku-Clean v0.20.0 (18)](#13-doku-clean-v0200)
+14. [HANDSHAKE_2026-06-19 — Partielle Archivierung (12)](#14-handshake_2026-06-19--partielle-archivierung)
 
-> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18 = **81 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend)
+> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12 = **93 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
 
 ---
 
@@ -626,6 +627,113 @@
 - **Kausalität:** Letzte Verifikationsstufe vor Release.
 - **Status:** ✅ Abgeschlossen — 6/6 BESTÄTIGT
 - **LIVE-Vorhanden:** Nichts — Verifikationen im CHANGELOG dokumentiert
+
+---
+
+## 14. HANDSHAKE_2026-06-19 — Partielle Archivierung
+
+> **Aktion:** 12 OBSOLETE Sektionen aus HANDSHAKE_2026-06-19.md ins Buch überführt.
+> **Quelle:** `core/archive/docs/HANDSHAKE_2026-06-19.md` (12 Sektionen, ~60 % OBSOLETE)
+> **Regel:** HANDSHAKE = historisches Übergabe-Dokument. Aktueller Stand jetzt in MASTER_DOC + CHANGELOG. Was erledigt/veraltet ist, gehört ins Buch.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 HH-001 — §1 Executive Summary
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Übergabe
+- **Zusammenfassung:** v0.20.0-pre-release Status-Report: Release-fähig, Snapshot 17 mit 6.294 Einträgen, Vendor-Sync mit Drift-Detection, Sandbox-Cleanup (~239 MB). Build-Linien: Workshop (185 KB ZIP) + REVIEW BASE (~520 KB ZIP).
+- **Ursache der Obsoleszenz:** v0.20.0 ist längst released, DB-Stand Snapshot 17 ist durch Live-Run (9.492 Einträge) überholt, Sandbox-Cleanup ist einmalig und abgeschlossen.
+- **LIVE-Ersatz:** MASTER_DOC.md §1+2 + CHANGELOG [v0.20.0] + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-002 — §2.1 Version-Layer + §2.2 Live-DB Snapshot 17
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** DB-Metrik
+- **Zusammenfassung:** Snapshot 17: 6.294 Einträge, 35.6 % Stale, 1.725 Flagged. Provider-Verteilung: native_runtime 2.902 (46.1 %), ab_polish 1.370 (21.8 %), google_free 756 (12.0 %). Stale-Verteilung nach Provider dokumentiert.
+- **Ursache der Obsoleszenz:** DB-Stand völlig überholt durch Live-Run v0.20.0 (9.492 Einträge), V0.21-Audit, und mehrere DB-Resets/Snapshots seither.
+- **LIVE-Ersatz:** MASTER_DOC.md §5 + PREFLIGHT_LATEST.md + DB_TREND_REPORT.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-003 — §2.5 Sandbox-Cleanup-Bilanz
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Cleanup
+- **Zusammenfassung:** ~239 MB freigegeben: .claude/, audit/, alte dbold/*.db, alte tar.gz, alte Release-Artefakte. Bestand-Vergleich: dbold/ 243 MB → 4.1 MB, release/ 1.6 MB → 1.5 MB.
+- **Ursache der Obsoleszenz:** Einmaliger Cleanup, längst abgeschlossen. Kein wiederkehrender Prozess.
+- **LIVE-Ersatz:** Keiner nötig — einmalige Aktion.
+- **Status:** ✅ Archiviert
+
+### 📋 HH-004 — §3 Bewegungen (Timeline 2026-06-17 → 2026-06-19)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Chronik
+- **Zusammenfassung:** 12-Ereignis-Timeline: FREEZE-Archivierung, Doc-Konsolidierung, Shield-Format, Gate-Counter, Plugin-Architektur, PREFLIGHT, DB-Statistik, Routing-Hardening, Argos-Stale-Löschung, Bug-Fixes, v0.20.0-Vorbereitung.
+- **Ursache der Obsoleszenz:** Reine Historie. Jedes Ereignis ist im CHANGELOG.md mit Commit-Hash dokumentiert. CHANGELOG ist die SSOT für Chronologie.
+- **LIVE-Ersatz:** CHANGELOG.md (alle Einträge mit Datum + Commit)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-005 — §4 F.B Plugin-Boundary Contract-Tests
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobener Bug
+- **Zusammenfassung:** BU-023: Dynamische Interface-Erkennung via Object.getOwnPropertyNames(). 73/73 Checks. Synthetischer Auto-Detection-Test. Signatur-Fix in SongsOfSyxPlugin.applyPatchModifications() (2→3 Parameter).
+- **Ursache der Obsoleszenz:** BEHOBEN + VERIFIZIERT. 73/73 PASS seit Commit. Kein offener Rest.
+- **LIVE-Ersatz:** CHANGELOG [BU-023] + plugin-boundary-contract.js (100/100 nach Update)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-006 — §4 F.D Audit-.jsonl committed + Anomalien #013/#014/#015
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobene Anomalien
+- **Zusammenfassung:** F.D: audit/ komplett entfernt. #013: Doc-/Live-Drift zwischen Snap 16/17 (+163 Einträge, +117 Stale) — durch Live-Run aufgeklärt. #014: quality_score-Spalte FALSIFIED — existiert in Live-DB (PRAGMA table_info bestätigt). #015: REVIEW-BASE Naming-Bug — korrupte console.log-Zeile entfernt.
+- **Ursache der Obsoleszenz:** Alle drei Anomalien behoben oder durch spätere Erkenntnisse überholt. #013 durch V0.21-Audit erklärt, #014 FALSIFIED, #015 gefixt.
+- **LIVE-Ersatz:** CHANGELOG [0.20.0-pre-release] + MASTER_FREEZE §3.2 + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-007 — §7 CHANGELOG / Git-Verlauf
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Doppelte Chronik
+- **Zusammenfassung:** Tag/Commit/Summary-Tabelle: v0.20.0-pre-release → eae4c81, v0.20.0-pre-review-base (pending), v0.19.7 (mehrere Snapshots), v0.19.05c-17.06 (HANDSHAKE-Vorlage).
+- **Ursache der Obsoleszenz:** Doppelt zu CHANGELOG.md. CHANGELOG ist die SSOT für Version-Historie — HANDSHAKE-Kopie ist redundant.
+- **LIVE-Ersatz:** CHANGELOG.md (vollständig, mit allen Commits)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-008 — §8 Offene Punkte (erledigte P0/P1/P2/P3)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte Prio-Liste
+- **Zusammenfassung:** 9 priorisierte Punkte: P0 REVIEW-BASE Naming-Bug (✅), P0 Anomalie #013 (✅ — durch Live-Run), P1 quality_score existiert (✅), P1 F.B Contract-Tests (✅ BU-023), P2 Snapshot-18 (✅), P3 Effort-Doku (überholt). Nur F.C, S4, S6, S7 noch offen.
+- **Ursache der Obsoleszenz:** 6 von 9 Punkten erledigt. Erledigte Punkte sind reine Historie — gehören nicht in ein LIVE-Dokument.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 (Roadmap mit aktuellem Status) + CHANGELOG (alle erledigten Punkte)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-009 — §10 Effort to Next Scope S1/S2/S3/S5(F.B)/S8
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte Scopes
+- **Zusammenfassung:** S1: REVIEW-BASE Naming-Bug ✅. S2: Erster v0.20 Live-Run ✅ (8 Mods, 9.492 Einträge). S3: quality_score existiert ✅. S5 F.B: Plugin-Boundary Contract-Tests ✅ BU-023. S8: Snapshot 18 + Doku ✅.
+- **Ursache der Obsoleszenz:** Alle fünf Scopes erledigt und im CHANGELOG dokumentiert. Historische Planung ohne aktuellen Wert.
+- **LIVE-Ersatz:** CHANGELOG [v0.20.0] + [REVIEW-LIMIT-PIPELINE] + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-010 — §12 Signoff
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Meta
+- **Zusammenfassung:** Author: Buffy, Approved by: Vannon (TODO), Gültig bis: nächster HANDSHAKE. READY FOR HANDOFF.
+- **Ursache der Obsoleszenz:** Reine Meta-Information des Dokuments selbst. Mit der Archivierung des Dokuments obsolet. Der nächste HANDSHAKE (2026-06-20) existiert bereits.
+- **LIVE-Ersatz:** HANDSHAKE_2026-06-20.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-011 — §2.4 REVIEW-BASE Naming-Bug (Anomalie #015)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobener Bug
+- **Zusammenfassung:** Naming-Pattern: `SyxBridge_v0.20.0-pre-release-review-base` (Suffix-Doppelung) statt `SyxBridge_v0.20.0-pre-review-base`. Korrupte console.log-Zeile in build-review-base.js:294 als Ursache. cleanVersion-Logik war bereits korrekt.
+- **Ursache der Obsoleszenz:** BEHOBEN. Ordner heißt jetzt sauber `SyxBridge_v0.20.0-pre-review-base`.
+- **LIVE-Ersatz:** CHANGELOG [0.20.0-pre-release] Anomalie #015
+- **Status:** ✅ Archiviert
+
+### 📋 HH-012 — §2.2 Provider-Verteilung Snapshot 17
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Historische Provider-Statistik
+- **Zusammenfassung:** Detaillierte Provider-Statistiken aus Snapshot 17: Stale-Verteilung (native_runtime 68.0 %, argos 28.5 %, polish_single 14.2 %), Provider-Shift-Delta (native_runtime +630, argos -273, google_free -59).
+- **Ursache der Obsoleszenz:** Durch Live-Run und V0.21-Audit komplett überholt. Aktuelle DB zeigt völlig andere Verteilung.
+- **LIVE-Ersatz:** MASTER_DOC.md §5 + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
 
 ---
 

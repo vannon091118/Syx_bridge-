@@ -1,7 +1,7 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
 **Stand:** 20.06.2026 | **Version:** v0.20.0 → v0.21 (Scope definiert) | **Autor:** Vannon & Sub-Agents
-**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-19.md, HANDSHAKE_2026-06-20.md, REDUNDANZ_AUDIT_V2_2026-06-19.md, LLM-AGENTS-EntryPoint.md, V0.21_SCOPE.md
+**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-19.md (PARTIAL — OBSOLETE archiviert nach FREEZE_INDEX §14), HANDSHAKE_2026-06-20.md, REDUNDANZ_AUDIT_V2_2026-06-19.md, LLM-AGENTS-EntryPoint.md, V0.21_SCOPE.md
 
 ---
 
@@ -149,7 +149,7 @@ core/archive/docs/
 ├── PREFLIGHT_LATEST.md        # Letzter PREFLIGHT-Report (LIVE)
 ├── LIVE_INDEX.md              # Index der LIVE- + Meta-Dokumente
 ├── WORKFLOW.md                # Agenten-Workflow (Session-Lifecycle, Doku-Clean, Eskalation)
-├── HANDSHAKE_2026-06-19.md    # Session-Übergabe (19.06.)
+├── HANDSHAKE_2026-06-19.md    # Session-Übergabe (19.06.) — PARTIAL, OBSOLETE archiviert nach FREEZE_INDEX §14
 ├── HANDSHAKE_2026-06-20.md    # Session-Übergabe (20.06.)
 ├── AGENTS.md                  # SSOT-Kopie der Agent-Regeln (Root-Sync)
 ├── KNOWN_BUGS_REPORT.md       # Bug-Triage (34+ Bugs katalogisiert)
