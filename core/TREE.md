@@ -1,4 +1,4 @@
-# 🌳 Syx-Bridge v0.20.0-pre-release — Projekt-Struktur (TREE)
+# 🌳 Syx-Bridge v0.20.0 — Projekt-Struktur (TREE)
 
 > **Generiert:** 2026-06-18 | **Branch:** prepare-0.20-wip | **Version:** v0.19.7
 
@@ -23,7 +23,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
 └── core/                           # ═══ Anwendung ═══
     │
     ├── index.js                    # ⭐ ENTRY POINT — CLI, Startup-Wizard, Orchestrator
-    ├── package.json                # v0.20.0-pre-release, Dependencies: axios, dotenv, inquirer, sql.js, sqlite3 + optional: @huggingface/transformers
+    ├── package.json                # v0.20.0, Dependencies: axios, dotenv, inquirer, sql.js, sqlite3 + optional: @huggingface/transformers
     ├── package-lock.json
     ├── eslint.config.mjs           # ESLint-Konfiguration
     ├── LICENSE                     # MIT
@@ -145,7 +145,7 @@ SyxBridge_Live/                     # Root — Deployment-Verzeichnis
     │   ├── .gitkeep
     │   ├── docs/
     │   │   ├── MASTER_DOC.md                # Architektur-Master-Doku (AKTUELL)
-    │   │   ├── CHANGELOG.md                # Versionshistorie (v0.20.0-pre-release)
+    │   │   ├── CHANGELOG.md                # Versionshistorie (v0.20.0)
     │   │   ├── ANALYSE_2026-06-19.md       # Doku-Validität + DB-Analyse (Referenz)
     │   │   ├── FULLSCAN_2026-06-19.md      # Vollständiger Code-Scan 215 Funktionen (Referenz)
     │   │   ├── IMPORT_CHAIN_ISOLATION_2026-06-19.md  # 44 Import-Ketten (Referenz)

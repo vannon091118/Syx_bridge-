@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 const axios = require('axios');
 
 /**
@@ -38,14 +38,12 @@ async function startOllama() {
     return true;
   }
 
-  const { start } = await inquirer.prompt([
-    {
-      type: 'confirm',
-      name: 'start',
-      message: 'Ollama ist nicht erreichbar. Soll es gestartet werden?',
-      default: true
-    }
-  ]);
+  const { start } = await prompts({
+    type: 'confirm',
+    name: 'start',
+    message: 'Ollama ist nicht erreichbar. Soll es gestartet werden?',
+    initial: true
+  });
 
   if (start) {
     console.log('[INFO] Starte Ollama...');

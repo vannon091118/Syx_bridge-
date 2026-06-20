@@ -9,6 +9,7 @@
  *   4. LOW_SCORE: Score < 30 ohne Flag → flagged + deep polish
  *   5. JAVA_NOISE: view.sett/world.map → flagged + skip
  *   6. ORPHANED_REVISIONS: revisions without parent → delete
+ *   7. STALE_RETRANSLATE_CLEANUP: orphaned flags (src!=tgt) + still-stale reset (src=tgt)
  *
  * Usage:
  *   node scripts/db_repair.js              # Dry Run (zeigt was geändert würde)
@@ -25,7 +26,7 @@ const DRY_RUN = !process.argv.includes('--execute');
 
 // ═════════════════════════════════════════════════════════════════════
 // EXPORTED REPAIR FUNCTIONS — called by preflight.js
-// Each returns { changes: number }
+// Each returns { changes: number } (except #7 which returns {orphanFlagsCleared, staleReset})
 // ═════════════════════════════════════════════════════════════════════
 
 async function repairNativeStale(run) {
@@ -118,6 +119,42 @@ async function repairOrphanedRevisions(run) {
     WHERE source_text NOT IN (SELECT source_text FROM translations)
   `);
   return result.changes;
+}
+
+/**
+ * 7. STALE_RETRANSLATE_CLEANUP:
+ *    a) Orphaned flags (src != tgt): Eintrag wurde retranslatiert, aber
+ *       flag_reason='stale_retranslate' wurde nie gelöscht → Flag clearen.
+ *    b) Still stale (src = tgt): Eintrag ist immer noch identisch zur Source.
+ *       Audit-Stage resetten, damit die Pipeline beim nächsten Run erneut
+ *       übersetzt (inkl. isProperNoun-Check via translation-runtime).
+ */
+async function repairCleanupStaleRetranslate(run) {
+  // a) Orphaned flags: retranslated but flag never cleared
+  const orphanResult = await run(`
+    UPDATE translations
+    SET flagged = 0,
+        flag_reason = '',
+        updated_at = CURRENT_TIMESTAMP
+    WHERE flag_reason = 'stale_retranslate'
+      AND source_text != translation
+  `);
+
+  // b) Still stale: reset for pipeline re-translation
+  const staleResult = await run(`
+    UPDATE translations
+    SET audit_stage = 0,
+        requires_deep_polish = 1,
+        polish_status = 'pending',
+        updated_at = CURRENT_TIMESTAMP
+    WHERE flag_reason = 'stale_retranslate'
+      AND source_text = translation
+  `);
+
+  return {
+    orphanFlagsCleared: orphanResult.changes,
+    staleReset: staleResult.changes
+  };
 }
 
 // ═════════════════════════════════════════════════════════════════════
@@ -252,10 +289,30 @@ async function main() {
     console.log(`  → Würde ${orphanedRevs[0].c} Einträge löschen.`);
   }
 
+  // ── 7. STALE_RETRANSLATE_CLEANUP ───────────────────────────────────
+  console.log('\n── 7. STALE_RETRANSLATE_CLEANUP (Orphan-Flags + Still-Stale-Reset) ──');
+  const staleOrphans = await q(
+    "SELECT COUNT(*) as c FROM translations WHERE flag_reason='stale_retranslate' AND source_text != translation"
+  );
+  const staleStillStale = await q(
+    "SELECT COUNT(*) as c FROM translations WHERE flag_reason='stale_retranslate' AND source_text = translation"
+  );
+  console.log(`  Orphan-Flags (src!=tgt, Flag löschen): ${staleOrphans[0].c}`);
+  console.log(`  Still-Stale  (src=tgt, Reset für Re-Translation): ${staleStillStale[0].c}`);
+
+  if (!DRY_RUN && (staleOrphans[0].c > 0 || staleStillStale[0].c > 0)) {
+    const result = await repairCleanupStaleRetranslate(run);
+    if (result.orphanFlagsCleared > 0) console.log(`  ✓ ${result.orphanFlagsCleared} Orphan-Flags gelöscht.`);
+    if (result.staleReset > 0) console.log(`  ✓ ${result.staleReset} Still-Stale Einträge für Re-Translation resettet.`);
+    totalFixed += result.orphanFlagsCleared + result.staleReset;
+  } else if (DRY_RUN) {
+    console.log(`  → Würde ${staleOrphans[0].c} Flags löschen + ${staleStillStale[0].c} Einträge resetten.`);
+  }
+
   // ── Zusammenfassung ─────────────────────────────────────────────────
   console.log('\n═══════════════════════════════════════════════════════════');
   console.log(`  ${DRY_RUN ? 'DRY RUN' : 'REPARATUR ABGESCHLOSSEN'}`);
-  console.log(`  Gesamt ${DRY_RUN ? 'würde markieren' : 'markiert'}: ${totalFixed || (nativeStale[0].c + unflaggedStale[0].c + shieldLeaks[0].c + lowScore[0].c + javaNoise[0].c + orphanedRevs[0].c)} Einträge`);
+  console.log(`  Gesamt ${DRY_RUN ? 'würde markieren' : 'markiert'}: ${totalFixed || (nativeStale[0].c + unflaggedStale[0].c + shieldLeaks[0].c + lowScore[0].c + javaNoise[0].c + orphanedRevs[0].c + staleOrphans[0].c + staleStillStale[0].c)} Einträge`);
   console.log('═══════════════════════════════════════════════════════════');
 
   if (DRY_RUN) {
@@ -276,5 +333,6 @@ module.exports = {
   repairShieldLeaks,
   repairLowScore,
   repairJavaNoise,
-  repairOrphanedRevisions
+  repairOrphanedRevisions,
+  repairCleanupStaleRetranslate
 };

@@ -2,7 +2,7 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
 const axios = require('axios');
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 require('dotenv').config({ path: path.join(__dirname, '.env'), quiet: true });
 
 const Router = require('./src/router');
@@ -15,7 +15,10 @@ const { createRuntimeOps } = require('./src/runtime-ops');
 // Songs-of-Syx surface (metadata, version dirs, classifyFile, formatMetadata, ...).
 // The legacy SongsOfSyxAdapter class has been removed — engine code consumes
 // the plugin through the GameAdapter interface.
-const SongsOfSyxPlugin = require('./src/plugins/SongsOfSyxPlugin');
+// plugin-registry: Dynamic plugin loading via GAME config flag.
+// Replaces hardcoded `new SongsOfSyxPlugin()` with `createPlugin(CONFIG.GAME)`.
+// Default is 'songs_of_syx' — backward compatible. New games register in plugin-registry.js.
+const { createPlugin } = require('./src/plugin-registry');
 const { createTranslationRuntime } = require('./src/translation-runtime');
 const { 
   ConfigRuntime, 
@@ -75,13 +78,18 @@ const LANG_CODES = {
 
 // Global State
 let isAborting = false;
+// BU-020: AbortController for cancelling in-flight HTTP requests on SIGINT.
+// Each axios call in client-factory.js receives this signal. When the user
+// presses Ctrl+C, abortController.abort() cancels ALL pending API calls
+// immediately, saving API quota that would otherwise be wasted on timeouts.
+let abortController = new AbortController();
 let hasConfirmedNative = false;
 let runtimeOps;
 let translationRuntime;
 // BU-002: Single game-authority — the plugin IS the adapter. runtime-ops.js,
 // planner.js, and parser.js consume this through the GameAdapter interface,
 // while buildBatchPrompt / serializer hooks use it through the GamePlugin.
-let activePlugin = new SongsOfSyxPlugin();
+let activePlugin = createPlugin(envFirst('GAME') || 'songs_of_syx');
 let gameAdapter = activePlugin;
 // Wire plugin into buildBatchPrompt for game-specific LLM prompts
 buildBatchPrompt._plugin = activePlugin;
@@ -101,6 +109,7 @@ const DEFAULT_GAME_MOD_ROOT = process.platform === 'win32'
 
 // Configuration
 let CONFIG = {
+  GAME: envFirst('GAME') || 'songs_of_syx',
   MOD_ROOT: envFirst('MOD_PATH', 'MOD_ROOT') || 'C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\1162750',
   GAME_MOD_ROOT: envFirst('OUTPUT_PATH', 'GAME_MOD_ROOT') || DEFAULT_GAME_MOD_ROOT,
   PATCH_ROOT: path.join(__dirname, 'patches'),
@@ -110,8 +119,8 @@ let CONFIG = {
   GRAMMAR_CHECK: process.env.GRAMMAR_CHECK !== 'false', // BUG-004: Default true — ensures Polish/Audit runs for all entries
   GRAMMAR_PROMPT_FILE: 'grammar_context.txt',
   LOCAL_MODELS_ENABLED: parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, false),
-  NMT_LOCAL_ENABLED: parseEnvFlag(process.env.NMT_LOCAL_ENABLED, false),
-    
+  // NMT_LOCAL_ENABLED removed (BU-040): was VERWAIST — no provider client, router entry,
+  // or dispatcher path existed. warm-model.js retained as Roadmap v0.23.
   PRIMARY_PROVIDER: envFirst('PRIMARY_PROVIDER') || 'openrouter',
   PRIMARY_MODEL: envFirst('PRIMARY_MODEL') || 'auto',
   POLISHER_PROVIDER: envFirst('POLISHER_PROVIDER') || '',  // '' = inherit from PRIMARY_PROVIDER below
@@ -131,6 +140,7 @@ let CONFIG = {
   OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
   FCM_URL: process.env.FCM_URL || 'http://localhost:19280/v1',
   FCM_ENABLED: parseEnvFlag(process.env.FCM_ENABLED, true),
+  GOOGLE_FREE_ENABLED: parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, true),
   PLAYER2_ENABLED: parseEnvFlag(process.env.PLAYER2_ENABLED, false),
   PLAYER2_URL: process.env.PLAYER2_URL || 'http://localhost:4315/v1',
   PLAYER2_KEYS: parseKeys(envFirst('PLAYER2_KEY', 'PLAYER2_KEYS')),
@@ -187,13 +197,14 @@ async function runStartupWizard() {
   const currentLang = status.targetLang && SUPPORTED_LANGS.includes(status.targetLang)
     ? status.targetLang
     : (SUPPORTED_LANGS.includes(CONFIG.TARGET_LANG) ? CONFIG.TARGET_LANG : SUPPORTED_LANGS[0]);
-  const { targetLang: chosenLang } = await inquirer.prompt([{
-    type: 'list',
+  const { targetLang: chosenLang } = await prompts({
+    type: 'select',
     name: 'targetLang',
     message: 'Zielsprache für die Übersetzung wählen:',
-    default: currentLang,
-    choices: SUPPORTED_LANGS.map(l => ({ name: `${l} (${LANG_CODES[l]})`, value: l }))
-  }]);
+    initial: SUPPORTED_LANGS.indexOf(currentLang),
+    choices: SUPPORTED_LANGS.map(l => ({ title: `${l} (${LANG_CODES[l]})`, value: l }))
+  });
+  if (!chosenLang) return;
   if (chosenLang !== CONFIG.TARGET_LANG) {
     console.log(`  [INFO] Zielsprache: ${CONFIG.TARGET_LANG} → ${chosenLang}`);
     CONFIG.TARGET_LANG = chosenLang;
@@ -220,10 +231,10 @@ async function runStartupWizard() {
   // 1) Argos
   console.log('\n[1/3] Argos Translate:');
   if (!status.argos.installed) {
-    const { installArgos } = await inquirer.prompt([{
-      type: 'confirm', name: 'installArgos', default: true,
+    const { installArgos } = await prompts({
+      type: 'confirm', name: 'installArgos', initial: true,
       message: 'Argos Translate ist nicht installiert. Jetzt installieren?'
-    }]);
+    });
     if (installArgos) {
       const ok = await ensureArgos();
       console.log(ok ? '  [OK] Installiert' : '  [FAIL] Installation fehlgeschlagen');
@@ -236,10 +247,10 @@ async function runStartupWizard() {
   console.log(`\n[2/3] Sprachmodell (${status.targetLang} / ${status.targetLangCode}):`);
   const recheck = await registry.getModelStatus().catch(() => status);
   if (recheck.argos.installed && !recheck.argos.targetLangInstalled) {
-    const { installLang } = await inquirer.prompt([{
-      type: 'confirm', name: 'installLang', default: true,
+    const { installLang } = await prompts({
+      type: 'confirm', name: 'installLang', initial: true,
       message: `Sprachmodell "${status.targetLang}" jetzt installieren?`
-    }]);
+    });
     if (installLang) {
       const result = await registry.installTargetLanguage();
       console.log(`  ${result.ok ? '[OK]' : '[FAIL]'} ${result.message}`);
@@ -254,10 +265,10 @@ async function runStartupWizard() {
   console.log('\n[3/3] Ollama (optional, lokale KI):');
   const recheck2 = await registry.getModelStatus().catch(() => status);
   if (!recheck2.ollama.running) {
-    const { setupOllama } = await inquirer.prompt([{
-      type: 'confirm', name: 'setupOllama', default: false,
+    const { setupOllama } = await prompts({
+      type: 'confirm', name: 'setupOllama', initial: false,
       message: 'Ollama ist nicht erreichbar. Jetzt starten?'
-    }]);
+    });
     if (setupOllama) {
       const ok = await startOllama();
       console.log(ok ? '  [OK] Ollama laeuft' : '  [WARN] Ollama konnte nicht gestartet werden');
@@ -289,6 +300,11 @@ process.on('SIGINT', async () => {
   }
   console.log('\n[!] Abbruch angefordert. Beende laufende Aufgaben sauber...');
   isAborting = true;
+  // BU-020: Cancel all in-flight HTTP requests immediately via AbortController.
+  // This saves API quota that would otherwise be consumed by 60-90s timeouts.
+  abortController.abort();
+  // Create a fresh AbortController for any cleanup operations (stopOllama, etc.)
+  abortController = new AbortController();
   await stopOllama();
 });
 
@@ -302,6 +318,11 @@ const dbRun = (sql, params = []) => dbManager.run(sql, params);
 const dbGet = (sql, params = []) => dbManager.get(sql, params);
 const dbAll = (sql, params = []) => dbManager.all(sql, params);
 const dbAllReadOnly = (sql, params = []) => dbManager.allReadOnly(sql, params);
+// Transaction Batching (HDD-Optimierung): Alle saveTranslation-Aufrufe
+// innerhalb eines BEGIN...COMMIT-Blocks werden in EINER Transaktion ausgeführt.
+const beginTransaction = () => dbManager.beginTransaction();
+const commitTransaction = () => dbManager.commitTransaction();
+const rollbackTransaction = () => dbManager.rollbackTransaction();
 
 async function initDbRo() {
   try {
@@ -333,10 +354,11 @@ function applyEnvToConfig() {
   CONFIG.MOD_ROOT = envFirst('MOD_PATH', 'MOD_ROOT') || CONFIG.MOD_ROOT;
   CONFIG.GAME_MOD_ROOT = envFirst('OUTPUT_PATH', 'GAME_MOD_ROOT') || CONFIG.GAME_MOD_ROOT;
   CONFIG.TARGET_LANG = envFirst('TARGET_LANG') || CONFIG.TARGET_LANG;
+  CONFIG.GAME = envFirst('GAME') || CONFIG.GAME;
   CONFIG.NATIVE_MODE = parseEnvFlag(process.env.NATIVE_MODE, CONFIG.NATIVE_MODE);
   CONFIG.GRAMMAR_CHECK = parseEnvFlag(process.env.GRAMMAR_CHECK, CONFIG.GRAMMAR_CHECK);
   CONFIG.LOCAL_MODELS_ENABLED = parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, CONFIG.LOCAL_MODELS_ENABLED);
-  CONFIG.NMT_LOCAL_ENABLED = parseEnvFlag(process.env.NMT_LOCAL_ENABLED, CONFIG.NMT_LOCAL_ENABLED);
+  // NMT_LOCAL_ENABLED removed (BU-040): see NMT_LOCAL_ENABLED comment in CONFIG block.
   CONFIG.PRIMARY_PROVIDER = envFirst('PRIMARY_PROVIDER') || CONFIG.PRIMARY_PROVIDER;
   CONFIG.PRIMARY_MODEL = envFirst('PRIMARY_MODEL') || CONFIG.PRIMARY_MODEL;
   CONFIG.POLISHER_PROVIDER = envFirst('POLISHER_PROVIDER') || CONFIG.POLISHER_PROVIDER;
@@ -356,6 +378,7 @@ function applyEnvToConfig() {
   CONFIG.OLLAMA_URL = envFirst('OLLAMA_URL') || CONFIG.OLLAMA_URL;
   CONFIG.FCM_URL = envFirst('FCM_URL') || CONFIG.FCM_URL;
   CONFIG.FCM_ENABLED = parseEnvFlag(process.env.FCM_ENABLED, CONFIG.FCM_ENABLED);
+  CONFIG.GOOGLE_FREE_ENABLED = parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, CONFIG.GOOGLE_FREE_ENABLED);
   CONFIG.PLAYER2_ENABLED = parseEnvFlag(process.env.PLAYER2_ENABLED, CONFIG.PLAYER2_ENABLED);
   CONFIG.PLAYER2_URL = envFirst('PLAYER2_URL') || CONFIG.PLAYER2_URL;
   CONFIG.PLAYER2_KEYS = parseKeys(envFirst('PLAYER2_KEY', 'PLAYER2_KEYS'));
@@ -575,12 +598,12 @@ async function managePatches() {
     selected = patches;
     console.log('[GUI] Aktiviere alle verfügbaren Patches in BridgeCore...');
   } else {
-    const result = await inquirer.prompt([{ 
-      type: 'checkbox', 
-      name: 'selected', 
-      message: 'Wähle Patches für BridgeCore:', 
-      choices: patches.map(p => ({ name: p, checked: true })) 
-    }]);
+    const result = await prompts({
+      type: 'multiselect',
+      name: 'selected',
+      message: 'Wähle Patches für BridgeCore:',
+      choices: patches.map(p => ({ title: p, value: p, selected: true }))
+    });
     selected = result.selected;
   }
     
@@ -635,8 +658,8 @@ async function fullReset() {
   if (process.argv.includes('--gui')) {
     isSure = true;
   } else {
-    const confirm = await inquirer.prompt([{ type: 'confirm', name: 'sure', message: 'Bist du sicher? Alle lokalen Patches werden gelöscht.', default: false }]);
-    isSure = confirm.sure;
+    const confirm = await prompts({ type: 'confirm', name: 'sure', message: 'Bist du sicher? Alle lokalen Patches werden gelöscht.', initial: false });
+    isSure = !!(confirm && confirm.sure);
   }
   if (!isSure) return;
   try {
@@ -738,7 +761,7 @@ async function main() {
   const readFileJobWithAdapter = (job) => readFileJob({ ...job, adapter: gameAdapter });
 
   runtimeOps = createRuntimeOps({
-    config: CONFIG, fs, fsp, path, inquirer, exporter, ensureTranslations, mapLimit, readFileJob: readFileJobWithAdapter, collectTextFiles, writeTranslatedFile,
+    config: CONFIG, fs, fsp, path, prompts, exporter, ensureTranslations, mapLimit, readFileJob: readFileJobWithAdapter, collectTextFiles, writeTranslatedFile,
     getMajorVersion: async (dir) => {
       try {
         const entries = await fsp.readdir(dir);
@@ -778,7 +801,13 @@ async function main() {
     _dbGet: dbGet,
     dbAll, 
     dbRun,
+    beginTransaction,
+    commitTransaction,
+    rollbackTransaction,
     isAborting: () => isAborting,
+    // BU-020: Pass AbortController signal so provider clients can cancel
+    // in-flight HTTP requests when the user presses Ctrl+C.
+    getAbortSignal: () => abortController.signal,
     langCodes: LANG_CODES, defaults: {}, batchSize: BATCH_SIZE,
     isArgosInstalled: () => isArgosInstalled()
   });

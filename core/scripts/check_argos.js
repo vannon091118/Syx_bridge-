@@ -1,5 +1,5 @@
 const { execSync, spawnSync } = require('child_process');
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 
 // Cache to prevent infinite loops during a session
 let argosInstalledCache = null;
@@ -75,12 +75,12 @@ async function ensureArgos() {
     return false;
   }
 
-  const { install } = await inquirer.prompt([{
+  const { install } = await prompts({
     type: 'confirm',
     name: 'install',
     message: 'Moechtest du Argos Translate (kostenlose lokale Uebersetzung) jetzt installieren?',
-    default: true
-  }]);
+    initial: true
+  });
 
   if (install) {
     process.env.ARGOS_INSTALL_ATTEMPTED = 'true';

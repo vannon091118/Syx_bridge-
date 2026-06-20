@@ -6,6 +6,13 @@
  * Wird NICHT automatisch bei jedem Serverstart ausgefuehrt — nur manuell via
  * `npm run warm-model` oder einmalig getriggert bei Erstaktivierung.
  *
+ * ROADMAP v0.23: NMT Local Provider Integration.
+ * Aktuell existiert nur dieses Warmup-Script — es gibt keinen Provider-Client,
+ * keinen Router-Eintrag und keinen Dispatcher-Pfad. NMT_LOCAL_ENABLED wurde aus
+ * PERSISTED_KEYS entfernt (BU-040) da die Flag nie gelesen wurde (VERWAIST).
+ * Vollstaendige Integration erfordert: client-factory.js NMT-Client, router.js
+ * PROVIDER_CAPABILITIES + hasAccess(), dispatcher.js Routing-Pfad, GUI-Toggle.
+ *
  * Model: Xenova/nllb-200-distilled-600M (CPU-only via ONNX Runtime)
  */
 
