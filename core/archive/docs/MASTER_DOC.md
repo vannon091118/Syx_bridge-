@@ -153,8 +153,8 @@ core/archive/docs/
 ├── HANDSHAKE_2026-06-20.md    # Session-Übergabe (20.06.) — PARTIAL, OBSOLETE archiviert nach FREEZE_INDEX §15
 ├── AGENTS.md                  # SSOT-Kopie der Agent-Regeln (Root-Sync)
 ├── KNOWN_BUGS_REPORT.md       # Bug-Triage (34+ Bugs katalogisiert)
-├── DOKU_KONSOLIDIERUNG_2026-06-20.md # LIVE vs FREEZE Cross-Analyse — VOLLARCHIVIERT nach FREEZE_INDEX §16
-├── DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md # Konsolidierungsbericht
+├── DOKU_KONSOLIDIERUNG_2026-06-20.md # LIVE vs FREEZE Cross-Analyse — GELÖSCHT (VOLLARCHIVIERT nach FREEZE_INDEX §16)
+├── DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md # Konsolidierungsbericht — GELÖSCHT (VOLLARCHIVIERT nach FREEZE_INDEX §21)
 ├── LLM-AGENTS-EntryPoint.md   # Sub-Agent-Referenz (archivierte SSOT-Kopie)
 ├── FREEZE/
 │   ├── FREEZE_INDEX.md        # Das Buch — 81 Glossary-Einträge
