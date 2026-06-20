@@ -1071,11 +1071,27 @@ function createTranslationRuntime(options) {
               console.error(`[GUARD] Kritischer Terminologie-Verstoss bleibt bestehen fuer: "${key.substring(0, 30)}..."`);
             }
 
+            // P1-1: no-change Erkennung fuer polish_single + ab_polish.
+            // Wenn der LLM die Uebersetzung unveraendert zurueckgibt (identisch
+            // zur Source ODER zur Pre-Polish-Uebersetzung), ist das kein echter
+            // Uebersetzungsfortschritt. review_count wird NICHT hochgezaehlt.
+            // Normalisierung: Whitespace + ZWSP/ZWNJ-Strip + Trim — konsistent
+            // mit saveTranslation() P0-1 Watermark-Strip an der DB-Grenze.
+            // WICHTIG: oldTranslation MUSS vor ctx.translations.set() gelesen
+            // werden, da .set() den alten Wert ueberschreibt.
+            const oldTranslation = ctx.translations.get(key);
             ctx.translations.set(key, improved);
+            const clean = (s) => normalizeWhitespace((s || '').replace(/[\u200B\u200C]/g, '')).trim();
+            const isNoChange =
+              !clean(improved) ||
+              clean(improved) === clean(key) ||
+              clean(improved) === clean(oldTranslation);
+
             batchUpdatePromises.push(saveTranslation(entry, improved, 2, {
               provider: polishProvider === 'ab_multi' ? 'ab_polish' : 'polish_single',
               flagReason: persistentViolation ? 'terminology_violation_persistent' : '',
-              qualityScore: scoreTranslationQuality(key, improved)
+              qualityScore: scoreTranslationQuality(key, improved),
+              skipReviewIncrement: isNoChange
             }));
             batchUpdatePromises.push(learnGlossary(key, improved, entry));
           }

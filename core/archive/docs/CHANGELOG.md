@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## [P1-1-NO-CHANGE] - 2026-06-20 — polish_single/ab_polish no-change Erkennung: review_count nur bei echter Verbesserung
+
+Wenn der LLM in der QA-Phase eine "polierte" Übersetzung zurückgibt die wortwörtlich identisch zur Source ist — oder identisch zu dem was schon vorher als Übersetzung im Cache stand — dann ist das kein Fortschritt. Trotzdem hat das System bisher review_count hochgezählt als hätte es einen echten Übersetzungsversuch gegeben. 19.5% der polish_single-Einträge waren stale. Jeder davon hat den Counter belastet.
+
+Der Fix: In `qaPhase()` wird VOR dem `saveTranslation()`-Aufruf geprüft ob das Polishing tatsächlich eine Änderung bewirkt hat. Drei Bedingungen die als no-change zählen:
+1. `improved` ist leer oder nur Whitespace
+2. `clean(improved) === clean(key)` — identisch zur Original-Source
+3. `clean(improved) === clean(oldTranslation)` — identisch zur Pre-Polish-Übersetzung
+
+Die `clean()`-Funktion normalisiert Whitespace, strippt ZWSP/ZWNJ-Watermarks (konsistent mit P0-1 DB-Strip), und trimmt. Wenn eine der drei Bedingungen zutrifft: `skipReviewIncrement: true` im meta → `reviewIncrement = 0` in `saveTranslation()` → review_count bleibt unverändert.
+
+Der Reviewer fand im ersten Durchlauf einen Bug: `oldTranslation` wurde NACH `ctx.translations.set(key, improved)` gelesen → `oldTranslation === improved` → Bedingung 3 immer true → alle Polish-Ergebnisse als no-change klassifiziert. Der Fix: `.get()` vor `.set()`.
+
+Gilt für BEIDE Polish-Provider: `polish_single` (fixGrammarBatch) und `ab_polish` (polishArbiter.runAbPolishing).
+
+### Files Changed
+- `core/src/translation-runtime.js` — qaPhase(): no-change Erkennung + skipReviewIncrement (+14 Zeilen)
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### Tests
+- Syntax-Check: translation-runtime.js OK
+- Code-Review: Nit Pick Nick — "Ship it" (nach Bug-Fix: oldTranslation vor .set())
+
+### EFFORT TO NEXT SCOPE
+- P1-2: Non-native stale Counter-Reset
+- Live-Run mit P0 + P1-1 + P1-3 Fixes
+
+---
+
 ## [P1-3-WATERMARK-SANITIZE] - 2026-06-20 — DB-Sanitization: ZWSP/ZWNJ aus alten Einträgen + Log-System Härtung
 
 Nachdem P0-1 die Watermarks am Eingang gestoppt hat, blieb die Frage: Was ist mit den Einträgen die schon DUTZENDE Runs überlebt haben und jetzt mit ZWSP/ZWNJ in der DB sitzen? P1-3 räumt auf.
