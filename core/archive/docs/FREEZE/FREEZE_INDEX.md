@@ -5,7 +5,7 @@
 > Jeder gelöschte FREEZE-Eintrag wird hier als Glossary-Eintrag überführt — MIT Kausalität, Beobachtungen, Cross-Referenzen.
 > **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 20.06.2026) lückenlos nachvollzogen werden.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
-> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports + 12 HANDSHAKE-19 + 11 HANDSHAKE-20 + 8 DOKU-KONSOLIDIERUNG + 5 FORENSIC_FULLSCAN + 4 REDUNDANZ_AUDIT + 5 CODE_VS_DOCS + 4 INTEGRITY_AUDIT = **116 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
+> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports + 12 HANDSHAKE-19 + 11 HANDSHAKE-20 + 8 DOKU-KONSOLIDIERUNG + 5 FORENSIC_FULLSCAN + 4 REDUNDANZ_AUDIT + 5 CODE_VS_DOCS + 4 INTEGRITY_AUDIT + 3 DOKU_KONSOL_RUN2 = **119 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
 
 ---
 
@@ -31,8 +31,9 @@
 18. [REDUNDANZ_AUDIT_V2_2026-06-19 — Vollarchivierung (4)](#18-redundanz_audit_v2_2026-06-19--vollarchivierung)
 19. [CODE_VS_DOCS_AUDIT_2026-06-19 — Vollarchivierung (5)](#19-code_vs_docs_audit_2026-06-19--vollarchivierung)
 20. [INTEGRITY_AUDIT_2026-06-19 — Vollarchivierung (4)](#20-integrity_audit_2026-06-19--vollarchivierung)
+21. [DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 — Vollarchivierung (3)](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung)
 
-> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4 = **130 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
+> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4+3 = **133 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
 
 ---
 
@@ -1096,6 +1097,41 @@
 - **Zusammenfassung:** Pre-Lösch-Integritäts-Verifikation: 5+3 Code-Searcher + 1 Thinker. 33/33 Claims code-verified (100 %), 15 Claims als nicht-verifizierbar dokumentiert, 3 Lücken geschlossen, Lösch-Freigabe erteilt. Bereits als DC-008 in FREEZE_INDEX §13 katalogisiert.
 - **Ursache der Obsoleszenz:** Zweck vollständig erfüllt — die Verifikation autorisierte die Löschung, die Löschung ist erfolgt. Das Dokument ist ein historisches Zertifikat.
 - **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-008) + §20 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 21. DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — vorherige Konsolidierungsrunde, alle Empfehlungen umgesetzt.
+> **Quelle:** `core/archive/docs/DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md` (Konsolidierung Run #2, 100 % OBSOLETE)
+> **Regel:** Ein Konsolidierungsbericht dessen Lösch-Empfehlungen ausgeführt sind und dessen referenzierte Dokumente selbst archiviert sind.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 KR-001 — Inventur: 9 LIVE + 4 FREEZE + Widersprüche W1–W9
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Konsolidierungs-Inventur
+- **Zusammenfassung:** Dokumenten-Inventur Run #2: 3 LIVE-Dokumente (CHANGELOG, MASTER_DOC, PREFLIGHT), 5 Struktur-Dokumente (LIVE_INDEX, HANDSHAKE_2026-06-19, DIVERGENZ_REPORT, FORENSIC_FULLSCAN, REDUNDANZ_AUDIT_V2), 1 offener Plan. 9 Widersprüche: W1–W5 bereits aufgelöst, W6–W9 neu identifiziert (DB-Drift, HANDSHAKE veraltet, Marker-Plan teilweise umgesetzt, Split-Plan umgesetzt). DB-Wert-Drift zwischen MASTER_DOC, MASTER_FREEZE und PREFLIGHT.
+- **Ursache der Obsoleszenz:** Alle referenzierten Dokumente sind selbst archiviert oder aktualisiert. FORENSIC_FULLSCAN → VOLLARCHIVIERT (§17), REDUNDANZ_AUDIT_V2 → VOLLARCHIVIERT (§18), HANDSHAKE_2026-06-19 → PARTIAL (§14). W6–W9 sind durch spätere Doku-Updates gelöst.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §1–§21 + MASTER_DOC.md §9 (aktueller Doku-Baum)
+- **Status:** ✅ Archiviert
+
+### 📋 KR-002 — 44 FREEZE-Dokumente + 8 permanent + Empfehlungen
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Lösch-Empfehlungen
+- **Zusammenfassung:** 44 FREEZE-Dokumente als löschbar klassifiziert (alle 4 Kriterien erfüllt), kategorisiert nach Session Reports (8), Audit (10), Bugfixes (4), Reviews (5), Doku-Konsolidierung (4), Quality (2), DB-Archiv (1), Struktur (6), Diagnostik (3). 8 Dokumente als permanent empfohlen. 2 Dokumente ins FREEZE verschiebbar (TRANSLATION_RUNTIME_SPLIT, COMMIT_MSG).
+- **Ursache der Obsoleszenz:** Alle 44 Dokumente sind gelöscht. Die 8 permanenten Dokumente sind teilweise selbst archiviert (HANDSHAKE_2026-06-19 → PARTIAL). Die Wachstums-Analyse (+17.6 % seit Run #1) ist historisch.
+- **LIVE-Ersatz:** FREEZE_INDEX.md (alle 44 gelöschten Dokumente als Glossary-Einträge) + MASTER_DOC.md §9
+- **Status:** ✅ Archiviert
+
+### 📋 KR-003 — Gesamtdokument: DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Konsolidierung Run #2: 4 Thinker-with-Files-Gemini + Orchestrator. 60 Dokumente analysiert, 9 Widersprüche katalogisiert, 44 Dokumente zur Löschung freigegeben, 8 als permanent empfohlen. Methodik: Bootstrap → Vollesung → Subagent-Matrix → Tendenzenanalyse → Destillation.
+- **Ursache der Obsoleszenz:** Zweck vollständig erfüllt — die Lösch-Empfehlungen wurden ausgeführt, die Widersprüche gelöst, die referenzierten Dokumente sind ihrerseits archiviert. Das Dokument ist ein historischer Meilenstein der Doku-Bereinigung.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §21 (diese Einträge)
 - **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
 
 ---

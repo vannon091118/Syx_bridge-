@@ -369,6 +369,17 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | IG-003 | Methodik + Fazit + Lösch-Freigabe | [FREEZE_INDEX §20](#20-integrity_audit_2026-06-19--vollarchivierung) |
 | IG-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §20](#20-integrity_audit_2026-06-19--vollarchivierung) |
 
+### DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Inventur + 9 Widersprüche + 44 Lösch-Empfehlungen) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Lösch-Empfehlungen ausgeführt, referenzierte Dokumente selbst archiviert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| KR-001 | Inventur: 9 LIVE + Widersprüche W1–W9 | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
+| KR-002 | 44 FREEZE-Dokumente + 8 permanent | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
+| KR-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
+
 ### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
 
 > **Regel:** Eine FREEZE-Datei wird NUR gelöscht wenn:
