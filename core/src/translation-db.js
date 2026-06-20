@@ -335,8 +335,15 @@ function createTranslationDb(options) {
     // P3 Fix: skipReviewIncrement — bei Provider-Fehlern (Fail-Path) werden BEIDE
     // Counter NICHT hochgezählt. Nur echte Übersetzungsversuche zählen als Revision.
     // P4 Fix: shield_leak-Fehler zählen nur den Placeholder-Counter, nicht den Quality-Counter.
-    const reviewIncrement = meta.skipReviewIncrement ? 0 : (isPlaceholderError ? 0 : 1);
-    const placeholderIncrement = meta.skipReviewIncrement ? 0 : (isPlaceholderError ? 1 : 0);
+    // P1-2 Fix: Non-native stale — wenn ein Nicht-native_runtime-Provider den
+    // Originaltext als "Übersetzung" zurückgibt (translation === sourceText), hat
+    // kein echter Übersetzungsversuch stattgefunden → review_count NICHT hochzählen.
+    // native_runtime ist AUSGESCHLOSSEN: Proper Nouns/Eigennamen mit
+    // translation=source sind erwartetes Verhalten, kein Fehler.
+    const isNonNativeStale = (typeof translation === 'string' && translation === sourceText && provider !== 'native_runtime');
+    const skipIncrement = meta.skipReviewIncrement || isNonNativeStale;
+    const reviewIncrement = skipIncrement ? 0 : (isPlaceholderError ? 0 : 1);
+    const placeholderIncrement = skipIncrement ? 0 : (isPlaceholderError ? 1 : 0);
 
     await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, placeholder_review_count, updated_at, polish_status, requires_deep_polish, overwrite_fallback_used)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)

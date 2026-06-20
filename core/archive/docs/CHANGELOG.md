@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## [P1-2-NON-NATIVE-STALE] - 2026-06-20 — Non-native stale Counter-Reset: review_count nur bei echtem Übersetzungsversuch
+
+Der simpelste Fix dieser Session. Fünf Zeilen. Aber er schließt eine Lücke die seit Monaten existiert: Wenn ein Provider (Groq, OpenRouter, polish_single, whatever) den englischen Originaltext als "Übersetzung" zurückgibt — warum auch immer — dann hat kein echter Übersetzungsversuch stattgefunden. Trotzdem hat `saveTranslation()` den review_count um 1 hochgezählt. Jedes Mal.
+
+Der Fix: In `saveTranslation()` wird geprüft ob `translation === sourceText` UND der Provider NICHT `native_runtime` ist (Proper Nouns mit source=translation sind erwartet). Wenn ja: `isNonNativeStale = true` → `skipIncrement = true` → `reviewIncrement = 0`. Kein Counter für Nicht-Leistung.
+
+Der Check kombiniert mit dem bestehenden `meta.skipReviewIncrement` (P3: Fail-Path) — `skipIncrement = meta.skipReviewIncrement || isNonNativeStale`. Drei unabhängige Gründe, den Counter nicht hochzuzählen, ein gemeinsamer Pfad.
+
+### Files Changed
+- `core/src/translation-db.js` — saveTranslation(): isNonNativeStale Check + skipIncrement (+5 Zeilen)
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### Tests
+- Syntax-Check: translation-db.js OK
+- Code-Review: Nit Pick Nick — "Clean and correct. Ship it."
+
+### EFFORT TO NEXT SCOPE
+- Live-Run mit P0 + P1-1 + P1-2 + P1-3 Fixes
+- DB-Snapshot nach Live-Run für Vorher/Nachher-Vergleich
+
+---
+
 ## [P1-1-NO-CHANGE] - 2026-06-20 — polish_single/ab_polish no-change Erkennung: review_count nur bei echter Verbesserung
 
 Wenn der LLM in der QA-Phase eine "polierte" Übersetzung zurückgibt die wortwörtlich identisch zur Source ist — oder identisch zu dem was schon vorher als Übersetzung im Cache stand — dann ist das kein Fortschritt. Trotzdem hat das System bisher review_count hochgezählt als hätte es einen echten Übersetzungsversuch gegeben. 19.5% der polish_single-Einträge waren stale. Jeder davon hat den Counter belastet.
