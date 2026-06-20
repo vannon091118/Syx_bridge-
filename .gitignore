@@ -7,6 +7,7 @@ core/.env
 *.log
 log.txt
 runs.jsonl
+logs/log_*.txt
 core/backups/
 core/patches/
 core/translations.db*
