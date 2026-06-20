@@ -12,6 +12,7 @@ core/patches/
 core/translations.db*
 debug_payloads.txt
 server_output.txt
+VannonDoNotPlayGames.js
 # Personal test scripts (Vannon)
 **/*_test_run.js
 **/*vannon*

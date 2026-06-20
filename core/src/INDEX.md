@@ -34,9 +34,9 @@
 | [scanner.js](#scannerjs) | 48 | 3 | File-Klassifikation, Mod-Scanning |
 | [sos-runtime.js](#sos-runtimejs) | 60 | 4 | SoS-Config, Launcher-Sync |
 | [text-core.js](#text-corejs) | 530 | 17 | Prompt-Building, Validation, Placeholder |
-| [translation-db.js](#translation-dbjs) | 230 | 10 | DB-Interface, Cache, Glossary, Save |
+| [translation-db.js](#translation-dbjs) | 419 | 11 | DB-Interface, Cache, Glossary, Save, Recovery |
 | [translation-quality.js](#translation-qualityjs) | 170 | 7 | Quality-Scoring, Native-Decision, Flagging |
-| [translation-runtime.js](#translation-runtimejs) | 1210 | 18 | Pipeline-Kern: Translate, Polish, Deep-Polish |
+| [translation-runtime.js](#translation-runtimejs) | 1300 | 21 | Pipeline-Kern: Translate, Polish, Deep-Polish, Recovery |
 | [ui.js](#uijs) | 65 | 3 | CLI-Menü, Mod-Auswahl, Bestätigung |
 | [validator.js](#validatorjs) | 240 | 8 | Marker-Validation, Syntax-Check, QA-Score |
 
@@ -504,8 +504,8 @@
 
 ---
 
-## translation-db.js (230 LOC)
-*DB-Interface: Cache, Glossary, Save, Stress-Test*
+## translation-db.js (419 LOC)
+*DB-Interface: Cache, Glossary, Save, Stress-Test, Review-Recovery*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -518,14 +518,16 @@
 | 121-140 | `learnGlossary(...)` | Glossary lernen |
 | 141-152 | `saveStressTestResult(...)` | Stress-Test-Ergebnis |
 | 153-202 | `getCachedTranslations(...)` | **Cache-Lookup** |
-| 203-230 | `saveTranslation(...)` | **Translation speichern** |
+| 203-350 | `saveTranslation(...)` | **Translation speichern** — mit P1 konfigurierbarem Review-Limit + P3 skipReviewIncrement |
+| 358-415 | `recoverTerminatedEntries()` | **P1 Recovery** — terminierte Einträge nach Timeout zurücksetzen |
 
-**CHANGELOG-Ref (4× translation-db):**
+**CHANGELOG-Ref (6× translation-db):**
 - [CL:0.15.0-alpha] enrichWithContext implementiert, saveTranslation erstellt
 - [CL:0.16.0] saveStressTestResult
 - [CL:0.19.8] polish_status/requires_deep_polish/overwrite_fallback_used Spalten in saveTranslation
 - [CL:QUALITY-OFFENSIVE] saveTranslation sequentiell statt Promise.all
 - [CL:0.20.0-pre-release] 8→9 Funktionen (getEntryHash nachträglich)
+- [CL:REVIEW-LIMIT-PIPELINE] P1 konfigurierbares MAX_REVIEW_COUNT + recoverTerminatedEntries, P2 critical_reject Recovery, P3 skipReviewIncrement in saveTranslation
 
 ---
 
@@ -550,8 +552,8 @@
 
 ---
 
-## translation-runtime.js (1210 LOC)
-*Pipeline-Kern: Translate, Polish, Deep-Polish, DNT-Shielding, 5-Phasen-Orchestrator*
+## translation-runtime.js (1300 LOC)
+*Pipeline-Kern: Translate, Polish, Deep-Polish, DNT-Shielding, 5-Phasen-Orchestrator, Review-Recovery*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -566,12 +568,12 @@
 | 521-623 | `fixGrammarBatch(...)` | **Grammar-Fix** (Polish) |
 | 624-658 | `flagPotentialErrors(...)` | Error-Flagging |
 | 659-666 | `getBestAvailableQualityModel()` | Bestes Quality-Modell |
-| 667-721 | `cachePhase(ctx)` | **Phase 1: Cache** |
+| 667-721 | `cachePhase(ctx)` | **Phase 1: Cache** — mit P2 critical_reject Loop-Breaker |
 | 722-768 | `nativePhase(ctx)` | **Phase 2: Native** |
-| 769-932 | `translatePhase(ctx)` | **Phase 3: Translate** |
+| 769-960 | `translatePhase(ctx)` | **Phase 3: Translate** — mit P2 critical_reject flagging + P3 skipReviewIncrement |
 | 933-1043 | `qaPhase(ctx)` | **Phase 4: QA** |
 | 1044-1067 | `deepPolishPhase(ctx)` | **Phase 5: Deep Polish** |
-| 1068-1109 | `ensureTranslations(texts, options)` | **ORCHESTRATOR** — 5 Phasen |
+| 1068-1140 | `ensureTranslations(texts, options)` | **ORCHESTRATOR** — 5 Phasen + P1 Recovery (once per session) |
 | 1110-1210 | `runDeepPolishBatch(...)` | Deep-Polish-Batch |
 
 **CHANGELOG-Ref (16× translateBatch, 12× ensureTranslations):**
@@ -585,6 +587,7 @@
 - [CL:QUALITY-OFFENSIVE] needsRefresh polish_single, Retry-Loop, runDeepPolishBatch, ensureTranslations consecutiveGrammarFailures Reset, saveTranslation sequentiell
 - [CL:0.20.0-alpha.3] subPhase-Tracking in ensureTranslations (caching/native/translating/polishing)
 - [CL:GOD-001] ensureTranslations Split in 5 Phasen (cachePhase/nativePhase/translatePhase/qaPhase/deepPolishPhase), GOD-002 translateBatch als nächster Split-Kandidat
+- [CL:REVIEW-LIMIT-PIPELINE] P1 recoverTerminatedEntries (ensureTranslations), P2 isCriticalReject Loop-Breaker (cachePhase) + critical_reject flagging (translatePhase), P3 skipReviewIncrement (translatePhase fail-path)
 
 ---
 

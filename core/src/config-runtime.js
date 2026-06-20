@@ -861,6 +861,8 @@ const PERSISTED_KEYS = [
   ['PLAYER2_ENABLED',       (c) => String(!!c.PLAYER2_ENABLED)],
   ['PLAYER2_URL',           (c) => firstDefined(c.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
   ['BATCH_SIZE',            (c) => firstDefined(c.BATCH_SIZE)],
+  ['MAX_REVIEW_COUNT',      (c) => firstDefined(c.MAX_REVIEW_COUNT, '15')],
+  ['REVIEW_RECOVERY_HOURS', (c) => firstDefined(c.REVIEW_RECOVERY_HOURS, '24')],
   ['GAME',                  (c) => firstDefined(c.GAME, 'songs_of_syx')],
 ];
 

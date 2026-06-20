@@ -1,5 +1,42 @@
 # CHANGELOG
 
+## [REVIEW-LIMIT-PIPELINE] - 2026-06-20 — P1/P2/P3: Review-Limit konfigurierbar, Critical-Reject-Loop gebrochen, Fail-Path fair
+
+Drei Bugs, eine Session, null externe Dependencies. Das ist die Art von Fix die man feiert wenn sie durch ist — nicht weil sie spektakulär ist, sondern weil sie drei verschiedene Wege eliminiert auf denen das System sich selbst sabotiert hat.
+
+### P1: MAX_REVIEW_COUNT konfigurierbar + Recovery-Mechanismus
+- `config-runtime.js`: MAX_REVIEW_COUNT + REVIEW_RECOVERY_HOURS zu PERSISTED_KEYS hinzugefuegt (persistiert in .env)
+- `index.js`: CONFIG-Block + applyEnvToConfig() erweitert (Default: 15 Revisionen, 24h Recovery)
+- `translation-db.js`: MAX_REVIEW_COUNT aus config.MAX_REVIEW_COUNT statt hardcoded 15. Neue `recoverTerminatedEntries()` Funktion: setzt Eintraege mit flag_reason='max_revisions_exceeded' oder 'critical_reject' nach REVIEW_RECOVERY_HOURS zurueck (loescht Revisionen, resettet review_count, overwrite_fallback_used, queued fuer Deep Polish)
+- `translation-runtime.js`: Recovery laeuft einmalig pro Session beim ersten ensureTranslations()-Aufruf
+- Reviewer-Catch: overwrite_fallback_used=0 im Recovery-UPDATE — ohne das wuerden recovered Eintraege vom Deep-Polish-SELECT gefiltert werden
+
+### P2: Critical Reject Loop Break
+- `translation-runtime.js` (translatePhase): flagReason wird bei criticalReject=true auf 'critical_reject' ueberschrieben. Vorher blieb flag_reason leer → Cache erkannte den Loop nicht
+- `translation-runtime.js` (cachePhase): isCriticalReject Check in needsRefresh — Eintraege mit flag_reason='critical_reject' werden NICHT erneut in die Translate-Pipeline geschickt → Loop gebrochen
+- `translation-db.js` (recoverTerminatedEntries): Recovery behandelt jetzt auch 'critical_reject' neben 'max_revisions_exceeded'
+
+### P3: Fail-Path Review-Count Fairness
+- `translation-runtime.js` (translatePhase catch-block): skipReviewIncrement=true im Fail-Path meta. Provider-Fehler (429/5xx/Timeout) zaehlen nicht als Uebersetzungsfehler
+- `translation-db.js` (saveTranslation): reviewIncrement = meta.skipReviewIncrement ? 0 : 1. INSERT und UPSERT nutzen die Variable statt hardcoded 1
+
+### Files Changed
+- `core/src/config-runtime.js` — PERSISTED_KEYS: MAX_REVIEW_COUNT + REVIEW_RECOVERY_HOURS
+- `core/src/index.js` — CONFIG + applyEnvToConfig: 2 neue Keys
+- `core/src/translation-db.js` — MAX_REVIEW_COUNT konfigurierbar, recoverTerminatedEntries(), skipReviewIncrement (+189 LOC)
+- `core/src/translation-runtime.js` — P2 critical_reject Loop-Breaker, P3 skipReviewIncrement, Recovery-Wiring (+89 LOC)
+- `core/src/INDEX.md` — Zeilennummern + CHANGELOG-Refs aktualisiert
+
+### Tests
+- Syntax-Check: ALL 4 files SYNTAX OK
+- Code-Review: Nit Pick Nick — P1 overwrite_fallback_used Fix verifiziert, P2 Loop-Break korrekt, P3 Parameter-Count 14/14 bestaetigt
+
+### EFFORT TO NEXT SCOPE
+- DB-Snapshot vor/nach Live-Run um P1/P2/P3 Wirksamkeit zu verifizieren
+- P4: Placeholder-Fehler und Quality-Fehler sollten getrennte Review-Counters haben
+
+---
+
 ## [COMMIT-TAGEBUCH] - 2026-06-20 — RULE 2 Rewrite: Commit-Narrative wird zum Commit-Tagebuch
 
 ### Changed (AGENTS.md — RULE 2 komplett umgeschrieben)

@@ -250,26 +250,45 @@ function createTranslationDb(options) {
     // Das verhindert, dass der Eintrag in jedem Batch-Run erneut durch die
     // gesamte Pipeline geschleust wird (API-Kosten + DB-Bloat + Review-Count-
     // Inflation).
-    const MAX_REVIEW_COUNT = 15;
+    // P1 Fix: Konfigurierbar via config.MAX_REVIEW_COUNT (ENV: MAX_REVIEW_COUNT).
+    const MAX_REVIEW_COUNT = Number(config.MAX_REVIEW_COUNT) || 15;
 
     const polishStatus = meta.polishStatus || 'completed';
     const requiresDeepPolish = meta.requiresDeepPolish ? 1 : 0;
     const overwriteFallbackUsed = meta.overwriteFallbackUsed ? 1 : 0;
 
-    // QUAL-OFFENSIVE Fix #5: Review-Count-Guard — wenn dieser Eintrag bereits
-    // MAX_REVIEW_COINT überschritten hat, flagged+terminieren statt Loop fortzusetzen.
-    // Der Guard prüft die ANZAHL EXISTIERENDER REVISIONEN (nicht review_count),
-    // weil review_count pro saveTranslation +1 erhält und wir den Guard VOR dem
-    // UPSERT brauchen (sonst zählt review_count immer weiter).
+    // P4 Fix: Separate Counter für Placeholder- vs Quality-Fehler.
+    // shield_leak-Fehler (verlorene Placeholder-Tokens) sind systemisch und
+    // modell-unabhängig — sie sollen den Quality-Counter nicht aufbrauchen.
+    // Beide Counter werden unabhängig geprüft: wenn EINER das Limit erreicht,
+    // wird der Eintrag terminiert.
+    const isPlaceholderError = (meta.flagReason || flagReason || '').includes('shield_leak');
+
+    // QUAL-OFFENSIVE Fix #5 + P4: Review-Count-Guard — prüft BEIDE Counter
+    // direkt aus der translations-Tabelle (nicht mehr COUNT(*) aus translation_revisions).
+    // Das ist präziser weil es die tatsächlichen Counter-Werte nach dem letzten
+    // UPSERT reflektiert, und es ermöglicht die Trennung von Placeholder- vs
+    // Quality-Revisionen.
     try {
-      const revCount = await _dbGet(
-        'SELECT COUNT(*) as cnt FROM translation_revisions WHERE source_text = ? AND target_lang = ?',
+      const existingTx = await _dbGet(
+        'SELECT review_count, placeholder_review_count FROM translations WHERE source_text = ? AND target_lang = ?',
         [sourceText, config.TARGET_LANG]
       );
-      if (revCount && revCount.cnt >= MAX_REVIEW_COUNT) {
-        console.warn(`[REVIEW-LIMIT] "${sourceText.substring(0, 40)}" hatte ${revCount.cnt} Revisionen (>=${MAX_REVIEW_COUNT}). Loop unterbrochen.`);
+      const qualityCount = existingTx ? (existingTx.review_count || 0) : 0;
+      const placeholderCount = existingTx ? (existingTx.placeholder_review_count || 0) : 0;
+
+      if (qualityCount >= MAX_REVIEW_COUNT) {
+        console.warn(`[REVIEW-LIMIT] "${sourceText.substring(0, 40)}" hatte ${qualityCount} Quality-Revisionen (>=${MAX_REVIEW_COUNT}). Loop unterbrochen.`);
         await dbRun(
           `UPDATE translations SET flagged = 1, flag_reason = 'max_revisions_exceeded', requires_deep_polish = 0, polish_status = 'failed', updated_at = CURRENT_TIMESTAMP WHERE source_text = ? AND target_lang = ?`,
+          [sourceText, config.TARGET_LANG]
+        );
+        return;
+      }
+      if (placeholderCount >= MAX_REVIEW_COUNT) {
+        console.warn(`[REVIEW-LIMIT] "${sourceText.substring(0, 40)}" hatte ${placeholderCount} Placeholder-Revisionen (>=${MAX_REVIEW_COUNT}). Loop unterbrochen.`);
+        await dbRun(
+          `UPDATE translations SET flagged = 1, flag_reason = 'max_placeholder_revisions', requires_deep_polish = 0, polish_status = 'failed', updated_at = CURRENT_TIMESTAMP WHERE source_text = ? AND target_lang = ?`,
           [sourceText, config.TARGET_LANG]
         );
         return;
@@ -304,8 +323,14 @@ function createTranslationDb(options) {
       console.warn(`[WARN] Revision-Speicherung fehlgeschlagen fuer "${sourceText.substring(0, 30)}": ${e.message}`);
     }
 
-    await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, updated_at, polish_status, requires_deep_polish, overwrite_fallback_used)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, ?, ?, ?)
+    // P3 Fix: skipReviewIncrement — bei Provider-Fehlern (Fail-Path) werden BEIDE
+    // Counter NICHT hochgezählt. Nur echte Übersetzungsversuche zählen als Revision.
+    // P4 Fix: shield_leak-Fehler zählen nur den Placeholder-Counter, nicht den Quality-Counter.
+    const reviewIncrement = meta.skipReviewIncrement ? 0 : (isPlaceholderError ? 0 : 1);
+    const placeholderIncrement = meta.skipReviewIncrement ? 0 : (isPlaceholderError ? 1 : 0);
+
+    await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, placeholder_review_count, updated_at, polish_status, requires_deep_polish, overwrite_fallback_used)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)
             ON CONFLICT(source_text, target_lang)
             DO UPDATE SET
                 translation = excluded.translation,
@@ -316,12 +341,14 @@ function createTranslationDb(options) {
                 flag_reason = excluded.flag_reason,
                 quality_score = excluded.quality_score,
                 last_checked_at = CURRENT_TIMESTAMP,
-                review_count = COALESCE(translations.review_count, 0) + 1,
+                review_count = COALESCE(translations.review_count, 0) + ?,
+                placeholder_review_count = COALESCE(translations.placeholder_review_count, 0) + ?,
                 updated_at = CURRENT_TIMESTAMP,
                 polish_status = excluded.polish_status,
                 requires_deep_polish = excluded.requires_deep_polish,
                 overwrite_fallback_used = excluded.overwrite_fallback_used`,
-    [sourceText, sourceHash, config.TARGET_LANG, translation, polishLevel, provider, flagged, flagReason, qualityScore, polishStatus, requiresDeepPolish, overwriteFallbackUsed]);
+    // 11 INSERT params + 2 UPSERT params = 13 total
+    [sourceText, sourceHash, config.TARGET_LANG, translation, polishLevel, provider, flagged, flagReason, qualityScore, reviewIncrement, placeholderIncrement, polishStatus, requiresDeepPolish, overwriteFallbackUsed, reviewIncrement, placeholderIncrement]);
 
     // BUG-005 Fix: Also insert NEW version into revision_revisions with is_active=1
     try {
@@ -339,6 +366,63 @@ function createTranslationDb(options) {
     }
   }
 
+  /**
+   * P1 Fix: Recovery-Mechanismus für terminierte Einträge.
+   * Setzt Einträge mit flag_reason='max_revisions_exceeded' zurück, wenn sie
+   * älter als REVIEW_RECOVERY_HOURS sind. Löscht zugehörige Revisionen und
+   * setzt review_count zurück, damit der Eintrag mit frischem Start neu
+   * übersetzt werden kann (z.B. mit einem besseren Provider).
+   *
+   * @returns {Promise<number>} Anzahl der zurückgesetzten Einträge
+   */
+  async function recoverTerminatedEntries() {
+    const recoveryHours = Number(config.REVIEW_RECOVERY_HOURS) || 24;
+    const cutoff = new Date(Date.now() - recoveryHours * 3600 * 1000).toISOString();
+    try {
+      // P2 Fix: Auch 'critical_reject' entries recoveren — wenn der Provider gewechselt
+      // wurde oder genug Zeit vergangen ist, bekommt der Eintrag eine zweite Chance.
+      // P4 Fix: Auch 'max_placeholder_revisions' entries recoveren.
+      const candidates = await dbAll(
+        `SELECT source_text, flag_reason FROM translations
+         WHERE target_lang = ?
+           AND flag_reason IN ('max_revisions_exceeded', 'critical_reject', 'max_placeholder_revisions')
+           AND updated_at < ?`,
+        [config.TARGET_LANG, cutoff]
+      );
+      if (!candidates || candidates.length === 0) return 0;
+
+      let recovered = 0;
+      for (const row of candidates) {
+        try {
+          await dbRun(
+            `DELETE FROM translation_revisions WHERE source_text = ? AND target_lang = ?`,
+            [row.source_text, config.TARGET_LANG]
+          );
+          await dbRun(
+            `UPDATE translations SET
+               flagged = 0, flag_reason = '',
+               polish_status = 'pending', requires_deep_polish = 1,
+               review_count = 0, placeholder_review_count = 0, overwrite_fallback_used = 0,
+               updated_at = CURRENT_TIMESTAMP
+             WHERE source_text = ? AND target_lang = ?`,
+            [row.source_text, config.TARGET_LANG]
+          );
+          recovered++;
+        } catch (e) {
+          console.warn(`[RECOVERY] Fehler bei "${(row.source_text || '').substring(0, 30)}": ${e.message}`);
+        }
+      }
+
+      if (recovered > 0) {
+        console.log(`[RECOVERY] ${recovered}/${candidates.length} terminierte Eintraege zurueckgesetzt (aelter als ${recoveryHours}h).`);
+      }
+      return recovered;
+    } catch (e) {
+      console.warn(`[RECOVERY] Recovery-Check fehlgeschlagen: ${e.message}`);
+      return 0;
+    }
+  }
+
   return {
     getEntryHash,
     normalizeInputs,
@@ -348,7 +432,8 @@ function createTranslationDb(options) {
     learnGlossary,
     saveStressTestResult,
     getCachedTranslations,
-    saveTranslation
+    saveTranslation,
+    recoverTerminatedEntries
   };
 }
 

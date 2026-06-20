@@ -147,6 +147,9 @@ async function init() {
   await addColumnIfMissing('translations', 'quality_score', 'INTEGER NOT NULL DEFAULT 0');
   await addColumnIfMissing('translations', 'last_checked_at', 'TEXT');
   await addColumnIfMissing('translations', 'review_count', 'INTEGER NOT NULL DEFAULT 0');
+  // P4 Fix: Separater Counter für Placeholder-Fehler (shield_leak).
+  // Verhindert dass Placeholder-Probleme den Quality-Review-Counter aufbrauchen.
+  await addColumnIfMissing('translations', 'placeholder_review_count', 'INTEGER NOT NULL DEFAULT 0');
   await addColumnIfMissing('translations', 'stress_test_passed', 'INTEGER');
   await addColumnIfMissing('translations', 'stress_tested_at', 'TEXT');
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_hash ON translations(target_lang, source_hash)');

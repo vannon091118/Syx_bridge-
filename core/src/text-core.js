@@ -510,11 +510,6 @@ function applyTranslations(content, replacements, translations, plugin) {
   for (const r of sorted) {
     let translated = translations.get(r.value);
     if (translated !== undefined) {
-      // ZERO-WIDTH WATERMARK: Unsichtbarer Unicode-Marker (ZWSP / ZWNJ)
-      // Wird nach dem ersten Wort injiziert (split-basiert).
-      // Im Spiel unsichtbar, im Editor unsichtbar, nur per Script detektierbar.
-      // Ueberlebt Copy-Paste und manuelle Bearbeitung.
-      // Muss VOR der Serialisierung erfolgen, damit der Marker im quoted Value landet.
       if (typeof translated === 'string' && translated.length > 0) {
         const marker = WATERMARK_CONFIG.randomZWMarker();
         const words = translated.split(' ');

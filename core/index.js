@@ -126,6 +126,11 @@ let CONFIG = {
   POLISHER_PROVIDER: envFirst('POLISHER_PROVIDER') || '',  // '' = inherit from PRIMARY_PROVIDER below
   POLISHER_MODEL: envFirst('POLISHER_MODEL') || 'auto',
   REPOLISH_BUDGET: Number(process.env.REPOLISH_BUDGET || 50),
+  // P1 Fix: Review-Limit konfigurierbar + Recovery-Mechanismus.
+  // MAX_REVIEW_COUNT: Wie viele Revisionen bevor ein Eintrag permanent terminiert wird.
+  // REVIEW_RECOVERY_HOURS: Nach wie vielen Stunden terminierte Einträge zurückgesetzt werden.
+  MAX_REVIEW_COUNT: Number(process.env.MAX_REVIEW_COUNT || 15),
+  REVIEW_RECOVERY_HOURS: Number(process.env.REVIEW_RECOVERY_HOURS || 24),
   AUDITOR_PROVIDER: envFirst('AUDITOR_PROVIDER') || '',    // '' = inherit from PRIMARY_PROVIDER below
   AUDITOR_MODEL: envFirst('AUDITOR_MODEL') || 'auto',
     
@@ -370,6 +375,8 @@ function applyEnvToConfig() {
   if (!envFirst('POLISHER_PROVIDER')) CONFIG.POLISHER_PROVIDER = CONFIG.PRIMARY_PROVIDER;
   if (!envFirst('AUDITOR_PROVIDER')) CONFIG.AUDITOR_PROVIDER = CONFIG.PRIMARY_PROVIDER;
   CONFIG.BATCH_SIZE = Number(process.env.BATCH_SIZE || CONFIG.BATCH_SIZE);
+  CONFIG.MAX_REVIEW_COUNT = Number(process.env.MAX_REVIEW_COUNT || CONFIG.MAX_REVIEW_COUNT);
+  CONFIG.REVIEW_RECOVERY_HOURS = Number(process.env.REVIEW_RECOVERY_HOURS || CONFIG.REVIEW_RECOVERY_HOURS);
   CONFIG.GEMINI_KEYS = parseKeys(envFirst('GEMINI_KEY', 'GEMINI_KEYS'));
   CONFIG.GROQ_KEYS = parseKeys(envFirst('GROQ_KEY', 'GROQ_KEYS'));
   CONFIG.OPENROUTER_KEYS = parseKeys(envFirst('OPENROUTER_KEY', 'OPENROUTER_KEYS'));

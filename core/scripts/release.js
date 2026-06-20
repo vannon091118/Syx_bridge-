@@ -32,7 +32,6 @@ const ALLOWED_SCRIPTS = new Set([
   'start_ollama.js',
   'cleanup_zombies.js',
   'workshop_export.js',
-  
   'start.bat',
 ]);
 
@@ -93,6 +92,14 @@ if (fs.existsSync(startBat)) {
   fs.copyFileSync(startBat, path.join(stageDir, 'start.bat'));
   fileCount++;
   console.log('  ✓ start.bat');
+}
+
+// Watermark-Verification (obfuscated name)
+const watermarkScript = path.join(rootDir, 'VannonDoNotPlayGames.js');
+if (fs.existsSync(watermarkScript)) {
+  fs.copyFileSync(watermarkScript, path.join(stageDir, 'VannonDoNotPlayGames.js'));
+  fileCount++;
+  console.log('  ✓ VannonDoNotPlayGames.js');
 }
 
 // Also include root README.md (user-facing docs)

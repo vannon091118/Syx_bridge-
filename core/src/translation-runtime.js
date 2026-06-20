@@ -53,6 +53,7 @@ function createTranslationRuntime(options) {
   } = options;
 
   let consecutiveGrammarFailures = 0;
+  let _recoveryDone = false;  // P1 Fix: Recovery einmalig pro Session
 
   // ── Dispatcher ───────────────────────────────────────────────────────
   const dispatcher = createDispatcher({
@@ -111,7 +112,8 @@ function createTranslationRuntime(options) {
     learnGlossary,
     saveStressTestResult,
     getCachedTranslations,
-    saveTranslation
+    saveTranslation,
+    recoverTerminatedEntries
   } = db;
 
   // ── A/B Polish Arbiter (created AFTER quality/db destructuring) ──────
@@ -705,7 +707,13 @@ function createTranslationRuntime(options) {
       // BU-034 Fix: qualityScore < 30 triggert Refresh OHNE Bedingung translation === t.
       // Vorher: Nur stale entries (src=tgt) mit Score < 30 wurden refreshed.
       // Jetzt: JEDE Übersetzung mit miserabel niedrigem Score wird neu übersetzt.
-      const needsRefresh = (data.flagged && data.translation === t && !isLikelyTargetLanguageText(t)) || (data.provider === 'native_fallback' && data.translation === t) || (data.provider === 'polish_single' && data.translation === t) || (data.qualityScore < 30) || (nativeDecision && !nativeDecision.reuse);
+      // P2 Fix: 'critical_reject' entries sind endgültig durchgefallen (LLM kann den
+      // String nicht korrekt übersetzen). Sie werden NICHT erneut in die Translate-
+      // Pipeline geschickt — das verhindert den endlosen Cache→Translate→Critical→Cache
+      // Loop der bislang bis MAX_REVIEW_COUNT Tokens verbrannte.
+      // Recovery via P1-Mechanismus bei Provider-Wechsel (siehe recoverTerminatedEntries).
+      const isCriticalReject = data.flagReason === 'critical_reject';
+      const needsRefresh = (data.flagged && !isCriticalReject && data.translation === t && !isLikelyTargetLanguageText(t)) || (data.provider === 'native_fallback' && data.translation === t) || (data.provider === 'polish_single' && data.translation === t) || (data.qualityScore < 30) || (nativeDecision && !nativeDecision.reuse);
       const hashMismatch = data.sourceHash && sourceEntry.sourceHash && data.sourceHash !== sourceEntry.sourceHash;
 
       const criticalCheck = translationCriticalCheck(t, data.translation);
@@ -844,7 +852,11 @@ function createTranslationRuntime(options) {
           // provider='native_runtime' (nicht argos), korrekter Quality-Score 94.
           const properNounOverride = !!itemMeta.wasProperNounOverride;
           const saveProvider = properNounOverride ? 'native_runtime' : result.provider;
-          const flagReason = inferFlagReason(source, translated, saveProvider, { qualityScore });
+          let flagReason = inferFlagReason(source, translated, saveProvider, { qualityScore });
+          // P2 Fix: Critical Rejects explizit als 'critical_reject' markieren.
+          // Vorher: inferFlagReason() kannte criticalReject nicht → flag_reason blieb leer
+          // → Cache-Loop-Breaker erkannte den Eintrag nicht → endloser Re-Translate-Loop.
+          if (itemMeta.criticalReject) flagReason = 'critical_reject';
           ctx.translations.set(source, translated);
 
           const saveMeta = {
@@ -937,7 +949,12 @@ function createTranslationRuntime(options) {
             qualityScore: failScore,
             polishStatus: isPN ? 'completed' : 'pending',
             requiresDeepPolish: !isPN,
-            overwriteFallbackUsed: true
+            overwriteFallbackUsed: true,
+            // P3 Fix: Provider-Fehler (429/5xx/Timeout) sind KEINE Übersetzungsfehler.
+            // review_count soll nur bei echten Übersetzungsproblemen hochzählen.
+            // Ohne dieses Flag würde jeder Batch-Fail den Counter inkrementieren
+            // und Einträge unfair dem MAX_REVIEW_COUNT-Limit näher bringen.
+            skipReviewIncrement: true
           }));
           ctx.cachedData.set(item.source, {
             translation: item.source,
@@ -1104,6 +1121,15 @@ function createTranslationRuntime(options) {
 
   async function ensureTranslations(texts, options = {}) {
     consecutiveGrammarFailures = 0;
+
+    // P1 Fix: Recovery einmalig pro Session — wenn terminierte Einträge
+    // (max_revisions_exceeded) älter als REVIEW_RECOVERY_HOURS sind,
+    // werden sie zurückgesetzt und können neu übersetzt werden.
+    if (!_recoveryDone) {
+      _recoveryDone = true;
+      try { await recoverTerminatedEntries(); } catch (e) { /* non-critical */ }
+    }
+
     const entries = await enrichWithContext(texts);
 
     const ctx = {
