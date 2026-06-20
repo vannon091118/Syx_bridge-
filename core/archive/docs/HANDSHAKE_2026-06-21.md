@@ -1,8 +1,11 @@
 # 🤝 HANDSHAKE — 2026-06-21
 
 > **Übergabespezifikation:** Session-Ende 2026-06-21 → Nächster Agent
-> **Branch:** `v21-experimental-workbench` | **Commit:** `1d89544`
-> **Version:** v0.21 (Stabilisierungsphase) | **Score:** 85% → 95%
+> **Branch:** `v21-experimental-workbench` | **Commit:** `7568f90`
+> **Version:** v0.21 (Stabilisierungsphase) | **Score:** 95%
+> **PREFLIGHT:** ✅ HEALTHY (auto-repaired 9 unflaggedStale, 0 remaining, 290ms)
+> **DB-Snapshot:** `translations_2026-06-20_233559_session_2026-06-21_post_live_run.db` (1.6 MB)
+> **DB-Trend:** Snapshot 24 in DB_TREND_REPORT.md
 
 ---
 
@@ -18,19 +21,29 @@ Drei Fixes, eine Session, null externe Dependencies. better-sqlite3 crashte auf 
 | P0-3 | `db_repair.js` | +7/−11 | Sync-API statt Callback-Wrapper |
 | P1-1 | `app.js`, `index.js`, `config-runtime.js` | +28/−52 | PATCH_MODE_ENABLED User-Opt-Out |
 
-### Live-Run — 5 Mods, 440 Übersetzungen, 0 Watermarks
+### Live-Run — 5 Mods, 1.685 Einträge, 0 Watermarks
 
 Backup-Restore von 3 English-Originals → Workshop/AppData → SyxBridge Live-Run auf 5 Mods:
 
 | Metrik | Wert |
 |--------|------|
-| **DB Einträge** | 165 → **1.363** (+1.198) |
-| **Deutsche Übersetzungen** | ~0 → **440** |
-| **Stale (Proper Nouns)** | — → **923** (native_runtime) |
-| **Flagged** | — → **101** |
-| **Provider** | groq 176, openrouter 120, polish_single 108, native_fallback 101, google_free 28 |
+| **DB Einträge** | 165 → **1.685** (+1.520) |
+| **Deutsche Übersetzungen** | ~0 → **470** (Groq) + 120 (OpenRouter) + 56 (google_free) |
+| **Ø Score (übersetzt)** | — → **92.2** |
+| **Stale (Proper Nouns)** | — → **927** (813 native_runtime + 114 non-native) |
+| **Flagged** | — → **105** (100 all_routes_failed, 5 source_reused) |
+| **Audit Stage 2** | — → **938** (56.1%) |
+| **Provider** | groq 470 (27.9%), openrouter 120 (7.1%), polish_single 108 (6.4%), native_fallback 101 (6.0%), google_free 56 (3.3%), ab_polish 17 (1.0%) |
 | **Watermarks in DB** | **0** — P0-1 Defense-in-Depth hielt |
 | **_Info.txt Syntax** | **0 Korruption** — alle 5 Mods intakt |
+
+### PREFLIGHT (automatisiert, 2026-06-20 23:36:57)
+- **Health:** auto-repaired → HEALTHY ✅
+- **Issues:** 18 total (9 unflaggedStale, 9 lowScore), 0 after repair
+- **Native:** 813 NATIVE_STALE (Proper Nouns, expected)
+- **Watermarks:** 0 source, 0 translation, 0 revisions
+- **Diagnostics:** 1.755 NEVER_STRESS_TESTED, 0 NEVER_CHECKED
+- **Elapsed:** 290ms
 
 ### Score-Entwicklung
 
@@ -49,11 +62,15 @@ Backup-Restore von 3 English-Originals → Workshop/AppData → SyxBridge Live-R
 
 ### DB (translations.db)
 - **Schema-Version:** 6
-- **Einträge:** 1.363
-- **Deutsche Übersetzungen:** 440 (Groq 176, OpenRouter 120, polish_single 108)
-- **Stale:** 923 (davon 813 native_runtime Proper Nouns)
-- **Flagged:** 101
+- **Einträge:** 1.685
+- **Deutsche Übersetzungen:** Groq 470, OpenRouter 120, google_free 56, polish_single 108, ab_polish 17
+- **Stale:** 927 (davon 813 native_runtime Proper Nouns)
+- **Flagged:** 105 (100 all_routes_failed, 5 source_reused)
+- **Audit:** Stage 0: 639 (37.9%), Stage 1: 108 (6.4%), Stage 2: 938 (55.7%)
+- **Ø Score:** 88.2 (92.2 translated-only)
 - **Watermarks:** 0 (alle 5 Schichten aktiv)
+- **PREFLIGHT:** ✅ HEALTHY — 9 auto-repariert, 0 remaining, 290ms
+- **Snapshot:** `translations_2026-06-20_233559_session_2026-06-21_post_live_run.db`
 
 ### Code (core/src/)
 - **35 Source-Dateien, ~12.200 LOC**
@@ -97,11 +114,20 @@ Backup-Restore von 3 English-Originals → Workshop/AppData → SyxBridge Live-R
 
 | Dokument | Status |
 |----------|--------|
-| CHANGELOG.md | ✅ Aktualisiert (Live-Run + P0-1/P0-3/P1-1) |
-| MASTER_DOC.md | ✅ Aktualisiert (Score 95%, V0.21 Status) |
+| CHANGELOG.md | ✅ Aktualisiert (P0-1/P0-3/P1-1 + Live-Run 5 Mods) |
+| MASTER_DOC.md | ✅ Aktualisiert (Score 95%, V0.21 Status, DB-Sektion) |
 | FREEZE_INDEX_2.md | ✅ Aktualisiert (§11 P0-1/P0-3/P1-1 + §12 Live-Run) |
-| PREFLIGHT_LATEST.md | ⏳ Braucht Update (steht noch auf 165 Einträge) |
+| PREFLIGHT_LATEST.md | ✅ Automatisiert (auto-repaired, 290ms, HEALTHY) |
+| preflight_history.log | ✅ 5 Einträge, aktuellster: auto-repaired 18 issues |
+| DB_TREND_REPORT.md | ✅ Snapshot 24 (session_2026-06-21_post_live_run) |
 | V0.21_SCOPE.md | ⚠️ Existiert nicht als Datei — Inhalt im CHANGELOG [V0.21-SCOPE] |
+
+---
+
+## §6 SESSION-START BASELINE (für nächsten Agenten)
+
+> **DB:** 1.685 Einträge | **PREFLIGHT:** HEALTHY | **Score:** 95% | **Snapshot 24**
+> **Nächster Agent:** Lies HANDSHAKE → PREFLIGHT_LATEST.md → MASTER_DOC.md §6 Roadmap
 
 ---
 
