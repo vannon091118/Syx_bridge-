@@ -514,6 +514,40 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | RC-002 | Methodik + Verifikation | [FREEZE_INDEX §24](#24-reality_audit_reconciliation_2026-06-19--vollarchivierung) |
 | RC-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §24](#24-reality_audit_reconciliation_2026-06-19--vollarchivierung) |
 
+### HANDSHAKE_2026-06-20_P0-FIXES Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (P0-Abschluss: P0-1/P0-2/P0-3 DONE) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Alle drei P0-Punkte sind implementiert und verifiziert. Offene P1-Punkte nach PLAN_MASTER.md migriert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PF-001 | §1 P0-1/P0-2/P0-3 Abschluss | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+| PF-002 | §2 Verifikation + §3 Geänderte Dateien | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+| PF-003 | §4 Offene Punkte (P1-1/P1-2/P1-3) | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+| PF-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+
+### V0.21_SCOPE Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Scope-Definition + Audit + RESTORE-Philosophie) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — P0-Punkte DONE, Planungs-Items nach PLAN_MASTER.md migriert, Philosophie lebt in MASTER_DOC.md weiter.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| VS-001 | §1 Grundprinzipien (RESTORE-Philosophie) | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+| VS-002 | §2 Fehlerquellen-Analyse (9.492 Einträge) | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+| VS-003 | §3-§7 Prioritäten + RESTORE + Qualität + Abschluss | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+| VS-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+
+### PHASE2_MARKER_INTEGRATION Vollarchivierung (2026-06-20)
+
+> **Aktion:** Planungsdokument (6 Lücken, 4/6 DONE) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — 4/6 Lücken implementiert, verbleibende 2 nach PLAN_MASTER.md migriert (M1-M3).
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PM-001 | Lücken 1-6 + Implementierungsstand | [FREEZE_INDEX §31](#31-phase2_marker_integration--vollarchivierung) |
+| PM-002 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §31](#31-phase2_marker_integration--vollarchivierung) |
+
 ### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
 
 > **Regel:** Eine FREEZE-Datei wird NUR gelöscht wenn:

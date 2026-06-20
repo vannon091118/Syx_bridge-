@@ -1422,3 +1422,113 @@
 *📚 FREEZE INDEX v0.20.0 — 2026-06-20*
 *81 Glossary-Einträge — 62 gelöscht, 19 im FREEZE/ verbleibend. Lückenlos rekonstruierbar.*
 *Generiert durch Buffy (Codebuff) — Built accidentally. Runs intentionally.*
+
+---
+
+## 29. HANDSHAKE_2026-06-20_P0-FIXES — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — P0-Abschluss-HANDSHAKE, alle drei P0-Punkte DONE.
+> **Quelle:** `core/archive/docs/HANDSHAKE_2026-06-20_P0-FIXES.md` (P0-Abschluss, 100 % OBSOLETE)
+> **Regel:** HANDSHAKE über abgeschlossene P0-Fixes — alle drei Punkte sind implementiert und verifiziert. Kein offener Rest.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 PF-001 — §1 P0-1/P0-2/P0-3 Abschluss
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** P0-Abschluss-Doku
+- **Zusammenfassung:** P0-1: Watermark-Stripping (5-Schichten-Defense: extractor.js, text-core.js isProperNoun/shouldTranslate, translation-db.js saveTranslation sourceText+translation). P0-2: shouldTranslate() Config-Blocker (} und ] Delimiter + KEY: {/[ Blocker mit $ Anchor). P0-3: Watermark Output-Only (durch P0-1 vollständig abgedeckt).
+- **Ursache der Obsoleszenz:** Alle drei P0-Punkte sind DONE und im CHANGELOG [V0.21-P0-FIXES] dokumentiert. Die HANDSHAKE war ein Übergabe-Dokument für den Abschluss.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES] + aktueller Code
+- **Status:** ✅ Archiviert
+
+### 📋 PF-002 — §2 Verifikation + §3 Geänderte Dateien
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Verifikation + Commit-Info
+- **Zusammenfassung:** P0-1: 6/6 Tests passed. P0-2: 12/12 Tests passed. Syntax extractor.js/text-core.js/translation-db.js OK. Code-Review deepseek passed. Thinker gemini passed. Geänderte Dateien: extractor.js (+1), text-core.js (+8), translation-db.js (+4), V0.21_SCOPE.md, CHANGELOG.md, MASTER_DOC.md.
+- **Ursache der Obsoleszenz:** Verifikation ist abgeschlossen. Datei-Änderungen sind committed. Kein offener Rest.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 PF-003 — §4 Offene Punkte (P1-1/P1-2/P1-3)
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Übergabe offener Punkte
+- **Zusammenfassung:** Drei P1-Punkte als offen dokumentiert: P1-1 polish_single "no-change"-Erkennung (~1h), P1-2 Non-native stale Counter-Reset (~0.5h), P1-3 DB-Sanitization alter Watermark-Einträge (~1h).
+- **Ursache der Obsoleszenz:** Offene Punkte wurden in PLAN_MASTER.md überführt. HANDSHAKE als Übergabe-Dokument nicht mehr nötig.
+- **LIVE-Ersatz:** PLAN_MASTER.md (P1-1/P1-2/P1-3)
+- **Status:** ✅ Archiviert
+
+### 📋 PF-004 — Gesamtdokument: HANDSHAKE_2026-06-20_P0-FIXES.md
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** P0-Abschluss-HANDSHAKE: Alle drei V0.21 P0-Punkte abgeschlossen. 6+12 Tests passed, 3 Code-Dateien geändert, 3 Doku-Dateien aktualisiert. ICH WERDE GEMINI NICHT REIN LASSEN — P0-1/P0-2/P0-3 ABGESCHLOSSEN.
+- **Ursache der Obsoleszenz:** 100 % der Inhalte sind erledigt. Das Dokument war eine Übergabe-Spezifikation für den nächsten Agenten — Zweck vollständig erfüllt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §29 (diese Einträge) + CHANGELOG [V0.21-P0-FIXES] + PLAN_MASTER.md
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 30. V0.21_SCOPE — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Scope-Definition, alle P0-Punkte DONE, Planungs-Items nach PLAN_MASTER migriert.
+> **Quelle:** `core/archive/docs/V0.21_SCOPE.md` (Scope-Definition, 100 % OBSOLETE)
+> **Regel:** Scope-Dokument dessen P0-Punkte alle DONE sind. Planungs-Items (P1-x, P2-x) sind nach PLAN_MASTER.md migriert. RESTORE-Philosophie und Qualitäts-Definition sind in MASTER_DOC §3+§6 dokumentiert.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 VS-001 — §1 Grundprinzipien (RESTORE-Philosophie)
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Architektur-Philosophie
+- **Zusammenfassung:** Drei vom User definierte Grundprinzipien: P1 RESTORE nie nutzen (Safety-Net only), P2 Qualität=optional/Lesbarkeit=Pflicht (Score ≥ 50), P3 Zero Result Difference (immer liefern, nie leer/error/korrupt).
+- **Ursache der Obsoleszenz:** Prinzipien sind in MASTER_DOC.md §3+§6 dokumentiert. Das Scope-Dokument war der Erst-Entwurf — die Prinzipien leben im MASTER_DOC weiter.
+- **LIVE-Ersatz:** MASTER_DOC.md §3 + §6
+- **Status:** ✅ Archiviert
+
+### 📋 VS-002 — §2 Fehlerquellen-Analyse (Audit 9.492 Einträge)
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Audit-Ergebnisse
+- **Zusammenfassung:** Live-DB Audit: 9.492 Einträge, 4 Fehlerquellen. #1 Watermark-Akkumulation (423 maskiert, P0) → BEHOBEN. #2 shouldTranslate False Positives (23+5, P0) → BEHOBEN. #3 Non-Native Stale (194, P1) → PLAN. #4 MAX_REV_EXCEEDED (1.299, Symptom) → wird sich durch #1+#3 lösen.
+- **Ursache der Obsoleszenz:** Audit war einmalig. Fehlerquellen #1+#2 sind BEHOBEN (P0-1/P0-2 DONE). #3 ist als P1-1/P1-2 in PLAN_MASTER.md. DB-Zahlen sind durch neue Runs überholt.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES] + PLAN_MASTER.md
+- **Status:** ✅ Archiviert
+
+### 📋 VS-003 — §3-§7 Scope-Prioritäten + RESTORE + Qualität + Abschluss + Next-Scope
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Planung + Philosophie
+- **Zusammenfassung:** P0-Punkte (3, alle DONE), P1-Punkte (3, nach PLAN_MASTER migriert), P2-Punkte (3, nach PLAN_MASTER migriert). RESTORE-Philosophie (4 Garantien). Qualitäts-Definition (5 Score-Stufen). P0-Abschluss-Doku. Effort-to-Next-Scope Prognose.
+- **Ursache der Obsoleszenz:** Alle P0 DONE. RESTORE-Philosophie und Qualitäts-Definition sind in MASTER_DOC.md dokumentiert. Planungs-Items sind in PLAN_MASTER.md. Effort-Prognose ist durch tatsächlichen Fortschritt überholt.
+- **LIVE-Ersatz:** MASTER_DOC.md §3+§6 + PLAN_MASTER.md + CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 VS-004 — Gesamtdokument: V0.21_SCOPE.md
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** V0.21 Scope-Definition "Immer liefern, nie restaurieren". Basierend auf Live-DB Audit (9.492 Einträge, 5 parallele Checks). 4 Fehlerquellen identifiziert, 3 P0 + 3 P1 + 3 P2 priorisiert. RESTORE-Philosophie mit 4 Code-Garantien. Qualitäts-Definition mit 5 Score-Stufen.
+- **Ursache der Obsoleszenz:** Zweck vollständig erfüllt. P0-Punkte sind DONE. Planungs-Items sind nach PLAN_MASTER.md migriert. Philosophie lebt in MASTER_DOC.md weiter. Das Dokument war der Initial-Entwurf für V0.21.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §30 (diese Einträge) + MASTER_DOC.md + PLAN_MASTER.md
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument gelöscht
+
+---
+
+## 31. PHASE2_MARKER_INTEGRATION — Vollarchivierung
+
+> **Aktion:** Planungsdokument ins Buch überführt — 4/6 Lücken geschlossen, verbleibende 2 nach PLAN_MASTER migriert.
+> **Quelle:** `core/archive/docs/plans/PHASE2_MARKER_INTEGRATION_2026-06-19.md` (Integrationsplan, 100 % OBSOLETE)
+> **Regel:** Planungsdokument dessen Implementierungsphase abgeschlossen ist (4/6 DONE). Verbleibende offene Punkte (Lücke 1 googleFreePreflight, Lücke 5 Stats-Aggregation, Phase 2d E2E) sind nach PLAN_MASTER.md migriert.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 PM-001 — Lücken 1-6 + Implementierungsstand
+- **Datum:** 2026-06-19 | **Version:** v0.20.0
+- **Kategorie:** Integrationsplan
+- **Zusammenfassung:** 6 Lücken in der validateFileMarkers-Integration identifiziert. 4/6 geschlossen (Phase 2a: Lücke 2 Gate-Counter + Lücke 6 getQaScore, Phase 2b: Lücke 3 SHIELD_RESTORE_FAIL, Phase 2c: Lücke 4 Unit-Tests 16/49). 2 offen: Lücke 1 googleFreePreflight Shield-Results, Lücke 5 Stats-Aggregation. Phase 2d E2E Dry-Run ausstehend.
+- **Ursache der Obsoleszenz:** 4/6 Lücken sind implementiert und verifiziert. Verbleibende 2 Lücken + Phase 2d sind als M1-M3 in PLAN_MASTER.md migriert.
+- **LIVE-Ersatz:** PLAN_MASTER.md (M1-M3)
+- **Status:** ✅ Archiviert
+
+### 📋 PM-002 — Gesamtdokument: PHASE2_MARKER_INTEGRATION_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Phase 2 Integrationsplan für validateFileMarkers. 6 Lücken, 4 Phasen (2a-2d), Gesamt-Effort ~8.5h (davon ~2h verbleibend). Risiken dokumentiert, Abschl

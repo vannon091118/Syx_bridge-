@@ -134,35 +134,42 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ---
 
-## 9. Dokumentationsstruktur (Post Doku-Clean v0.20.0)
+## 9. Dokumentationsstruktur (Final — Post Doku-Konsolidierung v0.21)
 
-> **Stand:** 2026-06-20 — 13 LIVE-Dokumente + FREEZE-Archiv mit 81 Glossary-Einträgen.
-> **NEU:** V0.21_SCOPE.md — Scope-Definition "Immer liefern, nie restaurieren" mit Audit-Ergebnissen.
-> **62 Dokumente gelöscht** (44 aus vorherigen Runden + 18 Audit-Reports dieser Runde).
-> **18 Audit-Reports in FREEZE_INDEX.md §13 überführt** und aus dem LIVE-Verzeichnis gelöscht.
-> Alle Inhalte im FREEZE_INDEX.md als Glossary-Einträge rekonstruierbar.
+> **Stand:** 2026-06-20 — **7 LIVE + 3 FREEZE + 1 PLAN_MASTER**
+> **20 Doku-Konsolidierungs-Durchläufe abgeschlossen.**
+> **~150 Glossary-Einträge** im FREEZE_INDEX.md (Das Buch) — alle mit Kausalität, Cross-Referenzen und CHANGELOG-Verweisen.
+> **76 Dokumente gelöscht** (62 + 14 VOLLARCHIVIERT-Stubs) — alle Inhalte rekonstruierbar.
+> **Archiv-Regeln:** `.ArchiveRules` im Projekt-Root.
 
 ```
 core/archive/docs/
-├── MASTER_DOC.md              # ← DIESER REPORT (konsolidiert)
-├── CHANGELOG.md               # Versionshistorie (LIVE, persistent)
-├── PREFLIGHT_LATEST.md        # Letzter PREFLIGHT-Report (LIVE)
-├── LIVE_INDEX.md              # Index der LIVE- + Meta-Dokumente
-├── WORKFLOW.md                # Agenten-Workflow (Session-Lifecycle, Doku-Clean, Eskalation)
-├── HANDSHAKE_2026-06-19.md    # Session-Übergabe (19.06.) — PARTIAL, OBSOLETE archiviert nach FREEZE_INDEX §14
-├── HANDSHAKE_2026-06-20.md    # Session-Übergabe (20.06.) — PARTIAL, OBSOLETE archiviert nach FREEZE_INDEX §15
+├── MASTER_DOC.md              # ← DIESER REPORT (konsolidierte Master-Doku)
+├── CHANGELOG.md               # Versionshistorie (LIVE, persistent — wird NIE gelöscht)
+├── PREFLIGHT_LATEST.md        # Letzter PREFLIGHT-Report (LIVE, automatisch generiert)
 ├── AGENTS.md                  # SSOT-Kopie der Agent-Regeln (Root-Sync)
-├── KNOWN_BUGS_REPORT.md       # Bug-Triage (34+ Bugs katalogisiert)
-├── DOKU_KONSOLIDIERUNG_2026-06-20.md # LIVE vs FREEZE Cross-Analyse — GELÖSCHT (VOLLARCHIVIERT nach FREEZE_INDEX §16)
-├── DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md # Konsolidierungsbericht — GELÖSCHT (VOLLARCHIVIERT nach FREEZE_INDEX §21)
-├── LLM-AGENTS-EntryPoint.md   # Sub-Agent-Referenz (archivierte SSOT-Kopie)
+├── WORKFLOW.md                # Session-Lifecycle + Doku-Clean + Eskalation
+├── KNOWN_BUGS_REPORT.md       # Bug-Triage (aktive Bugs)
+├── LIVE_INDEX.md              # Index aller LIVE-/FREEZE-/Plan-Dokumente
+├── preflight_history.log      # PREFLIGHT-Verlauf (Log)
 ├── FREEZE/
-│   ├── FREEZE_INDEX.md        # Das Buch — 81 Glossary-Einträge
-│   ├── MASTER_FREEZE_v0.20.0_2026-06-19.md  # Single Source of Truth
-│   ├── FREEZE_MASTER_CHECKLIST_2026-06-19.md # Verifikations-Checkliste
-│   ├── README.md              # Verzeichnis-Doku
-│   ├── TRANSLATION_RUNTIME_SPLIT_2026-06-18.md  # Archivierter Plan (umgesetzt)
-│   └── COMMIT_MSG_2026-06-18.txt                 # Archivierte Commit-Nachricht
+│   ├── FREEZE_INDEX.md        # Das Buch — ~150 Glossary-Einträge mit CHANGELOG-Verweisen
+│   ├── MASTER_FREEZE_v0.20.0_2026-06-19.md  # TOC — referenziert alle gelöschten Einträge
+│   └── FREEZE_MASTER_CHECKLIST_2026-06-19.md # Verifikations-Checkliste (42 Claims)
 └── plans/
-    └── PHASE2_MARKER_INTEGRATION_2026-06-19.md   # Einziger offener Plan
+    └── PLAN_MASTER.md         # Zentrales Planungsdokument — ALLE Pläne landen HIER
 ```
+
+### Gelöscht & Archiviert (76 Dokumente)
+
+| Kategorie | Anzahl | Verbleib |
+|-----------|--------|----------|
+| Einmalige Audit-Reports (VOLLARCHIVIERT) | 20 | FREEZE_INDEX §13-§28 |
+| HANDSHAKEs (PARTIAL + VOLLARCHIVIERT) | 3 | FREEZE_INDEX §14, §15, §29 |
+| Scope/Plan-Dokumente (VOLLARCHIVIERT) | 2 | FREEZE_INDEX §30, §31 |
+| Doku-Konsolidierungs-Stubs (gelöscht) | 14 | Inhalte im Buch |
+| Frühere FREEZE-Dokumente (Doku-Clean v0.20.0) | 37 | FREEZE_INDEX §1-§12 |
+
+> **Rekonstruierbarkeit:** Aus FREEZE_INDEX.md (Das Buch) kann der gesamte Entwicklungsprozess
+> (16.06. – 20.06.2026) lückenlos nachvollzogen werden. Jeder Eintrag hat Kausalität,
+> Cross-Referenzen und CHANGELOG-Verweis.
