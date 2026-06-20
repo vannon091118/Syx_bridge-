@@ -10,6 +10,7 @@
  *   5. JAVA_NOISE: view.sett/world.map → flagged + skip
  *   6. ORPHANED_REVISIONS: revisions without parent → delete
  *   7. STALE_RETRANSLATE_CLEANUP: orphaned flags (src!=tgt) + still-stale reset (src=tgt)
+ *   8. WATERMARK_SANITIZE: ZWSP/ZWNJ aus source_text + translation entfernen (P0-1 Nacharbeit)
  *
  * Usage:
  *   node scripts/db_repair.js              # Dry Run (zeigt was geändert würde)
@@ -154,6 +155,63 @@ async function repairCleanupStaleRetranslate(run) {
   return {
     orphanFlagsCleared: orphanResult.changes,
     staleReset: staleResult.changes
+  };
+}
+
+/**
+ * 8. WATERMARK_SANITIZE: P0-1 Nacharbeit — entfernt ZWSP/ZWNJ Watermarks
+ *    aus allen Einträgen die noch welche enthalten (aus Runs VOR dem P0-1 Fix).
+ *
+ *    Betroffene Spalten:
+ *      - translations.source_text (+ source_hash = '' für Recompute)
+ *      - translations.translation
+ *      - translation_revisions.source_text
+ *      - translation_revisions.translation
+ *
+ *    Reine UPDATE-Executor-Funktion (wie alle anderen repair*).
+ *    Probes und Summary-Logging macht der CLI main().
+ */
+async function repairWatermarkSanitize(run) {
+  // ── translations.source_text bereinigen + source_hash leeren ──
+  const srcResult = await run(`
+    UPDATE translations
+    SET source_text = REPLACE(REPLACE(source_text, CHAR(0x200B), ''), CHAR(0x200C), ''),
+        source_hash = '',
+        updated_at = CURRENT_TIMESTAMP
+    WHERE source_text LIKE '%' || CHAR(0x200B) || '%'
+       OR source_text LIKE '%' || CHAR(0x200C) || '%'
+  `);
+
+  // ── translations.translation bereinigen ──
+  const transResult = await run(`
+    UPDATE translations
+    SET translation = REPLACE(REPLACE(translation, CHAR(0x200B), ''), CHAR(0x200C), ''),
+        updated_at = CURRENT_TIMESTAMP
+    WHERE translation LIKE '%' || CHAR(0x200B) || '%'
+       OR translation LIKE '%' || CHAR(0x200C) || '%'
+  `);
+
+  // ── translation_revisions.source_text bereinigen ──
+  const revSrcResult = await run(`
+    UPDATE translation_revisions
+    SET source_text = REPLACE(REPLACE(source_text, CHAR(0x200B), ''), CHAR(0x200C), '')
+    WHERE source_text LIKE '%' || CHAR(0x200B) || '%'
+       OR source_text LIKE '%' || CHAR(0x200C) || '%'
+  `);
+
+  // ── translation_revisions.translation bereinigen ──
+  const revTransResult = await run(`
+    UPDATE translation_revisions
+    SET translation = REPLACE(REPLACE(translation, CHAR(0x200B), ''), CHAR(0x200C), '')
+    WHERE translation LIKE '%' || CHAR(0x200B) || '%'
+       OR translation LIKE '%' || CHAR(0x200C) || '%'
+  `);
+
+  return {
+    sourceCleaned: srcResult.changes,
+    transCleaned: transResult.changes,
+    revSrcCleaned: revSrcResult.changes,
+    revTransCleaned: revTransResult.changes
   };
 }
 
@@ -309,6 +367,40 @@ async function main() {
     console.log(`  → Würde ${staleOrphans[0].c} Flags löschen + ${staleStillStale[0].c} Einträge resetten.`);
   }
 
+  // ── 8. WATERMARK_SANITIZE: ZWSP/ZWNJ entfernen (P0-1 Nacharbeit) ──
+  // Probes in main() (wie alle anderen Schritte), reiner UPDATE-Executor in repairWatermarkSanitize()
+  console.log('\n── 8. WATERMARK_SANITIZE (ZWSP/ZWNJ aus source_text + translation) ──');
+  const wmSrcProbe = await q(
+    `SELECT COUNT(*) as c FROM translations WHERE source_text LIKE '%' || CHAR(0x200B) || '%' OR source_text LIKE '%' || CHAR(0x200C) || '%'`
+  );
+  const wmTransProbe = await q(
+    `SELECT COUNT(*) as c FROM translations WHERE translation LIKE '%' || CHAR(0x200B) || '%' OR translation LIKE '%' || CHAR(0x200C) || '%'`
+  );
+  const wmRevProbe = await q(
+    `SELECT COUNT(*) as c FROM translation_revisions WHERE source_text LIKE '%' || CHAR(0x200B) || '%' OR source_text LIKE '%' || CHAR(0x200C) || '%' OR translation LIKE '%' || CHAR(0x200B) || '%' OR translation LIKE '%' || CHAR(0x200C) || '%'`
+  );
+
+  const wmSrcTotal = wmSrcProbe[0]?.c || 0;
+  const wmTransTotal = wmTransProbe[0]?.c || 0;
+  const wmRevTotal = wmRevProbe[0]?.c || 0;
+
+  console.log(`  source_text betroffen:  ${wmSrcTotal}`);
+  console.log(`  translation betroffen:  ${wmTransTotal}`);
+  console.log(`  revisions betroffen:    ${wmRevTotal}`);
+
+  if (!DRY_RUN && (wmSrcTotal > 0 || wmTransTotal > 0 || wmRevTotal > 0)) {
+    const wmResult = await repairWatermarkSanitize(run);
+    if (wmResult.sourceCleaned > 0) console.log(`  ✓ ${wmResult.sourceCleaned} source_text Einträge bereinigt.`);
+    if (wmResult.transCleaned > 0) console.log(`  ✓ ${wmResult.transCleaned} translation Einträge bereinigt.`);
+    if (wmResult.revSrcCleaned > 0) console.log(`  ✓ ${wmResult.revSrcCleaned} revision source_text Einträge bereinigt.`);
+    if (wmResult.revTransCleaned > 0) console.log(`  ✓ ${wmResult.revTransCleaned} revision translation Einträge bereinigt.`);
+    totalFixed += wmResult.sourceCleaned + wmResult.transCleaned + wmResult.revSrcCleaned + wmResult.revTransCleaned;
+  } else if (DRY_RUN && (wmSrcTotal > 0 || wmTransTotal > 0 || wmRevTotal > 0)) {
+    console.log(`  → Würde source_text + translation + revisions bereinigen.`);
+  } else {
+    console.log(`  Keine Watermarks gefunden — DB ist bereits sauber.`);
+  }
+
   // ── Zusammenfassung ─────────────────────────────────────────────────
   console.log('\n═══════════════════════════════════════════════════════════');
   console.log(`  ${DRY_RUN ? 'DRY RUN' : 'REPARATUR ABGESCHLOSSEN'}`);
@@ -334,5 +426,6 @@ module.exports = {
   repairLowScore,
   repairJavaNoise,
   repairOrphanedRevisions,
-  repairCleanupStaleRetranslate
+  repairCleanupStaleRetranslate,
+  repairWatermarkSanitize
 };

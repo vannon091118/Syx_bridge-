@@ -27,10 +27,24 @@ const originalConsole = {
 function formatLogValue(value) {
   if (value instanceof Error) return value.stack || value.message;
   if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (value === null) return 'null';
+  if (value === undefined) return 'undefined';
   try {
-    return JSON.stringify(value);
+    // Safe JSON.stringify mit Zirkelschutz.
+    // Ohne den seen-WeakSet produziert JSON.stringify bei zirkulären Referenzen
+    // einen TypeError, und der catch-Block macht String(value) → [object Object].
+    const seen = new WeakSet();
+    return JSON.stringify(value, (key, val) => {
+      if (typeof val === 'object' && val !== null) {
+        if (seen.has(val)) return '[Circular]';
+        seen.add(val);
+      }
+      return val;
+    });
   } catch (e) {
-    return String(value);
+    // Letzter Fallback wenn selbst der Safe-Replacer wirft (z.B. BigInt)
+    return '[Unserializable: ' + (value?.constructor?.name || typeof value) + ']';
   }
 }
 
@@ -191,6 +205,7 @@ module.exports = {
   logRun,
   setDb,
   logPayload,
+  formatLogValue,
   originalConsole,
   // Exportiert für log_sorter.js und andere Dev-Tools
   LOG_PATH,

@@ -1,5 +1,48 @@
 # CHANGELOG
 
+## [P1-3-WATERMARK-SANITIZE] - 2026-06-20 — DB-Sanitization: ZWSP/ZWNJ aus alten Einträgen + Log-System Härtung
+
+Nachdem P0-1 die Watermarks am Eingang gestoppt hat, blieb die Frage: Was ist mit den Einträgen die schon DUTZENDE Runs überlebt haben und jetzt mit ZWSP/ZWNJ in der DB sitzen? P1-3 räumt auf.
+
+### repairWatermarkSanitize() — db_repair.js Schritt 8
+Vier SQL-Statements, alle mit `REPLACE(REPLACE(..., CHAR(0x200B), ''), CHAR(0x200C), '')`:
+- `translations.source_text` — plus `source_hash = ''` damit der Hash beim nächsten saveTranslation() neu berechnet wird
+- `translations.translation`
+- `translation_revisions.source_text`
+- `translation_revisions.translation`
+
+Idempotent — zweiter Durchlauf ändert 0 Zeilen. Die Probes (COUNT mit LIKE) und das Summary-Logging sind im CLI `main()` wie alle anderen Schritte, die repair-Funktion selbst ist ein reiner UPDATE-Executor.
+
+### PREFLIGHT-Integration
+`countIssues()` hat drei neue Spalten: `watermarkSource`, `watermarkTrans` (in der aggregierten Query), `watermarkRevs` (separate Query auf `translation_revisions`). Alle drei sind in `excludedKeys` — sie zählen NICHT für die 5%-Schwelle. `runRepairs()` ruft `repairWatermarkSanitize(run)` auf wenn Watermark-Counts > 0. Im Report erscheinen sie in der ℹ️ Informational-Sektion (wie NATIVE_STALE).
+
+### Log-System: formatLogValue Zirkelschutz
+Das `[object Object]`-Problem ist endlich tot. `formatLogValue()` hat jetzt:
+- null/undefined/number/boolean Checks VOR JSON.stringify
+- WeakSet-basierten Zirkelschutz: `JSON.stringify(value, replacer)` mit `seen.has(val) → '[Circular]'`
+- Fallback `[Unserializable: Typname]` bei BigInt oder anderen Fehlern
+
+Vorher landete bei zirkulären Referenzen `String(value)` → `[object Object]` im Log. Jetzt: `{"a":1,"self":"[Circular]"}`. Sauber.
+
+### Files Changed
+- `core/scripts/db_repair.js` — repairWatermarkSanitize() + main() Schritt 8
+- `core/src/preflight.js` — countIssues() Watermark-Spalten + runRepairs() Integration + writeReport() ℹ️-Sektion
+- `core/src/logger.js` — formatLogValue() Zirkelschutz + WeakSet + Typ-Checks
+- `core/scripts/log_sorter.js` — 3-Run-Support (log_2 statt log_3)
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### Tests
+- Syntax-Check: db_repair.js, preflight.js, logger.js, log_sorter.js alle OK
+- formatLogValue: Circular-Test PASS, Normal/Null/Number/String alle korrekt
+- Code-Review: Nit Pick Nick — "Looks good. No issues found."
+
+### EFFORT TO NEXT SCOPE
+- P1-1: polish_single "no-change"-Erkennung (~1h)
+- P1-2: Non-native stale Counter-Reset (~0.5h)
+- Live-Run mit allen P0+P1-3 Fixes
+
+---
+
 ## [V0.21-P0-FIXES] - 2026-06-20 — P0-1/P0-2/P0-3: Watermark-Stripping, Config-Blocker, Output-Only
 
 Nach dem dritten Kaffee und vier Sub-Agenten später: Alle drei P0-Release-Blocker sind durch. Und weisst du was das Beste ist? P0-3 brauchte keinen einzigen neuen Code. Die fünf Schichten aus P0-1 haben den Watermark-Fluss so dicht gemacht dass die DB von alleine sauber bleibt.

@@ -143,9 +143,7 @@ function filterEntries(entries) {
   if (flags.search) {
     const s = flags.search.toLowerCase();
     result = result.filter(e => e.message.toLowerCase().includes(s));
-  }
-
-  if (flags.tail && flags.tail > 0) {
+  }      if (flags.tail && flags.tail > 0) {
     result = result.slice(-flags.tail);
   }
 
