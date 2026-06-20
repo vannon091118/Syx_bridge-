@@ -380,6 +380,17 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | KR-002 | 44 FREEZE-Dokumente + 8 permanent | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
 | KR-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
 
+### CONTROL_TOWER_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (7 Findings + 41 Catch-Blöcke + 10 Delta-Änderungen) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Multi-Agenten-Audit, Snapshot-17-Basis.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| CT-001 | §2 Hidden-Failure-Detector + SkipTruth | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
+| CT-002 | §3 Delta-Ledger: 10 Code + 6 Doku | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
+| CT-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
+
 ### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
 
 > **Regel:** Eine FREEZE-Datei wird NUR gelöscht wenn:

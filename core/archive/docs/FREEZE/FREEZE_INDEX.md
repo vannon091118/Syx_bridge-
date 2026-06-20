@@ -32,8 +32,9 @@
 19. [CODE_VS_DOCS_AUDIT_2026-06-19 — Vollarchivierung (5)](#19-code_vs_docs_audit_2026-06-19--vollarchivierung)
 20. [INTEGRITY_AUDIT_2026-06-19 — Vollarchivierung (4)](#20-integrity_audit_2026-06-19--vollarchivierung)
 21. [DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 — Vollarchivierung (3)](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung)
+22. [CONTROL_TOWER_AUDIT_2026-06-19 — Vollarchivierung (3)](#22-control_tower_audit_2026-06-19--vollarchivierung)
 
-> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4+3 = **133 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
+> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4+3+3 = **136 Glossary-Einträge** (62 gelöscht, 19 im FREEZE/ verbleibend + 12 neu aus HANDSHAKE)
 
 ---
 
@@ -1132,6 +1133,41 @@
 - **Zusammenfassung:** Konsolidierung Run #2: 4 Thinker-with-Files-Gemini + Orchestrator. 60 Dokumente analysiert, 9 Widersprüche katalogisiert, 44 Dokumente zur Löschung freigegeben, 8 als permanent empfohlen. Methodik: Bootstrap → Vollesung → Subagent-Matrix → Tendenzenanalyse → Destillation.
 - **Ursache der Obsoleszenz:** Zweck vollständig erfüllt — die Lösch-Empfehlungen wurden ausgeführt, die Widersprüche gelöst, die referenzierten Dokumente sind ihrerseits archiviert. Das Dokument ist ein historischer Meilenstein der Doku-Bereinigung.
 - **LIVE-Ersatz:** FREEZE_INDEX.md §21 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 22. CONTROL_TOWER_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Multi-Agenten-Audit, alle Findings überholt.
+> **Quelle:** `core/archive/docs/CONTROL_TOWER_AUDIT_2026-06-19.md` (Architektur-Audit, 100 % OBSOLETE)
+> **Regel:** Einmaliger Control-Tower-Audit vom 19.06. — Snapshot-17-Basis, Code-Muster haben sich weiterentwickelt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 CT-001 — §2 Hidden-Failure-Detector: 7 Findings + 41 Catch-Blöcke + SkipTruth
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Stille-Fehler-Analyse
+- **Zusammenfassung:** 7 Findings: F1 Cooldown-Bypass in buildRoutePlan (BY DESIGN), F2 BU-034 API-Credit-Bleeding (MIT BREAKER), F3 ZWSP-Akkumulation in DESC, F4 Watermark nach Validierung (KEIN BUG), F5 addColumnIfMissing String-Interpolation (FALSIFIED), F6 NVIDIA nur in uiCandidates wenn Primary (PARTIAL), F7 exporter.js Reihenfolge korrekt. 41 leere Catch-Blöcke in 9 Dateien. 8 SkipTruth-Risiken.
+- **Ursache der Obsoleszenz:** F2 (BU-034) → behoben durch REVIEW-LIMIT-PIPELINE P1/P2. F3 (ZWSP) → adressiert in V0.21 P0-1. F6 (NVIDIA) → Routing hat sich weiterentwickelt. Restliche Findings sind Design-Entscheidungen oder Beobachtungen ohne Aktionswert.
+- **LIVE-Ersatz:** CHANGELOG [REVIEW-LIMIT-PIPELINE] + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 CT-002 — §3 Delta-Ledger: 10 reale + 6 Doku-Änderungen
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Änderungsregister
+- **Zusammenfassung:** 10 reale Verhaltensänderungen (D-1 bis D-10): escalating cooldown, freeLlmFirst, google_free abschaltbar, BU-034 Refresh, addColumnIfMissing, debug_payloads→logs/, Watermark-Fix, ZWSP-Fallback, console.warn→log, CostClass-Update. 6 Doku-Änderungen (DD-1 bis DD-6): HANDSHAKE, MASTER_DOC, KNOWN_BUGS, ROUTING_AUDIT, CHANGELOG, PREFLIGHT.
+- **Ursache der Obsoleszenz:** Alle 10 Code-Änderungen sind längst committed und durch weitere Änderungen überholt. Die 6 Doku-Änderungen sind selbst veraltet (HANDSHAKE → PARTIAL, MASTER_DOC aktualisiert, ROUTING_AUDIT noch LIVE).
+- **LIVE-Ersatz:** CHANGELOG.md (alle Änderungen dokumentiert)
+- **Status:** ✅ Archiviert
+
+### 📋 CT-003 — Gesamtdokument: CONTROL_TOWER_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Multi-Agenten Control-Tower-Audit: 3 Thinker-with-Files-Gemini + 2 Code-Searcher + 1 Basher. 3 Wellen (Discovery → Verifikation → Synthese). 7 Hidden Failures, 41 stille Catch-Blöcke, 8 SkipTruth-Risiken, 10 reale Code-Änderungen, 8 aktive Risiken. Bereits als DC-002 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Findings beziehen sich auf Code-Stand vom 19.06. Snapshot-17-Basis. Alle kritischen Findings (F2 BU-034, F6 NVIDIA) in späteren Sessions adressiert.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-002) + §22 (diese Einträge)
 - **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
 
 ---
