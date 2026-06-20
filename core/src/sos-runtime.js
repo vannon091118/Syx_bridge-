@@ -53,17 +53,18 @@ async function syncLauncherSettings(options) {
   try {
     const content = await fsp.readFile(settingsPath, 'utf-8');
     const { mods } = parseSoSConfig(content);
-        
+    // Clean up old patch mod formats and backups
     const cleanMods = mods.filter(m => 
       !m.endsWith(`_${targetLang}`) && 
-            m !== 'BridgeCore' && 
-            !m.startsWith('.backup_') &&
-            m !== 'syx-bridge'
+      !m.startsWith('.backup_') &&
+      m !== 'syx-bridge'
     );
-        
+
     const newMods = [...cleanMods];
     if (activePatchesCount > 0 && !nativeMode) {
-      newMods.push('BridgeCore');
+      if (!newMods.includes('BridgeCore')) {
+        newMods.push('BridgeCore');
+      }
     }
         
     const newContent = stringifySoSConfig(content, newMods);
