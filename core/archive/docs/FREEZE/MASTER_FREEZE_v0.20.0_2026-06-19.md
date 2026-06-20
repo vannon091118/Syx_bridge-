@@ -460,14 +460,48 @@ PRAGMA busy_timeout = 5000;      -- 5s
 
 ### FLAG_TAXONOMY_2026-06-19 Vollarchivierung (2026-06-20)
 
-> **Aktion:** Komplettes Quelldokument (3 Flag-Systeme + Kollisionsregister) ins Buch überführt.
+> **Aktion:** Komplettes Quelldokument ins Buch überführt.
 > **Begründung:** 100 % OBSOLETE — Taxonomie-Prinzip lebt in AGENTS.md §18 weiter.
 
 | ID | Kurztitel | Buch-Verweis |
 |----|-----------|-------------|
-| FT-001 | 3 Flag-Systeme + Inventur + Cross-Reference | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
+| FT-001 | 3 Flag-Systeme + Inventur | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
 | FT-002 | Falsifikation + Kollisionsregister | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
 | FT-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
+
+### DOKU_DIVERGENZ_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — 14 Divergenzen, alle historisch.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| DD-001 | 14 Divergenzen + 7 bestätigt | [FREEZE_INDEX §31](#31-doku_divergenz_audit_2026-06-19--vollarchivierung) |
+| DD-002 | Methodik + Empfehlungen | [FREEZE_INDEX §31](#31-doku_divergenz_audit_2026-06-19--vollarchivierung) |
+| DD-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §31](#31-doku_divergenz_audit_2026-06-19--vollarchivierung) |
+
+### PRIORISIERUNG_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Alle P0/P1 erledigt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PZ-001 | 31 Findings + 4-Quadranten-Matrix | [FREEZE_INDEX §32](#32-priorisierung_2026-06-19--vollarchivierung) |
+| PZ-002 | Empfohlene Reihenfolge (5 Stufen) | [FREEZE_INDEX §32](#32-priorisierung_2026-06-19--vollarchivierung) |
+| PZ-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §32](#32-priorisierung_2026-06-19--vollarchivierung) |
+
+### BATCH: 4 Docs Vollarchivierung (2026-06-20)
+
+> **Aktion:** PRODUCT_PROTECTION + SECURITY_ARCHIVE + DIVERGENZ_REPORT + LLM-AGENTS-EntryPoint ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Einmal-Dokumente, archivierte Kopien.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PP-001 | PRODUCT_PROTECTION Watermark-Doku | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+| SA-001 | SECURITY_ARCHIVE Frozen Copy | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+| DV-001 | DIVERGENZ_REPORT LIVE vs FREEZE | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+| LA-001 | LLM-AGENTS-EntryPoint Archivkopie | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
 
 ### REALITY_AUDIT_RECONCILIATION_2026-06-19 Vollarchivierung (2026-06-20)
 
