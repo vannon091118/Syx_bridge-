@@ -1,11 +1,7 @@
-# 📚 FREEZE INDEX — Das Buch [ARCHIVIERT 2026-06-20]
-
-> ⚠️ **ARCHIVIERT:** Dieses Dokument wurde am 2026-06-20 abgeschlossen und archiviert.
-> **Fortsetzung:** `FREEZE_INDEX_2.md` — indexiert die Entwicklung AB der Sinnhaftigkeitsanalyse (15 systemische Fixes, Commit `9a853ef`).
-> **Archivkopie:** `FREEZE_INDEX_v0.20.0_archived.md`
+# 📚 FREEZE INDEX — Das Buch
 
 > **Version:** v0.20.0 | **Stand:** 2026-06-20
-> **Funktion:** Das EINE große, lückenlose Dokument das den GESAMTEN Entwicklungsprozess (16.06.–20.06.2026) dokumentiert.
+> **Funktion:** Das EINE große, lückenlose Dokument das den GESAMTEN Entwicklungsprozess dokumentiert.
 > Jeder gelöschte FREEZE-Eintrag wird hier als Glossary-Eintrag überführt — MIT Kausalität, Beobachtungen, Cross-Referenzen.
 > **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 20.06.2026) lückenlos nachvollzogen werden.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.

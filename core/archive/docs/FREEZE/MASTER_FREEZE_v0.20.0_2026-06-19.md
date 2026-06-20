@@ -5,6 +5,10 @@
 > **Prinzip:** CODE IST DIE EINZIGE WAHRHEIT. Jeder Claim gegen Code verifiziert.
 > **Status:** ✅ FREEZE ABGESCHLOSSEN — 42 Claims geprüft, 32 verified, 5 falsified korrigiert
 
+> 🔄 **FREEZE-INDEX-ROTATION (2026-06-20):** Der ursprüngliche FREEZE_INDEX (142 Einträge, 33 Sektionen) wurde als abgeschlossen archiviert.
+> **Fortsetzung:** `FREEZE_INDEX_2.md` — indexiert die Entwicklung AB der Sinnhaftigkeitsanalyse (15 systemische Fixes, Commit `9a853ef`, 7 Dateien).
+> **Archivkopie:** `FREEZE_INDEX_v0.20.0_archived.md` (112 KB)
+
 ---
 
 ## 1. EXECUTIVE SUMMARY
