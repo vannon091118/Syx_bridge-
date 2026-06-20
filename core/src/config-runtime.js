@@ -84,10 +84,19 @@ function filterLLMs(models, freeOnly = false) {
 function getDefaultModelForProvider(provider) {
   // Return 'auto' for cloud providers so runtime discovery picks the best model.
   // For OpenRouter we always start with the free tier.
+  // ⚠️ Groq: 'auto' ist KEIN gültiger Modellname bei Groq (anders als OpenRouter).
+  // Bei Nicht-Primary-Provider-Nutzung (freeLlmFirst-Fallback) wurde 'auto'
+  // literal an die API gesendet → 404. Fix: konkreten Fallback statt 'auto'.
   if (provider === 'openrouter') return OPENROUTER_FREE_MODEL;
   if (provider === 'ollama')     return OLLAMA_FALLBACK_MODELS[0];
-  return 'auto'; // gemini, groq, player2 → runtime discovery
+  if (provider === 'groq')       return GROQ_FALLBACK_MODELS[0];
+  // Gemini: hat ebenfalls kein 'auto'-Routing wie OpenRouter.
+  // 'gemini-2.5-flash-lite' ist das aktuelle, lebende Leichtgewicht (siehe checkCloudKey).
+  if (provider === 'gemini')     return 'gemini-2.5-flash-lite';
+  return 'auto'; // player2 → runtime discovery (OpenAI-compatible 'auto')
 }
+
+const { translateHttpError } = require('./router');
 
 function maskSecret(value) {
   if (!value) return '(kein Key)';
@@ -465,7 +474,10 @@ class ConfigRuntime {
       return { provider, index, key: maskSecret(key), ok: false, detail: 'Unbekannter Provider', ms: `${Date.now() - startedAt}ms` };
     } catch (e) {
       const status = e.response ? e.response.status : 'offline';
-      return { provider, index, key: maskSecret(key), ok: false, detail: `${status}: ${e.message}`, ms: `${Date.now() - startedAt}ms` };
+      // translateHttpError() aus router.js — dieselbe Mapping-Logik wie handleFailure()
+      const errInfo = translateHttpError(status === 'offline' ? 0 : status);
+      const fallback = errInfo.severity === 'unknown' ? `: ${e.message}` : '';
+      return { provider, index, key: maskSecret(key), ok: false, detail: `${errInfo.meaning} (${status})${fallback}`, ms: `${Date.now() - startedAt}ms` };
     }
   }
 
@@ -493,7 +505,9 @@ class ConfigRuntime {
       };
     } catch (e) {
       const status = e.response ? e.response.status : 'offline';
-      return { provider, ok: false, detail: `${status}: ${e.message}`, ms: `${Date.now() - startedAt}ms` };
+      const errInfo = translateHttpError(status === 'offline' ? 0 : status);
+      const fallback = errInfo.severity === 'unknown' ? `: ${e.message}` : '';
+      return { provider, ok: false, detail: `${errInfo.meaning} (${status})${fallback}`, ms: `${Date.now() - startedAt}ms` };
     }
   }
 

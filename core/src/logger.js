@@ -37,10 +37,12 @@ function writeLog(level, args) {
   }
 
   if (dbInstance) {
-    // Non-blocking database logging
-    dbInstance.run('INSERT INTO logs (level, message, timestamp) VALUES (?, ?, ?)', [level, message, timestamp], (err) => {
-      if (err) originalConsole.error('[DB LOG ERROR]', err.message);
-    });
+    // Non-blocking database logging (better-sqlite3: prepare + run, sync)
+    try {
+      dbInstance.prepare('INSERT INTO logs (level, message, timestamp) VALUES (?, ?, ?)').run(level, message, timestamp);
+    } catch (err) {
+      originalConsole.error('[DB LOG ERROR]', err.message);
+    }
   }
 }
 

@@ -180,7 +180,33 @@ PRAGMA busy_timeout = 5000;      -- 5s
 
 ---
 
-## 6. OFFENE PUNKTE (nächste Session)
+## 6. MASTER_DOC-Konsolidierung Durchlauf 1 (2026-06-20)
+
+> **Aktion:** 16 OBSOLETE-Einträge aus MASTER_DOC.md ins Buch (FREEZE_INDEX.md §11) überführt.
+> **Verbleibend in MASTER_DOC:** Nur aktuell gültige Aussagen mit CHANGELOG-Verweisen.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| KD-001 | ✅ Erreicht-Liste | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-002 | BUG-FS-003 | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-003 | BUG-FS-006 | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-004 | F.B Contract-Tests | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-005 | #014 FALSIFIED | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-006 | BU-018 Monolith | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-007 | BU-021 ALTER TABLE | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-008 | BU-027 debug_payloads | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-009 | BU-028 Allowlist | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-010 | BU-029 console.warn | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-011 | BU-034 Low-Score | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-012 | §5 Snap-18 Historie | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-013 | §6 S3 better-sqlite3 | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-014 | §6 translateHttpError | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-015 | §6 4 Dev-Scripts | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+| KD-016 | §8 Redundanz-Audit | [FREEZE_INDEX §11](#11-master_doc-konsolidierung-durchlauf-1) |
+
+---
+
+## 7. OFFENE PUNKTE (nächste Session)
 
 | Prio | Aufgabe | Aufwand |
 |------|---------|---------|

@@ -2,8 +2,7 @@
 
 > **Datum:** 2026-06-20 | **Autor:** Buffy (Codebuff) + 2 Thinker-Sub-Agenten
 > **Methode:** Getrennte Analyse von LIVE-Doku (28 Dateien) und FREEZE-Doku (5 Dateien) durch zwei unabhängige thinker-with-files-gemini, dann Cross-Konsolidierung.
-> **Ziel:** Alle Divergenzen, veraltete Referenzen, und Redundanzen zwischen LIVE- und FREEZE-Dokumentation identifizieren.
-> **Trigger:** "Doku freeze check und konsolidierung der Live Doku dann die freeze doku Analysieren lassen alles von getrennten sub agents"
+> **Status:** ✅ ALLE 12 DIVERGENZEN AUFGELÖST (2026-06-20 Session)
 
 ---
 
@@ -301,21 +300,28 @@ AGENTS.md, DIVERGENZ_REPORT
 
 | Schwere | Anzahl | Beschreibung |
 |---------|--------|-------------|
-| 🔴 P0 | 2 | HANDSHAKE BU-023 Status + NMT-Provider-Referenzen |
-| 🟡 P1 | 4 | LIVE_INDEX Regel, MASTER_DOC Tree, KNOWN_BUGS Cluster D+§3 |
-| 🟡 P2 | 3 | FREEZE_MASTER_CHECKLIST Referenzen, MASTER_DOC Roadmap, DB-Zahlen |
-| 🟢 P3 | 3 | FREEZE_INDEX Zählung, AGENTS.md Sync, Audit-Report Kandidaten |
-| **Total** | **12** | |
+| 🔴 P0 | 2 | HANDSHAKE BU-023 Status + NMT-Provider-Referenzen → ✅ BEHOBEN |
+| 🟡 P1 | 4 | LIVE_INDEX Regel, MASTER_DOC Tree, KNOWN_BUGS Cluster D+§3 → ✅ BEHOBEN |
+| 🟡 P2 | 3 | FREEZE_MASTER_CHECKLIST Referenzen, MASTER_DOC Roadmap, DB-Zahlen → ✅ BEHOBEN |
+| 🟢 P3 | 3 | FREEZE_INDEX Zählung, AGENTS.md Sync, Audit-Report Kandidaten → ✅ BEHOBEN |
+| **Total** | **12** | **ALLE BEHOBEN** ✅ |
 
-### Dringendste Aktionen (diese Session)
+### Durchgeführte Korrekturen (2026-06-20 Session)
 
-1. **P0-1:** HANDSHAKE BU-023 Status aktualisieren (F.B → BEHOBEN)
-2. **P0-2:** MASTER_FREEZE §4.7 NMT-Referenz aktualisieren (ENTFERNT)
-3. **P0-2:** HANDSHAKE §5.3 NMT aus Provider-Matrix entfernen
-4. **P1-1:** KNOWN_BUGS_REPORT Cluster D + §3 aktualisieren
-5. **P1-2:** LIVE_INDEX Regel anpassen oder Doku-Clean planen
+1. **P0-1 ✅:** HANDSHAKE §4/§8/§10 — F.B Status war bereits BEHOBEN (aus Vorsession), verifiziert
+2. **P0-2 ✅:** HANDSHAKE §5.3 — NMT-Zeile bereits entfernt; MASTER_FREEZE §4.7 ENTFERNT; §10 OUT OF SCOPE um BU-040 ergänzt
+3. **P1-1 ✅:** LIVE_INDEX.md — "Max 3" → "Max 10 LIVE-Dokumente" + Doku-Clean Referenz
+4. **P1-2 ✅:** MASTER_DOC §9 Tree — auf 28 Docs erweitert, [22 Audit-Reports] referenziert
+5. **P1-3 ✅:** KNOWN_BUGS Cluster D — Status bereits 2/5 (aus Vorsession)
+6. **P1-4 ✅:** KNOWN_BUGS §3 — BU-023 bereits GEHEILT, Zähler 14→15
+7. **P2-1 ✅:** FREEZE_MASTER_CHECKLIST — 5 Phantom-Referenzen als GELÖSCHT markiert
+8. **P2-2 ✅:** MASTER_DOC §6 Roadmap — S5 ✅ ERLEDIGT (BU-023, 73/73)
+9. **P2-3 ✅:** MASTER_DOC §5 — Historische Tabelle hinter `<details>`
+10. **P3-1 ✅:** FREEZE_INDEX — §7 "(4)"→"(1)", TOC-Zählung 44 verified
+11. **P3-2 ✅:** AGENTS.md SSOT-Sync — `diff` = identisch (kein Output)
+12. **P3-3 ✅:** 22 Audit-Reports als Doku-Clean-Kandidaten in MASTER_DOC §9 + LIVE_INDEX referenziert
 
 ---
 
 *📊 DOKU-KONSOLIDIERUNG 2026-06-20 — Generiert durch Buffy + 2 Thinker-Sub-Agenten*
-*12 Divergenzen gefunden, 2 P0, 4 P1, 3 P2, 3 P3*
+*12 Divergenzen gefunden — ALLE 12 BEHOBEN ✅ (2026-06-20 Session)*

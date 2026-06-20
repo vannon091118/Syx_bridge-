@@ -1,7 +1,7 @@
-# 📖 INDEX — core/scripts/ (20 Dateien, ~3.600 LOC)
+# 📖 INDEX — core/scripts/ (24 Dateien, ~4.700 LOC)
 
 > **Generiert:** 2026-06-20 | **Version:** v0.20.0-pre-release
-> **Zweck:** Referenzbuch für Utility-Scripts (Audit, Repair, Release, Cleanup)
+> **Zweck:** Referenzbuch für Utility-Scripts (Audit, Repair, Release, Cleanup, Dev-Tools)
 > **CL-Refs:** Kanonische Quelle ist `core/archive/docs/CHANGELOG.md`. Lokale CL-Refs sind Kurzform.
 
 ---
@@ -17,7 +17,10 @@
 | cleanup_argos_stale.js | 90 | 3 | Argos-Stale-Einträge bereinigen |
 | cleanup_zombies.js | 15 | 1 | Zombie-Prozesse bereinigen |
 | db_audit.js | 733 | 5 | DB-Audit mit Metriken |
+| **db_query.js** | **200** | **4** | **SQLite CLI Query-Runner & Report-Generator** |
 | db_repair.js | 160 | 7 | **DB-Repair** — 6 Repair-Funktionen + Main |
+| **db_snapshot.js** | **200** | **2** | **One-Click DB Snapshot & Trend-Report Logger** |
+| **export_stage2.js** | **250** | **6** | **Reiner Export-Run — keine API-Calls** |
 | package.js | 80 | 1 | NPM-Paketierung |
 | reconstruct.js | 160 | 3 | Rekonstruktions-Tests |
 | redteam_baseline.js | 120 | 1 | Red-Team Smoke-Tests |
@@ -25,6 +28,7 @@
 | reset_now.js | 180 | 6 | **Hard-Reset** — Backups, DB, Launcher |
 | start_ollama.js | 140 | 6 | Ollama-Start + Modell-Management |
 | sync-version.js | 100 | 1 | Version-Synchronisation (7 Dateien) |
+| **test_providers.js** | **300** | **7** | **Provider Key Health-Check** |
 | verify_commit_msg.js | 105 | 1 | **RULE 3 Härtung** — Commit-Message vs Diff-Abgleich |
 | verify_integrity.js | 50 | 1 | Integritäts-Verifikation |
 | warm-model.js | 40 | 1 | NMT-Modell-Warmup |
@@ -90,4 +94,60 @@
 
 ---
 
-*📖 Scripts-INDEX v0.20.0 — 21 Dateien, 3.899 LOC*
+### db_query.js (200 LOC)
+*SQLite CLI Query-Runner & Report-Generator — ersetzt node -e/Temp-File-Schleife*
+
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 53 | `output(data)` | JSON/console.table Output-Helper |
+| 60 | `runQuery(sql, params)` | SQL ausführen (SELECT→all, sonst→run) |
+| 72 | `reportFull()` | Vollständiger Metrik-Report (meta+prov+flags+scores+work) |
+| 135 | `reportLive()` | Quick Live-Report (total/stale/flagged/avg_score+provider+stages) |
+| 153 | `reportPostRun()` | Post-Run-Report (aktuell = reportFull, künftig --baseline) |
+| 161 | `reportProviders()` | Provider-Breakdown (cnt, stage0/1/2, stale_pct, avg_score, flagged) |
+
+**CHANGELOG-Ref:** [CL:BETTER-SQLITE3-MIGRATION]
+
+### db_snapshot.js (200 LOC)
+*One-Click DB Snapshot & Trend-Report Logger*
+
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 39 | `main()` | Label→Dateiname bauen, copyFile, optional TREND_REPORT-Update |
+| 178 | `_findNextSnapshotNumber()` | Nächste Snapshot-Nummer aus DB_TREND_REPORT.md parsen |
+
+**CHANGELOG-Ref:** [CL:BETTER-SQLITE3-MIGRATION]
+
+### export_stage2.js (250 LOC)
+*Reiner Export-Run — null API-Calls, nur DB→Dateien*
+
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 43 | `main()` | Mods scannen, exportMod pro Mod, Launcher-Sync |
+| 86 | `collectTextFiles(dir, baseDir)` | Rekursiv .txt-Dateien sammeln |
+| 100 | `readFileJob(job)` | Datei lesen + parsen + replacements extrahieren |
+| 118 | `mapLimit(items, limit, mapper)` | Parallele Verarbeitung mit Concurrency-Limit |
+| 126 | `exportMod(modDir, modName)` | **Haupt-Export** — Backup, Stage-2-Übersetzungen, Validierung, Dual-Path-Copy |
+| 234 | `main()` | Orchestrator — Stage-2-Map aus DB, Mod-Loop, Final-Stats |
+
+**CHANGELOG-Ref:** [CL:BETTER-SQLITE3-MIGRATION]
+
+### test_providers.js (300 LOC)
+*Provider Key Health-Check via Live-Endpoints*
+
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 38 | `loadEnv()` | .env-Datei parsen |
+| 60 | `parseKeys(raw)` | Keys aus Komma-separiertem String parsen |
+| 70 | `maskKey(key)` | Key für Anzeige maskieren |
+| 89 | `testGroq(key)` | Groq API-Key via GET /openai/v1/models testen |
+| 102 | `testGemini(key)` | Gemini API-Key via GET /v1beta/models testen |
+| 115 | `testOpenRouter(key)` | OpenRouter API-Key via GET /api/v1/models testen |
+| 129 | `testNvidia(key)` | NVIDIA API-Key via GET /v1/models testen |
+| 142 | `testOllama(url)` | Ollama via GET /api/tags testen |
+
+**CHANGELOG-Ref:** [CL:BETTER-SQLITE3-MIGRATION]
+
+---
+
+*📖 Scripts-INDEX v0.20.0 — 24 Dateien, ~4.700 LOC*

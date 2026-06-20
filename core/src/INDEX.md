@@ -1,7 +1,7 @@
 # 📖 INDEX — core/src/ (27 Dateien, ~10.000 LOC)
 
-> **Generiert:** 2026-06-19 | **Version:** v0.20.0-pre-release
-> **Zuletzt verifiziert:** 2026-06-19 (Doku-Divergenz-Audit DD-007: 10.089 LOC, 243 Function/Class-Defs)
+> **Generiert:** 2026-06-20 | **Version:** v0.20.0-pre-release
+> **Zuletzt verifiziert:** 2026-06-20 (better-sqlite3-Migration + translateHttpError)
 > **Zweck:** Referenzbuch — jeder Agent findet hier Funktionen + Zeilennummern OHNE den gesamten Code durchsuchen zu müssen.
 > **Format:** DATEI:ZEILE_START-ZEILE_ENDE: FUNKTION — Kurzbeschreibung
 > **CHANGELOG-Refs:** Jede Funktion die im CHANGELOG erwähnt wird, hat ein [CL:TAG] Verweis.
@@ -73,8 +73,8 @@
 
 ---
 
-## config-runtime.js (975 LOC)
-*Config-Management: API-Keys, Provider-Discovery, Model-Ranking, .env-Persistenz*
+## config-runtime.js (985 LOC)
+*Config-Management: API-Keys, Provider-Discovery, Model-Ranking, .env-Persistenz, translateHttpError-Integration*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -116,6 +116,7 @@
 - [CL:0.19.7-nmt] NMT_LOCAL_ENABLED
 - [CL:0.19.7-chain] flaggedForReview
 - [CL:0.20.0-alpha.1] H6 Metadata delegiert
+- [CL:BETTER-SQLITE3-MIGRATION] translateHttpError-Import, checkCloudKey/checkLocalProvider menschenlesbare Fehler
 
 ---
 
@@ -139,25 +140,27 @@
 ---
 
 ## db.js (325 LOC)
-*SQLite Connection, Init, PRAGMAs, Migration, Read-Only Access*
+*SQLite Connection (better-sqlite3), Init, PRAGMAs, Migration, Read-Only Access*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
-| 11 | `connect()` | Schreib-Connection |
-| 24 | `connectReadOnly()` | Read-Only Connection |
-| 36 | `allReadOnly(sql, params)` | Read-Only Query |
-| 49 | `run(sql, params)` | SQL-Execute |
-| 61 | `get(sql, params)` | Single-Row Query |
-| 73 | `all(sql, params)` | Multi-Row Query |
+| 11 | `connect()` | Schreib-Connection (`new Database(path, {timeout:5000})`) |
+| 28 | `run(sql, params)` | SQL-Execute — Promise-wrapped `stmt.run()` |
+| 40 | `get(sql, params)` | Single-Row Query — Promise-wrapped `stmt.get()` |
+| 52 | `all(sql, params)` | Multi-Row Query — Promise-wrapped `stmt.all()` |
+| 64 | `connectReadOnly()` | Redirect auf Haupt-Connection (WAL-Mode) |
+| 70 | `allReadOnly(sql, params)` | Delegiert an `all()` |
+| 76 | `addColumnIfMissing(table, column, type)` | Helper: ALTER TABLE nur bei Bedarf |
 | 85-322 | `init()` | DB-Init: WAL, PRAGMAs, Schema, Migrationen |
 | 323-325 | `migrateRiskScore()` | Risk-Score Migration |
 
-**CHANGELOG-Ref (4× db.js):**
+**CHANGELOG-Ref (5× db.js):**
 - [CL:0.15.0-alpha] connectReadOnly, allReadOnly implementiert
 - [CL:0.16.0] Read-Only Connection Pattern
 - [CL:0.19.6-fcm] migrateRiskScore Crash-Fix
 - [CL:0.19.7] HDD-PRAGMAs (mmap/cache/temp_store/busy_timeout), init() erweitert
 - [CL:0.19.8] 3 neue Spalten (polish_status, requires_deep_polish, overwrite_fallback_used)
+- [CL:BETTER-SQLITE3-MIGRATION] sqlite3→better-sqlite3: Promise-Wrapper run/get/all, connect() mit try/catch, connectReadOnly/allReadOnly-Redirect
 
 ---
 
@@ -281,16 +284,18 @@
 ---
 
 ## logger.js (105 LOC)
-*Logging, Run-Tracking, Payload-Log*
+*Logging, Run-Tracking, Payload-Log (better-sqlite3 sync)*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
 | 16 | `formatLogValue(value)` | Log-Wert formatieren |
-| 26 | `writeLog(level, args)` | Log schreiben |
+| 26 | `writeLog(level, args)` | Log schreiben — DB via `prepare().run()` (sync) |
 | 48 | `setDb(db)` | DB-Referenz setzen |
 | 55 | `setupLogging()` | Logging initialisieren |
 | 82 | `logRun(runData)` | Run-Eintrag loggen |
 | 95 | `logPayload(provider, type, data)` | Payload loggen |
+
+**CHANGELOG-Ref:** [CL:BETTER-SQLITE3-MIGRATION] dbInstance.run(cb)→prepare().run()
 
 ---
 
@@ -375,39 +380,42 @@
 ---
 
 ## preflight.js (260 LOC)
-*DB-Health-Check vor jedem Sync, Auto-Repair, Snapshot*
+*DB-Health-Check vor jedem Sync, Auto-Repair, Snapshot (better-sqlite3 via dbManager)*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
-| 20-33 | `createPreflight(dbManager)` | Factory |
+| 20-33 | `createPreflight(dbManager)` | Factory — q1/run via `dbManager.get/run` (Promise-basiert) |
 | 34-177 | `runPreflight(options)` | **Haupt-Preflight** — 6 Issue-Kategorien |
 | 178-207 | `countIssues()` | Issues zählen |
 | 208-223 | `runRepairs(issues)` | Reparaturen ausführen |
 | 224-256 | `createSnapshot()` | DB-Snapshot erstellen |
 | 257-260 | `writeReport(report)` | Report schreiben |
 
-**CHANGELOG-Ref (2× preflight):**
+**CHANGELOG-Ref (3× preflight):**
 - [CL:0.19.7-chain] PREFLIGHT implementiert, NATIVE_STALE exkludiert (criticalIssues = total - nativeStale)
 - [CL:0.19.8] PREFLIGHT erweitert + INPLACE Dual-Path-Copy, 548 Einträge markiert
+- [CL:BETTER-SQLITE3-MIGRATION] q1/run-Callback-Wrapper → dbManager.get/run
 
 ---
 
-## router.js (180 LOC)
-*Provider-Routing, Cost-Class, Error-Handler mit eskalierendem Cooldown*
+## router.js (220 LOC)
+*Provider-Routing, Cost-Class, translateHttpError, Error-Handler mit eskalierendem Cooldown*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
 | 17 | `isFreeModel(model)` | Free-Model-Check |
 | 24 | `estimateCostClass(provider, model)` | Cost-Klasse schätzen |
 | 42 | `isEnabledFlag(value, defaultValue)` | Feature-Flag |
-| 63 | `class Router` | **Hauptklasse** — Routing, Error-Handler, Cooldown |
+| 63 | `translateHttpError(status)` | **HTTP-Status→Deutsch** — menschenlesbare Fehler+Handlung (10 Codes) |
+| 100 | `class Router` | **Hauptklasse** — Routing, Error-Handler, Cooldown |
 
-**CHANGELOG-Ref (5× router):**
+**CHANGELOG-Ref (6× router):**
 - [CL:0.15.0-alpha] buildRoutePlan implementiert
 - [CL:0.16.0] Capability Matrix, supportsRole, PROVIDER_CAPABILITIES
 - [CL:0.19.7] FCM in Router, hasAccess, estimateCostClass
 - [CL:0.19.6-fcm] FCM Proxy-Integration in Router
 - [CL:0.19.7-chain] Argos Cost 0→10, Google-Free Cost 3→9, 429→disable run, eskalierender Cooldown, isAvailable Cooldown-Bypass, reset() State-Leak-Fix
+- [CL:BETTER-SQLITE3-MIGRATION] translateHttpError() — menschenlesbare HTTP-Fehler für Logs + handleFailure-Integration
 
 ---
 

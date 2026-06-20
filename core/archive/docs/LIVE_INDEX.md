@@ -1,21 +1,21 @@
 # 📖 LIVE INDEX — SyxBridge Dokumentation
 
-> **Stand:** 2026-06-19 | **Version:** v0.20.0-pre-release
-> **Regel:** Maximal 3 LIVE-Dokumente + 1 Meta-Dokument (WORKFLOW.md). Alle historischen/fertigen Dokumente wandern nach FREEZE/.
+> **Stand:** 2026-06-20 | **Version:** v0.20.0-pre-release
+> **Regel:** Maximal 10 LIVE-Dokumente + 1 Meta-Dokument (WORKFLOW.md). Einmalige Audit-Reports (DD-Audit, Flag-Taxonomie, Reality-Audit etc.) wandern nach FREEZE/ sobald Doku-Clean-Prozess läuft. Siehe DOKU_KONSOLIDIERUNG_2026-06-20.md für aktuelle Kandidaten-Liste (22 Audit-Reports).
 
 ## LIVE-Dokumente
 
 | # | Dokument | Zweck | Update-Frequenz | Letztes Update |
 |---|----------|-------|-----------------|----------------|
-| 1 | `CHANGELOG.md` | Versionshistorie — Commits, Fixes, Features pro Version | Bei jedem Release | v0.20.0-pre-release |
-| 2 | `MASTER_DOC.md` | Architektur-Master-Doku — Projektübersicht, Pipeline, Status, Bugs, Roadmap, Agent-Referenz | Bei jedem größeren Change | 19.06.2026 |
-| 3 | `PREFLIGHT_LATEST.md` | Aktueller PREFLIGHT-Report — DB-Health, Reparaturen, Threshold-Status | Vor jedem Sync (automatisch) | 19.06.2026 |
+| 1 | `CHANGELOG.md` | Versionshistorie — Commits, Fixes, Features pro Version | Bei jedem Release | v0.20.0-pre-release (20.06.2026) |
+| 2 | `MASTER_DOC.md` | Architektur-Master-Doku — Projektübersicht, Pipeline, Status, Bugs, Roadmap, Agent-Referenz | Bei jedem größeren Change | 20.06.2026 |
+| 3 | `PREFLIGHT_LATEST.md` | Aktueller PREFLIGHT-Report — DB-Health, Reparaturen, Threshold-Status | Vor jedem Sync (automatisch) | 20.06.2026 |
 
 ## Meta-Dokumente
 
 | # | Dokument | Zweck | Update-Frequenz | Letztes Update |
 |---|----------|-------|-----------------|----------------|
-| W | `WORKFLOW.md` | Agenten-Workflow — Session-Lifecycle, Doku-Clean, Traceability-Garantie, Eskalations-Trigger | Bei Prozess-Änderungen | 19.06.2026 |
+| W | `WORKFLOW.md` | Agenten-Workflow — Session-Lifecycle, Doku-Clean, Traceability-Garantie, Eskalations-Trigger | Bei Prozess-Änderungen | 20.06.2026 |
 
 ## Abdeckung
 
@@ -48,6 +48,7 @@
 | Quelldokument | Ziel-Sektion | Aktion |
 |---------------|-------------|--------|
 | `HANDSHAKE_2026-06-19.md` | §3, §5, §6 | Gemerged (Status, DB-Stand, Roadmap) |
+| `HANDSHAKE_2026-06-20.md` | §5, §6, §9 | Neue Dev-Tools, DB-Snapshot 23, Plugin-Readiness-Audit |
 | `LLM-AGENTS-EntryPoint.md` | §7 | Gemerged (Agent-Referenz) |
 | `REDUNDANZ_AUDIT_V2_2026-06-19.md` | §8 | Gemerged (Redundanz-Befunde) |
 | `COMMIT_MSG_2026-06-18.txt` | — | Obsolet, nicht übernommen |

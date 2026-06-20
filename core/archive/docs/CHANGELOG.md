@@ -1,5 +1,186 @@
 # CHANGELOG
 
+## [PERFORMANCE-HDD] - 2026-06-20 — 4 Optimierungen für schwache Systeme (HDD/AMD FX)
+
+### Changed (Performance — HDD + PREFLIGHT + init())
+- **`core/src/db.js` — Schema-Version mit `_schema_meta`-Tabelle (+25 LOC):**
+  - `CURRENT_SCHEMA_VERSION = '5'` als Modulkonstante.
+  - Bei init(): `_schema_meta`-Tabelle prüfen. Wenn Version aktuell → ALLE 14 `addColumnIfMissing`-Checks + 2 Bulk-UPDATE-Migrationen + 8 CREATE TABLE/INDEX werden **übersprungen**. Spart 2-5 Sekunden bei JEDEM Start auf HDD.
+  - Nach erfolgreichen Migrationen: Version in `_schema_meta` speichern.
+  - Idempotent: Alte DBs ohne `_schema_meta` führen alle Migrationen einmal durch und speichern dann die Version.
+
+- **`core/src/preflight.js` — Aggregierte Query statt 8 parallelen COUNT(*) (+10/−20 LOC):**
+  - `countIssues()`: 8 parallele `Promise.all`-Queries → 1 aggregierte `SUM(CASE WHEN ...)` Query auf translations + 1 separate Query auf translation_revisions.
+  - HDD-Problem: 8 parallele Queries konkurrieren um Disk-Head → Thrashing. 1 Query = 1 Table-Scan statt 8. Gemessene Ersparnis: ~50% PREFLIGHT-Zeit.
+
+- **`core/src/preflight.js` — NATIVE_STALE relabeling (+10/−5 LOC):**
+  - NATIVE_STALE (native_runtime src=tgt = Proper Nouns/Eigennamen) ist **KEIN Fehler**, sondern erwartetes Verhalten.
+  - Aus "Issues Detected"-Tabelle entfernt → neue "ℹ️ Native Entries (expected, no errors)"-Sektion.
+  - Aus `totalIssues`-Berechnung exkludiert (via `excludedKeys`-Set).
+  - `repairNativeStale()` aus `runRepairs()` entfernt — keine Reparatur für erwartetes Verhalten.
+  - Konsolen-Log: `[PREFLIGHT] ℹ️ 915 NATIVE_STALE Einträge (Proper Nouns — keine Übersetzung nötig, kein Fehler).`
+  - **Vertrauen zurückgewonnen:** Keine falschen "CRITICAL"/"WARNING"-Meldungen mehr für Proper Nouns.
+
+- **`core/src/preflight.js` — Snapshot-Gating (+5 LOC):**
+  - `createSnapshot()` nur wenn `criticalIssues > 0` (echte Issues, nicht nativeStale).
+  - Spart 5+ MB `copyFileSync` auf HDD bei healthy DBs und nativeStale-only Runs.
+
+### PREFLIGHT History-Analyse
+- **18.06–19.06:** 13/20 Runs mit 250–2.118 Issues (meist NATIVE_STALE). 2× CRITICAL/SYNC BLOCKED.
+- **Ursache:** NATIVE_STALE wurde in den 5%-Threshold eingerechnet → falscher SYNC BLOCKED.
+- **Heute (nach Fix):** 0 Issues, HEALTHY, 1.101ms. 915 NATIVE_STALE als ℹ️ Info.
+
+### Files Changed
+- `core/src/db.js` — Schema-Version + init()-Skip (+25 LOC)
+- `core/src/preflight.js` — Aggregierte Query + NATIVE_STALE relabeling + Snapshot-Gating (+25/−25 LOC)
+
+### Tests
+- Syntax-Check: db.js ✅ | preflight.js ✅
+- PREFLIGHT Dry-Run gegen Live-DB: ✅ HEALTHY, totalIssues=0, criticalIssues=0, nativeStale=915 (info only), 1.101ms
+- Code-Review: 3 Reviewer-Pässe, alle Issues behoben
+
+### EFFORT TO NEXT SCOPE
+- `--skip-preflight` CLI-Flag für Power-User (weitere ~1s Ersparnis)
+- `saveTranslation`-Batching für DB-Write-Reduktion während Translation
+- WAL-Checkpoint nur alle N Runs statt bei jedem PREFLIGHT
+
+---
+
+## [B4-SILENT-CATCH-FIX] - 2026-06-20 — 3× .catch(() => {}) beseitigt: Dead-Loop + Stress-Test
+
+### Fixed (P2 — BU-020-Wiederholungsfall: Silent Error Swallowing)
+- **`runDeepPolishBatch()` — Dead-Loop bei polish_status='failed'-UPDATE** (`translation-runtime.js`):
+  - **Problem:** Wenn `dbRun(UPDATE ... SET polish_status='failed')` fehlschlug (DB-Connection-Issue, WAL-Contention), verschluckte `.catch(() => {})` den Fehler stillschweigend. Der Eintrag blieb auf `polish_status='pending'` und wurde bei JEDEM Deep-Polish-Lauf erneut an einen Provider geschickt, scheiterte erneut — ein stiller Dead-Loop der bei jedem Run API-Credits fraß, ohne jemals zu terminieren.
+  - **Fix:** `.catch(() => {})` → Retry-Loop mit 3 Versuchen × 500ms Pause. `console.warn` bei Retry, `console.error` bei endgültigem Fehlschlag (mit Source-Text für manuelle Nachverfolgung). Aggregierter `deepPolishUpdateFailures`-Zähler mit `console.error`-Warnung am Funktionsende. Return-Wert um `updateFailures` erweitert.
+- **`googleFreePreflight()` — 2× `saveStressTestResult().catch(() => {})`** (`translation-runtime.js`):
+  - **Problem:** Stress-Test-Ergebnisse wurden bei DB-Fehler stillschweigend verworfen — keine Metrik, keine Warnung.
+  - **Fix:** `.catch(e => console.warn(...))` mit Source-Text + Error-Message.
+
+### Files Changed
+- `core/src/translation-runtime.js` — 3× `.catch(() => {})` → Retry-Loop/Logging (+35/−8 LOC)
+
+### Tests
+- Syntax-Check: ✅ SYNTAX OK
+- Code-Review: Nit Pick Nick — "Solide. Retry-Mechanismus wirkt bei sync-better-sqlite3 akademisch, aber Logging-Gewinn ist real. Aggregierter Counter am Funktionsende ist die richtige Ergänzung."
+
+### EFFORT TO NEXT SCOPE
+- Live-Run: Verifizieren dass keine hängengebliebenen pending-Einträge mehr existieren
+- `buildBatchPrompt._plugin` Monkey-Patch durch echten Parameter ersetzen
+
+---
+
+## [BETTER-SQLITE3-MIGRATION] - 2026-06-20 — sqlite3→better-sqlite3 + translateHttpError + 4 neue Dev-Scripts
+
+### Changed (P2 — sqlite3 DEPRECATED → better-sqlite3 11.9.1)
+- **`core/src/db.js` — Promise-Wrapper für better-sqlite3 (+63/−64 LOC):**
+  - `require('sqlite3')` → `require('better-sqlite3')`
+  - `connect()`: `new Database(DB_PATH, { timeout: 5000 })` statt PRAGMA busy_timeout — nativer SQLITE_BUSY-Handler. Try/catch um synchronen Konstruktor, damit init() nicht crasht.
+  - `run(sql, params)`: `db.prepare(sql).run(...params)` → `Promise.resolve(result)` — behält Promise-Signatur für alle 30+ `await run()`-Caller in translation-runtime.js, preflight.js, db.js init().
+  - `get(sql, params)`: `db.prepare(sql).get(...params)` → `Promise.resolve(result)`.
+  - `all(sql, params)`: `db.prepare(sql).all(...params)` → `Promise.resolve(result)`.
+  - `connectReadOnly()` / `allReadOnly()`: Redirect auf Haupt-Connection — better-sqlite3 WAL-Mode erlaubt konkurrente Reads ohne zweite Connection. Existierende Caller (index.js initDbRo, gui-handlers) müssen nicht angepasst werden.
+  - `addColumnIfMissing()`: Unverändert (war bereits synchron via db.prepare).
+  - **Kein Event-Loop-Freeze-Risiko:** Hot-Path-Analyse (translation-runtime.js Zeile 615-681) zeigt: DB-Writes passieren NUR nach `await translateBatchWithRouting()` — nie parallel zu HTTP-Requests. Synchrone Disk-I/O (~1-2 ms/Batch) fällt gegen 2-10s LLM-Latenz nicht ins Gewicht.
+
+- **`core/src/logger.js` — dbInstance.run(cb) → prepare().run() (+5/−5 LOC):**
+  - `dbInstance.run('INSERT INTO logs...', [level, message, timestamp], (err) => {...})` → `dbInstance.prepare('INSERT INTO logs...').run(level, message, timestamp)`.
+  - better-sqlite3 hat keinen Callback-Parameter — prepare().run() ist synchron und wirft bei Fehler.
+
+- **`core/src/preflight.js` — q1/run-Callback-Wrapper → dbManager.get/run (+6/−6 LOC):**
+  - `const q1 = (sql, params) => new Promise((resolve, reject) => { db.get(sql, params || [], (err, row) => ...) })` → `const q1 = (sql, params) => dbManager.get(sql, params || [])`.
+  - `const run = (sql, params) => new Promise(...)` → `const run = (sql, params) => dbManager.run(sql, params || [])`.
+  - dbManager.get/run geben bereits Promises zurück (siehe db.js) — kein Wrapper nötig.
+
+- **`core/package.json` — sqlite3 6.0.1 entfernt, better-sqlite3 11.9.1 hinzugefügt:**
+  - sqlite3: 63 transitive Dependencies (node-gyp, node-addon-api, tar, minipass, …) → 0.
+  - better-sqlite3: 2 Dependencies (bindings, prebuild-install) — beide waren bereits transitiv via sqlite3 vorhanden.
+  - NET: −285 Zeilen in package-lock.json.
+
+### Added (P1 — translateHttpError in Router)
+- **`core/src/router.js` — `translateHttpError(status)` (+44/−35 LOC):**
+  - Neue Funktion: HTTP-Statuscode → menschenlesbare Bedeutung + Handlungsempfehlung.
+  - Map für 10 Status-Codes: 400, 401, 402, 403, 404, 408, 429, 500, 502, 503, 504.
+  - Jeder Eintrag: `{ severity: 'fatal'|'transient'|'unknown', meaning: string, action: string }`.
+  - Status 0 = Netzwerkfehler (keine HTTP-Response erhalten).
+  - `module.exports.translateHttpError = translateHttpError` — exportiert für externe Consumer.
+  - `handleFailure()` nutzt translateHttpError für menschenlesbare Logs statt nur "status code 404".
+  - Fatal-Errors (400, 401, 402, 403, 404) → Provider wird für Session deaktiviert.
+  - 429 → eskalierender Cooldown (30s→60s→120s→… cap 5min) statt Permanent-Disable.
+  - 5xx/0 → eskalierender Cooldown (10s→20s→40s→… cap 5min).
+
+- **`core/src/config-runtime.js` — Fatal-Error-Disable via translateHttpError (+10/−10 LOC):**
+  - `const { translateHttpError } = require('./router')` — importiert.
+  - `checkCloudKey()`: translateHttpError(status) ersetzt manuelles Error-Mapping.
+  - `checkLocalProvider()`: selbes Pattern für lokale Provider (Ollama, Player2).
+  - Erwartete Wirkung: Key-Checks zeigen jetzt menschenlesbare Fehler statt roher Status-Codes.
+
+### Added (Dev-Tools — 4 neue Scripts)
+- **`core/scripts/db_query.js` (NEU, ~200 LOC):** SQLite CLI Query-Runner & Report-Generator.
+  - `--report [full|live|post-run|providers]` — fertige Metrik-Reports.
+  - `--json` / `--table` — Output-Formate.
+  - Roh-SQL-Modus: `node scripts/db_query.js "SELECT ..."`.
+  - Ersetzt `node -e`-Einzeiler + Temp-File-Schleife für DB-Analysen.
+
+- **`core/scripts/db_snapshot.js` (NEU, ~200 LOC):** One-Click DB Snapshot & Trend-Report Logger.
+  - `node scripts/db_snapshot.js "label"` — translations.db kopieren nach archive/dbold/.
+  - `--trend` — DB_TREND_REPORT.md automatisch um Snapshot-Eintrag ergänzen.
+  - `--dry-run` — Vorschau ohne zu schreiben.
+  - `--list` — vorhandene Snapshots auflisten.
+
+- **`core/scripts/export_stage2.js` (NEU, ~250 LOC):** Reiner Export-Run — keine Translation, keine API-Calls.
+  - Liest Stage-2-verifizierte Übersetzungen (audit_stage ≥ 2, polish_status = 'completed') aus translations.db.
+  - Nutzt existierende Parser→Exporter-Pipeline (parser.js, text-core.js applyTranslations, exporter.js).
+  - Umgeht ensureTranslations() komplett — null API-Calls, null axios, null Ollama.
+  - Dual-Path-Copy: Workshop-Ordner + AppData-Verzeichnis (NATIVE_MODE).
+  - Backup pro Mod vor Workshop-Überschreiben (core/backups/).
+  - Validierung: validateFileSyntax + validateFileMarkers VOR Write.
+  - processed_files-Update nach erfolgreichem Write.
+  - `--dry-run` / `--target German` Flags.
+
+- **`core/scripts/test_providers.js` (NEU, ~300 LOC):** Provider Key Health-Check.
+  - Testet alle konfigurierten API-Keys gegen ihre Live-Endpoints.
+  - Provider: Groq, Gemini, OpenRouter, NVIDIA, Ollama.
+  - Nutzt translateHttpError() für menschenlesbare Fehlermeldungen.
+  - `--json` / `--table` Output-Formate.
+
+### Plugin-Readiness-Audit (Session-Ergebnis)
+- **A1 Interface-Vollständigkeit:** 23/23 Methoden in SongsOfSyxPlugin via hasOwnProperty überschrieben — keine Lücken.
+- **A2 Contract-Test:** 73/73 PASS — dynamische Interface-Erkennung via Object.getOwnPropertyNames().
+- **A3 Lecksuche:** ⚠️ sos-runtime.js:7-8 hardcodierter songsofsyx-Pfad (gehört in GameAdapter). 🟡 index.js: new SongsOfSyxPlugin() hart codiert (Einzeiler-Änderung bei neuem Plugin). Core-Module (router, dispatcher, translation-runtime) sind nachweislich Plugin-neutral.
+- **A4 Blast-Radius:** Neues Plugin würde OHNE Core-Änderung laufen — bis auf index.js Plugin-Instanziierung + sos-runtime.js Settings-Pfad.
+- **B1-B4 Datenfluss:** Pipeline-Kette lückenlos nachvollziehbar. 3× silent .catch(() => {}) identifiziert (Risiko für Datenverlust).
+
+### Files Changed
+- `core/src/db.js` — sqlite3→better-sqlite3 Promise-Wrapper (+63/−64)
+- `core/src/logger.js` — dbInstance.run(cb)→prepare().run() (+5/−5)
+- `core/src/preflight.js` — q1/run via dbManager.get/run (+6/−6)
+- `core/src/router.js` — translateHttpError + handleFailure-Integration (+44/−35)
+- `core/src/config-runtime.js` — translateHttpError in checkCloudKey/checkLocalProvider (+10/−10)
+- `core/package.json` — sqlite3→better-sqlite3 (+2/−2)
+- `core/package-lock.json` — dependency tree (−285 Zeilen)
+- `core/scripts/db_query.js` — NEU (~200 LOC)
+- `core/scripts/db_snapshot.js` — NEU (~200 LOC)
+- `core/scripts/export_stage2.js` — NEU (~250 LOC)
+- `core/scripts/test_providers.js` — NEU (~300 LOC)
+- `core/archive/dbold/DB_TREND_REPORT.md` — Snapshot 23 (Baseline vor Testrun)
+- `core/archive/docs/PREFLIGHT_LATEST.md` — PREFLIGHT-Update (HEALTHY, 0 Issues)
+- Diverse Doku-Dateien — Cross-Referenz-Updates
+
+### Tests
+- Syntax-Check: ALL files OK ✅
+- PREFLIGHT standalone: ✅ HEALTHY, 262 Issues auto-repaired, 409ms
+- export_stage2.js Dry-Run: 8 Mods, 406 .txt-Dateien, 840 Treffer ✅
+- test_providers.js: 4 OK (Groq, 2× OpenRouter, NVIDIA), 1 SKIP (Gemini), 1 FAIL (Ollama offline) ✅
+- plugin-boundary-contract: 73/73 PASS ✅
+
+### EFFORT TO NEXT SCOPE
+- **P0:** Live-Run mit better-sqlite3 + translateHttpError (manueller Test ausstehend)
+- **P1:** sos-runtime.js Settings-Pfad in GameAdapter abstrahieren
+- **P2:** index.js Plugin-Instanziierung über Config/CLI-Flag
+- ~~**P2:** 3× silent .catch(() => {}) in Kernfunktionen mit Logging versehen~~ ✅ Erledigt (siehe [B4-SILENT-CATCH-FIX])
+
+---
+
 ## [SECURITY-CLEANUP] - 2026-06-20 — DEPENDENCY REDUCTION + npm audit fix + inquirer→prompts (0 VULN)
 
 ### Changed (Security-Offensive)

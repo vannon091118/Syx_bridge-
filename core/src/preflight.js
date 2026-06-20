@@ -18,15 +18,9 @@ const path = require('path');
 const dbRepair = require('../scripts/db_repair');
 
 function createPreflight(dbManager) {
-  const db = dbManager.db();
-
-  // ── Promise wrappers for sqlite3 callback API ─────────────────────────
-  const q1 = (sql, params) => new Promise((resolve, reject) => {
-    db.get(sql, params || [], (err, row) => err ? reject(err) : resolve(row));
-  });
-  const run = (sql, params) => new Promise((resolve, reject) => {
-    db.run(sql, params || [], function(err) { err ? reject(err) : resolve(this); });
-  });
+  // ── Direct Promise wrappers via dbManager (better-sqlite3) ─────────
+  const q1 = (sql, params) => dbManager.get(sql, params || []);
+  const run = (sql, params) => dbManager.run(sql, params || []);
 
   // ═════════════════════════════════════════════════════════════════════
   // MAIN PREFLIGHT ROUTINE
@@ -88,16 +82,15 @@ function createPreflight(dbManager) {
 
     // ── 4. Count issues by category ─────────────────────────────────
     const issues = await countIssues();
-    // DIAGNOSTIC fields (neverChecked, neverStressTested) are informational only —
-    // exclude from the threshold sum to prevent false-positive repair triggers.
-    const diagnosticKeys = new Set(['neverChecked', 'neverStressTested']);
+    // EXCLUDED fields: DIAGNOSTIC (neverChecked, neverStressTested) + NATIVE_STALE
+    // (native_runtime = proper nouns — expected behavior, no repair needed).
+    const excludedKeys = new Set(['neverChecked', 'neverStressTested', 'nativeStale']);
     const totalIssues = Object.entries(issues)
-      .filter(([k]) => !diagnosticKeys.has(k))
+      .filter(([k]) => !excludedKeys.has(k))
       .reduce((sum, [, v]) => sum + v, 0);
 
-    // NATIVE_STALE is expected behavior (native_runtime means "no translation needed").
-    // It is excluded from the blocking threshold to prevent false-positive sync blocks.
-    const criticalIssues = totalIssues - issues.nativeStale;
+    // criticalIssues = totalIssues (nativeStale already excluded, no subtraction needed)
+    const criticalIssues = totalIssues;
     report.issues = { ...issues, total: totalIssues, critical: criticalIssues };
 
     // ── 5. Decision: repair or abort? ───────────────────────────────
@@ -112,6 +105,12 @@ function createPreflight(dbManager) {
       );
     }
 
+    // NATIVE_STALE ist KEIN Fehler — native_runtime = Proper Nouns, erwartetes Verhalten.
+    // Nur als Info loggen, nicht als Issue zählen oder reparieren.
+    if (issues.nativeStale > 0) {
+      console.log(`[PREFLIGHT] ℹ️  ${issues.nativeStale} NATIVE_STALE Einträge (Proper Nouns/Eigennamen — keine Übersetzung nötig, kein Fehler).`);
+    }
+
     if (totalIssues === 0) {
       report.health = 'healthy';
       console.log('[PREFLIGHT] ✅ DB healthy — no issues found.');
@@ -120,20 +119,23 @@ function createPreflight(dbManager) {
       report.health = 'auto-repaired';
       console.log(`[PREFLIGHT] 🔧 ${totalIssues} total issues (critical: ${criticalIssues}, ${(pct * 100).toFixed(1)}%) — auto-repairing...`);
 
-      // Create snapshot BEFORE any repair
-      report.snapshot = await createSnapshot();
-      if (report.snapshot) {
-        console.log(`[PREFLIGHT]    → Snapshot: ${report.snapshot}`);
+      // Snapshot NUR wenn echte (non-nativeStale) Issues repariert werden.
+      // nativeStale-only Runs brauchen keinen Snapshot — nichts wird geändert.
+      if (criticalIssues > 0) {
+        report.snapshot = await createSnapshot();
+        if (report.snapshot) {
+          console.log(`[PREFLIGHT]    → Snapshot: ${report.snapshot}`);
+        }
       }
 
       // Run repairs
       const repairResults = await runRepairs(issues);
       report.repairs = repairResults;
 
-      // Re-count after repair (exclude diagnostic fields from sum)
+      // Re-count after repair (exclude diagnostic/nativeStale fields from sum)
       const afterIssues = await countIssues();
       const afterTotal = Object.entries(afterIssues)
-        .filter(([k]) => !diagnosticKeys.has(k))
+        .filter(([k]) => !excludedKeys.has(k))
         .reduce((sum, [, v]) => sum + v, 0);
       report.issuesAfter = { ...afterIssues, total: afterTotal };
 
@@ -180,40 +182,36 @@ function createPreflight(dbManager) {
   }
 
   // ═════════════════════════════════════════════════════════════════════
-  // ISSUE COUNTING — 6 categories, all direct SQL
+  // ISSUE COUNTING — 1 aggregierte Query statt 8 parallelen (HDD-Optimierung)
+  // 8 parallele Queries erzeugen Disk-Head-Thrashing auf HDD.
+  // 1 aggregierte Query macht nur EINEN Table-Scan auf translations.
   // ═════════════════════════════════════════════════════════════════════
   async function countIssues() {
-    const [
-      nativeStale,
-      unflaggedStale,
-      shieldLeaks,
-      lowScore,
-      javaNoise,
-      orphanedRevs,
-      neverChecked,
-      neverStressTested
-    ] = await Promise.all([
-      q1("SELECT COUNT(*) as c FROM translations WHERE provider='native_runtime' AND source_text=translation AND flagged=0"),
-      q1("SELECT COUNT(*) as c FROM translations WHERE source_text=translation AND flagged=0 AND provider NOT IN ('native_runtime','native_proper_noun','native_non_translatable')"),
-      q1("SELECT COUNT(*) as c FROM translations WHERE (translation LIKE '%__SHLD_%' OR translation LIKE '%[[%' OR translation LIKE '%]]%') AND flag_reason NOT LIKE '%shield_leak%'"),
-      q1("SELECT COUNT(*) as c FROM translations WHERE quality_score < 30 AND quality_score > 0 AND flagged=0"),
-      q1("SELECT COUNT(*) as c FROM translations WHERE (source_text LIKE '%view.sett%' OR source_text LIKE '%world.map%') AND flagged=0"),
-      q1("SELECT COUNT(*) as c FROM translation_revisions WHERE source_text NOT IN (SELECT source_text FROM translations)"),
-      // DIAGNOSTIC (BU-035a): entries never validated — last_checked_at IS NULL
-      q1("SELECT COUNT(*) as c FROM translations WHERE last_checked_at IS NULL"),
-      // DIAGNOSTIC (BU-035b): entries never stress-tested — stress_tested_at IS NULL
-      q1("SELECT COUNT(*) as c FROM translations WHERE stress_tested_at IS NULL")
-    ]);
+    // Aggregierte translations-Query: 7 Kategorien in EINEM Scan
+    const agg = await q1(`SELECT
+      SUM(CASE WHEN provider='native_runtime' AND source_text=translation AND flagged=0 THEN 1 ELSE 0 END) as nativeStale,
+      SUM(CASE WHEN source_text=translation AND flagged=0 AND provider NOT IN ('native_runtime','native_proper_noun','native_non_translatable') THEN 1 ELSE 0 END) as unflaggedStale,
+      SUM(CASE WHEN (translation LIKE '%__SHLD_%' OR translation LIKE '%[[%' OR translation LIKE '%]]%') AND flag_reason NOT LIKE '%shield_leak%' THEN 1 ELSE 0 END) as shieldLeaks,
+      SUM(CASE WHEN quality_score < 30 AND quality_score > 0 AND flagged=0 THEN 1 ELSE 0 END) as lowScore,
+      SUM(CASE WHEN (source_text LIKE '%view.sett%' OR source_text LIKE '%world.map%') AND flagged=0 THEN 1 ELSE 0 END) as javaNoise,
+      SUM(CASE WHEN last_checked_at IS NULL THEN 1 ELSE 0 END) as neverChecked,
+      SUM(CASE WHEN stress_tested_at IS NULL THEN 1 ELSE 0 END) as neverStressTested
+    FROM translations`);
+
+    // Separate Query für orphanedRevisions (andere Tabelle)
+    const orphanedRevs = await q1(
+      "SELECT COUNT(*) as c FROM translation_revisions WHERE source_text NOT IN (SELECT source_text FROM translations)"
+    );
 
     return {
-      nativeStale: (nativeStale && nativeStale.c) || 0,
-      unflaggedStale: (unflaggedStale && unflaggedStale.c) || 0,
-      shieldLeaks: (shieldLeaks && shieldLeaks.c) || 0,
-      lowScore: (lowScore && lowScore.c) || 0,
-      javaNoise: (javaNoise && javaNoise.c) || 0,
+      nativeStale: (agg && agg.nativeStale) || 0,
+      unflaggedStale: (agg && agg.unflaggedStale) || 0,
+      shieldLeaks: (agg && agg.shieldLeaks) || 0,
+      lowScore: (agg && agg.lowScore) || 0,
+      javaNoise: (agg && agg.javaNoise) || 0,
       orphanedRevisions: (orphanedRevs && orphanedRevs.c) || 0,
-      neverChecked: (neverChecked && neverChecked.c) || 0,
-      neverStressTested: (neverStressTested && neverStressTested.c) || 0
+      neverChecked: (agg && agg.neverChecked) || 0,
+      neverStressTested: (agg && agg.neverStressTested) || 0
     };
   }
 
@@ -223,7 +221,8 @@ function createPreflight(dbManager) {
   async function runRepairs(issues) {
     const results = {};
 
-    if (issues.nativeStale > 0)       results.nativeStale = await dbRepair.repairNativeStale(run);
+    // NATIVE_STALE wird NICHT mehr repariert — das sind Proper Nouns/Eigennamen,
+    // erwartetes Verhalten, keine Fehler. Siehe RELABELING in §3.
     if (issues.unflaggedStale > 0)    results.unflaggedStale = await dbRepair.repairUnflaggedStale(run);
     if (issues.shieldLeaks > 0)       results.shieldLeaks = await dbRepair.repairShieldLeaks(run);
     if (issues.lowScore > 0)          results.lowScore = await dbRepair.repairLowScore(run);
@@ -300,7 +299,6 @@ function createPreflight(dbManager) {
       '',
       '| Category | Count |',
       '|----------|-------|',
-      `| NATIVE_STALE (native_runtime src=tgt) | ${report.issues.nativeStale || 0} |`,
       `| UNFLAGGED_STALE (src=tgt, no flag) | ${report.issues.unflaggedStale || 0} |`,
       `| SHIELD_LEAK (unreplaced tokens) | ${report.issues.shieldLeaks || 0} |`,
       `| LOW_SCORE (<30, no flag) | ${report.issues.lowScore || 0} |`,
@@ -308,6 +306,12 @@ function createPreflight(dbManager) {
       `| ORPHANED_REVISIONS | ${report.issues.orphanedRevisions || 0} |`,
       `| **TOTAL** | **${report.issues.total || 0}** |`,
       `| **CRITICAL (excl. NATIVE_STALE)** | **${report.issues.critical || 0}** |`,
+      '',
+      '## ℹ️  Native Entries (expected, no errors)',
+      '',
+      '| Info | Count |',
+      '|------|-------|',
+      `| NATIVE_STALE (Proper Nouns — keine Übersetzung nötig) | ${report.issues.nativeStale || 0} |`,
       '',
       '## Diagnostics',
       '',
@@ -322,7 +326,7 @@ function createPreflight(dbManager) {
       lines.push('', '## Repairs Applied', '');
       lines.push('| Category | Fixed |');
       lines.push('|----------|-------|');
-      for (const cat of ['nativeStale', 'unflaggedStale', 'shieldLeaks', 'lowScore', 'javaNoise', 'orphanedRevisions']) {
+      for (const cat of ['unflaggedStale', 'shieldLeaks', 'lowScore', 'javaNoise', 'orphanedRevisions']) {
         if (report.repairs[cat] > 0) lines.push(`| ${cat} | ${report.repairs[cat]} |`);
       }
     }
@@ -332,7 +336,7 @@ function createPreflight(dbManager) {
       lines.push('', '## After Repair', '');
       lines.push('| Category | Remaining |');
       lines.push('|----------|-----------|');
-      for (const cat of ['nativeStale', 'unflaggedStale', 'shieldLeaks', 'lowScore', 'javaNoise', 'orphanedRevisions']) {
+      for (const cat of ['unflaggedStale', 'shieldLeaks', 'lowScore', 'javaNoise', 'orphanedRevisions']) {
         if (report.issuesAfter[cat] > 0) {
           lines.push(`| ${cat} | ${report.issuesAfter[cat]} |`);
         }

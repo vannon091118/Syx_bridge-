@@ -1,11 +1,11 @@
 # 📚 FREEZE INDEX — Das Buch
 
-> **Version:** v0.20.0-pre-release | **Stand:** 2026-06-19
+> **Version:** v0.20.0-pre-release | **Stand:** 2026-06-20
 > **Funktion:** Das EINE große, lückenlose Dokument das den GESAMTEN Entwicklungsprozess dokumentiert.
 > Jeder gelöschte FREEZE-Eintrag wird hier als Glossary-Eintrag überführt — MIT Kausalität, Beobachtungen, Cross-Referenzen.
-> **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 19.06.2026) lückenlos nachvollzogen werden.
+> **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 20.06.2026) lückenlos nachvollzogen werden.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
-> **Umfang:** 44 Lösch-Kandidaten + 4 permanente Dokumente = **48 total katalogisiert**.
+> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente = **49 total katalogisiert** (44 gelöscht, 5 im FREEZE/ verbleibend).
 
 ---
 
@@ -17,10 +17,12 @@
 4. [Reviews & Gutachten (5)](#4-reviews--gutachten)
 5. [Doku-Konsolidierung (4)](#5-doku-konsolidierung)
 6. [Quality Offensive (2)](#6-quality-offensive)
-7. [DB-Archiv (4)](#7-db-archiv)
-8. [Struktur & Planning (6)](#8-struktur--planning)
+7. [DB-Archiv (1)](#7-db-archiv)
+8. [Struktur & Planning (5)](#8-struktur--planning)
 9. [Diagnostik (3)](#9-diagnostik)
 10. [Master-Dokumente (2)](#10-master-dokumente)
+
+> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2 = **44 Glossary-Einträge** (deckungsgleich mit 44 Lösch-Kandidaten)
 
 ---
 
@@ -344,6 +346,8 @@
 - **Status:** ✅ Abgeschlossen (Stub)
 - **LIVE-Vorhanden:** Nichts
 
+> **Hinweis:** Die 3 weiteren DB-Archiv-Referenzen (DB_REPORT_v0.19.5, translations_2026-06-19_session, preflight_history.log) sind in Abschnitt 2 (Audit & Analyse) und Abschnitt 9 (Diagnostik) katalogisiert.
+
 ---
 
 ## 8. Struktur & Planning
@@ -449,6 +453,164 @@
 
 ---
 
+## 📌 Session 2026-06-20 — better-sqlite3-Migration + Dev-Tools (keine FREEZE-Löschung)
+
+> **Keine FREEZE-Dokumente gelöscht.** Diese Session hat neue Infrastruktur gebaut, keine Doku bereinigt.
+
+| Deliverable | Typ | Status |
+|-------------|-----|--------|
+| better-sqlite3-Migration (db.js, logger.js, preflight.js) | Code | ✅ Aktiv |
+| translateHttpError (router.js, config-runtime.js) | Code | ✅ Aktiv |
+| db_query.js, db_snapshot.js, export_stage2.js, test_providers.js | Dev-Tools | ✅ Betriebsbereit |
+| Plugin-Readiness-Audit (A1-A4, B1-B4) | Audit | ✅ Abgeschlossen |
+| HANDSHAKE_2026-06-20.md | Doku | ✅ Geschrieben |
+| CHANGELOG, INDEX.md, MASTER_DOC, LIVE_INDEX | Doku | ✅ Aktualisiert |
+| DB-Snapshot 23 (2.406 Einträge, Ø 88.9) | DB | ✅ Archiviert |
+
+**Nächste Doku-Clean-Runde:** 22 einmalige Audit-Reports vom 19.06. kandidieren für FREEZE-Überführung (siehe DOKU_KONSOLIDIERUNG_2026-06-20.md).
+
+---
+
+## 11. MASTER_DOC-Konsolidierung (Durchlauf 1 — 2026-06-20)
+
+> **Aktion:** 17 OBSOLETE-Einträge aus MASTER_DOC.md ins Buch überführt.
+> **Quelle:** `core/archive/docs/MASTER_DOC.md` §3, §5, §6, §8
+> **Regel:** MASTER_DOC = SSOT (nur aktuell Gültiges). CHANGELOG = Historie. FREEZE_INDEX = Das Buch.
+
+### 📋 KD-001 — "✅ Erreicht"-Liste (5 historische Achievements)
+- **Datum:** 19.-20.06.2026 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** Build-Linien, Sandbox-Cleanup, Core Engine, Plugin-Architektur, Quality-Offensive — alle in v0.20.0-pre-release abgeschlossen und im CHANGELOG dokumentiert.
+- **Ursache:** Historische Achievement-Liste, die vor better-sqlite3-Migration und translateHttpError entstand. Alle Punkte sind im CHANGELOG detailliert dokumentiert (v0.20.0-pre-release, v0.19.8, v0.19.9).
+- **Fix:** Aus MASTER_DOC entfernt. CHANGELOG enthält vollständige Historie.
+- **Verifikation:** CHANGELOG [v0.20.0-pre-release], [0.20.0-wip], [PRESERVE-CONTENT-FIRST]
+- **Cross-Refs:** `CHANGELOG.md`
+
+### 📋 KD-002 — BUG-FS-003 (Argos Placeholder-Korruption)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** Argos/Google Translate übersetzten `__SHLD_0__` Shield-Tokens → DNT-Doppelshielding implementiert.
+- **Ursache:** Shield-Token-Format-Kollision mit maschineller Übersetzung.
+- **Fix:** `dntShieldEntries()` + `dntRestoreTranslations()` in `translation-runtime.js`.
+- **Verifikation:** CHANGELOG [0.20.0-wip] Phase 3F
+- **Cross-Refs:** `translation-runtime.js:113,128`
+
+### 📋 KD-003 — BUG-FS-006 (flagPotentialErrors null statt false)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** `flagPotentialErrors()` gab null statt false zurück → undefined-Verhalten.
+- **Ursache:** Falscher Return-Typ.
+- **Fix:** null→true korrigiert.
+- **Verifikation:** CHANGELOG [0.19.05b]
+- **Cross-Refs:** `translation-runtime.js:449`
+
+### 📋 KD-004 — F.B Plugin-Boundary Contract-Tests
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** Interface-Änderungen in GamePlugin brachen SongsOfSyxPlugin unbemerkt → kein Contract-Test existierte.
+- **Ursache:** Fehlende automatisierte Interface-Validierung.
+- **Fix:** `plugin-boundary-contract.js` mit dynamischer Interface-Erkennung via `Object.getOwnPropertyNames()`. 73/73 PASS.
+- **Verifikation:** CHANGELOG [BU-023]
+- **Cross-Refs:** `tests/plugin-boundary-contract.js`, `plugins/SongsOfSyxPlugin.js`
+
+### 📋 KD-005 — #014 (quality_score FALSIFIED)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** Doku behauptete "quality_score fehlt", aber Migration war erfolgreich → PRAGMA table_info bestätigte Existenz.
+- **Ursache:** Doku-Drift — Migration in db.js:125 war erfolgreich, wurde aber in der Doku nicht nachgezogen.
+- **Fix:** MASTER_FREEZE §3.2 korrigiert, INTEGRITY_AUDIT bestätigt.
+- **Verifikation:** CHANGELOG [FREEZE-MASTER-AUDIT], MASTER_FREEZE §3.2
+- **Cross-Refs:** `db.js:125`
+
+### 📋 KD-006 — BU-018 (ensureTranslations 354-Zeilen-Monolith)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** `ensureTranslations()` war 358-Zeilen-Monolith → unwartbar, schwer zu debuggen.
+- **Ursache:** Organisch gewachsene Funktion ohne Phasen-Trennung.
+- **Fix:** GOD-001: 5 fokussierte Phasen-Funktionen (cachePhase, nativePhase, translatePhase, qaPhase, deepPolishPhase).
+- **Verifikation:** CHANGELOG [GOD-001]
+- **Cross-Refs:** `translation-runtime.js`
+
+### 📋 KD-007 — BU-021 (14x ALTER TABLE bei jedem Startup)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** 14 `try { await run('ALTER TABLE ...') } catch {}` bei JEDEM Startup → 14 garantierte Fehler.
+- **Ursache:** Kein Check ob Spalte bereits existiert.
+- **Fix:** `addColumnIfMissing(table, column, type)` Helper via `PRAGMA table_info()`.
+- **Verifikation:** CHANGELOG [STUFE2-QUICKBUGFIXES]
+- **Cross-Refs:** `db.js`
+
+### 📋 KD-008 — BU-027 (debug_payloads.txt in CWD)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** `debug_payloads.txt` wurde im CWD abgelegt → verschmutzte das Arbeitsverzeichnis.
+- **Ursache:** `path.join(process.cwd(), 'debug_payloads.txt')`.
+- **Fix:** Pfad nach `logs/debug_payloads.txt` verlagert, `logs/` wird automatisch erstellt.
+- **Verifikation:** CHANGELOG [STUFE2-QUICKBUGFIXES]
+- **Cross-Refs:** `logger.js`
+
+### 📋 KD-009 — BU-028 (_properNounAllowlist dupliziert)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** `_properNounAllowlist` war zweimal definiert (Argos-Block + Stress-Pre-Resolved-Block).
+- **Ursache:** Copy-Paste-Fehler.
+- **Fix:** Einmalig im translateBatch-Scope, beide Blöcke nutzen dieselbe Referenz.
+- **Verifikation:** CHANGELOG [STUFE2-QUICKBUGFIXES]
+- **Cross-Refs:** `translation-runtime.js`
+
+### 📋 KD-010 — BU-029 (console.warn bei leeren Caches)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** `console.warn` bei DNT-Token-Verlust — ist erwartetes Verhalten, kein Warn.
+- **Ursache:** Falsche Log-Stufe.
+- **Fix:** `console.warn` → `console.log`.
+- **Verifikation:** CHANGELOG [STUFE2-QUICKBUGFIXES]
+- **Cross-Refs:** `translation-runtime.js`
+
+### 📋 KD-011 — BU-034 (polish_single Low-Score-Cluster)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §3
+- **Kausalität:** `needsRefresh` ignorierte Einträge mit `quality_score<30` wenn sie nicht stale waren → Low-Score-Cluster persistierte.
+- **Ursache:** `data.qualityScore < 30 && data.translation === t` — nur stale entries wurden refreshed.
+- **Fix:** `data.qualityScore < 30` — JEDE Übersetzung mit Score<30 wird neu übersetzt.
+- **Verifikation:** CHANGELOG [STUFE2-QUICKBUGFIXES]
+- **Cross-Refs:** `translation-runtime.js`
+
+### 📋 KD-012 — §5 Historische DB-Tabelle (Snap 18, VOR Reset)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §5 `<details>`
+- **Kausalität:** Snap-18-Daten (6.540 Einträge) sind durch Snap-23 (2.406 Einträge, post-Reset) überholt.
+- **Ursache:** DB-Reset am 2026-06-19 reduzierte Einträge von ~6.500 auf ~1.500. Neuer Snapshot 23 zeigt aktuellen Stand.
+- **Fix:** Aus MASTER_DOC entfernt. DB_TREND_REPORT.md enthält vollständige Snap-Historie.
+- **Verifikation:** CHANGELOG [DOKU-DIVERGENZ-AUDIT] DD-001, DB_TREND_REPORT.md Snapshot 23
+- **Cross-Refs:** `archive/dbold/DB_TREND_REPORT.md`
+
+### 📋 KD-013 — §6 S3 sqlite3→better-sqlite3 (✅ ERLEDIGT)
+- **Datum:** 2026-06-20 | **Quelle:** MASTER_DOC.md §6
+- **Kausalität:** sqlite3 war DEPRECATED → better-sqlite3-Migration implementiert.
+- **Ursache:** P3 Roadmap-Item aus CHANGELOG [SECURITY-CLEANUP].
+- **Fix:** db.js, logger.js, preflight.js auf better-sqlite3 migriert.
+- **Verifikation:** CHANGELOG [BETTER-SQLITE3-MIGRATION]
+- **Cross-Refs:** `db.js`, `logger.js`, `preflight.js`, `package.json`
+
+### 📋 KD-014 — §6 translateHttpError (✅ ERLEDIGT)
+- **Datum:** 2026-06-20 | **Quelle:** MASTER_DOC.md §6
+- **Kausalität:** HTTP-Statuscodes in Logs waren kryptisch → translateHttpError implementiert.
+- **Ursache:** Keine menschenlesbaren Fehlermeldungen.
+- **Fix:** `translateHttpError(status)` in router.js, Integration in config-runtime.js.
+- **Verifikation:** CHANGELOG [BETTER-SQLITE3-MIGRATION]
+- **Cross-Refs:** `router.js`, `config-runtime.js`
+
+### 📋 KD-015 — §6 4 Dev-Scripts (✅ ERLEDIGT)
+- **Datum:** 2026-06-20 | **Quelle:** MASTER_DOC.md §6
+- **Kausalität:** DB-Analysen erforderten node -e/Temp-File-Schleife → 4 Dev-Scripts implementiert.
+- **Ursache:** Keine Standard-Tools für DB-Analyse, Snapshots, Provider-Tests, Stage-2-Export.
+- **Fix:** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js.
+- **Verifikation:** CHANGELOG [BETTER-SQLITE3-MIGRATION]
+- **Cross-Refs:** `scripts/db_query.js`, `scripts/db_snapshot.js`, `scripts/export_stage2.js`, `scripts/test_providers.js`
+
+### 📋 KD-016 — §8 Redundanz-Audit (v2)
+- **Datum:** 2026-06-19 | **Quelle:** MASTER_DOC.md §8
+- **Kausalität:** 5 von 8 Altfunden behoben (Archive-Bloat 239 MB → 4 MB). Verbleibende Offene Redundanzen (Vendor-Drift in Vendored Releases, V70/V71 DUMMY.txt) sind minor.
+- **Ursache:** Audit identifizierte redundante Dateien.
+- **Fix:** Altfunde behoben. Rest in CHANGELOG und REDUNDANZ_AUDIT_V2 referenziert.
+- **Verifikation:** CHANGELOG [SESSION-CLEANUP], REDUNDANZ_AUDIT_V2_2026-06-19.md
+- **Cross-Refs:** `release.js`, `V70/.gitkeep`, `V71/.gitkeep`
+
+---
+
+*📚 16 neue Glossary-Einträge (KD-001 bis KD-016) — MASTER_DOC-Konsolidierung Durchlauf 1*
+
+---
+
 ## 📌 Verbleibende Dokumente im FREEZE-Verzeichnis
 
 | Dokument | Status | Aktion |
@@ -472,6 +634,6 @@
 
 ---
 
-*📚 FREEZE INDEX v0.20.0-pre-release — 2026-06-19*
-*48 Glossary-Einträge. Lückenlos rekonstruierbar.*
+*📚 FREEZE INDEX v0.20.0-pre-release — 2026-06-20*
+*48 Glossary-Einträge + 1 Session-Vermerk. Lückenlos rekonstruierbar.*
 *Generiert durch Buffy (Codebuff) — Built accidentally. Runs intentionally.*

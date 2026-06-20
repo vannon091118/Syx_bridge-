@@ -89,14 +89,15 @@
 
 ## FREEZE-ARCHIV STATUS
 
-| Dokument | Status | Begründung |
-|----------|--------|------------|
+| Dokument | Status | Begruendung |
+|----------|--------|-------------|
 | FREEZE_INDEX.md | RELEVANT | Zentrales Inhaltsverzeichnis |
-| FREEZE_AUDIT_CONSOLIDATED.md | RELEVANT | Offene Issues (BUG-FS-003, BUG-FS-006, F.A, F.C) |
-| FREEZE_SESSION_PROTOCOL.md | ERLEDIGT | Historisch, kein Code-Bezug mehr |
-| FREEZE_DB_HISTORY.md | VERALTET | Durch Live-Queries überschrieben |
-| FREEZE_QUALITY_OFFENSIVE.md | ERLEDIGT | Alle Fixes implementiert |
-| FREEZE_REMAINING.md | VERALTET | Alte Architektur-Pläne durch GOD-001 ersetzt |
+| FREEZE_MASTER_CHECKLIST.md (dieses Dokument) | RELEVANT | Verifikations-Begleitdokument |
+| ~~FREEZE_AUDIT_CONSOLIDATED.md~~ | GELOeSCHT | ✅ In FREEZE_INDEX ueberfuehrt + geloescht (Teil der 44) |
+| ~~FREEZE_SESSION_PROTOCOL.md~~ | GELOeSCHT | ✅ Historisch, kein Code-Bezug mehr — geloescht |
+| ~~FREEZE_DB_HISTORY.md~~ | GELOeSCHT | ✅ Durch Live-Queries ueberschrieben — geloescht |
+| ~~FREEZE_QUALITY_OFFENSIVE.md~~ | GELOeSCHT | ✅ Alle Fixes implementiert — geloescht |
+| ~~FREEZE_REMAINING.md~~ | GELOeSCHT | ✅ Alte Architektur-Plaene durch GOD-001 ersetzt — geloescht |
 
 ---
 

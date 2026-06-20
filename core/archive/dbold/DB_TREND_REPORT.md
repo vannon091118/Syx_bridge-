@@ -1,7 +1,7 @@
 # 📊 DB Trend Report — translations.db
 
 > **Typ:** Persistentes, erweiterbares Dokument
-> **Erstellt:** 2026-06-18 | **Letzte Aktualisierung:** 2026-06-19 (Korrektur + Snapshot 17: Pre-v0.20.0-pre-release Baseline via 19.06 LIVE)
+> **Erstellt:** 2026-06-18 | **Letzte Aktualisierung:** 2026-06-20 (Snapshot 21: Abgebrochener Live-Run — Groq 404, OpenRouter 322, Code-Anpassungen)
 > **Regel:** Nach jedem größeren Fix/Run aktualisieren. Neue Snapshots → neue Sektion unten anfügen.
 > **⚠️ Korrektur 2026-06-19:** 6 fehlende Snapshots (17:52–23:14) nachgetragen. Zahlen aus echten sqlite3-Queries, nicht aus Dokumentation. Alle .db-Dateien in `core/archive/dbold/` via `scripts/_query_dbs.js` abgefragt.
 > **⚠️ Korrektur 2026-06-19 (Snapshot 17):** Live-DB weicht von Snapshot 16 ab (+163 Einträge). Annahme "kein Run zwischen Snap 15→16" war ungenau — ein Polish-only/PREFLIGHT-Pass hat zwischen Snapshot 16 (Doc-Update) und Snapshot 17 (heute) weitere 163 Einträge zugefügt. Snapshot 16 wurde **nicht revidiert** (historisch eingefroren) — die Drift wird in Snapshot 17 als 🔍 **Anomalie #013** dokumentiert.
@@ -714,16 +714,126 @@ ab_polish:        76     0     0   224   979 —     —   1.147 1.262 1.262 1.3
 
 ---
 
-## 🔄 Wie dieses Dokument aktualisieren
+### 🌱 Snapshot 21: 2026-06-20 (ABGEBROCHEN — Groq 404, Code-Anpassungen) — `translations_2026-06-20_snapshot21_aborted_groq404-openrouter322.db`
 
-1. **Nach jedem größeren Run:** Neue Sektion unten anfügen (Format wie oben)
-2. **Nach jedem Fix:** Anomalien-Register aktualisieren (Status setzen)
-3. **Bei DB-Archivierung:** Snapshot-Vergleichstabelle ergänzen
-4. **Metriken die getrackt werden:**
-   - translations Gesamt + Stage-Verteilung
-   - flagged + stale + empty
-   - glossary_terms Wachstum
-   - revisions Wachstum (Proxy für Polish-Pipeline-Nutzung)
-   - provider-Verteilung (wenn Spalte existiert)
-   - risk_score-Verteilung (wenn Spalte existiert)
-   - Deep Polish Pending Count
+| Metrik | Wert | Δ zum 20. Snapshot |
+|--------|------|-------------------|
+| Translations gesamt | **1.747** | **+239 (+15.9%)** |
+| Stale (translation = source) | **1.315 (75.3%)** | +20, Rate −10.6 pp ✅ |
+| Flagged | **1.050 (60.1%)** | **+1.035** (PREFLIGHT-Markierung) |
+| Stage 0 (audit_stage=0) | 1.376 (78.8%) | +1.169 |
+| Stage 1 (audit_stage=1) | 48 (2.7%) | — |
+| Stage 2 (audit_stage=2) | 323 (18.5%) | −942 |
+| Ø Quality-Score | **91.0** | −0.3 (stabil) |
+| **Provider:** native_runtime | 1.265 (72.4%) | +17 |
+| **Provider:** openrouter | **322 (18.4%)** | **+174 🔥** |
+| **Provider:** argos | 100 (5.7%) | ±0 |
+| **Provider:** ab_polish | 55 (3.1%) | +47 |
+| **Provider:** native_fallback | 3 (0.2%) | −1 |
+| **Provider:** polish_single | 2 (0.1%) | +2 |
+
+**🚫 ABBRUCH-GRUND:**
+- **User-Stop via GUI** während AB-POLISH-Phase (Multi-Provider-Vergleich).
+- **Code-Anpassungen im Parallel-Fenster:** translateHttpError()-Funktion (HTTP→menschenlesbare Aktion) + Fatal-Error-Session-Disable (404/400/402 setzen jetzt `enabled=false`).
+- **Groq 404:** `groq/auto` schlug bei JEDEM Call mit 404 fehl (Modell/Endpunkt nicht gefunden). OpenRouter übernahm die gesamte LLM-Last.
+- **OpenRouter 429:** 256 Rate-Limits, durch Key-Rotation und eskalierenden Cooldown abgefangen.
+- **Kein Export:** Der Run erreichte die Export-Phase nicht — AB-POLISH wurde unterbrochen. Keine Dateien geschrieben.
+
+**🔍 Anomalie #019: Groq 404 — `groq/auto` dauerhaft tot**
+- **Was:** Jeder einzelne Groq-Call (translate + polish + audit) lieferte 404.
+- **Ursache:** `groq/auto` ist vermutlich kein gültiger Modell-Name mehr bei Groq (anders als OpenRouter wo `auto` ein Feature ist).
+- **Impact:** 0 Groq-Einträge in DB. OpenRouter trug die gesamte LLM-Last (322 Einträge, 18.4%).
+- **Fix in Arbeit:** translateHttpError() übersetzt 404 jetzt menschenlesbar ("Modell/Endpunkt nicht gefunden → Modell-Name oder API-URL prüfen"). Fatal-Error-Disable verhindert zukünftig Dauer-Retry auf toten Endpunkt.
+- **Status:** ⚠️ Offen — Groq-Modellname muss verifiziert werden (ist `auto` noch gültig? Alternative: `llama-3.1-8b-instant`?).
+
+**Positiv:** openrouter von 148 (9.8% in Snap 20) auf 322 (18.4%) — der `freeLlmFirst`-Fix greift. Stale-Rate sank von 85.9% → 75.3%.
+
+**Archiv:** `core/archive/dbold/translations_2026-06-20_snapshot21_aborted_groq404-openrouter322.db` (5.103.616 Bytes)
+
+---
+### 🌱 Snapshot 22: 2026-06-20 (testrun_v020) — `translations_2026-06-20_004600_testrun_v020.db`
+
+| Metrik | Wert |
+|--------|------|
+| Translations gesamt | **1747** |
+| Stale (translation = source) | **1315 (75.3%)** |
+| Flagged | **1072** |
+| Ø Quality-Score | **91** |
+| Provider | Count | Anteil | Stale% | Ø Score | Stage 2 |
+|----------|------:|-------:|-------:|--------:|--------:|
+| native_runtime | 1265 | 72.4% | 100% | 94 | 248 |
+| openrouter | 260 | 14.9% | 14.6% | 79.1 | 5 |
+| ab_polish | 117 | 6.7% | 7.7% | 86.7 | 110 |
+| argos | 100 | 5.7% | 0% | 91.5 | 0 |
+| native_fallback | 3 | 0.2% | 100% | 25 | 0 |
+| polish_single | 2 | 0.1% | 0% | 90 | 2 |
+
+
+**Archiv:** `core/archive/dbold/translations_2026-06-20_004600_testrun_v020.db` (5.0 MB)
+
+---
+
+### 🌱 Snapshot 23: 2026-06-20 (BASELINE — Pre-Testrun v0.20 mit allen Fixes) — LIVE translations.db
+
+| Metrik | Wert | Δ zum 22. Snapshot |
+|--------|------|-------------------|
+| Translations gesamt | **2.406** | **+659 (+37.7%)** |
+| Stale (translation = source) | **1.942 (80.7%)** | +627, Rate +5.4 pp |
+| Flagged | **1.311 (54.5%)** | +239 |
+| Stage 0 (audit_stage=0) | 1.324 (55.0%) | — |
+| Stage 1 (audit_stage=1) | 14 (0.6%) | — |
+| Stage 2 (audit_stage=2) | 1.068 (44.4%) | — |
+| Ø Quality-Score | **88.9** | −2.1 |
+| Distinct Sources | 2.307 | — |
+| Stage 2/completed (export-bereit) | 320 | — |
+| Stage 2/pending (Deep Polish) | 3 | — |
+| **Provider:** native_runtime | **1.912 (79.5%)** | +647 |
+| **Provider:** ab_polish | 218 (9.1%) | +101 |
+| **Provider:** openrouter | 170 (7.1%) | −90 |
+| **Provider:** argos | 100 (4.2%) | ±0 |
+| **Provider:** native_fallback | 3 (0.1%) | ±0 |
+| **Provider:** polish_single | 2 (0.1%) | ±0 |
+| **Provider:** groq | 1 (0.04%) | +1 |
+
+**Stale nach Provider:**
+| Provider | Stale | Anteil an Provider-Gesamt |
+|----------|-------|---------------------------|
+| native_runtime | 1.895 | **99.1%** 🔴 |
+| openrouter | 35 | 20.6% |
+| ab_polish | 10 | 4.6% |
+| native_fallback | 2 | 66.7% |
+
+**Score-Buckets:**
+| Bucket | Count | Anteil |
+|--------|-------|--------|
+| 0–29 (kritisch) | 83 | 3.4% |
+| 30–59 (schwach) | 114 | 4.7% |
+| 60–79 (ok) | 8 | 0.3% |
+| 80–89 (gut) | 170 | 7.1% |
+| 90+ (exzellent) | 2.031 | 84.4% |
+
+**Flag-Reasons:**
+| Reason | Count |
+|--------|-------|
+| stale_retranslate | 1.253 |
+| stale_unflagged | 41 |
+| source_reused | 14 |
+| max_revisions_exceeded | 3 |
+
+**Work-Status:**
+| Status | Count |
+|--------|-------|
+| stale_flagged_for_retranslate | 1.236 |
+| stale_unflagged | 659 |
+| verified_ready_for_export | 235 |
+| translated_not_verified | 229 |
+
+**Kontext:** Baseline VOR dem manuellen Testrun mit allen v0.20-Fixes aktiv. **PREFLIGHT auto-repaired 262 Issues** (409ms). Aktive Fixes: better-sqlite3-Migration (db.js/logger.js/preflight.js), translateHttpError in Router+config-runtime, Groq-Modellname-Fix (llama-3.1-8b-instant), Fatal-Error-Disable (404/400/402). Provider-Status: 4 OK (Groq, 2× OpenRouter, NVIDIA), 1 SKIP (Gemini), 1 FAIL (Ollama offline).
+
+**DB-Wachstum (+659 seit Snap 22):** native_runtime +647 (+51%), ab_polish +101 (+86%), openrouter −90 (−35%). Der native_runtime-Zuwachs ist erwartet — PREFLIGHT hat Einträge aus älteren Runs reklassifiziert. Stale-Rate 80.7% spiegelt die hohe native_runtime-Dominanz (79.5% aller Einträge, davon 99.1% stale).
+
+**320 Stage-2/completed Einträge sind export-bereit** — das sind die Übersetzungen aus dem abgebrochenen Run (Snapshot 21), die noch nie ins Spiel geschrieben wurden.
+
+---
+
+

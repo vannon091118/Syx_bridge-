@@ -281,7 +281,9 @@ function createTranslationRuntime(options) {
         }
 
         for (const [source, result] of stressResult.stressResults) {
-          saveStressTestResult(source, result.passed).catch(() => {});
+          saveStressTestResult(source, result.passed).catch(e => {
+            console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
+          });
         }
 
         console.log(`[DISPATCH] ${stressPassedCount}/${entries.length} via Google Free, ${entries.length - stressPassedCount} via LLM-Pipeline.`);
@@ -300,7 +302,9 @@ function createTranslationRuntime(options) {
         for (const [source, result] of stressResult.stressResults) {
           const entry = entryBySource.get(source);
           if (entry) entry.riskScore = result.dynamicRisk;
-          saveStressTestResult(source, result.passed).catch(() => {});
+          saveStressTestResult(source, result.passed).catch(e => {
+            console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
+          });
         }
         const escalated = dispatcher.resolveTranslateRoute(entries);
         resolvedRoute.provider = escalated.provider;
@@ -1135,6 +1139,7 @@ function createTranslationRuntime(options) {
 
     let processed = 0;
     let fixed = 0;
+    let deepPolishUpdateFailures = 0;  // B4: Aggregierter Zaehler fuer final-gescheiterte polish_status='failed'-Updates
 
     for (let i = 0; i < pending.length; i += batchSize) {
       if (isAborting()) break;
@@ -1186,18 +1191,43 @@ function createTranslationRuntime(options) {
           if (attempt >= 1) {
             // Zweiter Fehlschlag → endgültig als failed markieren
             for (const row of batch) {
-              await dbRun(
-                `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
-                [row.source_text, targetLang]
-              ).catch(() => {});
+              // B4-Fix (BU-020-Wiederholungsfall): Silent .catch(() => {})
+              // erzeugt Dead-Loop wenn das UPDATE selbst fehlschlaeft.
+              // Der Eintrag bleibt polish_status='pending' und wird bei
+              // JEDEM Deep-Polish-Lauf erneut versucht, verbraucht jedes
+              // Mal API-Credits ohne jemals zu terminieren.
+              // Jetzt: 3 Retry-Versuche fuer das UPDATE, mit Source-Text
+              // im Log fuer manuelle Nachverfolgung. Bei endgueltigem
+              // Fehlschlag: critical error loggen.
+              let updateSucceeded = false;
+              for (let updateAttempt = 0; updateAttempt < 3 && !updateSucceeded; updateAttempt++) {
+                try {
+                  await dbRun(
+                    `UPDATE translations SET polish_status = 'failed' WHERE source_text = ? AND target_lang = ?`,
+                    [row.source_text, targetLang]
+                  );
+                  updateSucceeded = true;
+                } catch (updateErr) {
+                  if (updateAttempt < 2) {
+                    console.warn(`[DEEP-POLISH] polish_status='failed' UPDATE fehlgeschlagen (Versuch ${updateAttempt + 1}/3) fuer "${(row.source_text || '').substring(0, 40)}": ${updateErr.message} — retry in 500ms...`);
+                    await sleep(500);
+                  } else {
+                    console.error(`[DEEP-POLISH] KRITISCH: polish_status='failed' UPDATE endgueltig fehlgeschlagen fuer "${(row.source_text || '').substring(0, 40)}" — Eintrag bleibt pending und wird bei naechstem Run erneut versucht. DB-Integritaet pruefen!`);
+                    deepPolishUpdateFailures++;
+                  }
+                }
+              }
             }
           }
         }
       }
     }
 
+    if (deepPolishUpdateFailures > 0) {
+      console.error(`[DEEP-POLISH] WARNUNG: ${deepPolishUpdateFailures} Eintraege konnten nicht als 'failed' markiert werden — manuelle Nacharbeit noetig (DB-Integritaet pruefen!).`);
+    }
     console.log(`[DEEP-POLISH] Abgeschlossen: ${processed} verarbeitet, ${fixed} verbessert.`);
-    return { processed, fixed };
+    return { processed, fixed, updateFailures: deepPolishUpdateFailures };
   }
 
   return {

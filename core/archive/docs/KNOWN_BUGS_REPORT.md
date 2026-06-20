@@ -470,7 +470,7 @@
 
 | Kategorie | Count |
 |-----------|-------|
-| ✅ GEHEILT (gefixt + verifiziert) | 14 |
+| ✅ GEHEILT (gefixt + verifiziert) | 15 |
 | ➡️ PERSISTENT (bekannt, nie priorisiert) | 7 |
 | 🆕 NEU (diese Session erstmals quantifiziert) | 4 |
 | **Total katalogisiert** | **25 aktive + 9 geheilt = 34** |
