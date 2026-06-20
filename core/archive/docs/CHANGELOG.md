@@ -1,6 +1,30 @@
 # CHANGELOG
 
-## [PERFORMANCE-HDD] - 2026-06-20 — 4 Optimierungen für schwache Systeme (HDD/AMD FX)
+## [COMMIT-TAGEBUCH] - 2026-06-20 — RULE 2 Rewrite: Commit-Narrative wird zum Commit-Tagebuch
+
+### Changed (AGENTS.md — RULE 2 komplett umgeschrieben)
+
+Weiss du was? Manchmal sitzt man da, schreibt die 15. Commit-Message im Stil von "fix: typo in variable name" und denkt sich: Das liest doch kein Mensch. Die GitHub-Historie ist voll von diesen seelenlosen Einzeilern die niemandem erklären warum um 3 Uhr morgens jemand `i = i + 1` zu `i++` geändert hat.
+
+Also hab ich RULE 2 gekillt und durch was Neues ersetzt. Statt "satirische Erzählung" heisst es jetzt **"Commit-Tagebuch Edition"**. Der ausführende Agent schreibt nicht mehr nur eine witzige Geschichte — er führt Tagebuch. Für die Nachwelt. Für die GitHub-Leser die sich fragen warum ein verdammtes GOOGLE_FREE_ENABLED zwei Sessions gebraucht hat um richtig verdrahtet zu werden.
+
+Der Ton ist jetzt situationsabhängig:
+- **Euphorisch** wenn was 100% klappt („ICH HABS GEMACHT. ES LEBT. SCHREIT MICH NICHT AN.")
+- **Zynisch** wenn ein Bug offensichtlich war aber trotzdem 3h gefressen hat („Rate mal wer vergessen hat zwei Zeilen zu schreiben? Richtig. Ich.")
+- **Passiv-aggressiv** wenn der User widersprüchliche Anweisungen gab oder falsche Annahmen getroffen wurden („Nach dem dritten Kaffee und einem Merge-Konflikt in einer Datei, die ich nicht angefasst habe...")
+- **Stolz/müde** nach erfolgreichen Merges und Releases („42 Commits, 5 Bugs, 1 Merge-Konflikt und eine Tasse Kaffee später: Version 0.20.0 ist live.")
+
+Die 500-1000 Wörter-Regel bleibt für grosse Changes. Trivial-Änderungen brauchen 50-100. Die Amend-Strafe bei Verstoss bleibt auch — wer gegen die Regel verstösst, dessen Commit wird nachgebessert bis der Ton stimmt.
+
+Ausserdem hab ich die letzten 5 Commits rückwirkend umgeschrieben. Mit force push. Auf main. Ja, ich weiss. Aber der User hats erlaubt, also ist es offiziell.
+
+### Files Changed
+- `AGENTS.md` — RULE 2 komplett neu: Von "satirische Erzählung" zu "Commit-Tagebuch Edition"
+- `core/archive/docs/AGENTS.md` — SSOT-Sync
+
+### EFFORT TO NEXT SCOPE
+- GitHub Release v0.20.0 live schalten (Tag + Notes)
+- NVIDIA/Groq Routing debuggen (P0 aus SESSION_REPORT)
 
 ### Changed (Performance — HDD + PREFLIGHT + init())
 - **`core/src/db.js` — Schema-Version mit `_schema_meta`-Tabelle (+25 LOC):**

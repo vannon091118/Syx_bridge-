@@ -7,7 +7,7 @@
 <p align="center">
   <a href="#-what-is-syxbridge"><img src="https://img.shields.io/badge/lang-English-blue?style=flat-square" alt="English"></a>
   <a href="#-was-ist-syxbridge"><img src="https://img.shields.io/badge/lang-Deutsch-grey?style=flat-square" alt="Deutsch"></a>
-  <img src="https://img.shields.io/badge/version-v0.20.0--pre--release-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-v0.20.0-blue?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/status-Alpha-red?style=flat-square" alt="Status">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=flat-square" alt="Node">
@@ -170,7 +170,7 @@ Syx_bridge-/
 │
 ├── core/                      # The engine
 │   ├── index.js               # Entry point (CLI + GUI mode)
-│   ├── package.json           # v0.20.0, rotation, cooldown, discovery
+│   ├── package.json           # v0.20.0
 │   │   ├── text-core.js       # Shielding, prompt building, JSON parsing
 │   │   ├── context-packets.js # Risk scores
 │   │   ├── glossary.js        # Terminology memory
@@ -188,7 +188,8 @@ Syx_bridge-/
 
 | Version | Date | Highlights |
 |---|---|---|
-| **v0.20.0-pre-release** | 2026-06-19 | Plugin Architecture, PREFLIGHT, INFO-Block fix, Write-Loss recovery |
+| **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 to BU-039, Plugin Architecture, Version stable |
+| v0.20.0-pre-release | 2026-06-19 | Plugin Architecture, PREFLIGHT, INFO-Block fix, Write-Loss recovery |
 | v0.19.7 | 2026-06-18 | PREFLIGHT fix + Routing hardening + smart Error-Handler |
 | v0.19.6 | 2026-06-18 | Release: Version unified, docs consolidated, 6 bugs fixed |
 | v0.19.05b | 2026-06-15 | Capability Matrix, Local Models Opt-in, JSON Retry, Key Cooldown |
@@ -203,9 +204,9 @@ Syx_bridge-/
 
 | | |
 |---|---|
-| **Version** | v0.20.0-pre-release |
+| **Version** | v0.20.0 |
 | **Maturity** | Alpha · Solo project · In daily use |
-| **Latest Release** | v0.20.0-pre-release (2026-06-19) — 70 source files, ~10k LOC |
+| **Latest Release** | v0.20.0 (2026-06-20) — 70 source files, ~10k LOC |
 | **Limitations** | Patch Mode disabled — everything else works |
 
 <details>
@@ -214,7 +215,6 @@ Syx_bridge-/
 | ID | Issue | Severity |
 |----|-------|----------|
 | F.A | Live-Core `core/src/`-Drift vom Release-Snapshot (PR #5 änderte nur Vendored) | 🟡 P2 |
-| F.B | Plugin-Boundary GamePlugin ↔ SongsOfSyxPlugin — keine Boundary-Tests | 🔴 OFFEN (P1) |
 | F.C | CodeRabbit-Auto-Fix aus PR #5 nicht manuell re-verifiziert | 🟠 P1 |
 | F.D | Audit-`.jsonl`-Daten committed — gehören die in `.gitignore`? | 🟢 P3 |
 
@@ -407,7 +407,8 @@ Syx_bridge-/
 
 | Version | Datum | Highlights |
 |---|---|---|
-| **v0.20.0-pre-release** | 2026-06-19 | Plugin-Architektur, PREFLIGHT, INFO-Block-Fix, Write-Verlust-Recovery |
+| **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 bis BU-039, Plugin-Architektur, Version stabil |
+| v0.20.0-pre-release | 2026-06-19 | Plugin-Architektur, PREFLIGHT, INFO-Block-Fix, Write-Verlust-Recovery |
 | v0.19.7 | 2026-06-18 | PREFLIGHT-Fix + Routing-Hardening + smarter Error-Handler |
 | v0.19.6 | 2026-06-18 | Release: Version vereinheitlicht, Doku konsolidiert, 6 Bugs gefixt |
 | v0.19.05b | 2026-06-15 | Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown |
@@ -422,9 +423,9 @@ Syx_bridge-/
 
 | | |
 |---|---|
-| **Version** | v0.20.0-pre-release |
+| **Version** | v0.20.0 |
 | **Reifegrad** | Alpha · Solo-Projekt · im Daily-Use |
-| **Letztes Release** | v0.20.0-pre-release (2026-06-19) — 70 Quellcode-Dateien, ~10k LOC |
+| **Letztes Release** | v0.20.0 (2026-06-20) — 70 Quellcode-Dateien, ~10k LOC |
 | **Einschränkungen** | Patch Mode deaktiviert — Rest funktioniert |
 
 <details>
@@ -433,7 +434,6 @@ Syx_bridge-/
 | ID | Fehler | Severity |
 |----|--------|----------|
 | F.A | Live-Core `core/src/`-Drift vom Release-Snapshot (PR #5 änderte nur Vendored) | 🟡 P2 |
-| F.B | Plugin-Boundary GamePlugin ↔ SongsOfSyxPlugin — keine Boundary-Tests | 🔴 OFFEN (P1) |
 | F.C | CodeRabbit-Auto-Fix aus PR #5 nicht manuell re-verifiziert | 🟠 P1 |
 | F.D | Audit-`.jsonl`-Daten committed — gehören die in `.gitignore`? | 🟢 P3 |
 

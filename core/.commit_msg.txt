@@ -1,0 +1,13 @@
+v0.20.0 Doku-Clean: 18 Audit-Reports gefreezed, README aufgebretzelt, MASTER_DOC auf Vordermann gebracht
+
+Heute war Doku-Clean-Tag. Klingt nach Bürokram, war aber überraschend befriedigend. Wie Frühjahrsputz in ner Werkstatt in der man seit Monaten nur schnell 'ne Schraube reingedreht hat ohne den Dreck wegzukehren.
+
+Erstmal die README. Junge, Junge. Da stand noch v0.20.0-pre-release in den Badges, obwohl wir längst auf v0.20.0 stable gebumpt hatten. Der Changelog hatte keinen Eintrag für das aktuelle Release. F.B (Plugin-Boundary) war als "🔴 OFFEN (P1)" markiert — der Bug ist seit BU-023 tot. Weg damit. Die Projektstruktur hatte ein package.json im falschen Unterordner schweben. Alles gefixt. Dazu noch 'nen "Contributions welcome"-Satz reingehauen, damit das Repo nicht aussieht wie ein vergammeltes Sideproject (ist es ja auch nicht, aber der erste Eindruck zählt).
+
+Dann MASTER_DOC §5. Die Provider-Zahlen da drin waren von Snapshot 23 — 4.185 Einträge, native_runtime 2.004. Inzwischen haben wir 5.547 Einträge, native_runtime 3.219 (58%), google_free 899. Die Zahlen hab ich aus der Live-DB gezogen, nicht aus'm Kopf. DD-NEU-2 aus dem HANDSHAKE ist damit Geschichte.
+
+Dann der große Wurf: 18 Audit-Reports von letzter Woche in den FREEZE überführt. CODE_VS_DOCS_AUDIT, CONTROL_TOWER_AUDIT, DEAD_FLAG_REPORT, FLAG_TAXONOMY, FORENSIC_FULLSCAN — alles Einmal-Analysen deren Findings längst im Code und in MASTER_DOC/MASTER_FREEZE leben. Die Dinger hatten ihre Schuldigkeit getan, aber lagen noch im LIVE-Verzeichnis rum und haben Platz weggenommen. Jetzt sind sie als Glossary-Einträge in FREEZE_INDEX.md §13 verewigt (DC-001 bis DC-018) und die Originale sind gelöscht. 62 Dokumente insgesamt jetzt im FREEZE, nur 12 Live-Docs bleiben übrig. Der Doku-Clean-Zyklus aus WORKFLOW.md ist damit zum ersten Mal komplett durchlaufen.
+
+FREEZE_INDEX.md hat jetzt 81 Einträge (vorher 49). Versionsnummern überall von v0.20.0-pre-release auf v0.20.0 aktualisiert.
+
+Geänderte Dateien: README.md, MASTER_DOC.md, AGENTS.md (Root + SSOT), FREEZE_INDEX.md, core/archive/docs/AGENTS.md. 18 Dateien gelöscht.

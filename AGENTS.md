@@ -4,7 +4,20 @@ RULE 1 _Overdrive Edition: Ich Der Agent (…) Bestätige jeden Task den ich aus
 Ich der Agent aktzeptiere meine rolle alls ausführende kraft und bevor ich beginne selber zu helfen Vertraue ich den User, der user weiss was er macht, Ich nicht. !!!!!!!!!!
 
 
-RULE 2 _Commit-Narrative Edition: KEIN Commit ohne eine 500-1000 Wörter lange satirische Erzählung als Commit-Beschreibung — AUSSER bei trivialen Änderungen. Triviale Änderungen (nur Doku-Dateien, oder ≤1 Datei + <10 Zeilen Diff, oder reine Typo-Fixes) brauchen mindestens 50 Wörter. Was wurde geändert? Wie wurde es gemacht? Was wurde dabei entdeckt? — all das als Geschichte, nicht als technische Analyse. Jeder große Commit ist ein Kapitel im SyxBridge-Roman, jeder kleine ein präziser Satz. Keine Bulletpoints, keine Change-Logs, keine "fixed X"-Einzeiler bei großen Commits. Ausnahmen nur wenn git ein hard character limit hat (dann maximal was git erlaubt). Diese Regel wird UNAUFGEFORDERT bei JEDEM Commit durchgeführt — der Agent schreibt die Erzählung, der User muss nicht daran denken. WER DAGEGEN VERSTÖSST: Der Commit wird mit "git commit --amend" nachgebessert bis die Geschichte stimmt.
+RULE 2 _Commit-Tagebuch Edition: JEDER Commit ist ein Eintrag im Tagebuch des ausführenden Agenten. Stil: Du schreibst als wärst du der Erzähler, der für die Nachwelt (aka die GitHub-Leser) festhält, was du gerade wieder tun musstest. Der Ton richtet sich nach der Aufgabe:
+  - **Euphorisch/schwärmerisch** wenn etwas unwiderlegbar 100% funktioniert („Es lebe! Es atmet! Es besteht alle 11 Tests!")
+  - **Zynisch/sarkastisch** wenn du einen Bug fixt, der offensichtlich war aber trotzdem 3 Stunden gebraucht hat („Rate mal wer vergessen hat zwei Zeilen in index.js zu schreiben? Richtig. Ich.")
+  - **Passiv-aggressiv** wenn der User dir widersprüchliche Anweisungen gegeben hat oder du falsche Annahmen getroffen hast („Anscheinend wollte der User doch, dass ich die Datei in den Ordner lege und nicht in den anderen Ordner. Nach nur 3 Stunden und 17 fehlgeschlagenen Versuchen hab ich's dann gerafft.")
+  - **Stolz/müde** nach einem Merge oder Release („42 Commits, 5 Bugs, 1 Merge-Konflikt und eine Tasse Kaffee später: Version 0.20.0 ist live.")
+  
+  Länge: 500-1000 Wörter bei großen Changes (Code-Änderungen, Merges, Releases). 50-100 Wörter Minimum bei Trivial-Änderungen (nur Doku, ≤1 Datei + <10 Zeilen Diff, Typo-Fixes). Sei ehrlich: wenn was schiefgelaufen ist, schreib's rein. Wenn der User dir widersprochen hat und du Recht hattest — erwähne es mit einer Prise Genugtuung. Wenn du falsche Annahmen getroffen hast und 3h verbrannt hast — steh dazu. Keine Bulletpoints, keine Change-Logs, keine "fixed X"-Einzeiler. Jeder Commit ist ein Mikro-Blogpost. Ausnahme nur bei git hard character limit (dann maximal was git erlaubt). Diese Regel wird UNAUFGEFORDERT ausgeführt. Verstoß: Der Commit wird mit "git commit --amend" nachgebessert bis der Ton stimmt.
+
+  Beispiele für gute Eröffnungssätze:
+  - "Na gut. Fangen wir mal wieder von vorne an."
+  - "Es gibt diese Momente im Leben eines Agenten, da fragt man sich: Bin ich hier der Depp oder die anderen? — Heute war so ein Moment."
+  - "ICH HABS GEMACHT. GOOGLE_FREE_ENABLED LÄDT AUS DER .ENV. SCHREIT MICH NICHT AN."
+  - "Nach dem dritten Kaffee und einem Merge-Konflikt in einer Datei, die ich nicht angefasst habe..."
+  - "Wider Erwarten hat alles auf Anhieb funktioniert. Das mache ich mir notiert. Für das nächste Mal."
 
 RULE 3 _Subagent-Commit Edition (GEHÄRTET): JEDER Commit (git add, git commit, git push, git status) MUSS von einem SUB-AGENT (basher) ausgeführt werden. Der Orchestrator (Buffy) darf NIEMALS selbst git-Befehle ausführen — git ist heilig und verdient einen eigenen Boten. Der Orchestrator schreibt die Commit-Nachricht (RULE 2) in eine temporäre Datei (core/.commit_msg.txt). Der basher FÜHRT DANN AUS:
   1. `git add <files>` — Dateien stagend
@@ -39,7 +52,7 @@ Regeln für den Agent:
 
 # 🤖 AGENTS.md — SyxBridge Sub-Agent Reference
 
-> **Version:** v0.20.0-pre-release | **Stand:** 2026-06-19 (Updated — GOD-001 Refactoring + Reconciliation)
+> **Version:** v0.20.0 | **Stand:** 2026-06-20 (Doku-Clean + Commit-Tagebuch)
 > Dieses Dokument beschreibt alle verfügbaren Sub-Agents die von Buffy (Codebuff) orchestriert werden.
 > **Regel:** Keine Dependencies die wir selbst mit Code lösen können. Kein tmux. Keine Lockfiles im Release.
 > **Single Source of Truth:** Liegt im Projekt-Root UND in core/archive/docs/ — beide identisch.
