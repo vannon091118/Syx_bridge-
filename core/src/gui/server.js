@@ -363,6 +363,25 @@ class GuiServer extends EventEmitter {
         return;
       }
 
+      // API: Runtime Score (from current_score.json)
+      if (url.pathname === '/api/runtime-score' && req.method === 'GET') {
+        const scorePath = path.join(__dirname, '..', '..', 'data', 'current_score.json');
+        try {
+          if (fs.existsSync(scorePath)) {
+            const data = JSON.parse(fs.readFileSync(scorePath, 'utf-8'));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data));
+          } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'No runtime score data yet. Run node core/scripts/runtime_score.js --write-history first.' }));
+          }
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+        return;
+      }
+
       // API: Automated API Key Check
       if (url.pathname === '/api/key-check' && req.method === 'POST') {
         let body = '';

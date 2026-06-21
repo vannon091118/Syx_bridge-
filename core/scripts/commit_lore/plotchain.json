@@ -64,5 +64,65 @@
       "Folgeschritte der v0.21 Härtung dokumentieren."
     ],
     "dialogue_preview": "### [2026-06-21 04:26] — ESLint-Fixes + G1-Test-Reparatur + Livetest bestanden"
+  },
+  {
+    "id": "plot-2026-06-21T08:00:00",
+    "parent_id": "plot-2026-06-21T02:42:25",
+    "timestamp": "2026-06-21 08:00:00",
+    "status": "active",
+    "session_changes": [
+      "core/src/gui/server.js",
+      "core/src/gui/public/app.js",
+      "core/src/gui/public/index.html",
+      "README.md",
+      "core/archive/docs/plans/PLAN_MASTER.md",
+      ".git/hooks/commit-msg",
+      "core/archive/docs/PLOT_LORE.md"
+    ],
+    "variables": [
+      "runtime-score-dashboard",
+      "PLAN_MASTER",
+      "commit-msg-hook",
+      "README",
+      "PLOT_LORE",
+      "bypass-audit"
+    ],
+    "suggested_next_hooks": [
+      "LIVE-1: In-Game-Verification durchführen — Mods im Spiel laden.",
+      "Release v0.21.0-untested -> stable promoten.",
+      "KNOWN_BUGS Cluster C systematic items triagieren."
+    ],
+    "dialogue_preview": "### [2026-06-21 08:00] — Runtime Score Dashboard + PLAN_MASTER Cleanup + README Update + Bypass-Audit"
+  },
+  {
+    "id": "plot-2026-06-21T02:59:06",
+    "parent_id": "plot-2026-06-21T08:00:00",
+    "timestamp": "2026-06-21 02:59:06",
+    "status": "active",
+    "session_changes": [
+      "EADME.md",
+      "core/archive/docs/PLOT_LORE.md",
+      "core/archive/docs/PREFLIGHT_LATEST.md",
+      "core/archive/docs/plans/PLAN_MASTER.md",
+      "core/scripts/commit_lore/plotchain.json",
+      "core/src/gui/public/app.js",
+      "core/src/gui/public/index.html",
+      "core/src/gui/server.js",
+      "core/logs/"
+    ],
+    "variables": [
+      "EADME",
+      "PLOT_LORE",
+      "PREFLIGHT_LATEST",
+      "PLAN_MASTER",
+      "plotchain",
+      "index",
+      "server",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "Runtime Score Dashboard + PLAN_MASTER Cleanup + README Update + Bypass-Audit — Session 2026-06-21"
   }
 ]

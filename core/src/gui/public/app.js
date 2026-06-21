@@ -1518,6 +1518,94 @@ async function restoreBackup(modId) {
 }
 
 // Global exposure (HTML onclick handlers refer to these names)
+// ── Runtime Score Dashboard ──────────────────────────────────────────
+let _runtimeScoreData = null;
+
+async function fetchRuntimeScore() {
+  try {
+    const res = await fetch('/api/runtime-score');
+    if (!res.ok) {
+      document.getElementById('runtime-score-loading').style.display = 'none';
+      document.getElementById('runtime-score-empty').style.display = 'block';
+      document.getElementById('runtime-score-content').style.display = 'none';
+      return;
+    }
+    const data = await res.json();
+    if (data.error) {
+      document.getElementById('runtime-score-loading').style.display = 'none';
+      document.getElementById('runtime-score-empty').style.display = 'block';
+      document.getElementById('runtime-score-content').style.display = 'none';
+      document.getElementById('runtime-score-empty').innerHTML = data.error;
+      return;
+    }
+    _runtimeScoreData = data;
+    renderRuntimeScore(data);
+  } catch (e) {
+    // Silent fail — will retry via interval
+  }
+}
+
+function renderRuntimeScore(data) {
+  const loadingEl = document.getElementById('runtime-score-loading');
+  const contentEl = document.getElementById('runtime-score-content');
+  const emptyEl = document.getElementById('runtime-score-empty');
+  const badgeEl = document.getElementById('runtime-score-badge');
+
+  if (!contentEl) return;
+
+  loadingEl.style.display = 'none';
+  emptyEl.style.display = 'none';
+  contentEl.style.display = 'block';
+
+  const score = data.globalScore || 0;
+
+  // Global score color
+  const scoreColor = score >= 85 ? 'var(--success)' : (score >= 70 ? 'var(--accent)' : 'var(--danger)');
+  const scoreLabel = score >= 85 ? 'EXCELLENT' : (score >= 70 ? 'GOOD' : (score >= 50 ? 'FAIR' : 'POOR'));
+
+  // Timestamp
+  const computedAt = data.computedAt ? new Date(data.computedAt).toLocaleString() : '—';
+  if (badgeEl) badgeEl.textContent = `(${data.coverage || 0} Kategorien, ${data.formula || 'weighted'})`;
+
+  let html = `
+    <div style="text-align:center; margin-bottom:10px;">
+      <div style="font-size:1.6rem; font-weight:bold; color:${scoreColor}; line-height:1.2;">
+        ${score.toFixed(1)}%
+        <span style="font-size:0.5rem; color:var(--muted); display:block; font-weight:normal;">${scoreLabel}</span>
+      </div>
+      <div style="font-size:0.55rem; color:var(--muted); margin-top:2px;">${computedAt}</div>
+    </div>
+    <div style="border-top:1px solid var(--border); padding-top:8px;">
+  `;
+
+  // Per-category breakdown
+  if (data.perCategory && data.perCategory.length > 0) {
+    // Sort by contribution descending
+    const sorted = [...data.perCategory].sort((a, b) => b.contribution - a.contribution);
+    for (const cat of sorted) {
+      const barColor = cat.p >= 85 ? 'var(--success)' : (cat.p >= 70 ? 'var(--accent)' : 'var(--danger)');
+      const label = cat.id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      html += `
+        <div style="margin-bottom:6px;">
+          <div style="display:flex; justify-content:space-between; font-size:0.6rem; margin-bottom:2px;">
+            <span title="Gewichtung: ${(cat.w * 100).toFixed(0)}%">${label}</span>
+            <span style="color:${barColor};">${cat.p.toFixed(1)}%</span>
+          </div>
+          <div class="progress-bar" style="height:4px; margin:0; background:rgba(255,255,255,0.05);">
+            <div class="progress-fill" style="width:${cat.p}%; background:${barColor}; box-shadow:none; animation:none;"></div>
+          </div>
+          <div style="font-size:0.5rem; color:var(--muted); margin-top:1px; text-align:right;">
+            Anteil: ${cat.contribution.toFixed(2)}% · Gewicht: ${(cat.w * 100).toFixed(0)}%
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  html += '</div>';
+  contentEl.innerHTML = html;
+}
+
 window.restoreBackup = restoreBackup;
 window.openRevisions = openRevisions;
 window.closeRevisionModal = closeRevisionModal;
@@ -1537,3 +1625,7 @@ setTimeout(() => {
   loadBackups();
   setInterval(loadBackups, 15000); // Poll every 15s instead of 10s
 }, 2000);
+
+// Runtime Score: initial load after 1s (panel is lazy-init friendly), then every 60s
+setTimeout(fetchRuntimeScore, 1000);
+setInterval(fetchRuntimeScore, 60000);

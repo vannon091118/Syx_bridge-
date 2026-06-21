@@ -7,7 +7,7 @@
 <p align="center">
   <a href="#-what-is-syxbridge"><img src="https://img.shields.io/badge/lang-English-blue?style=flat-square" alt="English"></a>
   <a href="#-was-ist-syxbridge"><img src="https://img.shields.io/badge/lang-Deutsch-grey?style=flat-square" alt="Deutsch"></a>
-  <img src="https://img.shields.io/badge/version-v0.21--experimental-orange?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-v0.21.0--untested-orange?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/status-Alpha-red?style=flat-square" alt="Status">
   <img src="https://img.shields.io/badge/tests-111%20PASS%200%20FAIL-brightgreen?style=flat-square" alt="Tests">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
@@ -210,13 +210,8 @@ Syx_bridge-/
 
 | Version | Date | Highlights |
 |---|---|---|
-| **v0.21-exp** | 2026-06-21 | ESLint 0-error pass: useless escapes, hasOwnProperty, archive exclusion |
-| **v0.21-exp** | 2026-06-21 | npm test pipeline fixed: removed refs to deleted scripts, 111 PASS 0 FAIL |
-| **v0.21-exp** | 2026-06-21 | sos-runtime.js: SETTINGS_PATH via plugin-registry (GameAdapter abstraction complete) |
-| **v0.21-exp** | 2026-06-21 | Native Mode Fix: V6/V7 filter removed, German path injection, BridgeCore preserved |
-| **v0.21-exp** | 2026-06-21 | better-sqlite3 fallback, db_repair.js sync API, Patch Mode user-opt-out (95% score) |
-| **v0.21-exp** | 2026-06-21 | 5× live run: 1.685 DB entries, 646 German translations, 0 watermarks |
-| **v0.21-exp** | 2026-06-20 | 5-layer watermark defense (ZWSP/ZWNJ), shouldTranslate config-blocker |
+| **v0.21.0-untested** | 2026-06-21 | Current release — Runtime Score Dashboard, ESLint 0-error, G1-Test fix, Livetest bestanden |
+| **v0.21-exp** | 2026-06-20—21 | Stabilisierungsphase: Native Mode Fix (V6/V7 Filter entfernt, German-Pfad, BridgeCore preserved), PREFLIGHT-Härtung, Plugin-Architektur, 5-Layer Watermark Defense, 2.702 DB-Einträge |
 | **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 to BU-039, Plugin Architecture |
 | v0.19.7 | 2026-06-18 | PREFLIGHT fix + Routing hardening + smart Error-Handler |
 
@@ -225,15 +220,39 @@ Syx_bridge-/
 
 ---
 
+### 📊 Runtime Score — 90.1% (Gewichtete Wahrscheinlichkeit)
+
+Der **Runtime Score** misst die Wahrscheinlichkeit, dass SyxBridge auf einem beliebigen Fremdsystem ohne Eingriff läuft. Berechnet als gewichteter Durchschnitt über 8 Nutzer-Personas:
+
+$$P_{global} = \frac{\Sigma(P_i \times w_i)}{\Sigma w_i} = 90.1\%$$
+
+| Persona | P (Wahrscheinlichkeit) | Gewicht (Bevölkerungsanteil) | Beitrag |
+|---------|----------------------|------------------------------|---------|
+| **Casual User** (API-Keys vorhanden, Standard-HW) | 97.5% | 35% | 34.1% |
+| **Mid-Range mit Keys** (gute GPU + API-Keys) | 97.0% | 15% | 14.6% |
+| **Mid-Range ohne Keys** (gute GPU, nur Google Free) | 85.0% | 25% | 21.3% |
+| **Schwache HW** (Steam Deck 4GB RAM) | 74.0% | 10% | 7.4% |
+| **Power Workstation + Ollama** (Lokalmodell) | 94.0% | 8% | 7.5% |
+| **Headless Linux Server** (CLI-only) | 87.5% | 2% | 1.8% |
+| **Power-API-User** (teure Keys, exotische Konfiguration) | 77.0% | 3% | 2.3% |
+| **Offline / Air-gapped** (Google Free + Argos) | 60.0% | 2% | 1.2% |
+
+> **Formel:** Gewichteter Durchschnitt — jedes Persona-P (Wahrscheinlichkeit) wird mit seinem Bevölkerungsgewicht w multipliziert, die Summe ergibt den globalen Score.
+> **Berechnung:** `core/scripts/runtime_score.js` — ausführbar als CLI-Tool mit `--write-history`.
+> **Datenquelle:** `core/data/current_score.json` — live im Web-Dashboard unter Runtime Score Panel sichtbar.
+> **Git-Commit:** `980de4a` (2026-06-21) — 8 Personas, 90.105% global.
+
+---
+
 ### ⚠️ Status: Alpha — Honest Assessment
 
 | | |
 |---|---|
-| **Version** | v0.21-experimental (active development branch) |
+| **Version** | v0.21.0-untested (active development branch) |
 | **Maturity** | Alpha · Solo project · In daily use by the author |
-| **DB** | 1.685 translated entries, 0 watermarks (as of 2026-06-21) |
-| **Score** | 95% on foreign systems (Python/Ollama = optional, not required) |
-| **Tests** | 111 PASS · 0 FAIL (plugin-boundary-contract + e2e native mode) |
+| **DB** | 2.702 translated entries, 0 watermarks, 0 flagged (as of 2026-06-21) |
+| **Score** | 90.1% Runtime Score — siehe Erklärung unten |
+| **Tests** | 111 PASS · 0 FAIL (npm test: plugin-boundary-contract + e2e native mode) · +22 P0-Verify |
 | **Patch Mode** | User opt-in via `.env` `PATCH_MODE_ENABLED=true`. Default: off. Fully functional. |
 
 <details>
@@ -448,13 +467,8 @@ Syx_bridge-/
 
 | Version | Datum | Highlights |
 |---|---|---|
-| **v0.21-exp** | 2026-06-21 | ESLint 0-Error-Durchlauf: useless escapes, hasOwnProperty, archive-Ausschluss |
-| **v0.21-exp** | 2026-06-21 | npm-test-Pipeline repariert: gelöschte Script-Refs entfernt, 111 PASS 0 FAIL |
-| **v0.21-exp** | 2026-06-21 | sos-runtime.js: SETTINGS_PATH via Plugin-Registry (GameAdapter-Abstraktion komplett) |
-| **v0.21-exp** | 2026-06-21 | Native Mode Fix: V6/V7-Filter entfernt, German-Pfad, BridgeCore erhalten |
-| **v0.21-exp** | 2026-06-21 | better-sqlite3 Fallback, db_repair.js Sync-API, Patch Mode User-Opt-Out (95%) |
-| **v0.21-exp** | 2026-06-21 | 5× Live-Run: 1.685 DB-Einträge, 646 deutsche Übersetzungen, 0 Watermarks |
-| **v0.21-exp** | 2026-06-20 | 5-Schichten Watermark-Defense (ZWSP/ZWNJ), shouldTranslate Config-Blocker |
+| **v0.21.0-untested** | 2026-06-21 | Aktuelles Release — Runtime Score Dashboard, ESLint 0-Error, G1-Test-Reparatur, Livetest bestanden |
+| **v0.21-exp** | 2026-06-20—21 | Stabilisierungsphase: Native Mode Fix, PREFLIGHT-Härtung, Plugin-Architektur, 5-Layer Watermark Defense, 2.702 DB-Einträge |
 | **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 bis BU-039, Plugin-Architektur |
 | v0.19.7 | 2026-06-18 | PREFLIGHT-Fix + Routing-Härtung + smarter Error-Handler |
 
@@ -463,15 +477,38 @@ Syx_bridge-/
 
 ---
 
+### 📊 Runtime Score — 90.1% (Gewichtete Wahrscheinlichkeit)
+
+Der **Runtime Score** misst die Wahrscheinlichkeit, dass SyxBridge auf einem beliebigen Fremdsystem ohne Eingriff läuft. Berechnet als gewichteter Durchschnitt über 8 Nutzer-Personas:
+
+$$P_{global} = \frac{\Sigma(P_i \times w_i)}{\Sigma w_i} = 90.1\%$$
+
+| Persona | P (Wahrscheinlichkeit) | Gewicht | Beitrag |
+|---------|----------------------|---------|---------|
+| **Casual User** | 97.5% | 35% | 34.1% |
+| **Mid-Range mit Keys** | 97.0% | 15% | 14.6% |
+| **Mid-Range ohne Keys** | 85.0% | 25% | 21.3% |
+| **Schwache HW** | 74.0% | 10% | 7.4% |
+| **Power + Ollama** | 94.0% | 8% | 7.5% |
+| **Headless Server** | 87.5% | 2% | 1.8% |
+| **Power-API-User** | 77.0% | 3% | 2.3% |
+| **Offline / Air-gapped** | 60.0% | 2% | 1.2% |
+
+> **Formel:** Gewichteter Durchschnitt. Jedes P × w ergibt einen Beitrag, die Summe = 90.1%.
+> **Berechnung:** `core/scripts/runtime_score.js` (`--write-history`).
+> **Anzeige:** Web-Dashboard » Runtime Score Panel.
+
+---
+
 ### ⚠️ Status: Alpha — Ehrliche Ansage
 
 | | |
 |---|---|
-| **Version** | v0.21-experimental (aktiver Entwicklungs-Branch) |
+| **Version** | v0.21.0-untested (aktiver Entwicklungs-Branch) |
 | **Reifegrad** | Alpha · Solo-Projekt · im Daily-Use des Autors |
-| **DB** | 1.685 übersetzte Einträge, 0 Watermarks (Stand 2026-06-21) |
-| **Score** | 95% auf Fremdsystemen (Python/Ollama = optional, nicht erforderlich) |
-| **Tests** | 111 PASS · 0 FAIL (plugin-boundary-contract + e2e native mode) |
+| **DB** | 2.702 übersetzte Einträge, 0 Watermarks, 0 Geflaggte (Stand 2026-06-21) |
+| **Score** | 90.1% Runtime Score (gewichtete Wahrscheinlichkeit über 8 Personas) |
+| **Tests** | 111 PASS · 0 FAIL (npm test) · +22 P0-Verify |
 | **Patch Mode** | User Opt-in via `.env` `PATCH_MODE_ENABLED=true`. Standard: aus. Voll funktional. |
 
 <details>

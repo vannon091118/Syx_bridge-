@@ -845,6 +845,15 @@
                 <div class="stat-label">DB Einträge: <span id="stat-db-total">-</span></div>
             </div>
 
+            <div class="panel" id="runtime-score-panel">
+                <h3>Runtime-Score <span id="runtime-score-badge" style="font-size:0.5rem; color:var(--muted); font-weight:normal;"></span></h3>
+                <div id="runtime-score-container" style="font-size:0.7rem; font-family:monospace;">
+                    <div id="runtime-score-loading" style="color:var(--muted); padding:6px 0; text-align:center;">Lade Runtime-Score...</div>
+                    <div id="runtime-score-content" style="display:none;"></div>
+                    <div id="runtime-score-empty" style="display:none; color:var(--muted); padding:6px 0; text-align:center; font-size:0.6rem;">Keine Daten — führe <code style="color:var(--accent)">runtime_score.js --write-history</code> aus.</div>
+                </div>
+            </div>
+
             <div class="panel">
                 <h3>Mod-Backups</h3>
                 <div id="backup-list" style="max-height: 200px; overflow-y: auto; font-size: 0.8rem; display: flex; flex-direction: column; gap: 8px;">

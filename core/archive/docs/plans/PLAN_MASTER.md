@@ -29,11 +29,12 @@
 ### Planungs-Items (benötigen Design/Architektur)
 | # | Aufgabe | Quelle | Aufwand | Status |
 |---|---------|--------|---------|--------|
-| P1-4 | sos-runtime.js Settings-Pfad in GameAdapter abstrahieren | MASTER_DOC §6 | ~1h | 🟡 PLAN |
+| P1-4 | sos-runtime.js Settings-Pfad in GameAdapter abstrahieren | MASTER_DOC §6 | ~1h | ✅ DONE — `getLauncherSettingsPath()` in SongsOfSyxPlugin + GameAdapter, SETTINGS_PATH via `getActivePlugin()` in sos-runtime.js |
 | P1-5 | index.js Plugin-Instanziierung via Config/CLI-Flag | MASTER_DOC §6 | ~2h | 🟡 PLAN |
 | P1-6 | --skip-preflight CLI-Flag implementieren | HANDSHAKE-20 §7 | ~30m | 🟡 PLAN |
 | P1-7 | saveTranslation-Batching (1 Transaktion statt 6×) | HANDSHAKE-20 §7 | ~1h | 🟡 PLAN |
 | P1-8 | Groq TPM-Limit: Batch-Größe halbieren oder Tier upgraden | HANDSHAKE-20 §4 | ~30m | 🟡 PLAN |
+| P1-9 | LIVE-1 In-Game Verification Checklist + Pipeline Dry-Run | HANDSHAKE §4 | ~1h | 🟡 PLAN |
 
 ---
 
@@ -46,6 +47,7 @@
 | P2-3 | DB-Cleanup stale_retranslate | MASTER_DOC §6 | ~2h | 🟡 PLAN |
 | P2-4 | Bidirektionaler Vendor-Sync Phase 2 (F.A) | MASTER_DOC §6 | ~3-4h | 🟡 PLAN |
 | P2-5 | F.C CodeRabbit-Auto-Fix Re-Verify | MASTER_DOC §3 | ~1-2h | 🟡 PLAN |
+| P2-6 | P0-2 Pre-Commit-Hook Wiring (commit-msg hook) | AGENTS.md §3 | ~30m | ✅ DONE — `.git/hooks/commit-msg` verlinkt verify_commit_msg.js |
 
 ---
 

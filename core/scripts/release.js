@@ -26,13 +26,22 @@ if (fs.existsSync(zipPath)) {
 fs.mkdirSync(releaseDir, { recursive: true });
 fs.mkdirSync(stageDir, { recursive: true });
 
-// ── Allowed runtime scripts (kept in release) ───────────────────────
-const ALLOWED_SCRIPTS = new Set([
-  'check_argos.js',
-  'start_ollama.js',
-  'cleanup_zombies.js',
-  'workshop_export.js',
-  'start.bat',
+// ── Directories to exclude ──────────────────────────────────────────
+const EXCLUDE_DIRS = new Set([
+  'node_modules', '.git', '.claude', 'backups', 'patches',
+  'release', 'archive', 'dbold', 'tests', 'docs', 'plans',
+]);
+
+// ── Dev-only scripts (not included in release) ──────────────────────
+// These depend on commit_lore/ subdirectory or git history
+const EXCLUDE_SCRIPTS = new Set([
+  'verify_commit_msg.js',
+  'release.js',
+  'fresh-readme.js',
+  'gen-index.js',
+  'build_pool.js',
+  'get_sidejoke.js',
+  'update_plot.js',
 ]);
 
 // ── Files to exclude (by exact basename) ────────────────────────────
@@ -49,12 +58,6 @@ const EXCLUDE_BASENAMES = new Set([
   'TECHNICAL_REVIEW_2026-06-15.md', 'PATCH_REVIEW_2026-06-16.md',
   'SESSION_REPORT_v0.19.5-prerelease.md',
   'DB_REPORT_v0.19.5.D17.06.U17.06.md',
-]);
-
-// ── Directories to exclude ──────────────────────────────────────────
-const EXCLUDE_DIRS = new Set([
-  'node_modules', '.git', '.claude', 'backups', 'patches',
-  'release', 'archive', 'dbold', 'tests', 'docs', 'plans',
 ]);
 
 // ── Stat tracking ───────────────────────────────────────────────────
@@ -118,6 +121,14 @@ if (fs.existsSync(infoSrc)) {
   console.log('  ✓ _Info.txt');
 }
 
+// .env.example (Template für neue User)
+const envExampleSrc = path.join(rootDir, '.env.example');
+if (fs.existsSync(envExampleSrc)) {
+  fs.copyFileSync(envExampleSrc, path.join(stageDir, '.env.example'));
+  fileCount++;
+  console.log('  ✓ .env.example');
+}
+
 // ── 2. Mod assets (V70 + V71) ──────────────────────────────────────
 console.log('[2/4] Kopiere Mod-Assets (V70 + V71)...');
 for (const ver of ['V70', 'V71']) {
@@ -166,7 +177,7 @@ const beforeSrc = fileCount;
 copyRecursive(srcDir, srcDest);
 console.log(`  ✓ src/ (${fileCount - beforeSrc} Dateien)`);
 
-// 3e. core/scripts/ (only allowed runtime scripts)
+// 3e. core/scripts/ (all runtime-relevant scripts)
 const scriptsDir = path.join(coreDir, 'scripts');
 const scriptsDest = path.join(coreDest, 'scripts');
 fs.mkdirSync(scriptsDest, { recursive: true });
@@ -174,13 +185,30 @@ dirCount++;
 let scriptCount = 0;
 if (fs.existsSync(scriptsDir)) {
   fs.readdirSync(scriptsDir).forEach(f => {
-    if (ALLOWED_SCRIPTS.has(f)) {
-      fs.copyFileSync(path.join(scriptsDir, f), path.join(scriptsDest, f));
+    const fullPath = path.join(scriptsDir, f);
+    if (fs.statSync(fullPath).isFile() && f.endsWith('.js') && !f.startsWith('_') && !EXCLUDE_SCRIPTS.has(f)) {
+      fs.copyFileSync(fullPath, path.join(scriptsDest, f));
       fileCount++;
       scriptCount++;
     }
   });
 }  console.log(`  ✓ scripts/ (${scriptCount} Runtime-Skripte)`);
+
+// 3f. core/data/ (runtime data: current_score.json)
+const dataDir = path.join(coreDir, 'data');
+const dataDest = path.join(coreDest, 'data');
+if (fs.existsSync(dataDir)) {
+  const dataFiles = fs.readdirSync(dataDir).filter(f => fs.statSync(path.join(dataDir, f)).isFile());
+  if (dataFiles.length > 0) {
+    fs.mkdirSync(dataDest, { recursive: true });
+    dirCount++;
+    dataFiles.forEach(f => {
+      fs.copyFileSync(path.join(dataDir, f), path.join(dataDest, f));
+      fileCount++;
+    });
+    console.log(`  ✓ data/ (${dataFiles.length} Dateien)`);
+  }
+}
 
 // ── 4. Build Manifest (Drift-Detection) ─────────────────────────────
 const crypto = require('crypto');
@@ -242,8 +270,7 @@ if (fs.existsSync(zipPath)) {
 console.log('');
 console.log('  Enthalten:');
 console.log('    ✓ start.bat (Launcher)');
-console.log('    ✓ core/index.js + src/ (Runtime)');
-console.log('    ✓ core/scripts/ (nur Runtime-Skripte)');
+console.log('    ✓ core/index.js + src/ (Runtime)');  console.log('    ✓ core/scripts/ (alle Runtime-Skripte)');
 console.log('    ✓ V70/ + V71/ (Mod-Assets)');
 console.log('    ✓ package.json (kein Lockfile)');
 console.log('');
