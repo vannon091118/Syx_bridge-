@@ -500,6 +500,33 @@
 
 ---
 
+## 13. Session 5 — SHIELD-LEAK Fix, verify_flag_separation, Doku-Cleanup (2026-06-21)
+
+### 🧊 SESSION 5 FEIERABEND — Session 2026-06-21
+- **Datum:** 2026-06-21 | **Version:** v0.21.0-untested
+- **Kategorie:** Bugfix + Dev-Tool + Doku-Cleanup (Session-Abschluss)
+- **Zusammenfassung:** BU-041 SHIELD-LEAK Root-Cause gefixt (buildProofreadPrompt-Induktion von [[N]]-Tokens), verify_flag_separation.js mit --future Flag deployt (6 Future-Patterns identifiziert), scanFile Exit 2 Bug in verify_flag_separation.js behoben, REF Error-Message in verify_commit_msg.js auf ISO T-Format korrigiert, LIVE-1 Dry-Run Script erstellt. Doku-Cleanup am Session-Ende: HANDSHAKE Session 5, CHANGELOG aktualisiert, stale 2026-06-19 Audit-Docs gelöscht.
+- **Kausalität:** User-Auftrag "abgebrochenen Run auswerten" → SHIELD-LEAK entdeckt (false-positives durch Prompt-Induktion). Parallel: --future Flag für Flag-Taxonomie-Audit + Bugfixes in verify-Scripts.
+- **Methode:** code-searcher für SHIELD-LEAK Trace (client-factory.js:660) → Root-Cause in buildProofreadPrompt identifiziert → Fix in 2 Schichten (Prompt + Validation). verify_flag_separation: Syntax-Map-basierte Future-Erkennung mit Synonym-Map. scanFile Exit 2: scanErrors-Array + Guard in main().
+- **Fix-Details:**
+  - **BU-041 (text-core.js):** buildProofreadPrompt Instruction 'Keep all [[0]], [[1]] tokens unchanged' → 'Only fix grammar and phrasing — do NOT add new placeholders, tags, or markup'. translationCriticalCheck: [[/]]-Check nur wenn source kein [[ enthält.
+  - **verify_flag_separation.js (NEU, --future Flag):** findFuturePatterns() mit 4 Checks (direct name match, token match, synonym map, alias). 6 Future-Patterns: QUALITY-OFFENSIVE, CHAIN-HARDENING, DOCU-CLEAN, BU-ID, DD-ID, IN ARBEIT.
+  - **scanFile Exit 2 (verify_flag_separation.js):** scanErrors-Tracking + Guard in main() (Nach Phase 2, vor allen Exit-Pfaden). Vorher: TDZ + unreachable.
+  - **REF Format (verify_commit_msg.js):** Beispiel 'plot-2026-06-21-03-55-00' → 'plot-2026-06-21T06:42:18' (ISO T-Format).
+- **Cross-Referenzen:** `text-core.js`, `verify_flag_separation.js`, `verify_commit_msg.js`, `live1_dryrun.js`
+- **Status:** ✅ ABGESCHLOSSEN — 4 Fixes + 2 neue Scripts + Doku-Cleanup
+- **LIVE-Vorhanden:** text-core.js (BU-041 Fix), verify_flag_separation.js (--future + scanFile Exit 2), verify_commit_msg.js (REF Fix), live1_dryrun.js
+- **Verifikation:** Syntax-Check alle 4 Dateien OK, --future mode exit 0 (6 Patterns), normal mode exit 0 (0 collisions), Code-Review deepseek approved, LIVE-1 Dry-Run 22/22 PASS
+
+### 📋 Session-Tabelle (aktualisiert)
+
+| Datum | Session | Fixes | Commit | FREEZE-Einträge |
+|-------|---------|-------|--------|-----------------|
+| … | … | … | … | … |
+| 2026-06-21 | Session 5: SHIELD-LEAK + verify_flag + Doku-Cleanup | 4 Fixes + 2 neue Scripts | Doku-Feierabend | 29 (dieses Dokument) |
+
+---
+
 *📚 FREEZE INDEX 2 — Fortsetzung ab 2026-06-20*
 *Vorgänger: FREEZE_INDEX_v0.20.0_archived.md (142 Einträge, 16.06.–20.06.2026)*
 *CODE IST DIE EINZIGE WAHRHEIT.*

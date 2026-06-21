@@ -1,3 +1,48 @@
+## [SESSION-5-FEIERABEND] - 2026-06-21 — SHIELD-LEAK Fix (BU-041), verify_flag_separation deploy, Session-Cleanup
+
+Zwei Bugs in zwei verify-Scripts, ein Commit — gefolgt von Doku-Cleanup und Feierabend. Der scanFile-Fehler in verify_flag_separation.js war doppelt tot: der catch-Block loggte nur still, und der nach main() gepflanzte Guard lag im Temporal Dead Zone — nie erreicht, nie exit 2. Der --future Flag listet jetzt DOKU-Patterns ohne RUNTIME-Äquivalent (6 Future-Patterns identifiziert).
+
+Der REF-Fehler in verify_commit_msg.js zeigte ein Bindestrich-Format (plot-2026-06-21-03-55-00), während Regex und Kommentar längs das ISO T-Format (plot-2026-06-21T06:42:18) erwarteten.
+
+BU-041 SHIELD-LEAK Root-Cause in text-core.js gefixt: buildProofreadPrompt-Instruction 'Keep all [[0]], [[1]] tokens unchanged' pflanzte dem LLM die Idee von [[N]]-Tokens ein → Halluzination → false-positive shield_leak. Fix: Instruction auf 'Only fix grammar and phrasing — do NOT add new placeholders, tags, or markup' umgestellt, plus defense-in-depth in translationCriticalCheck mit source-bewusstem [[/]]-Filter.
+
+LIVE-1 Dry-Run erfolgreich: 22/22 P0-Tests PASS, PREFLIGHT HEALTHY (14 Issues auto-repaired), DB 2.721 Einträge, alle Output-Pfade erreichbar.
+
+### Fixes
+- **`core/src/text-core.js`** — BU-041: buildProofreadPrompt Safety-Instruction korrigiert + translationCriticalCheck source-bewusster [[/]]-Filter
+- **`core/scripts/verify_flag_separation.js`** — NEU: --future Flag + scanFile Exit 2 Bugfix (scanErrors-Tracking + Guard in main())
+- **`core/scripts/verify_commit_msg.js`** — REF Error-Message Format auf ISO T-Format korrigiert
+- **`core/scripts/live1_dryrun.js`** — NEU: LIVE-1 Dry-Run Utility Script
+
+### Doku-Cleanup (diese Session)
+- Stale 2026-06-19 Audit-Dokumente gelöscht (bereits im FREEZE indexiert)
+- HANDSHAKE_2026-06-21_session-5.md — NEU: Session-End-Dokumentation
+- FREEZE_INDEX_2.md — §13: Session-5-Einträge ergänzt
+- LIVE_INDEX.md — auf aktuellen Stand gebracht
+
+### Files Changed
+- `core/src/text-core.js` — BU-041 SHIELD-LEAK Fix
+- `core/scripts/verify_flag_separation.js` — NEU: --future Flag + scanFile Exit 2
+- `core/scripts/verify_commit_msg.js` — REF Format korrigiert
+- `core/scripts/live1_dryrun.js` — NEU: Dry-Run Utility
+- `core/archive/docs/HANDSHAKE_2026-06-21_session-5.md` — NEU
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+- `core/archive/docs/FREEZE/FREEZE_INDEX_2.md` — §13 Session-5
+- Multiple 2026-06-19 Audit-Docs — GELÖSCHT (im FREEZE indexiert)
+
+### Tests
+- Syntax-Check: text-core.js, verify_flag_separation.js, verify_commit_msg.js alle OK
+- verify_flag_separation --future: 6 Future-Patterns, exit 0
+- Code-Review: deepseek approved (SHIELD-LEAK Fix + --future Flag)
+- LIVE-1 Dry-Run: 22/22 P0-Tests PASS
+
+### EFFORT TO NEXT SCOPE
+- LIVE-2: Vollständiger Pipeline-Run mit 20 Workshop-Mods (~30-60min API)
+- GUI-DASH: Runtime-Score Dashboard-Panel (~2h)
+- DB-Snapshot archivieren (Rule 9)
+
+---
+
 ## [v0.21.0-untested] - 2026-06-21 — Release V0.21 Untested
 
 Release v0.21 in den Status "Untested" überführt. Dies bedeutet, dass die Änderungen erfolgreich über die automatische Testline (`npm test` mit Plugin-Boundary und E2E-Tests) sowie spezifische Verifikationstests (Lauf mit 5 Mods, 440 Übersetzungen, 0 Watermarks, Score 95%) validiert wurden, ein vollständiger Live-Full-Run im Spiel jedoch noch aussteht.
