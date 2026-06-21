@@ -110,7 +110,7 @@ Regeln für den Agent:
 
 # 🤖 AGENTS.md — SyxBridge Sub-Agent Reference
 
-> **Version:** v0.20.0 → v0.21-experimental | **Stand:** 2026-06-20 (Doku-Clean + Commit-Tagebuch + Sinnhaftigkeitsanalyse 15 Fixes)
+> **Version:** v0.21.0-untested | **Stand:** 2026-06-21 (Doku-Clean + Commit-Tagebuch + Sinnhaftigkeitsanalyse 15 Fixes)
 > Dieses Dokument beschreibt alle verfügbaren Sub-Agents die von Buffy (Codebuff) orchestriert werden.
 > **Regel:** Keine Dependencies die wir selbst mit Code lösen können. Kein tmux. Keine Lockfiles im Release.
 > **Single Source of Truth:** Liegt im Projekt-Root UND in core/archive/docs/ — beide identisch.

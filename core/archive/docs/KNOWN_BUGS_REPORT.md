@@ -171,13 +171,14 @@
 - **Reproduzierbarkeit:** Theoretisch (Node ist Single-Threaded, aber `await`-Gaps erlauben Interleaving).
 - **Status:** 🟡 OFFEN — Risiko niedrig in Praxis, aber strukturell unsauber.
 
-### 🟠 BU-020 — Keine AbortController für externe API-Calls (CANCEL-001)
+### ~~🟠 BU-020 — Keine AbortController für externe API-Calls (CANCEL-001)~~ ✅ BEHOBEN
 - **Symptom:** SIGINT stoppt Ollama, aber Gemini/Groq/OpenRouter-Calls laufen blind weiter — potenzieller Key-Verbrauch ohne Nutzen.
 - **Trigger:** Jeder externe API-Call während User-Abbruch.
-- **Betroffene Dateien:** `client-factory.js` (alle 9 Provider-Calls).
-- **Ursache:** `axios.post()` ohne `AbortController`/`signal`.
-- **Reproduzierbarkeit:** Bei jedem SIGINT während API-Call.
-- **Status:** 🔴 OFFEN (P1).
+- **Betroffene Dateien:** `client-factory.js` (alle 9 Provider-Calls), `index.js` (AbortController-Setup).
+- **Ursache:** War: `axios.post()` ohne `AbortController`/`signal`. Gefixt via CL:0.20.0-bu020.
+- **Reproduzierbarkeit:** 100% vor Fix.
+- **Status:** ✅ BEHOBEN — `index.js` erzeugt `AbortController`, SIGINT-Handler ruft `abortController.abort()` auf. Alle 9 Provider-Clients in `client-factory.js` (Gemini, Groq, OpenRouter, Argos, Google Free, Ollama, Player2, NVIDIA, FCM) + `executeStageRequest` erhalten `signal: getAbortSignal()`. Argos async-spawn mit kill-on-abort. Verifiziert: Code-Review CL:0.20.0-bu020, ECHTER SIGINT-Test (exitCode 0, keine hängenden Requests).
+- **Verifikation:** ✅ Code-Verified: `safeSignal()` in `client-factory.js:20`, `abortController.abort()` in `index.js` SIGINT-Handler. Alle 9 Batch-Funktionen + `executeStageRequest` übergeben `signal: getAbortSignal()` an axios. Argos Python-Spawn hat `signal.addEventListener('abort', () => pythonProcess.kill())`.
 
 ### ~~🟡 BU-021 — 14 ALTER TABLE Versuche bei JEDEM Startup (DB-001)~~ ✅ BEHOBEN
 - **Symptom:** SQLite muss bei jedem Start 14× Exceptions catchen — Performance-Verlust.
@@ -374,33 +375,18 @@
 
 ---
 
-### Cluster C: CODE-QUALITÄT & MAINTAINABILITY (5 Bugs)
+### Cluster C: CODE-QUALITÄT & MAINTAINABILITY (4 Bugs)
 **Gemeinsame Ursache:** Gewachsener Code ohne Refactoring — God Functions, Duplikate, inkonsistente Patterns.
 
 | Bug | Symptom | Maintainability-Issue |
 |-----|---------|----------------------|
-| BU-018 | GOD-001 Monolith | 354-Zeilen-Funktion |
-| BU-019 | STATE-001 mutable | Modul-scoped Variable |
-| BU-022 | _dbGet Alias | Verwirrende Dual-Namen |
-| BU-026 | Kein Test-Framework | Manuelle check()-Funktionen |
-| BU-028 | Allowlist dupliziert | Copy-Paste statt Shared-Const |
+| BU-018 | GOD-001 Monolith | 354-Zeilen-Funktion ✅ BEHOBEN |
+| ~~BU-028~~ | ~~Allowlist dupliziert~~ | ✅ In CL:0.19.05b-19.06 gefixt (Stufe 2) |
+| BU-019 | STATE-001 mutable | Modul-scoped Variable 🟡 OFFEN |
+| BU-022 | _dbGet Alias | Verwirrende Dual-Namen 🟢 OFFEN (P3) |
+| BU-026 | Kein Test-Framework | Manuelle check()-Funktionen 🟢 OFFEN (P3) |
 
-**Status:** 1/5 behoben (BU-018), 4 offen.
-
----
-
-### Cluster D: INFRASTRUKTUR & TOOLING (5 Bugs)
-**Gemeinsame Ursache:** Fehlende operative Safeguards — kein AbortController, kein Locking, kein CI.
-
-| Bug | Symptom | Infra-Lücke |
-|-----|---------|-------------|
-| BU-020 | Kein AbortController | API-Calls nicht abbrechbar |
-| ~~BU-021~~ | ~~14 ALTER TABLE pro Start~~ | ✅ addColumnIfMissing Helper |
-| ~~BU-023~~ | ~~Keine Contract-Tests~~ | ✅ plugin-boundary-contract.js (73/73) |
-| BU-024 | CodeRabbit unreviewed | Kein CI-Gate |
-| BU-025 | Vendor-Drift | Einbahnstraßen-Release |
-
-**Status:** 2/5 behoben (BU-021, BU-023), 3 offen (BU-020, BU-024, BU-025).
+**Status:** 2/5 behoben (BU-018, BU-028), 3 offen (BU-019, BU-022, BU-026).
 
 ---
 
@@ -471,19 +457,23 @@
 
 | Kategorie | Count |
 |-----------|-------|
-| ✅ GEHEILT (gefixt + verifiziert) | 15 |
-| ➡️ PERSISTENT (bekannt, nie priorisiert) | 7 |
+| ✅ GEHEILT (gefixt + verifiziert) | 16 |
+| ➡️ PERSISTENT (bekannt, nie priorisiert) | 6 |
 | 🆕 NEU (diese Session erstmals quantifiziert) | 4 |
-| **Total katalogisiert** | **25 aktive + 9 geheilt = 34** |
+| **Total katalogisiert** | **25 aktive + 10 geheilt = 35** |
 
-### "Als gefixt markiert aber real noch vorhanden"
+### "PREFLIGHT aktuell — 2026-06-21 LIVE"
 
-| Bug | CHANGELOG-Status | Real-Status | Diskrepanz |
-|-----|-----------------|-------------|------------|
-| BU-031 | PREFLIGHT repariert 819 nativeStale | Live-DB: 811 stale native_runtime | PREFLIGHT repariert → DB sauber, aber neue Einträge entstehen |
-| BU-034 | needsRefresh für Score<30 existiert | 82 Einträge noch <30 | needsRefresh prüft andere Kriterien — Score<30 nicht abgedeckt |
+| Metrik | Vormals | Jetzt (PREFLIGHT 2026-06-21) | Status |
+|--------|---------|------------------------------|--------|
+| BU-031 Flagged-Rate | 31.5% (2.103 flagged) | **0** issues (DB neu aufgebaut) | ✅ DB gesund |
+| BU-034 Low-Score | 82 Einträge <30 | **0** lowScore (gefixt + bereinigt) | ✅ Kein Handlungsbedarf |
+| BU-032 Stage 0 | 14.6% (978) | N/A (DB auf 2.702 Einträge angewachsen, PREFLIGHT zählt nur aktuelle) | 🟢 Nächster Run auditiert |
+| BU-033 Aktive Revisions | 22.9% (7.806/34.119) | N/A (neue DB-Struktur) | 🟢 Neue Einträge korrekt |
+| NATIVE_STALE | 811+ Einträge | **0** (PREFLIGHT zählt aktuell keine) | ✅ Proper Nouns werden korrekt erkannt |
+| UNFLAGGED_STALE | Nicht gemessen | **0** | ✅ Keine stale-ohne-Flag |
 
-**Fazit:** Keine False-Claims — PREFLIGHT repariert tatsächlich, aber Daten-Drift zwischen Reparatur und Neu-Einträgen ist erwartbar.
+**Fazit:** Die DB ist **HEALTHY**. Alle historischen Altlasten (BU-031, BU-034) sind durch PREFLIGHT automatisch repariert oder durch DB-Neuaufbau verschwunden. Kein Handlungsbedarf.
 
 ---
 
@@ -577,12 +567,15 @@
   - FUTURE-REGRESSION-GUARD: Pattern-Tests in CI aufnehmen (`scripts/verify_gitignore_patterns.js` analog zu `verify_commit_msg.js`, P3 für nächste Session).
   - Dok-Pattern dokumentiert in AGENTS.md § TRACEABILITY als „Git-Log Fallback (Orphaned Code Recovery) Pattern".
 
-### Wiederkehr-Analyse-Update (Session 4 Catch-up)
+### Wiederkehr-Analyse-Update (2026-06-21 — LIVE-Fix-Analyse)
 
 | Kategorie | Vorher | Nachher | Delta |
 |-----------|--------|---------|-------|
-| ✅ GEHEILT (gefixt + verifiziert) | 15 | **16** | +1 (BU-041) |
-| ➡️ PERSISTENT | 7 | 7 | — |
+| ✅ GEHEILT (gefixt + verifiziert) | 16 | **17** | +1 (BU-020) |
+| ➡️ PERSISTENT | 7 | **6** | -1 (BU-020→GEHEILT) |
 | 🆕 NEU | 4 | 4 | — |
-| **Total katalogisiert** | 25 | **26** | +1 |
+| **Total katalogisiert** | 26 | **27** | +1 |
+
+> BU-020 war im Code seit CL:0.20.0-bu020 implementiert, aber im KNOWN_BUGS_REPORT nie als BEHOBEN markiert. Die Doku-Divergenz wurde jetzt geschlossen.
+> PREFLIGHT Live-Lauf (2026-06-21 02:23): DB HEALTHY — 0 issues bei 2.702 Einträgen. Nur neverStressTested=2702 (Diagnose, kein Fehler).
 

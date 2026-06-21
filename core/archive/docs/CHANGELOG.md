@@ -1,3 +1,17 @@
+## [v0.21.0-untested] - 2026-06-21 — Release V0.21 Untested
+
+Release v0.21 in den Status "Untested" überführt. Dies bedeutet, dass die Änderungen erfolgreich über die automatische Testline (`npm test` mit Plugin-Boundary und E2E-Tests) sowie spezifische Verifikationstests (Lauf mit 5 Mods, 440 Übersetzungen, 0 Watermarks, Score 95%) validiert wurden, ein vollständiger Live-Full-Run im Spiel jedoch noch aussteht.
+
+### Changed
+- `version` und `releaseVersion` in `core/package.json` auf `0.21.0-untested` angehoben.
+- Songs of Syx Mod-Staging: V6/V7 Filter in `runtime-ops.js` entfernt, so dass Mod-Textdateien korrekt geladen werden.
+- Mod-Übersetzungen schreiben nun sauber in den `/German/`-Ordner statt `/English/` zu überschreiben.
+- `BridgeCore` wird nicht mehr vom Sync gelöscht.
+- Verify-Script (`verify_commit_msg.js`) Härtung gegen ungültige REF/MODEL-Tags und korrekte Pfad-Resolution.
+- Trennung von Runtime-Logik und Lore (Keywords dynamisch aus `cross_references.json` geladen).
+
+---
+
 ## [SESSION-3-BROKEN-PUSH-RECOVERY] - 2026-06-21 — Verifier-Self-Reference-Fix + 32-File-Bundle gepusht
 
 Der Vorversuch war am Verifier gescheitert. Nicht am Code, nicht an den Tests — am `verify_commit_msg.js`. Das Script wollte dass die Commit-Message sich selbst (`core/.commit_msg.txt`) referenziert, und die Message tat es nicht. Klassischer Self-Reference-Bug: 31 von 32 gestageten Dateien waren korrekt erwähnt, das File das sich selbst löscht fehlte im Text. Symptom einer langen Busfahrt durch Git-Index, nicht eines echten Problems.

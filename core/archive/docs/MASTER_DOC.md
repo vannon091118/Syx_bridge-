@@ -1,6 +1,6 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 21.06.2026 | **Version:** v0.21 (Stabilisierungsphase — Score 95%) | **Autor:** Vannon & Sub-Agents
+**Stand:** 21.06.2026 | **Version:** v0.21.0-untested (Stabilisierungsphase — Score 95%) | **Autor:** Vannon & Sub-Agents
 **Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-21.md, FREEZE_INDEX_2.md, CHANGELOG.md, Live-Run vom 2026-06-21
 
 ---
