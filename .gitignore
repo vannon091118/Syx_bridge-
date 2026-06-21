@@ -35,6 +35,9 @@ core/archive/backups/
 !core/scripts/calibrate_*.js
 !core/archive/dbold/
 !core/archive/dbold/calibration_*.json
+# Runtime-Score-Tooling Tests (Phase-2 Global-Score Aggregator)
+!core/tests/
+!core/tests/runtime_score*.test.js
 # core/archive/assets/ — NICHT ignoriert: Banner.png + Screenshots für README
 core/archive/plans/
 V70/
