@@ -30,6 +30,9 @@ core/tests/
 core/release/
 core/archive/dbold/
 core/archive/backups/
+# Calibration-Tooling Artefakte (Phase-2 Foreign-Machine-Score Calibration)
+!core/scripts/calibrate_*.js
+!core/archive/dbold/calibration_*.json
 # core/archive/assets/ — NICHT ignoriert: Banner.png + Screenshots für README
 core/archive/plans/
 V70/
