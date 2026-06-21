@@ -7,7 +7,7 @@
 <p align="center">
   <a href="#-what-is-syxbridge"><img src="https://img.shields.io/badge/lang-English-blue?style=flat-square" alt="English"></a>
   <a href="#-was-ist-syxbridge"><img src="https://img.shields.io/badge/lang-Deutsch-grey?style=flat-square" alt="Deutsch"></a>
-  <img src="https://img.shields.io/badge/version-v0.21--experimental-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-v0.21--experimental-orange?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/status-Alpha-red?style=flat-square" alt="Status">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=flat-square" alt="Node">
@@ -151,12 +151,12 @@ start.bat
 | **Placeholder Shielding** | `{NAME}`, `{AGE}`, `<tag>` protected through token replacement. |
 | **Glossary Learning** | Terminology memory with consistent application across all mods. |
 | **SQLite Cache** | Translated once = stored forever. Massive API cost savings. |
-| **Native & Patch Mode** | Native overwrites originals (with backup). Patch creates separate mod folder.¹ |
+| **Native & Patch Mode** | Native overwrites originals (with backup). Patch creates separate mod folder (opt-in). |
 | **Web Dashboard** | Real-time monitoring, DB browser, live terminal on `localhost:3000`. |
 | **Steam Workshop Export** | Direct upload of your translation patch to Steam Workshop. |
 | **Backup System** | Automatic backup of all originals before first overwrite. |
-
-<sub>¹ Patch Mode is currently disabled — yes, I'm telling you upfront.</sub>
+| **5-Layer Watermark Defense** | ZWSP/ZWNJ watermarks stripped at every entry point — disk read, classification, DB boundary. |
+| **Dev Tools** | `db_query.js`, `db_snapshot.js`, `log_sorter.js`, `test_providers.js` — maintainability built in. |
 
 ---
 
@@ -164,22 +164,35 @@ start.bat
 
 ```
 Syx_bridge-/
-├── start.bat                  # One-click launcher
-├── .env                       # Your keys (don't commit this)
-├── README.md                  # ← You are here
+├── start.bat                      # One-click launcher
+├── .env                           # Your keys (don't commit this)
+├── AGENTS.md                      # Agent protocol & commit rules
 │
-├── core/                      # The engine
-│   ├── index.js               # Entry point (CLI + GUI mode)
-│   ├── package.json           # v0.20.0
-│   │   ├── text-core.js       # Shielding, prompt building, JSON parsing
-│   │   ├── context-packets.js # Risk scores
-│   │   ├── glossary.js        # Terminology memory
-│   │   └── ...                # Scanner, validator, logger, diagnostics
-│   ├── scripts/               # Maintenance tools
-│   └── docs/                  # CHANGELOG, TODO, architecture docs
-│
-├── V70/ & V71/                # Version-specific references
-│
+├── core/
+│   ├── index.js                   # Entry point (CLI + GUI mode)
+│   ├── src/
+│   │   ├── runtime-ops.js         # Orchestration: scan → translate → write
+│   │   ├── translation-runtime.js # Batch translation, cache, polish
+│   │   ├── sos-runtime.js         # Songs of Syx game adapter
+│   │   ├── router.js              # Provider routing + capability matrix
+│   │   ├── text-core.js           # Shielding, prompt building, JSON parsing
+│   │   ├── translation-db.js      # SQLite cache + watermark defense
+│   │   ├── preflight.js           # DB health check before every run
+│   │   └── gui/                   # Web dashboard (Express + SSE)
+│   ├── scripts/
+│   │   ├── commit_lore/           # Commit narrative tools
+│   │   │   ├── get_sidejoke.js    # Random commit opener from pool
+│   │   │   ├── build_pool.js      # Rebuild pool from git history
+│   │   │   └── update_plot.js     # Append dialogue to PLOT_LORE.md
+│   │   ├── db_query.js            # SQLite CLI query runner
+│   │   ├── db_snapshot.js         # DB snapshot + trend report
+│   │   ├── log_sorter.js          # Multi-run log filter/sorter
+│   │   └── verify_commit_msg.js   # RULE 3 commit gate
+│   └── archive/docs/
+│       ├── CHANGELOG.md           # Persistent change log (never archived)
+│       ├── PLOT_LORE.md           # External narrative layer — agent dialogues
+│       ├── MASTER_DOC.md          # Architecture reference
+│       └── KNOWN_BUGS_REPORT.md   # Open issues
 ```
 
 ---
@@ -188,15 +201,15 @@ Syx_bridge-/
 
 | Version | Date | Highlights |
 |---|---|---|
-| **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 to BU-039, Plugin Architecture, Version stable |
-| v0.20.0-pre-release | 2026-06-19 | Plugin Architecture, PREFLIGHT, INFO-Block fix, Write-Loss recovery |
+| **v0.21-exp** | 2026-06-21 | Native Mode Fix: V6/V7 filter removed, German path injection, BridgeCore preserved |
+| **v0.21-exp** | 2026-06-21 | better-sqlite3 fallback, db_repair.js sync API, Patch Mode user-opt-out (95% score) |
+| **v0.21-exp** | 2026-06-21 | 5× live run: 1.363 DB entries, 440 German translations, 0 watermarks |
+| **v0.21-exp** | 2026-06-20 | 5-layer watermark defense (ZWSP/ZWNJ), shouldTranslate config-blocker |
+| **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 to BU-039, Plugin Architecture |
 | v0.19.7 | 2026-06-18 | PREFLIGHT fix + Routing hardening + smart Error-Handler |
-| v0.19.6 | 2026-06-18 | Release: Version unified, docs consolidated, 6 bugs fixed |
-| v0.19.05b | 2026-06-15 | Capability Matrix, Local Models Opt-in, JSON Retry, Key Cooldown |
-| v0.16.0 | 2026-06-15 | Dynamic Risk Scoring, Google Free Stress-Test, Route Pipeline |
-| v0.15.0 | 2026-06-14 | GUI Overhaul, Live Terminal, DB Browser, Strict Versioning |
 
-→ **Full changelog:** [`CHANGELOG.md`](core/archive/docs/CHANGELOG.md)
+→ **Full changelog:** [`CHANGELOG.md`](core/archive/docs/CHANGELOG.md)  
+→ **Plot & Agent Dialogues:** [`PLOT_LORE.md`](core/archive/docs/PLOT_LORE.md)
 
 ---
 
@@ -204,19 +217,19 @@ Syx_bridge-/
 
 | | |
 |---|---|
-| **Version** | v0.20.0 → v0.21-experimental (15 systemische Fixes) |
-| **Maturity** | Alpha · Solo project · In daily use |
-| **Latest Release** | v0.20.0 (2026-06-20) — 35 source files, ~12k LOC |
-| **Limitations** | Patch Mode disabled — everything else works |
+| **Version** | v0.21-experimental (active development branch) |
+| **Maturity** | Alpha · Solo project · In daily use by the author |
+| **DB** | 1.363+ translated entries, 0 watermarks (as of 2026-06-21) |
+| **Score** | 95% on foreign systems (Python/Ollama = optional, not required) |
+| **Patch Mode** | User opt-in (disabled by default, fully functional) |
 
 <details>
 <summary><b>Known Issues</b></summary>
 
 | ID | Issue | Severity |
 |----|-------|----------|
-| F.A | Live-Core `core/src/`-Drift vom Release-Snapshot (PR #5 änderte nur Vendored) | 🟡 P2 |
-| F.C | CodeRabbit-Auto-Fix aus PR #5 nicht manuell re-verifiziert | 🟠 P1 |
-| F.D | Audit-`.jsonl`-Daten committed — gehören die in `.gitignore`? | 🟢 P3 |
+| LIVE-1 | Post-run verification needed: German texts loading in-game after Native Mode fix | 🟠 P1 |
+| F.D | Audit `.jsonl` data committed — should these be in `.gitignore`? | 🟢 P3 |
 
 </details>
 
@@ -378,27 +391,35 @@ start.bat
 
 ```
 Syx_bridge-/
-├── start.bat                  # Ein-Klick-Starter
-├── .env                       # Deine Keys (nicht committen)
-├── README.md                  # ← Du bist hier
+├── start.bat                      # Ein-Klick-Starter
+├── .env                           # Deine Keys (nicht committen)
+├── AGENTS.md                      # Agenten-Protokoll & Commit-Regeln
 │
-├── core/                      # Die Engine
-│   ├── index.js               # Einstiegspunkt (CLI + GUI-Mode)│       ├── package.json           # v0.20.0-pre-release
+├── core/
+│   ├── index.js                   # Einstiegspunkt (CLI + GUI-Mode)
 │   ├── src/
-│   │   ├── gui/               # Web-Dashboard (Express + SSE)
-│   │   ├── translation-runtime.js   # Batch-Übersetzung, Cache, Polish
-│   │   ├── dispatcher.js      # Einheitliche Routing-Pipeline
-│   │   ├── router.js          # Provider-Routing mit Capability-Matrix
-│   │   ├── config-runtime.js  # Keys, Rotation, Cooldown, Discovery
-│   │   ├── text-core.js       # Shielding, Prompt-Bau, JSON-Parsing
-│   │   ├── context-packets.js # Risiko-Scores
-│   │   ├── glossary.js        # Terminologie-Memory
-│   │   └── ...                # Scanner, Validator, Logger, Diagnostics
-│   ├── scripts/               # Wartungstools
-│   └── docs/                  # CHANGELOG, TODO, Architektur-Docs
-│
-├── V70/ & V71/                # Versions-spezifische Referenzen
-│
+│   │   ├── runtime-ops.js         # Orchestrierung: Scan → Übersetzen → Schreiben
+│   │   ├── translation-runtime.js # Batch-Übersetzung, Cache, Polish
+│   │   ├── sos-runtime.js         # Songs of Syx Game-Adapter
+│   │   ├── router.js              # Provider-Routing + Capability-Matrix
+│   │   ├── text-core.js           # Shielding, Prompt-Bau, JSON-Parsing
+│   │   ├── translation-db.js      # SQLite Cache + Watermark-Defense
+│   │   ├── preflight.js           # DB-Health-Check vor jedem Run
+│   │   └── gui/                   # Web-Dashboard (Express + SSE)
+│   ├── scripts/
+│   │   ├── commit_lore/           # Commit-Erzählungs-Tools
+│   │   │   ├── get_sidejoke.js    # Zufälliger Commit-Einstieg aus Pool
+│   │   │   ├── build_pool.js      # Pool aus Git-History neu aufbauen
+│   │   │   └── update_plot.js     # Dialog an PLOT_LORE.md anhängen
+│   │   ├── db_query.js            # SQLite CLI Query-Runner
+│   │   ├── db_snapshot.js         # DB-Snapshot + Trend-Report
+│   │   ├── log_sorter.js          # Multi-Run Log-Filter/Sorter
+│   │   └── verify_commit_msg.js   # RULE 3 Commit-Gate
+│   └── archive/docs/
+│       ├── CHANGELOG.md           # Persistentes Änderungslog (niemals archiviert)
+│       ├── PLOT_LORE.md           # Externer Narrativ-Layer — Agenten-Dialoge
+│       ├── MASTER_DOC.md          # Architektur-Referenz
+│       └── KNOWN_BUGS_REPORT.md   # Offene Issues
 ```
 
 ---
@@ -407,15 +428,15 @@ Syx_bridge-/
 
 | Version | Datum | Highlights |
 |---|---|---|
-| **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 bis BU-039, Plugin-Architektur, Version stabil |
-| v0.20.0-pre-release | 2026-06-19 | Plugin-Architektur, PREFLIGHT, INFO-Block-Fix, Write-Verlust-Recovery |
-| v0.19.7 | 2026-06-18 | PREFLIGHT-Fix + Routing-Hardening + smarter Error-Handler |
-| v0.19.6 | 2026-06-18 | Release: Version vereinheitlicht, Doku konsolidiert, 6 Bugs gefixt |
-| v0.19.05b | 2026-06-15 | Capability Matrix, Lokale-Modelle Opt-in, JSON-Retry, Key-Cooldown |
-| v0.16.0 | 2026-06-15 | Dynamic Risk Scoring, Google-Free Stress-Test, Route-Pipeline |
-| v0.15.0 | 2026-06-14 | GUI-Overhaul, Live-Terminal, DB-Browser, Strict Versioning |
+| **v0.21-exp** | 2026-06-21 | Native Mode Fix: V6/V7-Filter entfernt, German-Pfad, BridgeCore erhalten |
+| **v0.21-exp** | 2026-06-21 | better-sqlite3 Fallback, db_repair.js Sync-API, Patch Mode User-Opt-Out (95%) |
+| **v0.21-exp** | 2026-06-21 | 5× Live-Run: 1.363 DB-Einträge, 440 deutsche Übersetzungen, 0 Watermarks |
+| **v0.21-exp** | 2026-06-20 | 5-Schichten Watermark-Defense (ZWSP/ZWNJ), shouldTranslate Config-Blocker |
+| **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 bis BU-039, Plugin-Architektur |
+| v0.19.7 | 2026-06-18 | PREFLIGHT-Fix + Routing-Härtung + smarter Error-Handler |
 
-→ **Vollständiges Changelog:** [`CHANGELOG.md`](core/archive/docs/CHANGELOG.md)
+→ **Vollständiges Changelog:** [`CHANGELOG.md`](core/archive/docs/CHANGELOG.md)  
+→ **Plot & Agenten-Dialoge:** [`PLOT_LORE.md`](core/archive/docs/PLOT_LORE.md)
 
 ---
 
@@ -423,19 +444,19 @@ Syx_bridge-/
 
 | | |
 |---|---|
-| **Version** | v0.20.0 → v0.21-experimental (15 systemische Fixes) |
-| **Reifegrad** | Alpha · Solo-Projekt · im Daily-Use |
-| **Letztes Release** | v0.20.0 (2026-06-20) — 35 Quellcode-Dateien, ~12k LOC |
-| **Einschränkungen** | Patch Mode deaktiviert — Rest funktioniert |
+| **Version** | v0.21-experimental (aktiver Entwicklungs-Branch) |
+| **Reifegrad** | Alpha · Solo-Projekt · im Daily-Use des Autors |
+| **DB** | 1.363+ übersetzte Einträge, 0 Watermarks (Stand 2026-06-21) |
+| **Score** | 95% auf Fremdsystemen (Python/Ollama = optional, nicht erforderlich) |
+| **Patch Mode** | User Opt-in (standardmäßig deaktiviert, voll funktional) |
 
 <details>
 <summary><b>Known Issues</b></summary>
 
 | ID | Fehler | Severity |
 |----|--------|----------|
-| F.A | Live-Core `core/src/`-Drift vom Release-Snapshot (PR #5 änderte nur Vendored) | 🟡 P2 |
-| F.C | CodeRabbit-Auto-Fix aus PR #5 nicht manuell re-verifiziert | 🟠 P1 |
-| F.D | Audit-`.jsonl`-Daten committed — gehören die in `.gitignore`? | 🟢 P3 |
+| LIVE-1 | Verifikation ausstehend: Deutsche Texte im Spiel nach Native-Mode-Fix | 🟠 P1 |
+| F.D | Audit-`.jsonl`-Daten committed — gehören in `.gitignore`? | 🟢 P3 |
 
 </details>
 

@@ -1,3 +1,28 @@
+## [NATIVE-MODE-FIX] - 2026-06-20 — V6/V7 Filter + AppData Copy + Base Game Language
+
+Rate mal, wer vergessen hat, dass Songs of Syx Mods ihre Dateien in Versionsordnern speichern? Richtig. Wir. Oder zumindest derjenige, der diesen grauenhaften Filter `!src.includes('V6') && !src.includes('V7')` in `runtime-ops.js` eingebaut hat.
+
+Der Filter hat verhindert, dass Mod-Dateien in den `stagingPath` kopiert werden. Ohne Textdateien gibt es keine Übersetzungen. Wenn man diese leere Struktur in den `AppData`-Ordner kopiert, ersetzt man die funktionierende Workshop-Mod und bricht sie komplett. Das Spiel lädt dann nur noch die englischen Originale.
+
+Gleichzeitig hat der Native-Modus den `BridgeCore`-Mod zwangsgelöscht, in dem der User seine Base-Game-Übersetzungen hatte. Dadurch wurde nicht nur die Mod, sondern auch das Basisspiel auf Englisch zurückgesetzt. Alles kaputt.
+
+### Fixes
+- `core/src/runtime-ops.js`: Filter für V6/V7 entfernt. Die Mod wird nun korrekt und vollständig in den `stagingPath` geladen.
+- `core/src/runtime-ops.js`: Übersetzungen werden nun sauber in den `German`-Ordner der Mod geschrieben statt den `English`-Ordner brutal zu ersetzen. (Bessere Native Integration).
+- `core/src/runtime-ops.js`: Native Mode kopiert nun die gesamte Mod in den `AppData`-Ordner, nicht nur Text-Dateien, um sicherzustellen, dass Sprites geladen werden.
+- `core/src/sos-runtime.js`: `BridgeCore` wird nicht mehr vom Launcher-Sync gelöscht, wenn er aktiv war. Der User behält seine Base-Game-Übersetzung.
+- `core/scripts/restore_bridge.js`: Hilfsscript um den BridgeCore zurück ins LauncherSettings.txt zu pushen.
+
+### Files Changed
+- `core/src/runtime-ops.js` — Filter-Fix, Native Path Fix, AppData Copy Fix
+- `core/src/sos-runtime.js` — BridgeCore-Filter
+- `core/scripts/restore_bridge.js` — Einmaliger LauncherSettings.txt Patch
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### EFFORT TO NEXT SCOPE
+- Erneuter Live-Run um zu bestätigen, dass Mod-Übersetzungen und Base-Game-Texte korrekt geladen werden.
+
+---
 # CHANGELOG
 
 ## [LIVE-RUN-5-MODS] - 2026-06-21 — 5 Mods, 440 Übersetzungen, 0 Watermarks, Score 95%
@@ -2326,3 +2351,4 @@ Der Native Mode mit Inplace Overwrite verwarf Übersetzungen zu aggressiv. `tran
 - `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
 
 ---
+

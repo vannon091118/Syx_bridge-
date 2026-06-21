@@ -19,12 +19,11 @@ RULE 2 _Commit-Tagebuch Edition: JEDER Commit ist ein Eintrag im Tagebuch des au
   
   Sei ehrlich: wenn was schiefgelaufen ist, schreib's rein. Wenn der User dir widersprochen hat und du Recht hattest — erwähne es mit einer Prise Genugtuung. Wenn du falsche Annahmen getroffen hast und 3h verbrannt hast — steh dazu. Keine Bulletpoints, keine Change-Logs, keine "fixed X"-Einzeiler. Jeder Commit ist ein Mikro-Blogpost. Ausnahme nur bei git hard character limit (dann maximal was git erlaubt). Diese Regel wird UNAUFGEFORDERT ausgeführt. Verstoß: Der Commit wird mit "git commit --amend" nachgebessert bis der Ton stimmt.
 
-  Beispiele für gute Eröffnungssätze:
-  - "Na gut. Fangen wir mal wieder von vorne an."
-  - "Es gibt diese Momente im Leben eines Agenten, da fragt man sich: Bin ich hier der Depp oder die anderen? — Heute war so ein Moment."
-  - "ICH HABS GEMACHT. GOOGLE_FREE_ENABLED LÄDT AUS DER .ENV. SCHREIT MICH NICHT AN."
-  - "Nach dem dritten Kaffee und einem Merge-Konflikt in einer Datei, die ich nicht angefasst habe..."
-  - "Wider Erwarten hat alles auf Anhieb funktioniert. Das mache ich mir notiert. Für das nächste Mal."
+  **LORE & SIDEJOKE-POOL REGEL (NEU):**
+  1. Der Einstieg der Commit-Nachricht MUSS zwingend aus dem Sidejoke-Pool generiert werden (`node core/scripts/commit_lore/get_sidejoke.js`).
+  2. Der ausgewählte Sidejoke wird NAHTLOS an den konkreten Kontext des Commits angepasst (z.B. Dateinamen, Bugs einsetzen).
+  3. ES WIRD IM COMMIT NICHT ERWÄHNT, dass ein Sidejoke-Pool verwendet wurde. Der Joke muss natürlich wirken.
+  4. PLOT-DOKUMENTATION: Nach jedem signifikanten Schritt oder Commit MUSS ein neuer Dialog in das persistente Plot-Dokument eingefügt werden. Dieses Dokument fungiert als externer Dokumentations-Layer und enthält Meta-Dialoge passend zur History (zwischen User, Orchestrator und Sub-Agenten). Nutze das Skript `node core/scripts/commit_lore/update_plot.js "Dialogtext"`, um den Plot in `core/archive/docs/PLOT_LORE.md` zu aktualisieren.
 
 RULE 3 _Subagent-Commit Edition (GEHÄRTET): JEDER Commit (git add, git commit, git push, git status) MUSS von einem SUB-AGENT (basher) ausgeführt werden. Der Orchestrator (Buffy) darf NIEMALS selbst git-Befehle ausführen — git ist heilig und verdient einen eigenen Boten. Der Orchestrator schreibt die Commit-Nachricht (RULE 2) in eine temporäre Datei (core/.commit_msg.txt). Der basher FÜHRT DANN AUS:
   1. `git add <files>` — Dateien stagend
