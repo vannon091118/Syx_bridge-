@@ -45,9 +45,8 @@ class GameAdapter {
    * suffix to name, add translation notice to description).
    * @param {Object} infoObj Parsed metadata object (mutated in place)
    * @param {string} targetLanguage e.g. 'German'
-   * @param {string} patchNotice Notice text to append
    */
-  applyPatchModifications(infoObj, targetLanguage, patchNotice) { throw new Error('Not implemented: applyPatchModifications'); }
+  applyPatchModifications(infoObj, targetLanguage) { throw new Error('Not implemented: applyPatchModifications'); }
 
   // ── File System & Structure ─────────────────────────────────────────────
 

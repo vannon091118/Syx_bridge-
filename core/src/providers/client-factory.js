@@ -21,8 +21,16 @@ function createProviderClients(ctx) {
   // so axios gracefully ignores the missing signal instead of throwing TypeError.
   const safeSignal = () => getAbortSignal ? getAbortSignal() : undefined;
 
+  // P0-1 DEFENSE-IN-DEPTH: Strip invisible Unicode watermarks (ZWSP/ZWNJ)
+  // alongside whitespace normalization. This is the last line of defense —
+  // isLikelyTargetLanguageText(), scoreTranslationQuality(), inferFlagReason(),
+  // and all other consumers of normalizeWhitespace() are now protected against
+  // watermarked legacy DB entries that might have bypassed the primary defenses
+  // (extractReplacements, saveTranslation, shouldTranslate, isProperNoun).
+  // Order matters: strip ZWSP/ZWNJ FIRST (they're zero-width, invisible),
+  // then normalize remaining whitespace.
   function normalizeWhitespace(text) {
-    return String(text || '').replace(/\s+/g, ' ').trim();
+    return String(text || '').replace(/[\u200B\u200C]/g, '').replace(/\s+/g, ' ').trim();
   }
 
   function buildGeminiSchema(expectedCount, mode = 'text') {

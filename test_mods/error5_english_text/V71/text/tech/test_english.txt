@@ -1,0 +1,41 @@
+__OVERWRITE: true,
+
+TECH1: {
+	NAME: "We should be prepared for every battle.",
+	DESC: "This city is a paradise for all craftsmen and artisans."
+},
+
+TECH2: {
+	NAME: "The wall defenses have been improved significantly.",
+	DESC: "{RACE_CITY} is the capital of the entire realm."
+},
+
+TECH3: {
+	NAME: "Every citizen contributes to the common defense.",
+	DESC: "With united strength against the encroaching darkness."
+},
+
+TECH4: {
+	NAME: "Trade and prosperity for all inhabitants of the realm.",
+	DESC: "The caravans bring wealth from distant and exotic lands."
+},
+
+TECH5: {
+	NAME: "The art of warfare has been perfected over countless generations.",
+	DESC: "Only the bravest warriors survive the grueling training at the fortress."
+},
+
+TECH6: {
+	NAME: "Agriculture and food production have been greatly improved.",
+	DESC: "The farmers have developed new methods to increase the harvest yield."
+},
+
+TECH7: {
+	NAME: "Education for all social classes throughout the kingdom.",
+	DESC: "In the newly built schools children learn reading writing and arithmetic."
+},
+
+TECH8: {
+	NAME: "The grand marketplace has finally been opened to the public.",
+	DESC: "Merchants from across the entire world offer their wares at the market."
+}

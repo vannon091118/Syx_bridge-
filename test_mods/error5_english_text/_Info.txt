@@ -1,0 +1,5 @@
+version:1.0.0
+NAME: "English Text Translation Test"
+DESC: "Tests real English-to-German translation quality with text-heavy content"
+GAME: V71.0
+TYPE: error5_english_text

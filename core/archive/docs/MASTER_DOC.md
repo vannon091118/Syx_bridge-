@@ -1,7 +1,7 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 20.06.2026 | **Version:** v0.20.0 | **Autor:** Vannon & Sub-Agents
-**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-19.md, HANDSHAKE_2026-06-20.md, REDUNDANZ_AUDIT_V2_2026-06-19.md, LLM-AGENTS-EntryPoint.md
+**Stand:** 21.06.2026 | **Version:** v0.21 (Stabilisierungsphase — Score 95%) | **Autor:** Vannon & Sub-Agents
+**Destilliert aus:** MASTER_DOC.md (Basis), HANDSHAKE_2026-06-21.md, FREEZE_INDEX_2.md, CHANGELOG.md, Live-Run vom 2026-06-21
 
 ---
 
@@ -14,12 +14,13 @@
 - **Status:** Rollout-Phase. v0.20.0 ist RELEASE-FÄHIG ("Built accidentally. Runs intentionally.") *(Quelle: HANDSHAKE)*
 - **Plugin-Architektur:** v0.20 Phase 1 abgeschlossen (8/8 Hardcodes entkoppelt)
 - **PREFLIGHT Analysis:** Automatischer DB-Health-Check vor jedem Sync (v0.20)
-- **better-sqlite3:** sqlite3→better-sqlite3 migriert (2026-06-20) — synchron, Promise-Wrapper, 0 VULN
-- **translateHttpError:** HTTP-Statuscodes→Deutsch — menschenlesbare Fehler in Logs (2026-06-20)
-- **Dev-Tools (intern, nicht auf GitHub):** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js
+- **better-sqlite3:** sqlite3→better-sqlite3 migriert — synchron, Promise-Wrapper, try/catch mit Fehleranleitung für Fremdsysteme
+- **translateHttpError:** HTTP-Statuscodes→Deutsch — menschenlesbare Fehler in Logs
+- **Dev-Tools:** db_query.js, db_snapshot.js, export_stage2.js, test_providers.js
 - **Dual-Path-Copy:** Native Mode kopiert übersetzte Dateien in BEIDE Verzeichnisse (Steam/AppData)
-- **Routing-Hardening:** Argos CostClass 0→10, Nvidia/Groq priorisiert, Tier 2 Nvidia-Injection
-- **Error-Handler Smart:** 429→disable run, eskalierender Cooldown ×2, flaggedForReview
+- **PATCH_MODE_ENABLED:** User-Opt-Out statt Hard-Coded Disabled (seit Commit `107f2a39`)
+- **Stabilisierungs-Score:** 95% auf Fremdsystemen (nur Python/Argos + Ollama bleiben optional)
+- **db_repair.js CLI:** Funktionstüchtig (sync-API nach better-sqlite3-Migration)
 
 ---
 
@@ -68,18 +69,21 @@ Scan → Extract → Translate → Audit → Polish → Export
 - `plugins/GamePlugin.js`: Interface (getPromptContext, getGameTerms, getLoreTerms, getPathRules, serializeTranslation, validateTranslation)
 - `plugins/SongsOfSyxPlugin.js`: Implementierung mit 12 Lore-Begriffen + 9 Gameplay-Begriffen
 - `translation-quality.js` (~187 LOC): 6 extrahierte Quality/Scoring-Funktionen
-- `translation-db.js` (~356 LOC): 8 extrahierte DB/Cache/Glossary-Funktionen
-- `translation-runtime.js` (~1211 LOC): 5 fokussierte Phasen-Funktionen (GOD-001 Refactoring)
+- `translation-db.js` (~456 LOC): 8 extrahierte DB/Cache/Glossary-Funktionen + Dual-Counter
+- `translation-runtime.js` (~1370 LOC): 5 fokussierte Phasen-Funktionen (GOD-001 Refactoring + 15 Fixes)
 
 ---
 
 ## 5. DB-Stand (2026-06-20 — Post Doku-Clean)
 
-> ⚠️ **DB-RESET 2026-06-19 (Doku-Divergenz-Audit DD-001):** Die Live-DB wurde nach Snapshot 19 auf ~1.508 Einträge zurückgesetzt.
-> **Aktuell (2026-06-20, Post v0.20.0-Doku-Clean):** 5.547 Einträge, 62.5% stale (3.466), 38.7% flagged (2.146), Ø Score 82.9.
-> 4.668 Stage-2 Einträge (audit_stage ≥ 2), 858 Stage 0, 21 Stage 1. Provider: native_runtime 3.219 (58.0%), google_free 899 (16.2%), polish_single 752 (13.6%), openrouter 307 (5.5%), ab_polish 225 (4.1%), argos 100 (1.8%), groq 42 (0.8%), native_fallback 3 (0.1%). **nvidia existiert NULL Mal**.
-> **Aktuelle SSoT:** `node core/scripts/db_query.js --report live` — nicht mehr der HANDSHAKE, der nur Snapshot-24-Zahlen enthält.
-> **better-sqlite3 aktiv** — Schema-Version 5. **PREFLIGHT:** ✅ HEALTHY, 0 Issues.
+
+> **Live-Run 2026-06-21:** 1.363 Einträge, 440 deutsche Übersetzungen, 923 stale (davon 813 native_runtime Proper Nouns), 101 flagged.
+> **Provider:** groq 176, openrouter 120, polish_single 108, native_fallback 101, google_free 28.
+> **Watermarks in DB:** 0 — alle 5 Defense-Schichten aktiv.
+> **Score:** 95% auf Fremdsystemen (nur Python/Argos + Ollama bleiben optional).
+> Frühere DB-Resets dokumentiert: Snapshot 19 (1.508 → Reset), Doku-Clean (100 → Test).
+> **better-sqlite3 aktiv** — Schema-Version **6** mit try/catch-Fehleranleitung.
+> **PREFLIGHT:** Bei nächstem Lauf neu generieren (steht noch auf VOR-Run-Stand mit 165 Einträgen).
 
 ---
 
@@ -89,12 +93,22 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 | Prio | Aufgabe | Status/Aufwand |
 |---|---|---|
-| P0 | Erster echter v0.20 Live-Run (manueller Test ausstehend) | ~60 Min |
+| ✅ | ~~[V0.21] Watermark-Stripping vor Classification~~ (423 maskierte Strings) | Done — P0-1 (5-Schichten-Defense) |
+| ✅ | ~~[V0.21] shouldTranslate() Config-Blocker~~ (23+5 False Positives) | Done — P0-2 |
+| ✅ | ~~[V0.21] Watermark nur in Output, nicht in DB~~ | Done — P0-1+Defense-in-Depth |
+| ✅ | ~~[V0.21] polish_single "no-change"-Erkennung~~ (129 stale/663) | Done — qaPhase isNoChange |
+| ✅ | ~~better-sqlite3 try/catch~~ (Fremdsystem-Fallback) | Done — P0-1 Stabilisierung |
+| ✅ | ~~db_repair.js CLI sync-API~~ (db.all is not a function) | Done — P0-3 Stabilisierung |
+| ✅ | ~~Patch Mode User-Opt-Out~~ (Hard-Coded → PATCH_MODE_ENABLED) | Done — P1-1 Stabilisierung |
+| ✅ | ~~Live-Run 5 Mods~~ — 440 Übersetzungen, 0 Watermarks, Score 95% | Done — 2026-06-21 |
+| P1 | DB-Sanitization: Watermarks aus alten Einträgen (db_repair.js Schritt 8) | ~1h |
 | P1 | sos-runtime.js Settings-Pfad in GameAdapter abstrahieren | ~1h |
 | P1 | index.js Plugin-Instanziierung über Config/CLI-Flag | ~2h |
-| P2 | ~~3× silent .catch(() => {}) mit Logging versehen~~ ✅ Erledigt — siehe CHANGELOG [B4-SILENT-CATCH-FIX] | ~0.5h |
 | P2 | DB-Cleanup `stale_retranslate` | ~2h |
 | P2 | Bidirektionaler Vendor-Sync Phase 2 (F.A) | ~3-4h |
+| ✅ | ~~Sinnhaftigkeitsanalyse 15 Fixes~~ | Done (Commit 9a853ef) |
+| ✅ | ~~Erster echter v0.20 Live-Run~~ — 8 Mods, 9.492 Einträge | Done |
+| ✅ | ~~3× silent .catch(() => {})~~ | Done |
 
 ---
 
@@ -114,8 +128,6 @@ Scan → Extract → Translate → Audit → Polish → Export
 - **External Research Siege:** Bei unklaren Bugs 10-15 Sub-Agents massiv-parallel.
 - **DB-Backup:** Vor und nach kritischen Fixes wird `translations.db` komprimiert archiviert.
 
-**⚠️ Dev-Tools entfernt (nur noch lokal):** `core/scripts/`, `core/tests/`, `core/release/`, `core/archive/{dbold,backups,assets,plans}/`, `V70/`, `V71/` — nicht mehr auf GitHub, um Angriffsfläche zu minimieren.
-
 ---
 
 ## 8. Neue Dev-Tools (2026-06-20)
@@ -131,34 +143,44 @@ Scan → Extract → Translate → Audit → Polish → Export
 
 ---
 
-## 9. Dokumentationsstruktur (Post Doku-Clean v0.20.0)
+## 9. Dokumentationsstruktur (Final — Post Live-Run v0.21)
 
-> **Stand:** 2026-06-20 — 12 LIVE-Dokumente + FREEZE-Archiv mit 81 Glossary-Einträgen.
-> **62 Dokumente gelöscht** (44 aus vorherigen Runden + 18 Audit-Reports dieser Runde).
-> **18 Audit-Reports in FREEZE_INDEX.md §13 überführt** und aus dem LIVE-Verzeichnis gelöscht.
-> Alle Inhalte im FREEZE_INDEX.md als Glossary-Einträge rekonstruierbar.
+> **Stand:** 2026-06-21 — **8 LIVE + 3 FREEZE + 1 PLAN_MASTER**
+> **20 Doku-Konsolidierungs-Durchläufe abgeschlossen.**
+> **142 Glossary-Einträge** im FREEZE_INDEX.md (archiviert) + **15 Einträge** in FREEZE_INDEX_2.md (Sinnhaftigkeitsanalyse) — alle mit Kausalität, Cross-Referenzen und CHANGELOG-Verweisen.
+> **76 Dokumente gelöscht** (62 + 14 VOLLARCHIVIERT-Stubs) — alle Inhalte rekonstruierbar.
+> **Archiv-Regeln:** `.ArchiveRules` im Projekt-Root.
 
 ```
 core/archive/docs/
-├── MASTER_DOC.md              # ← DIESER REPORT (konsolidiert)
-├── CHANGELOG.md               # Versionshistorie (LIVE, persistent)
-├── PREFLIGHT_LATEST.md        # Letzter PREFLIGHT-Report (LIVE)
-├── LIVE_INDEX.md              # Index der LIVE- + Meta-Dokumente
-├── WORKFLOW.md                # Agenten-Workflow (Session-Lifecycle, Doku-Clean, Eskalation)
-├── HANDSHAKE_2026-06-19.md    # Session-Übergabe (19.06.)
-├── HANDSHAKE_2026-06-20.md    # Session-Übergabe (20.06.)
+├── MASTER_DOC.md              # ← DIESER REPORT (konsolidierte Master-Doku)
+├── CHANGELOG.md               # Versionshistorie (LIVE, persistent — wird NIE gelöscht)
+├── PREFLIGHT_LATEST.md        # Letzter PREFLIGHT-Report (LIVE, automatisch generiert)
 ├── AGENTS.md                  # SSOT-Kopie der Agent-Regeln (Root-Sync)
-├── KNOWN_BUGS_REPORT.md       # Bug-Triage (34+ Bugs katalogisiert)
-├── DOKU_KONSOLIDIERUNG_2026-06-20.md # LIVE vs FREEZE Cross-Analyse
-├── DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md # Konsolidierungsbericht
-├── LLM-AGENTS-EntryPoint.md   # Sub-Agent-Referenz (archivierte SSOT-Kopie)
+├── WORKFLOW.md                # Session-Lifecycle + Doku-Clean + Eskalation
+├── KNOWN_BUGS_REPORT.md       # Bug-Triage (aktive Bugs)
+├── LIVE_INDEX.md              # Index aller LIVE-/FREEZE-/Plan-Dokumente
+├── preflight_history.log      # PREFLIGHT-Verlauf (Log)
 ├── FREEZE/
-│   ├── FREEZE_INDEX.md        # Das Buch — 81 Glossary-Einträge
-│   ├── MASTER_FREEZE_v0.20.0_2026-06-19.md  # Single Source of Truth
-│   ├── FREEZE_MASTER_CHECKLIST_2026-06-19.md # Verifikations-Checkliste
-│   ├── README.md              # Verzeichnis-Doku
-│   ├── TRANSLATION_RUNTIME_SPLIT_2026-06-18.md  # Archivierter Plan (umgesetzt)
-│   └── COMMIT_MSG_2026-06-18.txt                 # Archivierte Commit-Nachricht
+│   ├── FREEZE_INDEX.md        # Das Buch [ARCHIVIERT] — 142 Glossary-Einträge (16.06.–20.06.2026)
+│   ├── FREEZE_INDEX_2.md      # Das Buch (Fortsetzung) — 15 Einträge (Sinnhaftigkeitsanalyse)
+│   ├── FREEZE_INDEX_v0.20.0_archived.md  # Archivkopie (112 KB)
+│   ├── MASTER_FREEZE_v0.20.0_2026-06-19.md  # TOC — referenziert alle gelöschten Einträge
+│   └── FREEZE_MASTER_CHECKLIST_2026-06-19.md # Verifikations-Checkliste (42 Claims)
 └── plans/
-    └── PHASE2_MARKER_INTEGRATION_2026-06-19.md   # Einziger offener Plan
+    └── PLAN_MASTER.md         # Zentrales Planungsdokument — ALLE Pläne landen HIER
 ```
+
+### Gelöscht & Archiviert (76 Dokumente)
+
+| Kategorie | Anzahl | Verbleib |
+|-----------|--------|----------|
+| Einmalige Audit-Reports (VOLLARCHIVIERT) | 20 | FREEZE_INDEX §13-§28 |
+| HANDSHAKEs (PARTIAL + VOLLARCHIVIERT) | 3 | FREEZE_INDEX §14, §15, §29 |
+| Scope/Plan-Dokumente (VOLLARCHIVIERT) | 2 | FREEZE_INDEX §30, §31 |
+| Doku-Konsolidierungs-Stubs (gelöscht) | 14 | Inhalte im Buch |
+| Frühere FREEZE-Dokumente (Doku-Clean v0.20.0) | 37 | FREEZE_INDEX §1-§12 |
+
+> **Rekonstruierbarkeit:** Aus FREEZE_INDEX.md (Das Buch) kann der gesamte Entwicklungsprozess
+> (16.06. – 20.06.2026) lückenlos nachvollzogen werden. Jeder Eintrag hat Kausalität,
+> Cross-Referenzen und CHANGELOG-Verweis.

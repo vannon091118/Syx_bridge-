@@ -57,7 +57,7 @@ let liveStats = {
 };
 let lastRunningState = false;
 let statusTimeout = null;
-let patchOverrideEnabled = false;
+let patchOverrideEnabled = false; // DEPRECATED (P1-1): PATCH_MODE_ENABLED replaces the old two-gate system. Kept for Kontrollfeld UI compatibility.
 let _fps = 60;
 let lastFrameTime = performance.now();
 let frameCount = 0;
@@ -274,27 +274,28 @@ function updateBackgroundStatus() {
 }
 
 function togglePatchOverride() {
-  if (!patchOverrideEnabled) {
-    const confirmed = confirm(
-      '⚠️  ACHTUNG!  ⚠️\n\n' +
-      'Der PATCH MODE ist derzeit deaktiviert, weil er NICHT ZUVERLÄSSIG funktioniert.\n\n' +
-      'Aktivierung nur für TESTZWECKE empfohlen:\n' +
-      '• Übersetzungen könnten unvollständig sein\n' +
-      '• Mod-Struktur könnte beschädigt werden\n' +
-      '• Backup wird empfohlen\n\n' +
-      'Trotzdem aktivieren?'
-    );
-    if (!confirmed) return;
-    patchOverrideEnabled = true;
-  } else {
-    // Deactivate: force switch back to Native mode first
-    if (!currentConfig.NATIVE_MODE) {
-      currentConfig.NATIVE_MODE = true;
-    }
-    patchOverrideEnabled = false;
+  // P1-1: Patch Mode ist deaktiviert weil Songs of Syx ein OVERRIDE-basiertes
+  // Mod-Ladessystem verwendet (keine .patch-Dateien). Native Mode (Inplace-
+  // Überschreibung + Dual-Copy nach Workshop/AppData) ist der architektonisch
+  // korrekte Ansatz.
+  //
+  // User-Opt-Out: Setze PATCH_MODE_ENABLED=true in .env um Patch Mode
+  // freizuschalten. Dann toggled dieser Button NATIVE_MODE direkt.
+  if (!currentConfig.PATCH_MODE_ENABLED) {
+    alert('⚠️ PATCH MODE IST NICHT AKTIVIERT.\n\n' +
+      'Songs of Syx verwendet ein OVERRIDE-basiertes Mod-Ladessystem.\n' +
+      'Native Mode (Inplace-Überschreibung) ist der korrekte Ansatz.\n\n' +
+      'Patch Mode ist eine SyxBridge-Abstraktion die NICHT der\n' +
+      'SoS-Architektur entspricht und zu unvollständigen Übersetzungen\n' +
+      'führen kann.\n\n' +
+      'Aktivierung: Setze PATCH_MODE_ENABLED=true in der .env.');
+    return;
   }
+  
+  // PATCH_MODE_ENABLED=true: this button toggles mode directly
+  patchOverrideEnabled = !patchOverrideEnabled;
+  currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
   updateModeUI();
-  // Nur NATIVE_MODE an Server senden, ohne andere Formularfelder zu überschreiben
   fetch('/api/config', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -312,9 +313,15 @@ async function _toggleBridge() {
 }
 
 async function _toggleMode() {
-  // Switching to Patch (= setting NATIVE_MODE to false) is blocked unless override is active
-  if (currentConfig.NATIVE_MODE && !patchOverrideEnabled) {
-    alert('⚠️ PATCH MODE IST DEAKTIVIERT.\n\nDer Patch-Modus funktioniert derzeit nicht zuverlässig und wurde vorübergehend deaktiviert.\n\nNutze das KONTROLLFELD in den Einstellungen, um ihn zu aktivieren — nur für Testzwecke.');
+  // P1-1: Patch Mode ist nur via Opt-In (PATCH_MODE_ENABLED=true) verfügbar.
+  // Songs of Syx verwendet OVERRIDE-basiertes Mod-Loading — Native Mode ist
+  // der architektonisch korrekte Ansatz. Patch Mode (BridgeCore) ist eine
+  // SyxBridge-Abstraktion die gegen die SoS-Architektur arbeitet.
+  if (currentConfig.NATIVE_MODE && !currentConfig.PATCH_MODE_ENABLED) {
+    alert('⚠️ PATCH MODE IST NICHT AKTIVIERT.\n\n' +
+      'Songs of Syx verwendet ein OVERRIDE-basiertes Mod-Ladessystem\n' +
+      '(keine .patch-Dateien). Native Mode ist der korrekte Ansatz.\n\n' +
+      'Patch Mode kann via PATCH_MODE_ENABLED=true aktiviert werden.');
     return;
   }
   currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
@@ -338,12 +345,16 @@ function updateModeUI() {
     document.body.classList.add('mode-native');
     document.body.classList.remove('mode-patch');
     if (btn) {
-      if (patchOverrideEnabled) {
+      if (currentConfig.PATCH_MODE_ENABLED) {
         btn.textContent = 'Wechsle zu PATCH';
-        btn.title = 'Patch Mode ist via Kontrollfeld freigeschaltet';
+        btn.title = 'Patch Mode aktiviert (PATCH_MODE_ENABLED=true) — Songs of Syx verwendet Override-Loading, Patch Mode ist experimentell';
+        btn.disabled = false;
+        btn.style.opacity = '1';
       } else {
         btn.textContent = 'Wechsle zu PATCH';
-        btn.title = 'Patch Mode ist deaktiviert — öffne das Kontrollfeld zum Aktivieren';
+        btn.title = 'Patch Mode nicht aktiviert — Songs of Syx verwendet Override-Loading (keine .patch-Dateien). Setze PATCH_MODE_ENABLED=true in .env zum Aktivieren.';
+        btn.disabled = true;
+        btn.style.opacity = '0.4';
       }
     }
     if (status) {
@@ -365,19 +376,23 @@ function updateModeUI() {
   // Update Kontrollfeld status indicator
   const kfButton = document.getElementById('patch-toggle-kf');
   if (kfButton) {
-    if (patchOverrideEnabled) {
-      kfButton.textContent = 'PATCH MODE DEAKTIVIEREN';
-      kfButton.style.borderColor = 'var(--success)';
-      kfButton.style.color = 'var(--success)';
+    if (currentConfig.PATCH_MODE_ENABLED) {
+      kfButton.textContent = patchOverrideEnabled ? 'PATCH MODE DEAKTIVIEREN' : 'PATCH MODE AKTIVIEREN';
+      kfButton.style.borderColor = patchOverrideEnabled ? 'var(--success)' : 'var(--accent)';
+      kfButton.style.color = patchOverrideEnabled ? 'var(--success)' : 'var(--accent)';
     } else {
       kfButton.textContent = 'PATCH MODE AKTIVIEREN';
-      kfButton.style.borderColor = 'var(--danger)';
-      kfButton.style.color = 'var(--danger)';
+      kfButton.style.borderColor = 'var(--muted)';
+      kfButton.style.color = 'var(--muted)';
     }
   }
   if (overrideActive) {
-    overrideActive.textContent = patchOverrideEnabled ? '⚠️ AKTIV (nur zu Testzwecken)' : '⛔ DEAKTIVIERT (Standard)';
-    overrideActive.style.color = patchOverrideEnabled ? 'var(--danger)' : 'var(--muted)';
+    overrideActive.textContent = currentConfig.PATCH_MODE_ENABLED 
+      ? (patchOverrideEnabled ? '⚠️ AKTIV (Experimentell)' : '⏸ BEREIT (Klicken zum Aktivieren)')
+      : '⛔ DEAKTIVIERT (PATCH_MODE_ENABLED=false)';
+    overrideActive.style.color = currentConfig.PATCH_MODE_ENABLED 
+      ? (patchOverrideEnabled ? 'var(--danger)' : 'var(--accent)')
+      : 'var(--muted)';
   }
   // Also update the header badge
   const headerBadge = document.getElementById('patch-badge-header');
@@ -991,8 +1006,14 @@ async function loadInitialConfig() {
     const res = await fetch('/api/config');
     currentConfig = await res.json();
     
-    // PATCH MODE DEAKTIVIERT — Force Native mode on every load & persist
-    if (!currentConfig.NATIVE_MODE) {
+    // PATCH MODE — Songs of Syx verwendet OVERRIDE-basiertes
+    // Mod-Ladessystem (keine .patch-Dateien). Native Mode ist der architektonisch
+    // korrekte Ansatz. Wenn PATCH_MODE_ENABLED=false (Default), wird NATIVE_MODE
+    // bei jedem GUI-Start erzwungen.
+    //
+    // User-Opt-Out: Setze PATCH_MODE_ENABLED=true in .env um Patch Mode
+    // freizuschalten. Dann wird dieser Block übersprungen.
+    if (!currentConfig.NATIVE_MODE && !currentConfig.PATCH_MODE_ENABLED) {
       console.warn('[GUI] Patch Mode ist deaktiviert — wechsle zu Native Mode.');
       currentConfig.NATIVE_MODE = true;
       // Auch Server-seitig persistieren, damit kein Sync im Patch-Mode startet

@@ -40,8 +40,8 @@ class GuiServer extends EventEmitter {
           const stream = fs.createReadStream(fullPath);
           stream.pipe(res);
           // Guard against early client disconnect (Tab switch / reload mid-stream).
-          req.on('close', () => { try { stream.destroy(); } catch (e) {} });
-          stream.on('error', (err) => { try { res.destroy(err); } catch (e) {} });
+          req.on('close', () => { try { stream.destroy(); } catch (e) { /* A2-Fix: stream already closed, expected */ } });
+          stream.on('error', (err) => { try { res.destroy(err); } catch (e) { /* A2-Fix: response already destroyed, expected */ } });
           return;
         }
       }

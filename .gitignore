@@ -7,11 +7,13 @@ core/.env
 *.log
 log.txt
 runs.jsonl
+logs/log_*.txt
 core/backups/
 core/patches/
 core/translations.db*
 debug_payloads.txt
 server_output.txt
+VannonDoNotPlayGames.js
 # Personal test scripts (Vannon)
 **/*_test_run.js
 **/*vannon*

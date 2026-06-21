@@ -5,6 +5,10 @@
 > **Prinzip:** CODE IST DIE EINZIGE WAHRHEIT. Jeder Claim gegen Code verifiziert.
 > **Status:** ✅ FREEZE ABGESCHLOSSEN — 42 Claims geprüft, 32 verified, 5 falsified korrigiert
 
+> 🔄 **FREEZE-INDEX-ROTATION (2026-06-20):** Der ursprüngliche FREEZE_INDEX (142 Einträge, 33 Sektionen) wurde als abgeschlossen archiviert.
+> **Fortsetzung:** `FREEZE_INDEX_2.md` — indexiert die Entwicklung AB der Sinnhaftigkeitsanalyse (15 systemische Fixes, Commit `9a853ef`, 7 Dateien).
+> **Archivkopie:** `FREEZE_INDEX_v0.20.0_archived.md` (112 KB)
+
 ---
 
 ## 1. EXECUTIVE SUMMARY
@@ -261,6 +265,292 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | THIS FILE | Master FREEZE — Inhaltsverzeichnis (Single Source of Truth) |
 | FREEZE_MASTER_CHECKLIST_2026-06-19.md | Verifikations-Checkliste (Begleitdokument) |
 | FREEZE_INDEX.md | Das Buch — 48 Glossary-Einträge, lückenlos rekonstruierbar |
+
+### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
+
+### HANDSHAKE_2026-06-19 Partielle Archivierung (2026-06-20)
+
+> **Aktion:** 12 OBSOLETE Sektionen aus HANDSHAKE_2026-06-19.md ins Buch überführt.
+> **Begründung:** ~60 % des HANDSHAKE waren historisch/erledigt. v0.20 ist released, DB-Stand Snapshot 17 ist uralt, Bugs F.B/F.D/#013/#014/#015 sind behoben, Timeline + Git-Verlauf sind im CHANGELOG. ACTIVE-Anteile (F.A, F.C, Architektur, Workflow-Regeln, Re-Entry-Pfad) bleiben im Dokument.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| HH-001 | §1 Executive Summary | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-002 | §2.1 Version-Layer + §2.2 DB Snapshot 17 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-003 | §2.5 Sandbox-Cleanup | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-004 | §3 Bewegungen Timeline | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-005 | §4 F.B Contract-Tests | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-006 | §4 F.D + #013/#014/#015 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-007 | §7 Git-Verlauf | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-008 | §8 Erledigte Prio-Punkte | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-009 | §10 S1/S2/S3/S5(F.B)/S8 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-010 | §12 Signoff | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-011 | §2.4 Naming-Bug #015 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+| HH-012 | §2.2 Provider-Verteilung Snap 17 | [FREEZE_INDEX §14](#14-handshake_2026-06-19--partielle-archivierung) |
+
+### HANDSHAKE_2026-06-20 Partielle Archivierung (2026-06-20)
+
+> **Aktion:** 11 OBSOLETE Sektionen aus HANDSHAKE_2026-06-20.md ins Buch überführt.
+> **Begründung:** ~65 % des HANDSHAKE waren historisch/erledigt. Session-Zusammenfassung, DB-Snapshot 24, Code-Änderungen, Timeline, DD-NEU-1/2 (behoben), Erledigt-Liste, Signoff. ACTIVE-Anteile (Groq 429, F.A, F.C, Architektur, Re-Entry, P1/P2-Roadmap) bleiben im Dokument.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| HH-013 | §1 Executive Summary | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-014 | §2.1 Version-Layer + §2.2 DB Snapshot 24 | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-015 | §2.3 Code-Änderungen | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-016 | §3 Bewegungen Timeline | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-017 | §4 DD-NEU-1 B4 in MASTER_DOC | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-018 | §4 DD-NEU-2 Provider-Zahlen | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-019 | §4 Groq-Modellname + PREFLIGHT | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-020 | §6.3 Empfohlene Reihenfolge | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-021 | §7 P0 + Erledigt-Liste | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-022 | §8 Signoff | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+| HH-023 | §7 P0 DD-NEU-1+2 Roadmap | [FREEZE_INDEX §15](#15-handshake_2026-06-20--partielle-archivierung) |
+
+### DOKU_KONSOLIDIERUNG_2026-06-20 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (12 Divergenzen, alle BEHOBEN) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — sämtliche 12 Divergenzen waren zum Zeitpunkt der Archivierung behoben. Das Dokument war ein Einmal-Konsolidierungslauf.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| DK-001 | Inventur: 28 LIVE + 5 FREEZE | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-002 | P0: BU-023 + NMT-Referenzen | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-003 | P1: LIVE_INDEX + MASTER_DOC Tree | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-004 | P1: KNOWN_BUGS Cluster D + §3 | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-005 | P2: CHECKLIST Phantom + Roadmap + DB | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-006 | P3: FREEZE_INDEX §7 + AGENTS.md + Audit | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-007 | Zusammenfassung: 12 Divergenzen | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+| DK-008 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §16](#16-doku_konsolidierung_2026-06-20--vollarchivierung) |
+
+### FORENSIC_FULLSCAN_v0.20_2026-06-19_V2 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Inventur + 15 Findings + 6 Fragen + Cluster) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Einmal-Audit vom 19.06. LOC-Zahlen veraltet, kritische Findings (F9/F14) in späteren Sessions behoben, Fragen durch Roadmap beantwortet.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| FF-001 | §1 Inventar: 27 Dateien, 11.535 LOC | [FREEZE_INDEX §17](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung) |
+| FF-002 | §2 Importketten + §4 Diff | [FREEZE_INDEX §17](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung) |
+| FF-003 | §3 15 Findings F1–F15 | [FREEZE_INDEX §17](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung) |
+| FF-004 | §5 Fragen Q1–Q6 + §6 Cluster A–G | [FREEZE_INDEX §17](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung) |
+| FF-005 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §17](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung) |
+
+### REDUNDANZ_AUDIT_V2_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (13 Cluster + Konsolidierungsplan) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Einmal-Audit mit veralteten Release-Ordner-Referenzen (v0.19.7/v0.20.0-pre-release).
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| RD-001 | §1 Tendenz v1→v2: 6 Metriken | [FREEZE_INDEX §18](#18-redundanz_audit_v2_2026-06-19--vollarchivierung) |
+| RD-002 | §2 Duplikat-Cluster C1–C13 | [FREEZE_INDEX §18](#18-redundanz_audit_v2_2026-06-19--vollarchivierung) |
+| RD-003 | §3 Tote Dateien + §4 Konsolidierungsplan | [FREEZE_INDEX §18](#18-redundanz_audit_v2_2026-06-19--vollarchivierung) |
+| RD-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §18](#18-redundanz_audit_v2_2026-06-19--vollarchivierung) |
+
+### CODE_VS_DOCS_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (15 Drift + 6 unverifiziert + Reconciliation) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Einmal-Audit vom 19.06. 08:17 UTC. DB-Zahlen, Drift-Einträge, Empfehlungen alle historisch.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| CD-001 | §1 CODE TRUTH: Provider, DB, Pipeline | [FREEZE_INDEX §19](#19-code_vs_docs_audit_2026-06-19--vollarchivierung) |
+| CD-002 | §2 DOC TRUTH: 4 Doku-Dateien | [FREEZE_INDEX §19](#19-code_vs_docs_audit_2026-06-19--vollarchivierung) |
+| CD-003 | §3 DRIFT D-001–D-015 + §4 UNVERIFIZIERT | [FREEZE_INDEX §19](#19-code_vs_docs_audit_2026-06-19--vollarchivierung) |
+| CD-004 | §5 Veränderung + §6 Reconciliation + §7 Methodik | [FREEZE_INDEX §19](#19-code_vs_docs_audit_2026-06-19--vollarchivierung) |
+| CD-005 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §19](#19-code_vs_docs_audit_2026-06-19--vollarchivierung) |
+
+### INTEGRITY_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (33 Claims + Gap-Analyse + Lösch-Freigabe) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Pre-Lösch-Verifikation, Löschung der 44 Dokumente ist längst erfolgt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| IG-001 | 33 Claims code-verified (6 Kategorien) | [FREEZE_INDEX §20](#20-integrity_audit_2026-06-19--vollarchivierung) |
+| IG-002 | 15 nicht verifizierbar + 3 Lücken | [FREEZE_INDEX §20](#20-integrity_audit_2026-06-19--vollarchivierung) |
+| IG-003 | Methodik + Fazit + Lösch-Freigabe | [FREEZE_INDEX §20](#20-integrity_audit_2026-06-19--vollarchivierung) |
+| IG-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §20](#20-integrity_audit_2026-06-19--vollarchivierung) |
+
+### DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Inventur + 9 Widersprüche + 44 Lösch-Empfehlungen) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Lösch-Empfehlungen ausgeführt, referenzierte Dokumente selbst archiviert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| KR-001 | Inventur: 9 LIVE + Widersprüche W1–W9 | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
+| KR-002 | 44 FREEZE-Dokumente + 8 permanent | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
+| KR-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §21](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung) |
+
+### CONTROL_TOWER_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (7 Findings + 41 Catch-Blöcke + 10 Delta-Änderungen) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Multi-Agenten-Audit, Snapshot-17-Basis.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| CT-001 | §2 Hidden-Failure-Detector + SkipTruth | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
+| CT-002 | §3 Delta-Ledger: 10 Code + 6 Doku | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
+| CT-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §22](#22-control_tower_audit_2026-06-19--vollarchivierung) |
+
+### REALITY_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (18 Claims + 8 Drift + 13 Unstaged) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Reality-Check vom 19.06., Watermark-Defekt in V0.21 adressiert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| RA-001 | CODE TRUTH: 8 Dateien + DOC TRUTH: 18 Claims | [FREEZE_INDEX §23](#23-reality_audit_2026-06-19--vollarchivierung) |
+| RA-002 | DRIFT D1–D8 + Veränderung | [FREEZE_INDEX §23](#23-reality_audit_2026-06-19--vollarchivierung) |
+| RA-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §23](#23-reality_audit_2026-06-19--vollarchivierung) |
+
+### ROUTING_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Routing-Analyse + Vorschläge) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Header sagt selbst "SUPERSEDED BY TRIPLE_AUDIT", referenziert Code der nicht mehr existiert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| RT-001 | IST-Routing + Provider-Gate + Nutzung | [FREEZE_INDEX §25](#25-routing_audit_2026-06-19--vollarchivierung) |
+| RT-002 | Anpassungsvorschläge P0/P1/P2 + DB-Vergleich | [FREEZE_INDEX §25](#25-routing_audit_2026-06-19--vollarchivierung) |
+| RT-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §25](#25-routing_audit_2026-06-19--vollarchivierung) |
+
+### TRIPLE_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (10 Widersprüche + 6 Modularisierungen + 5 Empfehlungen) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — 3-Rollen-Audit, alle Widersprüche behoben, Empfehlungen umgesetzt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| TA-001 | Rolle 1 (Routing) + Rolle 2 (Repo-Struktur) | [FREEZE_INDEX §26](#26-triple_audit_2026-06-19--vollarchivierung) |
+| TA-002 | Rolle 3 (Doku-Konsolidierung) + Zusammenführung | [FREEZE_INDEX §26](#26-triple_audit_2026-06-19--vollarchivierung) |
+| TA-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §26](#26-triple_audit_2026-06-19--vollarchivierung) |
+
+### VERIFICATION_REPORT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (7 dynamische Verifikationen) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Alle 7 Claims bestätigt, alle Bugs behoben.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| VR-001 | BU-035–BU-039 Verifikation (Claims 1-5) | [FREEZE_INDEX §27](#27-verification_report_2026-06-19--vollarchivierung) |
+| VR-002 | Dead Flag Verifikation (Claims 6-7) | [FREEZE_INDEX §27](#27-verification_report_2026-06-19--vollarchivierung) |
+| VR-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §27](#27-verification_report_2026-06-19--vollarchivierung) |
+
+### SESSION_REPORT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Session-Doku + Triple-Audit + DB-Reset + Stufe 1-3) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Alle Phasen abgeschlossen, alle Bugs behoben.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| SR-001 | Session-Zusammenfassung + Triple-Audit + Priorisierung | [FREEZE_INDEX §28](#28-session_report_2026-06-19--vollarchivierung) |
+| SR-002 | Stufe 1-3 Details + DB-Reset + Post-Run | [FREEZE_INDEX §28](#28-session_report_2026-06-19--vollarchivierung) |
+| SR-003 | Offene Punkte + DB-Archivierung + Validierung | [FREEZE_INDEX §28](#28-session_report_2026-06-19--vollarchivierung) |
+| SR-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §28](#28-session_report_2026-06-19--vollarchivierung) |
+
+### DEAD_FLAG_REPORT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Flag-Analyse) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — NMT_LOCAL_ENABLED entfernt, GOOGLE_FREE_ENABLED gefixt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| DF-001 | ENV/Config-Flags + DB-Spalten-Flags | [FREEZE_INDEX §29](#29-dead_flag_report_2026-06-19--vollarchivierung) |
+| DF-002 | Router/Runtime-Flags + Zusammenfassung | [FREEZE_INDEX §29](#29-dead_flag_report_2026-06-19--vollarchivierung) |
+| DF-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §29](#29-dead_flag_report_2026-06-19--vollarchivierung) |
+
+### FLAG_TAXONOMY_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Taxonomie-Prinzip lebt in AGENTS.md §18 weiter.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| FT-001 | 3 Flag-Systeme + Inventur | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
+| FT-002 | Falsifikation + Kollisionsregister | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
+| FT-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §30](#30-flag_taxonomy_2026-06-19--vollarchivierung) |
+
+### DOKU_DIVERGENZ_AUDIT_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — 14 Divergenzen, alle historisch.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| DD-001 | 14 Divergenzen + 7 bestätigt | [FREEZE_INDEX §31](#31-doku_divergenz_audit_2026-06-19--vollarchivierung) |
+| DD-002 | Methodik + Empfehlungen | [FREEZE_INDEX §31](#31-doku_divergenz_audit_2026-06-19--vollarchivierung) |
+| DD-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §31](#31-doku_divergenz_audit_2026-06-19--vollarchivierung) |
+
+### PRIORISIERUNG_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Alle P0/P1 erledigt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PZ-001 | 31 Findings + 4-Quadranten-Matrix | [FREEZE_INDEX §32](#32-priorisierung_2026-06-19--vollarchivierung) |
+| PZ-002 | Empfohlene Reihenfolge (5 Stufen) | [FREEZE_INDEX §32](#32-priorisierung_2026-06-19--vollarchivierung) |
+| PZ-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §32](#32-priorisierung_2026-06-19--vollarchivierung) |
+
+### BATCH: 4 Docs Vollarchivierung (2026-06-20)
+
+> **Aktion:** PRODUCT_PROTECTION + SECURITY_ARCHIVE + DIVERGENZ_REPORT + LLM-AGENTS-EntryPoint ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Einmal-Dokumente, archivierte Kopien.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PP-001 | PRODUCT_PROTECTION Watermark-Doku | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+| SA-001 | SECURITY_ARCHIVE Frozen Copy | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+| DV-001 | DIVERGENZ_REPORT LIVE vs FREEZE | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+| LA-001 | LLM-AGENTS-EntryPoint Archivkopie | [FREEZE_INDEX §33](#33-batch-4-docs--vollarchivierung) |
+
+### REALITY_AUDIT_RECONCILIATION_2026-06-19 Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (5 Divergenz-Fixes + Methodik) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Reconciliation-Nachtrag zum Reality Audit, alle 5 Divergenzen behoben.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| RC-001 | Reconciliation: 5 Divergenzen behoben | [FREEZE_INDEX §24](#24-reality_audit_reconciliation_2026-06-19--vollarchivierung) |
+| RC-002 | Methodik + Verifikation | [FREEZE_INDEX §24](#24-reality_audit_reconciliation_2026-06-19--vollarchivierung) |
+| RC-003 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §24](#24-reality_audit_reconciliation_2026-06-19--vollarchivierung) |
+
+### HANDSHAKE_2026-06-20_P0-FIXES Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (P0-Abschluss: P0-1/P0-2/P0-3 DONE) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — Alle drei P0-Punkte sind implementiert und verifiziert. Offene P1-Punkte nach PLAN_MASTER.md migriert.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PF-001 | §1 P0-1/P0-2/P0-3 Abschluss | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+| PF-002 | §2 Verifikation + §3 Geänderte Dateien | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+| PF-003 | §4 Offene Punkte (P1-1/P1-2/P1-3) | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+| PF-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §29](#29-handshake_2026-06-20_p0-fixes--vollarchivierung) |
+
+### V0.21_SCOPE Vollarchivierung (2026-06-20)
+
+> **Aktion:** Komplettes Quelldokument (Scope-Definition + Audit + RESTORE-Philosophie) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — P0-Punkte DONE, Planungs-Items nach PLAN_MASTER.md migriert, Philosophie lebt in MASTER_DOC.md weiter.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| VS-001 | §1 Grundprinzipien (RESTORE-Philosophie) | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+| VS-002 | §2 Fehlerquellen-Analyse (9.492 Einträge) | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+| VS-003 | §3-§7 Prioritäten + RESTORE + Qualität + Abschluss | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+| VS-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
+
+### PHASE2_MARKER_INTEGRATION Vollarchivierung (2026-06-20)
+
+> **Aktion:** Planungsdokument (6 Lücken, 4/6 DONE) ins Buch überführt.
+> **Begründung:** 100 % OBSOLETE — 4/6 Lücken implementiert, verbleibende 2 nach PLAN_MASTER.md migriert (M1-M3).
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| PM-001 | Lücken 1-6 + Implementierungsstand | [FREEZE_INDEX §31](#31-phase2_marker_integration--vollarchivierung) |
+| PM-002 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §31](#31-phase2_marker_integration--vollarchivierung) |
 
 ### Lösch-Kandidaten (44 Dokumente — INDEX-Überführung abgeschlossen)
 

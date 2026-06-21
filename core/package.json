@@ -19,7 +19,8 @@
     "consistency": "node scripts/check_consistency.js",
     "package": "node scripts/package.js",
     "workshop": "node scripts/workshop_export.js",
-    "audit:db": "node scripts/db_audit.js"
+    "audit:db": "node scripts/db_audit.js",
+    "verify-watermark": "node ../VannonDoNotPlayGames.js"
   },
   "keywords": [
     "songs-of-syx",

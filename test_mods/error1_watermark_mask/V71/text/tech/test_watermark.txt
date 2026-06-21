@@ -1,0 +1,41 @@
+__OVERWRITE: true,
+
+TECH1: {
+	NAME: "Wir sollten auf jeden Kampf vorbereitet sein.",
+	DESC: "Diese Stadt ist das Paradies fuer alle Handwerker."
+},
+
+TECH2: {
+	NAME: "Die Verteidigung der Mauern wurde verbessert.",
+	DESC: "{RACE_CITY} ist die Hauptstadt des Reiches."
+},
+
+TECH3: {
+	NAME: "Jeder Buerger traegt zur Verteidigung bei.",
+	DESC: "Mit vereinten Kraeften gegen die Dunkelheit."
+},
+
+TECH4: {
+	NAME: "Handel und Wohlstand fuer alle Bewohner.",
+	DESC: "Die Karawanen bringen Reichtum aus fernen Landen."
+},
+
+TECH5: {
+	NAME: "Die Kunst des Krieges wurde ueber Generationen perfektioniert.",
+	DESC: "Nur die tapfersten Krieger ueberleben die Ausbildung in der Festung."
+},
+
+TECH6: {
+	NAME: "Landwirtschaft und Nahrungsproduktion verbessert.",
+	DESC: "Die Bauern haben neue Methoden entwickelt um die Ernte zu steigern."
+},
+
+TECH7: {
+	NAME: "Bildung fuer alle Schichten der Gesellschaft.",
+	DESC: "In den neuen Schulen lernen Kinder lesen schreiben und rechnen."
+},
+
+TECH8: {
+	NAME: "Der grosse Marktplatz wurde eroeffnet.",
+	DESC: "Haendler aus der ganzen Welt bieten ihre Waren auf dem Markt an."
+}

@@ -1,0 +1,21 @@
+__OVERWRITE: true,
+
+TECH_COMPLEX1: {
+	NAME: "Advanced {WEAPON_TYPE} Smithing Techniques",
+	DESC: "This technology enables the production of {WEAPON_TYPE} at quality level {LEVEL}. The smiths require {RESOURCE_COST} units of {RESOURCE_TYPE} and a minimum forge temperature of {TEMP} degrees. The research effort costs {RESEARCH_COST} knowledge points."
+},
+
+TECH_COMPLEX2: {
+	NAME: "{RACE_NAME} Diplomacy and Trade Agreements",
+	DESC: "Through skillful negotiations with the {RACE_NAME}, lucrative trade agreements can be established. This enables the import of {RESOURCE_1}, {RESOURCE_2}, and {RESOURCE_3} at significantly improved rates. Relations improve by {DIPLOMACY_BONUS} points per diplomatic mission."
+},
+
+TECH_COMPLEX3: {
+	NAME: "Elemental Defensive Magic",
+	DESC: "The academy mages have discovered a method to harness elemental forces for defensive purposes. {ELEMENT_TYPE}-walls provide {DEFENSE_BONUS} percent increased protection against {ENEMY_TYPE} attacks. Mana costs are {MANA_COST} per hour with an effective range of {RANGE} tiles. Maximum duration: {DURATION} hours."
+},
+
+TECH_COMPLEX4: {
+	NAME: "Masterwork {CRAFT_TYPE} Production Line",
+	DESC: "By optimizing the workflow of {CRAFT_TYPE} production, output increases by {EFFICIENCY_BONUS} percent while reducing material waste by {WASTE_REDUCTION} percent. Requires {WORKER_COUNT} specialized workers and {POWER_SOURCE} as a power source. Maintenance costs: {MAINTENANCE_COST} gold per cycle."
+}

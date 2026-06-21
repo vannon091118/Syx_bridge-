@@ -170,6 +170,7 @@ function createPolishArbiter(deps = {}) {
 
   // ── Main A/B Polishing Entry Point ────────────────────────────────────────
   async function runAbPolishing(entries, targetLang) {
+    if (entries.length === 0) return null;  // C2-Fix: Empty-guard prevents unnecessary AI requests
     // 1. Check if enough providers are available
     const polishPlan = dispatcher.buildStageRoutePlan('polish');
     if (polishPlan.length < 2) {

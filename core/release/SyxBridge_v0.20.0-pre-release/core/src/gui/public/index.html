@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syx-Bridge AI Dashboard</title>
+    <style>
+        :root { 
+            --bg: #0d0b0a; 
+            --bg-native: #1a0b0b;
+            --bg-patch: #0b0b1a;
+            --panel-bg: #1a1715;
+            --accent: #d8973c; 
+            --accent-glow: rgba(216, 151, 60, 0.2);
+            --text: #f1e7da; 
+            --muted: #a99b87; 
+            --border: #332d29;
+            --success: #64d5c4;
+            --danger: #ef6b60;
+            --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: var(--font); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 1.5s ease;
+        }
+
+        body.mode-native { background-color: var(--bg-native); }
+        body.mode-patch { background-color: var(--bg-patch); }
+
+        /* Status States Backgrounds */
+        body.state-running { background-color: #2b2205 !important; }
+        body.state-success { background-color: #052b14 !important; }
+        body.state-error { animation: blink-red 1.5s infinite !important; }
+
+        @keyframes blink-red {
+            0% { background-color: var(--bg); }
+            50% { background-color: #3b0a0a; }
+            100% { background-color: var(--bg); }
+        }
+
+        /* DB Repair Button — Blink-Tiers */
+        .db-repair-btn {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid var(--danger);
+            color: #fff;
+            background: rgba(239, 107, 96, 0.15);
+            text-align: center;
+        }
+        .db-repair-btn.visible { display: block; }
+
+        /* Tier 1: slowFade (5-6%) — sanftes Pulsieren, 3s */
+        .db-repair-btn.tier-slowFade {
+            animation: repair-pulse-slow 3s ease-in-out infinite;
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(216, 151, 60, 0.1);
+        }
+        @keyframes repair-pulse-slow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px rgba(216, 151, 60, 0.2); }
+            50% { opacity: 0.6; box-shadow: 0 0 15px rgba(216, 151, 60, 0.4); }
+        }
+
+        /* Tier 2: fade (6-7%) — schnelleres Pulsieren, 1.5s */
+        .db-repair-btn.tier-fade {
+            animation: repair-pulse-fade 1.5s ease-in-out infinite;
+            border-color: #ff8844;
+            color: #ff8844;
+            background: rgba(255, 136, 68, 0.1);
+        }
+        @keyframes repair-pulse-fade {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 136, 68, 0.3); }
+            50% { opacity: 0.4; box-shadow: 0 0 25px rgba(255, 136, 68, 0.6); }
+        }
+
+        /* Tier 3: fastFade (7-10%) — sehr schnelles Pulsieren, 0.8s */
+        .db-repair-btn.tier-fastFade {
+            animation: repair-pulse-fast 0.8s ease-in-out infinite;
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(239, 107, 96, 0.15);
+        }
+        @keyframes repair-pulse-fast {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(239, 107, 96, 0.4); }
+            50% { opacity: 0.25; box-shadow: 0 0 35px rgba(239, 107, 96, 0.8); }
+        }
+
+        /* Tier 4: blinkAlarm (>10%) — ALARM, 0.4s harter Blink */
+        .db-repair-btn.tier-blinkAlarm {
+            animation: repair-blink-alarm 0.4s step-end infinite;
+            border-color: #ff0000;
+            color: #ff0000;
+            background: rgba(255, 0, 0, 0.2);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+        @keyframes repair-blink-alarm {
+            0%, 100% { opacity: 1; box-shadow: 0 0 20px rgba(255, 0, 0, 0.7); }
+            50% { opacity: 0.15; box-shadow: 0 0 50px rgba(255, 0, 0, 1); }
+        }
+
+        header { 
+            background: rgba(0,0,0,0.5); 
+            backdrop-filter: blur(5px);
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .brand { font-weight: bold; color: var(--accent); letter-spacing: 1px; font-size: 1.2rem; }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Panels */
+        .sidebar { 
+            background: var(--panel-bg); 
+            border-right: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .panel { 
+            background: rgba(0,0,0,0.2); 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 15px;
+        }
+
+        .panel h3 { margin: 0 0 12px 0; font-size: 0.9rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Status & Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-item { background: rgba(255,255,255,0.03); padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; margin-top: 2px; }
+
+        /* Pipeline Visualizer */
+        .pipeline-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; position: relative; }
+        .pipeline-stage { 
+            width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--border); 
+            display: flex; align-items: center; justify-content: center; font-size: 0.7rem; 
+            background: var(--bg); color: var(--muted); transition: all 0.3s;
+            position: relative; z-index: 2;
+        }
+        .pipeline-stage.active { 
+            border-color: var(--accent); 
+            color: var(--accent); 
+            box-shadow: 0 0 15px var(--accent-glow); 
+            background: rgba(216, 151, 60, 0.1); 
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px var(--accent-glow); }
+            50% { box-shadow: 0 0 20px var(--accent-glow); }
+            100% { box-shadow: 0 0 5px var(--accent-glow); }
+        }
+        .pipeline-stage.done { border-color: var(--success); color: var(--success); }
+        .pipeline-connector { flex: 1; height: 2px; background: var(--border); margin: 0 -5px; position: relative; z-index: 1; }
+        .pipeline-connector.active { background: var(--accent); }
+
+        /* Center Stack */
+        .center-stack { display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border); padding: 15px; gap: 15px; position: relative;}
+        
+        .interaction-viewer { flex: 1; display: grid; grid-template-rows: 1fr 1fr; gap: 15px; overflow: hidden; }
+        .terminal-box { 
+            background: #050505; 
+            border: 1px solid #222; 
+            border-radius: 4px; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .terminal-header { background: #111; padding: 5px 10px; font-size: 0.75rem; display: flex; justify-content: space-between; border-bottom: 1px solid #222; }
+        .terminal-content { flex: 1; padding: 10px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; overflow-y: auto; white-space: pre-wrap; color: #ccc; }
+        
+        .log-panel { height: 35%; border: 1px solid var(--border); border-radius: 4px; background: #000; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 0.75rem; color: var(--muted); }
+
+        /* DB Browser Styles */
+        .db-table-container { overflow-y: auto; margin-top: 10px; border: 1px solid var(--border); flex: 1; }
+        .db-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .db-table th { background: #111; color: var(--accent); padding: 10px; text-align: left; position: sticky; top: 0; }
+        .db-table td { border-bottom: 1px solid var(--border); padding: 8px; }
+        .db-table tr:hover { background: rgba(255,255,255,0.02); }
+        .db-edit-input { background: transparent; border: 1px solid transparent; color: var(--text); width: 100%; padding: 4px; font-family: inherit; }
+        .db-edit-input:focus { background: #000; border-color: var(--accent); outline: none; }
+        /* DB Editor Textarea — Multi-Zeilen Support */
+        .db-edit-textarea {
+            background: transparent; border: 1px solid transparent; color: var(--text);
+            width: 100%; padding: 4px; font-family: inherit; font-size: 0.85rem;
+            resize: vertical; min-height: 28px; max-height: 300px;
+            overflow-y: auto; white-space: pre-wrap; word-break: break-word;
+            line-height: 1.4;
+        }
+        .db-edit-textarea:focus { background: #000; border-color: var(--accent); outline: none; }
+        .db-table td:first-child { white-space: pre-wrap; word-break: break-word; }
+
+        /* DB Sample Stream */
+        .right-sidebar { background: var(--panel-bg); display: flex; flex-direction: column; padding: 15px; overflow: hidden; }
+        .sample-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        .sample-card { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-size: 0.8rem; }
+        .sample-source { color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; margin-bottom: 4px; font-style: italic; }
+        .sample-target { color: var(--success); font-weight: 500; }
+
+        /* UI Controls */
+        button { background: var(--accent); color: #000; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; transition: all 0.2s; position: relative; overflow: hidden; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button.secondary { background: #332d29; color: var(--text); border: 1px solid #444; }
+        button.stop-btn { background: var(--danger); color: #fff; }
+        
+        select, input { background: #000; color: var(--text); border: 1px solid #444; padding: 6px; width: 100%; border-radius: 4px; margin-bottom: 10px; font-size: 0.85rem; }
+
+        .progress-bar { width: 100%; height: 16px; background: #111; border: 1px solid var(--border); border-radius: 4px; margin-top: 10px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #ffb961); width: 0%; transition: width 0.3s; position: relative; box-shadow: 0 0 10px var(--accent-glow); }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background-image: linear-gradient(-45deg, rgba(255, 255, 255, .3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .3) 50%, rgba(255, 255, 255, .3) 75%, transparent 75%, transparent);
+            z-index: 1;
+            background-size: 30px 30px;
+            animation: move 1s linear infinite;
+        }
+
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .status-badge {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: #333;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-badge.active {
+            background: rgba(100, 213, 196, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(100, 213, 196, 0.3);
+        }
+        /* Kontrollfeld Danger Zone */
+        .kontrollfeld { border: 1px solid rgba(239, 107, 96, 0.3) !important; background: rgba(239, 107, 96, 0.03) !important; }
+        .kontrollfeld button:hover { background: rgba(239, 107, 96, 0.15) !important; }
+
+        .status-badge.active::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            display: block;
+            box-shadow: 0 0 5px var(--success);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        /* Toggle Switch (Lokale Modelle Opt-in) */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            cursor: pointer;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; margin: 0; }
+        .toggle-slider {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            border-radius: 26px;
+            transition: 0.3s;
+            border: 1px solid var(--border);
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 20px; width: 20px;
+            left: 2px; bottom: 2px;
+            background-color: var(--muted);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: rgba(239, 107, 96, 0.3);
+            border-color: var(--danger);
+        }
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+            background-color: var(--danger);
+        }
+        
+        @keyframes dash-run {
+            to { stroke-dashoffset: -1000; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Neon Progress Border -->
+    <svg id="neon-svg" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;">
+        <rect id="neon-rect" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" fill="none" stroke="var(--accent)" stroke-width="4" stroke-dasharray="20 40" style="filter: drop-shadow(0 0 8px var(--accent)); animation: dash-run 5s linear infinite; opacity: 0; transition: opacity 0.5s ease;" />
+    </svg>
+
+    <header>
+        <div class="brand">SONGS OF SYX <span style="color:white">AI BRIDGE</span> <span style="font-family: 'Brush Script MT', cursive; font-size: 0.9rem; color: #ef6b60; margin-left: 10px; text-transform: none; text-shadow: 0 0 5px rgba(239, 107, 96, 0.3);">by Vannon</span></div>
+        
+        <!-- TOP SETTINGS DROPDOWN -->
+        <div id="top-settings-container" style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1001; top: 12px;">
+            <button id="settings-toggle-btn" onclick="toggleSettings()" title="API-Konfiguration, Bridge-Mode, Provider-Statistiken und Kontrollfeld öffnen" style="background: rgba(0,0,0,0.8); border: 1px solid var(--accent); font-size: 0.75rem; padding: 6px 25px; color: var(--accent); border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.3s; width: auto; box-shadow: 0 0 10px rgba(0,0,0,0.5);">⚙️ API & EINSTELLUNGEN</button>
+            <div id="settings-dropdown" style="display: none; position: absolute; top: 40px; left: 50%; transform: translateX(-50%); background: var(--panel-bg); border: 1px solid var(--accent); padding: 20px; border-radius: 8px; z-index: 1000; width: 450px; box-shadow: 0 10px 50px rgba(0,0,0,0.9); max-height: 80vh; overflow-y: auto;">
+                <div class="panel" style="margin-bottom: 10px;">
+                    <h3>Bridge Mode <span id="patch-badge-header" style="font-size:0.6rem; font-weight:normal; color:var(--muted);">⛔ DEAKTIVIERT (Standard)</span></h3>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <button id="mode-toggle-btn" onclick="toggleMode()" title="Zwischen NATIVE (Inplace-Übersetzung) und PATCH (separater Mod-Ordner) wechseln" style="flex:1;">Wechsle zu PATCH</button>
+                    </div>
+                    <div id="mode-status" class="stat-label" style="text-align:center; font-weight:bold;">Aktuell: NATIVE MODE (Inplace)</div>
+                </div>
+
+                <!-- KONTROLLFELD: Patch Mode nur hier aktivierbar -->
+                <div class="panel kontrollfeld" style="margin-bottom: 10px; border-color: var(--danger);">
+                    <h3 style="color: var(--danger);">⚠️ Kontrollfeld</h3>
+                    <div style="background: rgba(239, 107, 96, 0.08); border: 1px solid rgba(239, 107, 96, 0.25); border-radius: 4px; padding: 10px; margin-bottom: 10px; font-size: 0.7rem; line-height: 1.5;">
+                        <strong style="color: var(--danger);">Patch Mode wurde deaktiviert.</strong><br>
+                        Der Patch-Modus funktioniert derzeit <strong>nicht zuverlässig</strong> und kann
+                        zu unvollständigen Übersetzungen oder beschädigten Mod-Strukturen führen.<br><br>
+                        Die Aktivierung ist nur für <strong>Testzwecke</strong> gedacht.
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="stat-label">Status: <span id="patch-override-active" style="color:var(--muted);">⛔ DEAKTIVIERT (Standard)</span></span>
+                        <button id="patch-toggle-kf" onclick="togglePatchOverride()" title="Patch-Mode nur für Testzwecke aktivieren — funktioniert derzeit nicht zuverlässig!" style="width: auto; padding: 6px 16px; font-size: 0.7rem; background: transparent; border: 1px solid var(--danger); color: var(--danger);">PATCH MODE AKTIVIEREN</button>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom: 10px;">
+                    <h3>Live Config</h3>
+                    <label class="stat-label">Primärer Provider</label>
+                    <select id="cfg-provider" onchange="onProviderChange(); updateBatchRecommendation();">
+                        <option value="openrouter">OpenRouter (Free/Paid)</option>
+                        <option value="groq">Groq (Fast Cloud)</option>
+                        <option value="gemini">Gemini (Google)</option>
+                        <option value="nvidia">NVIDIA NIM (NeMo)</option>
+                        <option value="fcm">FCM (Free Code Models)</option>
+                        <option value="ollama">Ollama (Lokal)</option>
+                        <option value="player2">Player2 (Desktop)</option>
+                    </select>
+
+                    <label class="stat-label">Aktives Modell</label>
+                    <select id="cfg-model">
+                        <option value="">Lade Modelle...</option>
+                    </select>
+                    <div id="fcm-provider-hint" style="display:none; background:rgba(100,213,196,0.08); border:1px solid rgba(100,213,196,0.25); border-radius:4px; padding:6px 8px; margin-bottom:10px; font-size:0.65rem; color:var(--success); line-height:1.4;">
+                        ⚡ <strong>FCM Proxy-Modus:</strong> Übersetzungen laufen über den lokalen FCM-Daemon (<code style="color:var(--accent)">localhost:19280/v1</code>).
+                        Kein API-Key nötig — der Daemon routed automatisch zu den besten kostenlosen Modellen.
+                    </div>
+                    
+                    <div style="margin-bottom:10px;">
+                        <label class="stat-label">Batch Größe (Rec: <span id="batch-rec" style="color:var(--accent)">-</span>)</label>
+                        <input type="number" id="cfg-batch-size" value="24" min="1" max="100" style="margin:0;">
+                    </div>
+
+                    <button onclick="openKeyModal()" title="API-Keys für alle Provider verwalten: Gemini, Groq, OpenRouter, Ollama, Player2" style="margin-bottom: 5px; background: #332d29; border: 1px solid #444; color: var(--text); font-size: 0.7rem;">Manage API Keys</button>
+                    <label class="stat-label">Zielsprache <span style="font-size: 0.5rem; background: var(--accent); color: #000; padding: 1px 3px; border-radius: 2px; font-weight: bold; margin-left: 5px;">BETA</span></label>
+                    <select id="cfg-lang" style="margin-bottom: 5px;">
+                        <option value="German">German</option>
+                        <option value="French">French</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="Polish">Polish</option>
+                        <option value="Russian">Russian</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Portuguese">Portuguese</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Korean">Korean</option>
+                        <option value="Ukrainian">Ukrainian</option>
+                        <option value="Turkish">Turkish</option>
+                        <option value="Dutch">Dutch</option>
+                        <option value="Swedish">Swedish</option>
+                    </select>
+                    <button onclick="saveConfig()" title="Alle Konfig-Änderungen speichern: Provider, Modell, Sprache, Batch-Größe">Apply Changes</button>
+
+                    <!-- Lokale Modelle Opt-in (Hardware-Schutz) -->
+                    <div style="margin-top: 10px; padding: 8px; background: rgba(239, 107, 96, 0.05); border: 1px solid rgba(239, 107, 96, 0.2); border-radius: 4px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <label class="stat-label" style="margin: 0; color: var(--danger);">⚠️ Lokale LLM-Modelle</label>
+                                <div style="font-size: 0.6rem; color: var(--muted); margin-top: 2px;">Ollama / Player2 können Hardware überlasten</div>
+                            </div>
+                            <label class="toggle-switch" title="Opt-in für lokale LLM-Modelle. AUS = nur Cloud + Argos. AN = auch Ollama/Player2 verfügbar.">
+                                <input type="checkbox" id="cfg-local-models" onchange="toggleLocalModels()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div id="local-models-status" style="font-size: 0.6rem; color: var(--muted); margin-top: 4px;">⛔ Lokale LLMs gesperrt (Hardware-Schutz)</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom: 10px;">
+                    <h3>Modell-Status <span id="models-refresh-status" style="font-size:0.5rem; color:var(--muted); float:right; font-weight:normal;">Auto-Refresh: 10s</span></h3>
+                    <div id="model-status-container" style="font-size: 0.7rem; font-family: monospace;">
+                        <div style="color: var(--muted); padding: 6px 0;">Lade Modell-Status...</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom: 0;">
+                    <h3>Provider Stats</h3>
+                    <div id="provider-stats-container" style="font-size: 0.7rem; font-family: monospace;">
+                        <!-- Dynamic Stats -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div id="bridge-status-badge" class="status-badge" title="Aktueller Bridge-Status: Idle = bereit, Running = Übersetzung läuft">Idle</div>
+                <div id="health-argos" class="stat-label" title="Argos Translate (lokale Offline-Übersetzung) — Grün = verfügbar"><span class="status-dot" id="dot-argos"></span>Argos</div>
+                <div id="health-ollama" class="stat-label" title="Ollama (lokale KI-Modelle) — Grün = läuft"><span class="status-dot" id="dot-ollama"></span>Ollama</div>
+                <div id="health-fcm" class="stat-label" title="FCM Daemon (free-coding-models) — Grün = läuft auf Port 19280"><span class="status-dot" id="dot-fcm"></span>FCM</div>
+                <div id="health-nvidia" class="stat-label" title="NVIDIA NIM — Grün = Key konfiguriert"><span class="status-dot" id="dot-nvidia"></span>NVIDIA</div>
+            </div>
+            <div id="mode-warning" style="font-size: 0.6rem; color: var(--accent); margin-top: 4px; letter-spacing: 0.5px; font-weight: bold;" title="Bridge-Mode: NATIV überschreibt Originale, PATCH erstellt separaten Mod-Ordner">
+                NATIV: <span style="color:var(--success)">AKTIV</span> | PATCH: <span style="color:var(--danger)">DEAKTIVIERT</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+
+        <!-- LEFT SIDEBAR: CONFIG & ACTIONS -->
+        <div class="sidebar">
+            <div class="panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="margin:0;">System-Status</h3>
+                    <div id="run-control-box">
+                        <button id="main-run-btn" onclick="toggleBridge()" title="START = Übersetzung aller aktiven Mods starten | STOP = laufende Aufgaben abbrechen" style="padding: 4px 12px; font-size: 0.7rem; width: auto;">START</button>
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-item"><div class="stat-label">Phase</div><div id="ui-phase" class="stat-value" style="font-size: 0.85rem; color: var(--accent);">Idle</div></div>
+                    <div class="stat-item"><div class="stat-label">Threads</div><div id="ui-threads" class="stat-value">0</div></div>
+                </div>
+                <div id="ui-mod-name" class="stat-label" style="margin-top: 10px; color: var(--success); font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bereit</div>
+                <div id="ui-sub-phase" style="display:none; font-size: 0.65rem; color: var(--accent); margin-top: 4px; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: blink 1.2s infinite;"></div>
+                <div class="progress-bar">
+                    <div id="ui-progress" class="progress-fill"></div>
+                    <div id="ui-progress-text" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000, -1px -1px 2px #000; z-index: 2;">BEREIT</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Pipeline</h3>
+                <div class="pipeline-container">
+                    <div id="stage-scan" class="pipeline-stage" title="Phase 1: Durchsucht Mod-Ordner nach neuen/geänderten Text-Dateien">SCAN</div>
+                    <div id="conn-1" class="pipeline-connector"></div>
+                    <div id="stage-trans" class="pipeline-stage" title="Phase 2: Übersetzt Texte mit dem ausgewählten KI-Modell">LLM</div>
+                    <div id="conn-2" class="pipeline-connector"></div>
+                    <div id="stage-polish" class="pipeline-stage" title="Phase 3: Qualitätskontrolle und Grammatik-Prüfung der Übersetzung">QA</div>
+                    <div id="conn-3" class="pipeline-connector"></div>
+                    <div id="stage-export" class="pipeline-stage" title="Phase 4: Speichert übersetzte Dateien und aktualisiert den Mod-Ordner">SAVE</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Aktionen</h3>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <!-- Haupt-Workflow -->
+                    <div style="background: rgba(100, 213, 196, 0.05); padding: 8px; border-radius: 4px; border: 1px solid rgba(100, 213, 196, 0.1);">
+                        <div class="stat-label" style="margin-bottom:5px; color:var(--success)">Workflow</div>
+                        <button onclick="triggerAction('sync')" title="Alle aktiven Mods automatisch übersetzen — Scan → LLM → QA → Speichern" style="background: var(--success); color: #000; font-weight: bold;">VOLL-AUTO SYNC</button>
+                        <button onclick="triggerAction('dry-run')" class="secondary" style="margin-top: 5px; font-size: 0.7rem;" title="Testlauf ohne Dateien zu speichern — zeigt an, was übersetzt würde">SIMULATION (DRY RUN)</button>
+                    </div>
+
+                    <!-- Wartung & Qualität -->
+                    <div style="background: rgba(216, 151, 60, 0.05); padding: 8px; border-radius: 4px; border: 1px solid rgba(216, 151, 60, 0.1);">
+                        <div class="stat-label" style="margin-bottom:5px; color:var(--accent)">Datenbank & Qualitaet</div>
+                        <div style="display:grid; grid-template-columns:1fr; gap:5px;">
+                            <button onclick="triggerAction('check-db')" class="secondary" style="border-color:var(--accent); color:var(--accent); font-size: 0.65rem;" title="Qualitäts-Check: Findet und repariert schlechte Übersetzungen in der Datenbank">DEEP POLISH</button>
+                        </div>
+                        <button onclick="triggerAction('audit-integrity')" class="secondary" style="margin-top: 5px; font-size: 0.65rem;" title="Prüft Datenbank auf korrupte Einträge und repariert sie automatisch">INTEGRITAETS-CHECK</button>
+                    </div>
+
+                    <!-- Spezial-Aktionen -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                        <button onclick="triggerAction('manage-patches')" class="secondary" style="font-size:0.6rem;" title="Alle Patches in BridgeCore mergen — für Steam Workshop Export">MERGE CORE</button>
+                        <button onclick="triggerAction('workshop')" class="secondary" style="font-size:0.6rem; border-color:#5a9fd4; color:#5a9fd4;" title="Übersetzungs-Patch direkt in den Steam Workshop hochladen">STEAM UPLOAD</button>
+                    </div>
+
+                    <button onclick="if(confirm('⚠️ WIRKLICH ALLE BRIDGE-PROZESSE BEENDEN?\n\nDies beendet:\n• Aktuelle Übersetzungs-Aufgaben\n• Den GUI-Server\n• Alle alten/hängenden Bridge-Prozesse\n\nDanach musst du das Dashboard neu starten.')) triggerAction('kill-all')" title="⚠️ Beendet ALLE Bridge-Prozesse sofort — auch alte/hängende Instanzen. Dashboard muss neu gestartet werden!" style="background: #3d0a0a; color: #ff6666; margin-top: 5px; font-size:0.65rem; border: 1px solid #8a1f1f;">🧨 ALLE PROZESSE KILLEN</button>
+
+                    <button onclick="triggerAction('full_reset')" title="Setzt alles zurück: löscht Patches, Backups und processed_files — Originale werden aus Backups wiederhergestellt" style="background: #4a1a1a; color: #ff9999; margin-top: 10px; font-size:0.65rem; border: 1px solid #632525;">WERKSEINSTELLUNG (RESET)</button>
+
+                    <!-- DB Repair Button — erscheint nur wenn PREFLIGHT kritische Issues findet -->
+                    <button id="db-repair-btn" class="db-repair-btn" onclick="runDbRepair()" title="Datenbank-Reparatur: Markiert fehlerhafte Einträge für Re-Translation. Kein Datenverlust.">
+                        🔧 DB-REPARATUR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- REVISION MODAL -->
+        <div id="revision-modal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+            <div class="modal-content panel" style="width: 560px; max-height: 75vh; overflow-y: auto; background: var(--panel-bg);">
+                <h3 style="margin-bottom: 4px;">📜 Übersetzungs-Verlauf</h3>
+                <div style="font-size: 0.65rem; color: var(--muted); margin-bottom: 12px; white-space: pre-wrap; word-break: break-word;" id="revision-source-text"></div>
+                <div id="revision-list" style="max-height: 50vh; overflow-y: auto;">
+                    <div style="color: var(--muted); text-align: center; padding: 10px;">Lade Revisionen...</div>
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button onclick="closeRevisionModal()" class="secondary" title="Schließen">Schließen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KEY MODAL -->
+        <div id="key-modal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+            <div class="modal-content panel" style="width: 680px; max-height: 85vh; overflow-y: auto; background: var(--panel-bg);">
+                <h3 style="margin-bottom: 6px;">🔑 API Keys verwalten</h3>
+                <!-- Internal separation info -->
+                <div style="background: rgba(216,151,60,0.08); border: 1px solid rgba(216,151,60,0.3); border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.75rem; color: var(--muted); line-height: 1.5;">
+                    <span style="color:var(--accent); font-weight:bold;">ℹ️ Interne Trennung:</span>
+                    Jeder API-Key ist einem Provider zugeordnet und wird intern automatisch rotiert.
+                    Mehrere Keys pro Provider erhöhen das Durchsatz-Limit (Key-Rotation bei Rate-Limits).
+                    Der Name ist nur zur Beschriftung und hat keine technische Funktion.
+                </div>
+                <div id="key-sections"></div>
+                <div style="display:flex; gap:10px; margin-top: 20px;">
+                    <button onclick="closeKeyModal()" class="secondary" title="Schließen ohne zu speichern">Schließen</button>
+                    <button onclick="saveKeysFromModal()" title="API-Keys speichern und Modal schließen">Änderungen Übernehmen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER: LLM INTERACTION, DB BROWSER & LOGS -->
+        <div class="center-stack">
+            <!-- TERMINAL VIEW (Active during Run) -->
+            <div id="terminal-view-container" style="display: none; flex-direction: column; flex: 1; overflow: hidden;">
+                <div class="panel" style="display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0; flex: 1;">
+                    <h3 style="font-size: 0.9rem; margin: 0 0 10px 0;">LLM Kommunikation (Terminal)</h3>
+                    <div class="interaction-viewer">
+                        <div class="terminal-box">
+                            <div class="terminal-header"><span>LETZTER LLM REQUEST</span><span id="req-provider" style="color:var(--accent)">-</span></div>
+                            <div id="term-req" class="terminal-content">Warte auf Daten...</div>
+                        </div>
+                        <div class="terminal-box">
+                            <div class="terminal-header"><span>LETZTE LLM ANTWORT</span><span id="res-time">-</span></div>
+                            <div id="term-res" class="terminal-content" style="color: var(--success);">...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="log" class="log-panel" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- DB BROWSER VIEW (Active during Idle) -->
+            <div id="db-browser-container" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+                <div class="panel" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <h3 style="margin:0;">Datenbank Browser</h3>
+                        <input type="text" id="db-search" placeholder="Suchen..." style="width: 250px; margin:0;" oninput="searchDb()" title="Durchsucht Quelltexte und Übersetzungen — Echtzeit-Filter">
+                    </div>
+                    <div class="db-table-container">
+                        <table class="db-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%;">Original</th>
+                                    <th style="width: 40%;">Übersetzung</th>
+                                    <th style="width: 10%;">Sprache</th>
+                                    <th style="width: 10%;">Aktion</th>
+                                </tr>
+                            </thead>
+                            <tbody id="db-table-body">
+                                <!-- Rows via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--muted); display:flex; justify-content:space-between;">
+                        <div title="Klicke in das Textfeld zum Editieren. Mehrzeilige Eingabe möglich. Speichern mit Save-Button.">✏️ Klicke auf eine Übersetzung zum Editieren. Mehrzeilen-Text möglich.</div>
+                        <div id="db-count" style="font-weight: bold; color: var(--accent);">0 Einträge</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR: STATS, DIAGNOSTICS & DB SAMPLES -->
+        <div class="right-sidebar">
+            <div class="panel">
+                <h3>Statistiken</h3>
+                <div class="stat-grid">
+                    <div class="stat-item"><div class="stat-label">Gelesen</div><div id="stat-scanned" class="stat-value">0</div></div>
+                    <div class="stat-item"><div class="stat-label">Cache</div><div id="stat-cached" class="stat-value">0</div></div>
+                    <div class="stat-item"><div class="stat-label">Neu</div><div id="stat-translated" class="stat-value">0</div></div>
+                    <div class="stat-item"><div class="stat-label">Fehler</div><div id="stat-failed" class="stat-value">0</div></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Bridge Diagnostics</h3>
+                <div class="stat-label">System Health: <span id="sys-load">Normal</span></div>
+                <div class="stat-label">DB Einträge: <span id="stat-db-total">-</span></div>
+            </div>
+
+            <div class="panel">
+                <h3>Mod-Backups</h3>
+                <div id="backup-list" style="max-height: 200px; overflow-y: auto; font-size: 0.8rem; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="color: var(--muted); text-align: center; padding: 10px;">Lade Mods...</div>
+                </div>
+            </div>
+
+            <div class="panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0;">
+                <h3>DB Translation Stream</h3>
+                <div id="db-samples" class="sample-list" style="overflow-y: auto; flex: 1;">
+                    <div class="stat-label" style="text-align:center; padding: 20px;">Noch keine neuen Übersetzungen in dieser Sitzung.</div>
+                </div>
+            </div>
+
+            <!-- FCM LIVE RANKINGS PANEL -->
+            <div class="panel" id="fcm-panel" style="display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0; border-color: rgba(100,213,196,0.3);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <h3 style="margin:0; color: var(--success);">⚡ FCM Live Rankings</h3>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <span id="fcm-daemon-badge" style="font-size:0.55rem; padding:2px 6px; border-radius:10px; background:#333; color:#999;">OFFLINE</span>
+                        <button onclick="refreshFcmRankings()" id="fcm-refresh-btn" title="FCM Live-Daten jetzt neu laden" style="width:auto; padding:3px 8px; font-size:0.6rem; background:rgba(100,213,196,0.15); border:1px solid rgba(100,213,196,0.3); color:var(--success);">↻</button>
+                    </div>
+                </div>
+                <div id="fcm-rankings-list" style="overflow-y:auto; flex:1; font-size:0.7rem; font-family:monospace;">
+                    <div style="color:var(--muted); text-align:center; padding:10px;">Lade FCM-Daten...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: rgba(0,0,0,0.8); padding: 5px 20px; font-size: 0.7rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); z-index: 100;">
+        <div title="Syx-Bridge Version — Songs of Syx AI Translation Tool by Vannon"><span id="fcm-status-dot" style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#666; margin-right:4px;"></span>Syx-Bridge v0.19.6 - V71 Ready | NVIDIA NIM + FCM Live</div>
+        <div title="Fehler oder Feedback bitte per E-Mail melden">Kontakt &amp; Bug-Reports: <span style="color: var(--accent);">vannon858@gmail.com</span></div>
+    </footer>
+
+    <script src="/public/app.js"></script>
+    <script>
+        function toggleSettings() {
+            if (window.liveStats && window.liveStats.isRunning) {
+                alert("Einstellungen können während eines aktiven Laufs nicht geändert werden!");
+                return;
+            }
+            const dropdown = document.getElementById('settings-dropdown');
+            const isOpen = dropdown.style.display !== 'none';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            // Lazy-load: only poll model-status + provider-stats while dropdown is open
+            if (!isOpen && window.startSettingsPolling) window.startSettingsPolling();
+            if (isOpen && window.stopSettingsPolling) window.stopSettingsPolling();
+        }
+    </script>
+</body>
+</html>
