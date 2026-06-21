@@ -1,11 +1,11 @@
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
-
 const os = require('os');
-const SETTINGS_PATH = process.platform === 'win32'
-  ? path.join(process.env.APPDATA || '', 'songsofsyx', 'settings', 'LauncherSettings.txt')
-  : path.join(os.homedir(), '.local', 'share', 'songsofsyx', 'settings', 'LauncherSettings.txt');
+const { createPlugin } = require('./plugin-registry');
+
+const activePlugin = createPlugin(process.env.GAME || 'songs_of_syx');
+const SETTINGS_PATH = activePlugin.getLauncherSettingsPath();
 
 /**
  * Parses the Songs of Syx LauncherSettings.txt content.

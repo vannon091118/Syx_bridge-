@@ -46,7 +46,7 @@ function createPolishArbiter(deps = {}) {
     if (isLikelyTargetLanguageText(restored)) score += 15;
 
     // 5. No shield leaks — check legacy [[N]], modern __SHLD_N__, and DNT tokens
-    if (!/[\[\[]\d+[\]\]]|__SHLD_\d+__|_DNT_\d+_/.test(restored) && !/__VAR\d+__/.test(restored)) score += 5;
+    if (!/\[\[\d+\]\]|__SHLD_\d+__|_DNT_\d+_/.test(restored) && !/__VAR\d+__/.test(restored)) score += 5;
 
     return Math.max(0, Math.min(100, score));
   }

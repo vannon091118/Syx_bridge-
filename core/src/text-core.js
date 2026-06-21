@@ -123,9 +123,9 @@ function shouldTranslate(text) {
   if (/^[\w.-]+\.(png|jpg|jpeg|webp|gif|dds|wav|ogg|mp3|json|xml|ini|txt)$/i.test(value)) return false;
   if (/^[a-z0-9_.:-]+$/i.test(value) && /[_./:-]/.test(value) && !/\s/.test(value)) return false;
   // Reject structural noise: strings starting with SoS file structure characters
-  // (comma, semicolon, colon, tab, closing brace/bracket). Note: value is already .trim()\'d.
+  // (comma, semicolon, colon, tab, closing brace/bracket). Note: value is already .trim()'d.
   // P0-2: } und ] hinzugefuegt zum strukturellen Delimiter-Check (Config-Block-Fragmente).
-  if (/^[,:;}\]\[]/.test(value)) return false;
+  if (/^[,:;}\][]/.test(value)) return false;
   // Reject strings that are just a key name + colon with no actual content
   // (e.g. "HistoryValue:", "Type:"). These are SoS structural keys, not translatable text.
   if (/^[A-Za-z_][A-Za-z0-9_]*:\s*$/.test(value)) return false;
@@ -133,7 +133,7 @@ function shouldTranslate(text) {
   // Matches: HEAL1: { or ARMY_NAMES: [ — Config block/array openers with
   // nothing meaningful after the delimiter. The $ anchor ensures
   // we don't block legitimate text like "TYPE: {RACE_CITY} damage".
-  if (/^[A-Z_][A-Z0-9_]*:\s*[\[\{]\s*$/.test(value)) return false;
+  if (/^[A-Z_][A-Z0-9_]*:\s*[[{]\s*$/.test(value)) return false;
   // Reject Java package/class notation (e.g. "view.sett.ui.room.UIRoom: {",
   // "world.map.landmark.WorldLandmarks: {"). Pattern: 3+ lowercase dot-separated
   // segments followed by an uppercase class name. Safe for SoS translations.
@@ -355,7 +355,7 @@ function buildProofreadPrompt(items, targetLang = 'German', grammarContext = '',
     // Alle normalen Caller (ensureTranslations, Deep Polish) setzen originalSource.
     const hasExplicitOriginal = !!item.originalSource;
     if (!hasExplicitOriginal) {
-      console.warn(`[PROOFREAD] Eintrag ohne originalSource — Meaning-Drift moeglich.`);
+      console.warn('[PROOFREAD] Eintrag ohne originalSource — Meaning-Drift moeglich.');
     }
     const originalLine = item.originalSource ? `Original English: "${item.originalSource}"\n` : '';
     return `ID:${index + 1}${metaLine}\n${originalLine}Current ${targetLang}: "${item.protectedText}"\nImproved ${targetLang}:`;

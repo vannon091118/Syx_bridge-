@@ -94,7 +94,7 @@ if (!fs.existsSync(DBOLD_DIR)) {
 const now = new Date();
 const dateStr = now.toISOString().slice(0, 10);                          // 2026-06-20
 const timeStr = now.toISOString().slice(11, 19).replace(/:/g, '');       // 143022
-const safeLabel = label.trim().replace(/[^a-z0-9_\-]/gi, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+const safeLabel = label.trim().replace(/[^a-z0-9_-]/gi, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
 const filename = `translations_${dateStr}_${timeStr}_${safeLabel}.db`;
 const destPath = path.join(DBOLD_DIR, filename);
 const srcSize = fs.statSync(DB_SRC).size;
@@ -133,7 +133,7 @@ if (isDryRun) {
 fs.copyFileSync(DB_SRC, destPath);
 const destSize = fs.statSync(destPath).size;
 
-console.log(`💾 Snapshot erstellt:`);
+console.log('💾 Snapshot erstellt:');
 console.log(`   Quelle:  translations.db (${(srcSize / (1024 * 1024)).toFixed(1)} MB)`);
 console.log(`   Ziel:    archive/dbold/${filename} (${(destSize / (1024 * 1024)).toFixed(1)} MB)`);
 console.log(`   Label:   "${label}"`);
@@ -141,7 +141,7 @@ console.log(`   Label:   "${label}"`);
 // ── Optional: TREND_REPORT update ───────────────────────────────────────────
 if (isTrend) {
   if (!fs.existsSync(TREND_REPORT)) {
-    console.warn(`⚠️  DB_TREND_REPORT.md nicht gefunden — --trend ignoriert.`);
+    console.warn('⚠️  DB_TREND_REPORT.md nicht gefunden — --trend ignoriert.');
     process.exit(0);
   }
 

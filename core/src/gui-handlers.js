@@ -23,7 +23,7 @@ function readDisplayName(dirPath, adapter) {
         if (meta && meta.NAME) return String(meta.NAME).trim();
       } else {
         // Generic fallback: look for NAME: "..." pattern
-        const match = content.match(/^\s*NAME:\s*\"?(.*?)\"?,?\s*$/im);
+        const match = content.match(/^\s*NAME:\s*"?(.*?)"?,?\s*$/im);
         if (match) return match[1].trim();
       }
     } catch (e) {}

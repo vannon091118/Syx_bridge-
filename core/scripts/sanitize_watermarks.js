@@ -59,11 +59,10 @@ console.log(`  Watermarks in translation:    ${transProbe.c}`);
 // ─── PROBE: revisions table (if exists) ─────────────────────────────
 let revSrcProbe = { c: 0 };
 let revTransProbe = { c: 0 };
-let revTotal = { c: 0 };
 let hasRevisions = false;
 
 try {
-  revTotal = db.prepare('SELECT COUNT(*) as c FROM translation_revisions').get();
+  const revTotal = db.prepare('SELECT COUNT(*) as c FROM translation_revisions').get();
   hasRevisions = true;
 
   revSrcProbe = db.prepare(`

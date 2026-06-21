@@ -111,7 +111,7 @@ function verifyPluginContract(PluginClass, pluginLabel, iface) {
   const notOverridden = [];
   for (const method of iface.abstractMethods) {
     // For GameAdapter methods: check on SongsOfSyxPlugin.prototype
-    const isOverridden = proto.hasOwnProperty(method);
+    const isOverridden = Object.prototype.hasOwnProperty.call(proto, method);
     check(
       `${pluginLabel}.${method}() overrides abstract`,
       isOverridden
@@ -124,9 +124,9 @@ function verifyPluginContract(PluginClass, pluginLabel, iface) {
   // L2b — OPTIONAL: Check that at least ONE concrete GamePlugin method is overridden
   // (proves the plugin isn't just inheriting defaults)
   const concretePluginMethods = iface.pluginMethods.filter(m => !iface.abstractMethods.has(m));
-  const overriddenConcrete = concretePluginMethods.filter(m => proto.hasOwnProperty(m));
+  const overriddenConcrete = concretePluginMethods.filter(m => Object.prototype.hasOwnProperty.call(proto, m));
   console.log(`\n  --- L2b: Concrete Override (${concretePluginMethods.length} GamePlugin methods) ---`);
-  const missingConcrete = concretePluginMethods.filter(m => !proto.hasOwnProperty(m));
+  const missingConcrete = concretePluginMethods.filter(m => !Object.prototype.hasOwnProperty.call(proto, m));
   check(
     `${pluginLabel} overrides all ${concretePluginMethods.length} concrete GamePlugin methods`,
     overriddenConcrete.length >= concretePluginMethods.length
@@ -138,10 +138,10 @@ function verifyPluginContract(PluginClass, pluginLabel, iface) {
   }
 
   // L3 — SIGNATURE: Parameter count must match (for all overridden methods)
-  console.log(`\n  --- L3: Signature (parameter count for ALL overridden methods) ---`);
+  console.log('\n  --- L3: Signature (parameter count for ALL overridden methods) ---');
   // L3a: GamePlugin concrete methods
   for (const method of concretePluginMethods) {
-    if (proto.hasOwnProperty(method)) {
+    if (Object.prototype.hasOwnProperty.call(proto, method)) {
       const expectedLen = GamePlugin.prototype[method].length;
       const actualLen = proto[method].length;
       check(
@@ -152,7 +152,7 @@ function verifyPluginContract(PluginClass, pluginLabel, iface) {
   }
   // L3b: GameAdapter methods that are overridden
   for (const method of iface.adapterMethods) {
-    if (proto.hasOwnProperty(method)) {
+    if (Object.prototype.hasOwnProperty.call(proto, method)) {
       const expectedLen = GameAdapter.prototype[method].length;
       const actualLen = proto[method].length;
       check(
@@ -187,7 +187,7 @@ function runSyntheticAutoDetectionTest() {
 
   if (hasDummy) {
     // Verify SongsOfSyxPlugin does NOT have it (should fail — inherited via chain is NOT implementation)
-    const hasOnPlugin = SongsOfSyxPlugin.prototype.hasOwnProperty(dummyMethodName);
+    const hasOnPlugin = Object.prototype.hasOwnProperty.call(SongsOfSyxPlugin.prototype, dummyMethodName);
     check(
       'Synthetic: dummy method NOT implemented on SongsOfSyxPlugin',
       !hasOnPlugin

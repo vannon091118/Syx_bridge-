@@ -9,6 +9,7 @@
   <a href="#-was-ist-syxbridge"><img src="https://img.shields.io/badge/lang-Deutsch-grey?style=flat-square" alt="Deutsch"></a>
   <img src="https://img.shields.io/badge/version-v0.21--experimental-orange?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/status-Alpha-red?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/tests-111%20PASS%200%20FAIL-brightgreen?style=flat-square" alt="Tests">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=flat-square" alt="Node">
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?style=flat-square&logo=windows" alt="Windows">
@@ -31,7 +32,7 @@
 
 You have Songs of Syx. You have 50 mods. They're all in English. You could manually translate 3,000+ strings — or you double-click a `.bat` file and let an AI pipeline handle it.
 
-**SyxBridge** scans your installed Workshop mods, runs the text through a multi-stage AI translation pipeline, and writes translations back to your game files. With a web dashboard, real-time monitoring, and quality control.
+**SyxBridge** scans your installed Workshop mods, runs the text through a multi-stage AI translation pipeline, and writes translations back to your game files. With a web dashboard, real-time monitoring, and quality control built-in.
 
 > Solo project by **Vannon** · Built with mass amounts of caffeine, AI, and stubbornness.
 
@@ -151,11 +152,12 @@ start.bat
 | **Placeholder Shielding** | `{NAME}`, `{AGE}`, `<tag>` protected through token replacement. |
 | **Glossary Learning** | Terminology memory with consistent application across all mods. |
 | **SQLite Cache** | Translated once = stored forever. Massive API cost savings. |
-| **Native & Patch Mode** | Native overwrites originals (with backup). Patch creates separate mod folder (opt-in). |
+| **Native & Patch Mode** | Native overwrites originals (with backup). Patch creates separate mod folder. Both are user-controlled. |
 | **Web Dashboard** | Real-time monitoring, DB browser, live terminal on `localhost:3000`. |
 | **Steam Workshop Export** | Direct upload of your translation patch to Steam Workshop. |
 | **Backup System** | Automatic backup of all originals before first overwrite. |
 | **5-Layer Watermark Defense** | ZWSP/ZWNJ watermarks stripped at every entry point — disk read, classification, DB boundary. |
+| **Plugin Architecture** | Game adapter system. Songs of Syx is the reference implementation. New games slot in via registry. |
 | **Dev Tools** | `db_query.js`, `db_snapshot.js`, `log_sorter.js`, `test_providers.js` — maintainability built in. |
 
 ---
@@ -173,11 +175,15 @@ Syx_bridge-/
 │   ├── src/
 │   │   ├── runtime-ops.js         # Orchestration: scan → translate → write
 │   │   ├── translation-runtime.js # Batch translation, cache, polish
-│   │   ├── sos-runtime.js         # Songs of Syx game adapter
+│   │   ├── sos-runtime.js         # Songs of Syx game adapter (plugin-backed)
 │   │   ├── router.js              # Provider routing + capability matrix
 │   │   ├── text-core.js           # Shielding, prompt building, JSON parsing
 │   │   ├── translation-db.js      # SQLite cache + watermark defense
 │   │   ├── preflight.js           # DB health check before every run
+│   │   ├── plugin-registry.js     # Game plugin factory & registry
+│   │   ├── plugins/               # Plugin implementations
+│   │   │   ├── SongsOfSyxPlugin.js
+│   │   │   └── GamePlugin.js      # Abstract base
 │   │   └── gui/                   # Web dashboard (Express + SSE)
 │   ├── scripts/
 │   │   ├── commit_lore/           # Commit narrative tools
@@ -188,6 +194,9 @@ Syx_bridge-/
 │   │   ├── db_snapshot.js         # DB snapshot + trend report
 │   │   ├── log_sorter.js          # Multi-run log filter/sorter
 │   │   └── verify_commit_msg.js   # RULE 3 commit gate
+│   ├── tests/
+│   │   ├── plugin-boundary-contract.js  # 76 contract checks: Plugin ↔ Adapter interface
+│   │   └── e2e_bug1_native_mode.js      # 35 E2E checks: Native Mode gate
 │   └── archive/docs/
 │       ├── CHANGELOG.md           # Persistent change log (never archived)
 │       ├── PLOT_LORE.md           # External narrative layer — agent dialogues
@@ -201,9 +210,12 @@ Syx_bridge-/
 
 | Version | Date | Highlights |
 |---|---|---|
+| **v0.21-exp** | 2026-06-21 | ESLint 0-error pass: useless escapes, hasOwnProperty, archive exclusion |
+| **v0.21-exp** | 2026-06-21 | npm test pipeline fixed: removed refs to deleted scripts, 111 PASS 0 FAIL |
+| **v0.21-exp** | 2026-06-21 | sos-runtime.js: SETTINGS_PATH via plugin-registry (GameAdapter abstraction complete) |
 | **v0.21-exp** | 2026-06-21 | Native Mode Fix: V6/V7 filter removed, German path injection, BridgeCore preserved |
 | **v0.21-exp** | 2026-06-21 | better-sqlite3 fallback, db_repair.js sync API, Patch Mode user-opt-out (95% score) |
-| **v0.21-exp** | 2026-06-21 | 5× live run: 1.363 DB entries, 440 German translations, 0 watermarks |
+| **v0.21-exp** | 2026-06-21 | 5× live run: 1.685 DB entries, 646 German translations, 0 watermarks |
 | **v0.21-exp** | 2026-06-20 | 5-layer watermark defense (ZWSP/ZWNJ), shouldTranslate config-blocker |
 | **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 to BU-039, Plugin Architecture |
 | v0.19.7 | 2026-06-18 | PREFLIGHT fix + Routing hardening + smart Error-Handler |
@@ -219,9 +231,10 @@ Syx_bridge-/
 |---|---|
 | **Version** | v0.21-experimental (active development branch) |
 | **Maturity** | Alpha · Solo project · In daily use by the author |
-| **DB** | 1.363+ translated entries, 0 watermarks (as of 2026-06-21) |
+| **DB** | 1.685 translated entries, 0 watermarks (as of 2026-06-21) |
 | **Score** | 95% on foreign systems (Python/Ollama = optional, not required) |
-| **Patch Mode** | User opt-in (disabled by default, fully functional) |
+| **Tests** | 111 PASS · 0 FAIL (plugin-boundary-contract + e2e native mode) |
+| **Patch Mode** | User opt-in via `.env` `PATCH_MODE_ENABLED=true`. Default: off. Fully functional. |
 
 <details>
 <summary><b>Known Issues</b></summary>
@@ -230,6 +243,7 @@ Syx_bridge-/
 |----|-------|----------|
 | LIVE-1 | Post-run verification needed: German texts loading in-game after Native Mode fix | 🟠 P1 |
 | F.D | Audit `.jsonl` data committed — should these be in `.gitignore`? | 🟢 P3 |
+| — | sos-runtime.js: needs lazy-load guard for `activePlugin` (module-level init may fail on missing env) | 🟡 P2 |
 
 </details>
 
@@ -258,7 +272,7 @@ Syx_bridge-/
 
 Du hast Songs of Syx. Du hast 50 Mods. Die sind alle auf Englisch. Du könntest 3.000+ Texte von Hand übersetzen — oder du startest **eine** `.bat`-Datei und lässt eine KI-Pipeline die Arbeit erledigen.
 
-**SyxBridge** scannt deine installierten Workshop-Mods, jagt die Texte durch eine mehrstufige KI-Pipeline und schreibt die Übersetzungen direkt zurück. Mit Web-Dashboard, Echtzeit-Monitoring und Qualitätskontrolle.
+**SyxBridge** scannt deine installierten Workshop-Mods, jagt die Texte durch eine mehrstufige KI-Pipeline und schreibt die Übersetzungen direkt zurück. Mit Web-Dashboard, Echtzeit-Monitoring und Qualitätskontrolle — weil "gut genug" nicht reicht wenn du 50 Mods hast.
 
 > Solo-Dev-Projekt von **Vannon** · Built with mass amounts of caffeine, AI, and stubbornness.
 
@@ -378,12 +392,11 @@ start.bat
 | **Placeholder Shielding** | `{NAME}`, `{AGE}`, `<tag>` geschützt durch Token-Replacement. |
 | **Glossar-Learning** | Terminologie-Memory mit konsistenter Anwendung über alle Mods. |
 | **SQLite Cache** | Einmal übersetzt = gespeichert. Spart API-Kosten massiv. |
-| **Native & Patch Mode** | Native überschreibt Originale (mit Backup). Patch erstellt separaten Mod-Ordner.¹ |
+| **Native & Patch Mode** | Native überschreibt Originale (mit Backup). Patch erstellt separaten Mod-Ordner. Beides steuerbar. |
 | **Web-Dashboard** | Echtzeit-Monitoring, DB-Browser, Live-Terminal auf `localhost:3000`. |
 | **Steam Workshop Export** | Direkt-Upload deines Übersetzungspatches in den Workshop. |
 | **Backup-System** | Automatische Sicherung aller Originale vor dem ersten Überschreiben. |
-
-<sub>¹ Patch Mode ist aktuell deaktiviert — ja, ich sag's dir direkt.</sub>
+| **Plugin-Architektur** | Game-Adapter-System. Songs of Syx ist die Referenzimplementierung. Neue Spiele per Registry. |
 
 ---
 
@@ -400,11 +413,15 @@ Syx_bridge-/
 │   ├── src/
 │   │   ├── runtime-ops.js         # Orchestrierung: Scan → Übersetzen → Schreiben
 │   │   ├── translation-runtime.js # Batch-Übersetzung, Cache, Polish
-│   │   ├── sos-runtime.js         # Songs of Syx Game-Adapter
+│   │   ├── sos-runtime.js         # Songs of Syx Game-Adapter (Plugin-backed)
 │   │   ├── router.js              # Provider-Routing + Capability-Matrix
 │   │   ├── text-core.js           # Shielding, Prompt-Bau, JSON-Parsing
 │   │   ├── translation-db.js      # SQLite Cache + Watermark-Defense
 │   │   ├── preflight.js           # DB-Health-Check vor jedem Run
+│   │   ├── plugin-registry.js     # Game-Plugin-Factory & Registry
+│   │   ├── plugins/               # Plugin-Implementierungen
+│   │   │   ├── SongsOfSyxPlugin.js
+│   │   │   └── GamePlugin.js      # Abstrakte Basis
 │   │   └── gui/                   # Web-Dashboard (Express + SSE)
 │   ├── scripts/
 │   │   ├── commit_lore/           # Commit-Erzählungs-Tools
@@ -415,6 +432,9 @@ Syx_bridge-/
 │   │   ├── db_snapshot.js         # DB-Snapshot + Trend-Report
 │   │   ├── log_sorter.js          # Multi-Run Log-Filter/Sorter
 │   │   └── verify_commit_msg.js   # RULE 3 Commit-Gate
+│   ├── tests/
+│   │   ├── plugin-boundary-contract.js  # 76 Contract-Checks: Plugin ↔ Adapter Interface
+│   │   └── e2e_bug1_native_mode.js      # 35 E2E-Checks: Native-Mode-Gate
 │   └── archive/docs/
 │       ├── CHANGELOG.md           # Persistentes Änderungslog (niemals archiviert)
 │       ├── PLOT_LORE.md           # Externer Narrativ-Layer — Agenten-Dialoge
@@ -428,9 +448,12 @@ Syx_bridge-/
 
 | Version | Datum | Highlights |
 |---|---|---|
+| **v0.21-exp** | 2026-06-21 | ESLint 0-Error-Durchlauf: useless escapes, hasOwnProperty, archive-Ausschluss |
+| **v0.21-exp** | 2026-06-21 | npm-test-Pipeline repariert: gelöschte Script-Refs entfernt, 111 PASS 0 FAIL |
+| **v0.21-exp** | 2026-06-21 | sos-runtime.js: SETTINGS_PATH via Plugin-Registry (GameAdapter-Abstraktion komplett) |
 | **v0.21-exp** | 2026-06-21 | Native Mode Fix: V6/V7-Filter entfernt, German-Pfad, BridgeCore erhalten |
 | **v0.21-exp** | 2026-06-21 | better-sqlite3 Fallback, db_repair.js Sync-API, Patch Mode User-Opt-Out (95%) |
-| **v0.21-exp** | 2026-06-21 | 5× Live-Run: 1.363 DB-Einträge, 440 deutsche Übersetzungen, 0 Watermarks |
+| **v0.21-exp** | 2026-06-21 | 5× Live-Run: 1.685 DB-Einträge, 646 deutsche Übersetzungen, 0 Watermarks |
 | **v0.21-exp** | 2026-06-20 | 5-Schichten Watermark-Defense (ZWSP/ZWNJ), shouldTranslate Config-Blocker |
 | **v0.20.0** | 2026-06-20 | Global Bump + Chain Hardening — BU-035 bis BU-039, Plugin-Architektur |
 | v0.19.7 | 2026-06-18 | PREFLIGHT-Fix + Routing-Härtung + smarter Error-Handler |
@@ -446,9 +469,10 @@ Syx_bridge-/
 |---|---|
 | **Version** | v0.21-experimental (aktiver Entwicklungs-Branch) |
 | **Reifegrad** | Alpha · Solo-Projekt · im Daily-Use des Autors |
-| **DB** | 1.363+ übersetzte Einträge, 0 Watermarks (Stand 2026-06-21) |
+| **DB** | 1.685 übersetzte Einträge, 0 Watermarks (Stand 2026-06-21) |
 | **Score** | 95% auf Fremdsystemen (Python/Ollama = optional, nicht erforderlich) |
-| **Patch Mode** | User Opt-in (standardmäßig deaktiviert, voll funktional) |
+| **Tests** | 111 PASS · 0 FAIL (plugin-boundary-contract + e2e native mode) |
+| **Patch Mode** | User Opt-in via `.env` `PATCH_MODE_ENABLED=true`. Standard: aus. Voll funktional. |
 
 <details>
 <summary><b>Known Issues</b></summary>
@@ -457,6 +481,7 @@ Syx_bridge-/
 |----|--------|----------|
 | LIVE-1 | Verifikation ausstehend: Deutsche Texte im Spiel nach Native-Mode-Fix | 🟠 P1 |
 | F.D | Audit-`.jsonl`-Daten committed — gehören in `.gitignore`? | 🟢 P3 |
+| — | sos-runtime.js: Lazy-Load-Guard für `activePlugin` fehlt (Modul-Level-Init könnte bei fehlendem env scheitern) | 🟡 P2 |
 
 </details>
 
