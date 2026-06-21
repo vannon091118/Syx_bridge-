@@ -95,8 +95,8 @@ class SongsOfSyxPlugin extends GamePlugin {
     });
   }
 
-  applyPatchModifications(infoObj, targetLanguage, patchNotice) {
-    // patchNotice parameter unused — required by GameAdapter interface contract
+  applyPatchModifications(infoObj, targetLanguage) {
+    // I1-Fix: patchNotice parameter entfernt — wurde nie vom Caller (runtime-ops.js) übergeben
     const patchSuffix = ` (${targetLanguage} Patch)`;
     const currentName = infoObj.NAME || 'BridgePatch';
     if (!currentName.endsWith(patchSuffix)) {

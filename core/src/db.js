@@ -1,4 +1,22 @@
-const Database = require('better-sqlite3');
+// P0-1: better-sqlite3 ships prebuilt binaries for common Node.js versions.
+// Falls die prebuilt binaries nicht geladen werden können (fehlende Build-Tools
+// bei nicht-unterstütztem Node.js), gibt es eine klare Fehlermeldung statt
+// einem kryptischen Stack-Trace.
+let Database;
+try {
+  Database = require('better-sqlite3');
+} catch (e) {
+  console.error('[DB] FATAL: better-sqlite3 konnte nicht geladen werden.');
+  console.error('[DB] better-sqlite3 benötigt prebuilt binaries. Diese werden');
+  console.error('[DB] automatisch installiert. Falls dies fehlschlägt:');
+  console.error('[DB]   1. Stelle sicher dass Node.js LTS (18/20/22) installiert ist');
+  console.error('[DB]   2. Führe aus: npm rebuild better-sqlite3');
+  console.error('[DB]   3. Falls das fehlschlägt: npm install --build-from-source better-sqlite3');
+  console.error('[DB]      (dafür werden C++ Build-Tools benötigt — Visual Studio Build Tools auf Windows)');
+  console.error('[DB] Fehlerdetails:', e.message);
+  process.exit(1);
+}
+
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, '..', 'translations.db');
@@ -86,7 +104,7 @@ async function addColumnIfMissing(table, column, type) {
 // Schema-Version — inkrementieren wenn neue Migrationen/Spalten hinzukommen.
 // Jeder init()-Aufruf prüft diese Version. Bei Match → alle addColumnIfMissing
 // und Bulk-UPDATE-Migrationen werden übersprungen. Spart 2-5s auf HDD.
-const CURRENT_SCHEMA_VERSION = '5';
+const CURRENT_SCHEMA_VERSION = '6';
 
 /**
  * Initializes the database schema and performs migrations.
@@ -147,6 +165,9 @@ async function init() {
   await addColumnIfMissing('translations', 'quality_score', 'INTEGER NOT NULL DEFAULT 0');
   await addColumnIfMissing('translations', 'last_checked_at', 'TEXT');
   await addColumnIfMissing('translations', 'review_count', 'INTEGER NOT NULL DEFAULT 0');
+  // P4 Fix: Separater Counter für Placeholder-Fehler (shield_leak).
+  // Verhindert dass Placeholder-Probleme den Quality-Review-Counter aufbrauchen.
+  await addColumnIfMissing('translations', 'placeholder_review_count', 'INTEGER NOT NULL DEFAULT 0');
   await addColumnIfMissing('translations', 'stress_test_passed', 'INTEGER');
   await addColumnIfMissing('translations', 'stress_tested_at', 'TEXT');
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_hash ON translations(target_lang, source_hash)');

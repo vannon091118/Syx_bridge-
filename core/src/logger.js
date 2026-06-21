@@ -5,10 +5,18 @@ const LOG_PATH = path.join(process.cwd(), 'log.txt');
 const RUNS_PATH = path.join(process.cwd(), 'runs.jsonl');
 // BU-027 Fix: debug_payloads.txt nach logs/ verlagern statt CWD.
 const LOGS_DIR = path.join(process.cwd(), 'logs');
-try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch (e) { console.error('[LOGGER] Konnte logs/ nicht anlegen:', e.message); }
+try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch (e) {}
 const DEBUG_PATH = path.join(LOGS_DIR, 'debug_payloads.txt');
 
+// ── Log-Rotation: Letzte 3 Runs unsichtbar in logs/ ──────────────────
+// log.txt         = aktueller Run (CWD, sichtbar)
+// logs/log_1.txt  = vorheriger Run (unsichtbar für User)
+// logs/log_2.txt  = Run davor (unsichtbar für User)
+const LOG_1_PATH = path.join(LOGS_DIR, 'log_1.txt');
+const LOG_2_PATH = path.join(LOGS_DIR, 'log_2.txt');
+
 let dbInstance = null;
+let _rotationDone = false;
 
 const originalConsole = {
   log: console.log.bind(console),
@@ -19,10 +27,82 @@ const originalConsole = {
 function formatLogValue(value) {
   if (value instanceof Error) return value.stack || value.message;
   if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (value === null) return 'null';
+  if (value === undefined) return 'undefined';
   try {
-    return JSON.stringify(value);
+    // Safe JSON.stringify mit Zirkelschutz.
+    // Ohne den seen-WeakSet produziert JSON.stringify bei zirkulären Referenzen
+    // einen TypeError, und der catch-Block macht String(value) → [object Object].
+    const seen = new WeakSet();
+    return JSON.stringify(value, (key, val) => {
+      if (typeof val === 'object' && val !== null) {
+        if (seen.has(val)) return '[Circular]';
+        seen.add(val);
+      }
+      return val;
+    });
   } catch (e) {
-    return String(value);
+    // Letzter Fallback wenn selbst der Safe-Replacer wirft (z.B. BigInt)
+    return '[Unserializable: ' + (value?.constructor?.name || typeof value) + ']';
+  }
+}
+
+/**
+ * Verschiebt log.txt → log_1.txt → log_2.txt → log_3.txt (löschen).
+ * Nur beim ERSTEN Aufruf von setupLogging() pro Prozess.
+ * Danach schreibt der Prozess nur noch in das frische log.txt.
+ */
+function rotateLogs() {
+  if (_rotationDone) return;
+  _rotationDone = true;
+
+  try {
+    // log_2 löschen (ältestes Archiv)
+    if (fs.existsSync(LOG_2_PATH)) fs.unlinkSync(LOG_2_PATH);
+    // log_1 → log_2
+    if (fs.existsSync(LOG_1_PATH)) fs.renameSync(LOG_1_PATH, LOG_2_PATH);
+    // log.txt → log_1 (aktueller Run wird zu vorherigem Run)
+    if (fs.existsSync(LOG_PATH)) fs.renameSync(LOG_PATH, LOG_1_PATH);
+  } catch (e) {
+    // Rotation ist non-critical — Logging läuft auch ohne weiter
+  }
+}
+
+/**
+ * Schreibt eine Verzeichnis-Übersicht (ls/tree) in das frische log.txt.
+ * Hilft Agenten beim späteren Auslesen: sie sehen den Projektzustand
+ * zum Zeitpunkt des Runs.
+ */
+function captureDirectoryState() {
+  try {
+    const cwd = process.cwd();
+    const header = `\n${'='.repeat(60)}\nDIRECTORY STATE (Run-Start)\n${'='.repeat(60)}\n`;
+    fs.appendFileSync(LOG_PATH, header, 'utf-8');
+
+    // Top-Level-Dateien und -Ordner auflisten
+    const topEntries = fs.readdirSync(cwd, { withFileTypes: true });
+    const dirs = topEntries.filter(e => e.isDirectory()).map(e => `  [DIR]  ${e.name}/`).sort();
+    const files = topEntries.filter(e => e.isFile()).map(e => `  [FILE] ${e.name}`).sort();
+
+    fs.appendFileSync(LOG_PATH, `CWD: ${cwd}\n\n`, 'utf-8');
+    if (dirs.length > 0) fs.appendFileSync(LOG_PATH, dirs.join('\n') + '\n', 'utf-8');
+    if (files.length > 0) fs.appendFileSync(LOG_PATH, files.join('\n') + '\n', 'utf-8');
+
+    // core/src/ Struktur (die wichtigste für Agenten)
+    const srcDir = path.join(cwd, 'core', 'src');
+    if (fs.existsSync(srcDir)) {
+      fs.appendFileSync(LOG_PATH, `\n--- core/src/ ---\n`, 'utf-8');
+      const srcEntries = fs.readdirSync(srcDir, { withFileTypes: true });
+      for (const e of srcEntries.sort((a, b) => a.name.localeCompare(b.name))) {
+        const prefix = e.isDirectory() ? '[DIR] ' : '[FILE]';
+        fs.appendFileSync(LOG_PATH, `  ${prefix} ${e.name}${e.isDirectory() ? '/' : ''}\n`, 'utf-8');
+      }
+    }
+
+    fs.appendFileSync(LOG_PATH, `${'='.repeat(60)}\n\n`, 'utf-8');
+  } catch (e) {
+    // Non-critical
   }
 }
 
@@ -56,8 +136,13 @@ function setDb(db) {
 
 /**
  * Intercepts console methods to log to log.txt.
+ * Rotiert vorherige Logs (3-Run-Ring-Puffer).
+ * Erfasst Verzeichniszustand bei Run-Start.
  */
 function setupLogging() {
+  // Rotation: alte Runs archivieren, frisches log.txt starten
+  rotateLogs();
+
   console.log = (...args) => {
     writeLog('INFO', args);
     originalConsole.log(...args);
@@ -70,6 +155,9 @@ function setupLogging() {
     writeLog('WARN', args);
     originalConsole.warn(...args);
   };
+
+  // Verzeichnisstruktur ins frische log.txt schreiben
+  captureDirectoryState();
 
   process.on('uncaughtException', (err) => {
     originalConsole.error('[UNCAUGHT EXCEPTION]', err);
@@ -117,5 +205,11 @@ module.exports = {
   logRun,
   setDb,
   logPayload,
-  originalConsole
+  formatLogValue,
+  originalConsole,
+  // Exportiert für log_sorter.js und andere Dev-Tools
+  LOG_PATH,
+  LOG_1_PATH,
+  LOG_2_PATH,
+  rotateLogs
 };

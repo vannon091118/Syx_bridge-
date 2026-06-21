@@ -239,8 +239,7 @@ function createRuntimeOps(options) {
       await fsp.mkdir(stagingPath, { recursive: true });
       console.log(`[INFO] Kopiere Mod-Basis nach ${modFolderName}...`);
       await fsp.cp(modDir, stagingPath, {
-        recursive: true,
-        filter: (src) => !src.includes('V6') && !src.includes('V7')
+        recursive: true
       });
     }
 
@@ -348,6 +347,9 @@ function createRuntimeOps(options) {
       let filesSkipped = 0;
       const results = await mapLimit(jobs, options.maxParallelFiles || 8, async (job) => {
         let targetRelPath = job.relativePath;
+        if (config.NATIVE_MODE && config.TARGET_LANG && config.TARGET_LANG.toLowerCase() !== 'english') {
+          targetRelPath = targetRelPath.replace(/(?:\/|\\)(English)(?:\/|\\)/i, `/${config.TARGET_LANG}/`);
+        }
         const result = await writeTranslatedFile({ ...job, relativePath: targetRelPath }, stagingPath, translations);
         if (result.skipped) filesSkipped++;
         else filesWritten++;
@@ -382,31 +384,15 @@ function createRuntimeOps(options) {
         console.log(`[NATIVE] ${stagingEntries.length} Dateien ins Workshop kopiert.`);
 
         // ── Copy to GAME_MOD_ROOT (AppData) so the game loads translations ──
-        // Skip if modDir already IS in GAME_MOD_ROOT (no double-copy).
-        // + path.sep prevents false positives on sibling dirs (e.g. mods/ vs mods_backup/).
         const normalizedModDir = path.resolve(modDir).toLowerCase() + path.sep;
         const normalizedGameRoot = path.resolve(config.GAME_MOD_ROOT).toLowerCase() + path.sep;
         if (!normalizedModDir.startsWith(normalizedGameRoot)) {
           const appDataDest = path.join(config.GAME_MOD_ROOT, path.basename(modDir));
-          console.log(`[NATIVE] Kopiere Übersetzungen ins AppData-Verzeichnis: ${appDataDest}`);
-          for (const entry of stagingEntries) {
-            const srcFile = path.join(stagingPath, entry.relativePath);
-            const destFile = path.join(appDataDest, entry.relativePath);
-            await fsp.mkdir(path.dirname(destFile), { recursive: true });
-            await fsp.cp(srcFile, destFile, { force: true });
-          }
-          // Copy _Info.txt if AppData destination doesn't have one yet.
-          // Without _Info.txt at the mod root, the game won't recognize the folder as a valid mod.
-          const appDataInfoFile = path.join(appDataDest, gameAdapter.getMetadataFileName());
-          if (!fs.existsSync(appDataInfoFile)) {
-            const stagingInfoFile = path.join(stagingPath, gameAdapter.getMetadataFileName());
-            if (fs.existsSync(stagingInfoFile)) {
-              await fsp.cp(stagingInfoFile, appDataInfoFile);
-              console.log(`[NATIVE] _Info.txt nach AppData kopiert (existierte dort noch nicht).`);
-            }
-          }
-          console.log(`[NATIVE] ${stagingEntries.length} Dateien ins AppData-Verzeichnis kopiert.`);
+          console.log(`[NATIVE] Kopiere gesamte Mod ins AppData-Verzeichnis: ${appDataDest}`);
+          await fsp.cp(stagingPath, appDataDest, { recursive: true, force: true });
+          console.log(`[NATIVE] Mod-Kopie in AppData abgeschlossen.`);
         }
+        console.log(`[NATIVE] ${stagingEntries.length} Dateien ins AppData-Verzeichnis kopiert.`);
       }
     } else {
       console.log(`[DRY RUN] ${jobs.length} Dateien verarbeitet (${allTexts.length} Strings), keine Änderungen gespeichert.`);

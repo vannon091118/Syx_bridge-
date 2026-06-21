@@ -838,6 +838,7 @@ const PERSISTED_KEYS = [
   ['TARGET_LANG',           (c) => firstDefined(c.TARGET_LANG)],
   ['NATIVE_MODE',           (c) => String(!!c.NATIVE_MODE)],
   ['GRAMMAR_CHECK',         (c) => String(!!c.GRAMMAR_CHECK)],
+  ['PATCH_MODE_ENABLED',    (c) => String(!!c.PATCH_MODE_ENABLED)], // P1-1: Patch Mode User-Opt-Out — SoS OVERRIDE-Loading
   ['LOCAL_MODELS_ENABLED',  (c) => String(!!c.LOCAL_MODELS_ENABLED)],
   // NMT_LOCAL_ENABLED removed (BU-040): was VERWAIST — no provider client, router entry, or dispatcher path existed.
   // warm-model.js remains as roadmap v0.23. Re-add here when NMT provider is implemented.
@@ -861,6 +862,8 @@ const PERSISTED_KEYS = [
   ['PLAYER2_ENABLED',       (c) => String(!!c.PLAYER2_ENABLED)],
   ['PLAYER2_URL',           (c) => firstDefined(c.PLAYER2_URL, PLAYER2_DEFAULT_URL)],
   ['BATCH_SIZE',            (c) => firstDefined(c.BATCH_SIZE)],
+  ['MAX_REVIEW_COUNT',      (c) => firstDefined(c.MAX_REVIEW_COUNT, '15')],
+  ['REVIEW_RECOVERY_HOURS', (c) => firstDefined(c.REVIEW_RECOVERY_HOURS, '24')],
   ['GAME',                  (c) => firstDefined(c.GAME, 'songs_of_syx')],
 ];
 

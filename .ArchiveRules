@@ -1,0 +1,109 @@
+# .ArchiveRules — SyxBridge Dokumentationssystem
+
+> **Stand:** 2026-06-20 | **Version:** v0.21
+> **Zweck:** Zusammenfassung des gesamten Dokumentationssystems. Verweist auf individuelle Regeln in AGENTS.md, MASTER_DOC.md, WORKFLOW.md.
+
+---
+
+## Architektur (3+5 Rollen)
+
+### FREEZE-Archiv (3 Dokumente — permanent)
+| Dokument | Rolle | Inhalt |
+|----------|-------|--------|
+| `FREEZE/FREEZE_INDEX.md` | **Das Buch** | Lückenlose Glossary-Einträge mit Kausalität, Cross-Refs, CHANGELOG-Verweisen |
+| `FREEZE/MASTER_FREEZE_*.md` | **Inhaltsverzeichnis** | NUR Verweise (ID + 1-Zeiler + Link ins Buch). Keine Inhalte, keine Kausalität. |
+| `FREEZE/FREEZE_MASTER_CHECKLIST_*.md` | **Verifikation** | Begleitdokument — Claims vs Code |
+
+### LIVE-Dokumente (5 — aktuell)
+| Dokument | Rolle | Inhalt |
+|----------|-------|--------|
+| `CHANGELOG.md` | **Persistentes Log** | NIE löschen/archivieren. Jede Code-Änderung dokumentiert. |
+| `MASTER_DOC.md` | **SSOT** | NUR aktuell Gültiges. Jede Status-Aussage mit CHANGELOG-Referenz. |
+| `PREFLIGHT_LATEST.md` | **DB-Health** | Auto-überschrieben bei jedem Sync. |
+| `AGENTS.md` | **Agent-Regeln** | SSOT-Kopie (Root-Sync). Workflow-Regeln für Sub-Agents. |
+| `WORKFLOW.md` | **Session-Lifecycle** | Start/End-Checklisten, Eskalation, DB-Retention. |
+
+### Planung (1 Dokument)
+| Dokument | Rolle |
+|----------|-------|
+| `plans/PLAN_MASTER.md` | **Zentrales Planungsdokument** — ALLE P0-x Planungs-Items |
+
+---
+
+## Kernregeln
+
+### 1. Doku-Clean Prozess
+```
+ANALYSE → Härtung → Gegenprüfung → INDEX-Überführung → MASTER_FREEZE-Referenz → Löschung
+```
+**Siehe:** AGENTS.md § DOKU-CLEAN WORKFLOW
+
+### 2. 4 Lösch-Kriterien (ALLE müssen erfüllt sein)
+1. ✅ Inhalt nachweislich ohne Konflikt in LIVE umgesetzt
+2. ✅ Relevante Daten in LIVE vorhanden ODER als obsolet markiert
+3. ✅ Inhalt als Glossary-Eintrag im FREEZE_INDEX überführt
+4. ✅ Eintrag im MASTER_FREEZE referenziert und begründet
+
+**Siehe:** AGENTS.md § DOKU-CLEAN WORKFLOW
+
+### 3. DOKU-FLAG ↔ RUNTIME-FLAG Trennung
+- **DOKU-FLAG:** Status-Marker in .md (BEHOBEN, OFFEN, VERIFIZIERT) — Fundort-Zitat reicht
+- **RUNTIME-FLAG:** Programmverhalten (*_ENABLED, DB-Spalten, CLI-Flags) — echter Lauf PFLICHT
+
+**Siehe:** AGENTS.md § DOKU-FLAG ↔ RUNTIME-FLAG TRENNUNG
+
+### 4. MASTER FREEZE = TOC, nicht SSOT
+- MASTER_FREEZE enthält NUR Verweise (≤20 Wörter pro Zeile)
+- Keine Inhalte, keine Kausalität, keine Wiederholung aus dem Buch
+- MASTER_DOC ist DIE SSOT für aktuellen Stand
+
+**Siehe:** MASTER_DOC.md §9
+
+### 5. CHANGELOG-Verweise PFLICHT
+- Jeder FREEZE_INDEX-Eintrag MUSS einen CHANGELOG-Verweis haben
+- Jede MASTER_DOC-Status-Aussage MUSS auf CHANGELOG verweisen
+- Fehlende Verweise → vor nächstem Commit nachtragen
+
+**Siehe:** AGENTS.md § TRACEABILITY-GUARANTEES
+
+### 6. Pläne → PLAN_MASTER.md
+- JEDER Plan landet in `plans/PLAN_MASTER.md`
+- Kein Plan in Root, kein Plan in System32, kein Plan verstreut in docs/
+- Verstoß: Plan wird nach PLAN_MASTER migriert, Original gelöscht
+
+### 7. Session-Lifecycle
+- **Start:** Git-Status clean, HANDSHAKE lesen, PREFLIGHT prüfen
+- **Ende:** Neuer HANDSHAKE, CHANGELOG aktuell, DB-Archivierung anbieten
+
+**Siehe:** WORKFLOW.md
+
+### 8. Traceability (3-Schichten-Defense)
+- **Schicht 1 (Code):** Per-Folder INDEX.md + [CL:TAG]-Verweise
+- **Schicht 2 (Log):** CHANGELOG.md — chronologisch, irreversibel
+- **Schicht 3 (Archiv):** FREEZE_INDEX.md — Glossary mit Kausalitäts-Ketten
+
+**Siehe:** MASTER_DOC.md §7 + AGENTS.md § TRACEABILITY-GUARANTEES
+
+---
+
+## Ziel-Architektur (Endzustand)
+
+```
+core/archive/docs/
+├── CHANGELOG.md                  # Persistentes Log
+├── MASTER_DOC.md                 # SSOT
+├── PREFLIGHT_LATEST.md           # DB-Health
+├── AGENTS.md                     # Agent-Regeln (SSOT-Kopie)
+├── WORKFLOW.md                   # Session-Lifecycle
+├── plans/
+│   └── PLAN_MASTER.md            # Zentrales Planungsdokument
+├── FREEZE/
+│   ├── FREEZE_INDEX.md           # Das Buch
+│   ├── MASTER_FREEZE_*.md        # TOC
+│   └── FREEZE_MASTER_CHECKLIST_*.md  # Verifikation
+└── HANDSHAKE_*.md                # Session-Übergabe (temporär aktiv)
+```
+
+---
+
+*.ArchiveRules v1.0 — 2026-06-20 | Generiert durch Buffy (Codebuff)*

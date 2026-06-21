@@ -12,9 +12,10 @@ function getHash(text) {
  */
 function unescapeTextValue(value) {
   return String(value || '')
-    .replace(/\\n/g, '\n')
-    .replace(/\\"/g, '"')
-    .replace(/\\\\/g, '\\');
+    .replace(/[\u200B\u200C]/g, '')   // P0-1: Watermarks (ZWSP/ZWNJ) VOR dem Unescaping strippen.
+    .replace(/\\n/g, '\n')             //      Sonst sabotiert ein Watermark zwischen \ und n
+    .replace(/\\"/g, '"')              //      das \n→\n-Unescaping (unsichtbare Korruption).
+    .replace(/\\\\/g, '\\');           //      \\→\ MUSS als letztes kommen (sonst Doppel-Unescape).
 }
 
 /**

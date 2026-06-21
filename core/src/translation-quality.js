@@ -99,7 +99,8 @@ function createTranslationQuality(options) {
   }
 
   function scoreTranslationQuality(source, translation) {
-    const src = normalizeWhitespace(source);
+    const src = normalizeWhitespace(source);  // E2-Note: normalizeWhitespace wird auch in inferFlagReason() aufgerufen.
+    // Performance-Impact minimal (<1ms per call) — bewusste Redundanz zugunsten von Funktions-Isolation.
     const tgt = normalizeWhitespace(translation);
     if (!tgt) return 0;
     if (/^\d+$/.test(tgt)) return 0;

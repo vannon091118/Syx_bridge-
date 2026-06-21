@@ -1,0 +1,6 @@
+VERSION: "1.0.0",
+GAME_VERSION_MAJOR: 71,
+GAME_VERSION_MINOR: 0,
+NAME: "Watermark Mask Test",
+DESC: "Test-Mod fuer Watermark-Akkumulations-Bug. Enthaelt deutsche Saetze die als already_target_lang klassifiziert werden.",
+AUTHOR: "SyxBridge Diagnostics"

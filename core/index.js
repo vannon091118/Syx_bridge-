@@ -117,6 +117,7 @@ let CONFIG = {
   TARGET_LANG: process.env.TARGET_LANG || 'German',
   NATIVE_MODE: parseEnvFlag(process.env.NATIVE_MODE, true),
   GRAMMAR_CHECK: process.env.GRAMMAR_CHECK !== 'false', // BUG-004: Default true — ensures Polish/Audit runs for all entries
+  PATCH_MODE_ENABLED: parseEnvFlag(process.env.PATCH_MODE_ENABLED, false), // P1-1: Patch Mode ist User-Opt-Out — default false weil SoS OVERRIDE-basiertes Mod-Loading verwendet (keine .patch-Dateien). Native Mode ist architektonisch korrekt.
   GRAMMAR_PROMPT_FILE: 'grammar_context.txt',
   LOCAL_MODELS_ENABLED: parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, false),
   // NMT_LOCAL_ENABLED removed (BU-040): was VERWAIST — no provider client, router entry,
@@ -126,6 +127,11 @@ let CONFIG = {
   POLISHER_PROVIDER: envFirst('POLISHER_PROVIDER') || '',  // '' = inherit from PRIMARY_PROVIDER below
   POLISHER_MODEL: envFirst('POLISHER_MODEL') || 'auto',
   REPOLISH_BUDGET: Number(process.env.REPOLISH_BUDGET || 50),
+  // P1 Fix: Review-Limit konfigurierbar + Recovery-Mechanismus.
+  // MAX_REVIEW_COUNT: Wie viele Revisionen bevor ein Eintrag permanent terminiert wird.
+  // REVIEW_RECOVERY_HOURS: Nach wie vielen Stunden terminierte Einträge zurückgesetzt werden.
+  MAX_REVIEW_COUNT: Number(process.env.MAX_REVIEW_COUNT || 15),
+  REVIEW_RECOVERY_HOURS: Number(process.env.REVIEW_RECOVERY_HOURS || 24),
   AUDITOR_PROVIDER: envFirst('AUDITOR_PROVIDER') || '',    // '' = inherit from PRIMARY_PROVIDER below
   AUDITOR_MODEL: envFirst('AUDITOR_MODEL') || 'auto',
     
@@ -357,6 +363,7 @@ function applyEnvToConfig() {
   CONFIG.GAME = envFirst('GAME') || CONFIG.GAME;
   CONFIG.NATIVE_MODE = parseEnvFlag(process.env.NATIVE_MODE, CONFIG.NATIVE_MODE);
   CONFIG.GRAMMAR_CHECK = parseEnvFlag(process.env.GRAMMAR_CHECK, CONFIG.GRAMMAR_CHECK);
+  CONFIG.PATCH_MODE_ENABLED = parseEnvFlag(process.env.PATCH_MODE_ENABLED, CONFIG.PATCH_MODE_ENABLED);
   CONFIG.LOCAL_MODELS_ENABLED = parseEnvFlag(process.env.LOCAL_MODELS_ENABLED, CONFIG.LOCAL_MODELS_ENABLED);
   // NMT_LOCAL_ENABLED removed (BU-040): see NMT_LOCAL_ENABLED comment in CONFIG block.
   CONFIG.PRIMARY_PROVIDER = envFirst('PRIMARY_PROVIDER') || CONFIG.PRIMARY_PROVIDER;
@@ -370,6 +377,8 @@ function applyEnvToConfig() {
   if (!envFirst('POLISHER_PROVIDER')) CONFIG.POLISHER_PROVIDER = CONFIG.PRIMARY_PROVIDER;
   if (!envFirst('AUDITOR_PROVIDER')) CONFIG.AUDITOR_PROVIDER = CONFIG.PRIMARY_PROVIDER;
   CONFIG.BATCH_SIZE = Number(process.env.BATCH_SIZE || CONFIG.BATCH_SIZE);
+  CONFIG.MAX_REVIEW_COUNT = Number(process.env.MAX_REVIEW_COUNT || CONFIG.MAX_REVIEW_COUNT);
+  CONFIG.REVIEW_RECOVERY_HOURS = Number(process.env.REVIEW_RECOVERY_HOURS || CONFIG.REVIEW_RECOVERY_HOURS);
   CONFIG.GEMINI_KEYS = parseKeys(envFirst('GEMINI_KEY', 'GEMINI_KEYS'));
   CONFIG.GROQ_KEYS = parseKeys(envFirst('GROQ_KEY', 'GROQ_KEYS'));
   CONFIG.OPENROUTER_KEYS = parseKeys(envFirst('OPENROUTER_KEY', 'OPENROUTER_KEYS'));

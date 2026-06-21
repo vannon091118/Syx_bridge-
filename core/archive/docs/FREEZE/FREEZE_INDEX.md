@@ -1,11 +1,15 @@
-# 📚 FREEZE INDEX — Das Buch
+# 📚 FREEZE INDEX — Das Buch [ARCHIVIERT 2026-06-20]
+
+> ⚠️ **ARCHIVIERT:** Dieses Dokument wurde am 2026-06-20 abgeschlossen und archiviert.
+> **Fortsetzung:** `FREEZE_INDEX_2.md` — indexiert die Entwicklung AB der Sinnhaftigkeitsanalyse (15 systemische Fixes, Commit `9a853ef`).
+> **Archivkopie:** `FREEZE_INDEX_v0.20.0_archived.md`
 
 > **Version:** v0.20.0 | **Stand:** 2026-06-20
-> **Funktion:** Das EINE große, lückenlose Dokument das den GESAMTEN Entwicklungsprozess dokumentiert.
+> **Funktion:** Das EINE große, lückenlose Dokument das den GESAMTEN Entwicklungsprozess (16.06.–20.06.2026) dokumentiert.
 > Jeder gelöschte FREEZE-Eintrag wird hier als Glossary-Eintrag überführt — MIT Kausalität, Beobachtungen, Cross-Referenzen.
 > **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 20.06.2026) lückenlos nachvollzogen werden.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
-> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports = **67 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
+> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports + 12 HANDSHAKE-19 + 11 HANDSHAKE-20 + 8 DOKU-KONSOLIDIERUNG + 5 FORENSIC_FULLSCAN + 4 REDUNDANZ_AUDIT + 5 CODE_VS_DOCS + 4 INTEGRITY_AUDIT + 3 DOKU_KONSOL_RUN2 = **119 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
 
 ---
 
@@ -24,9 +28,20 @@
 11. [MASTER_DOC-Konsolidierung (17)](#11-master_doc-konsolidierung-durchlauf-1)
 12. [Doku-Divergenz-Fixes (2)](#12-doku-divergenz-fixes-2026-06-20)
 13. [Doku-Clean v0.20.0 (18)](#13-doku-clean-v0200)
-14. [Doku-Clean Post-v0.20.0 (1)](#14-doku-clean-post-v0200)
+14. [HANDSHAKE_2026-06-19 — Partielle Archivierung (12)](#14-handshake_2026-06-19--partielle-archivierung)
+15. [HANDSHAKE_2026-06-20 — Partielle Archivierung (11)](#15-handshake_2026-06-20--partielle-archivierung)
+16. [DOKU_KONSOLIDIERUNG_2026-06-20 — Vollarchivierung (8)](#16-doku_konsolidierung_2026-06-20--vollarchivierung)
+17. [FORENSIC_FULLSCAN_v0.20_2026-06-19_V2 — Vollarchivierung (5)](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung)
+18. [REDUNDANZ_AUDIT_V2_2026-06-19 — Vollarchivierung (4)](#18-redundanz_audit_v2_2026-06-19--vollarchivierung)
+19. [CODE_VS_DOCS_AUDIT_2026-06-19 — Vollarchivierung (5)](#19-code_vs_docs_audit_2026-06-19--vollarchivierung)
+20. [INTEGRITY_AUDIT_2026-06-19 — Vollarchivierung (4)](#20-integrity_audit_2026-06-19--vollarchivierung)
+21. [DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 — Vollarchivierung (3)](#21-doku_konsolidierung_2026-06-19_run2--vollarchivierung)
+22. [CONTROL_TOWER_AUDIT_2026-06-19 — Vollarchivierung (3)](#22-control_tower_audit_2026-06-19--vollarchivierung)
+23. [REALITY_AUDIT_2026-06-19 — Vollarchivierung (3)](#23-reality_audit_2026-06-19--vollarchivierung)
 
-> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+1 = **82 Glossary-Einträge** (64 gelöscht, 18 im FREEZE/ verbleibend)
+24. [REALITY_AUDIT_RECONCILIATION_2026-06-19 — Vollarchivierung (3)](#24-reality_audit_reconciliation_2026-06-19--vollarchivierung)
+
+> **Gesamtzahl:** 8+10+4+5+4+2+1+5+3+2+17+2+18+12+11+8+5+4+5+4+3+3+3+3 = **142 Glossary-Einträge**
 
 ---
 
@@ -627,17 +642,759 @@
 - **Kausalität:** Letzte Verifikationsstufe vor Release.
 - **Status:** ✅ Abgeschlossen — 6/6 BESTÄTIGT
 - **LIVE-Vorhanden:** Nichts — Verifikationen im CHANGELOG dokumentiert
+
 ---
 
-## 14. Doku-Clean Post-v0.20.0
+## 14. HANDSHAKE_2026-06-19 — Partielle Archivierung
 
-### 🔍 DC-019 — LLM-AGENTS-EntryPoint.md (Root & Archive)
-- **Datum:** 2026-06-20 | **Version:** v0.20.0
-- **Kategorie:** Doku-Clean (Redundanz)
-- **Zusammenfassung:** Die Datei `LLM-AGENTS-EntryPoint.md` existierte doppelt (Root und `core/archive/docs/`). Der Inhalt war bereits vollständig in die neue SSOT `AGENTS.md` überführt und in `MASTER_DOC.md` (§7 Agent-Referenz) referenziert.
-- **Kausalität:** Veraltetes, redundantes Dokument. Doku-Clean-Workflow konsequent angewendet.
-- **Status:** ✅ Abgeschlossen — gelöscht aus Git und Dateisystem.
-- **LIVE-Vorhanden:** Alle Agenten-Regeln und Sub-Agent-Listen leben jetzt in `AGENTS.md`.
+> **Aktion:** 12 OBSOLETE Sektionen aus HANDSHAKE_2026-06-19.md ins Buch überführt.
+> **Quelle:** `core/archive/docs/HANDSHAKE_2026-06-19.md` (12 Sektionen, ~60 % OBSOLETE)
+> **Regel:** HANDSHAKE = historisches Übergabe-Dokument. Aktueller Stand jetzt in MASTER_DOC + CHANGELOG. Was erledigt/veraltet ist, gehört ins Buch.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 HH-001 — §1 Executive Summary
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Übergabe
+- **Zusammenfassung:** v0.20.0-pre-release Status-Report: Release-fähig, Snapshot 17 mit 6.294 Einträgen, Vendor-Sync mit Drift-Detection, Sandbox-Cleanup (~239 MB). Build-Linien: Workshop (185 KB ZIP) + REVIEW BASE (~520 KB ZIP).
+- **Ursache der Obsoleszenz:** v0.20.0 ist längst released, DB-Stand Snapshot 17 ist durch Live-Run (9.492 Einträge) überholt, Sandbox-Cleanup ist einmalig und abgeschlossen.
+- **LIVE-Ersatz:** MASTER_DOC.md §1+2 + CHANGELOG [v0.20.0] + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-002 — §2.1 Version-Layer + §2.2 Live-DB Snapshot 17
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** DB-Metrik
+- **Zusammenfassung:** Snapshot 17: 6.294 Einträge, 35.6 % Stale, 1.725 Flagged. Provider-Verteilung: native_runtime 2.902 (46.1 %), ab_polish 1.370 (21.8 %), google_free 756 (12.0 %). Stale-Verteilung nach Provider dokumentiert.
+- **Ursache der Obsoleszenz:** DB-Stand völlig überholt durch Live-Run v0.20.0 (9.492 Einträge), V0.21-Audit, und mehrere DB-Resets/Snapshots seither.
+- **LIVE-Ersatz:** MASTER_DOC.md §5 + PREFLIGHT_LATEST.md + DB_TREND_REPORT.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-003 — §2.5 Sandbox-Cleanup-Bilanz
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Cleanup
+- **Zusammenfassung:** ~239 MB freigegeben: .claude/, audit/, alte dbold/*.db, alte tar.gz, alte Release-Artefakte. Bestand-Vergleich: dbold/ 243 MB → 4.1 MB, release/ 1.6 MB → 1.5 MB.
+- **Ursache der Obsoleszenz:** Einmaliger Cleanup, längst abgeschlossen. Kein wiederkehrender Prozess.
+- **LIVE-Ersatz:** Keiner nötig — einmalige Aktion.
+- **Status:** ✅ Archiviert
+
+### 📋 HH-004 — §3 Bewegungen (Timeline 2026-06-17 → 2026-06-19)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Chronik
+- **Zusammenfassung:** 12-Ereignis-Timeline: FREEZE-Archivierung, Doc-Konsolidierung, Shield-Format, Gate-Counter, Plugin-Architektur, PREFLIGHT, DB-Statistik, Routing-Hardening, Argos-Stale-Löschung, Bug-Fixes, v0.20.0-Vorbereitung.
+- **Ursache der Obsoleszenz:** Reine Historie. Jedes Ereignis ist im CHANGELOG.md mit Commit-Hash dokumentiert. CHANGELOG ist die SSOT für Chronologie.
+- **LIVE-Ersatz:** CHANGELOG.md (alle Einträge mit Datum + Commit)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-005 — §4 F.B Plugin-Boundary Contract-Tests
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobener Bug
+- **Zusammenfassung:** BU-023: Dynamische Interface-Erkennung via Object.getOwnPropertyNames(). 73/73 Checks. Synthetischer Auto-Detection-Test. Signatur-Fix in SongsOfSyxPlugin.applyPatchModifications() (2→3 Parameter).
+- **Ursache der Obsoleszenz:** BEHOBEN + VERIFIZIERT. 73/73 PASS seit Commit. Kein offener Rest.
+- **LIVE-Ersatz:** CHANGELOG [BU-023] + plugin-boundary-contract.js (100/100 nach Update)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-006 — §4 F.D Audit-.jsonl committed + Anomalien #013/#014/#015
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobene Anomalien
+- **Zusammenfassung:** F.D: audit/ komplett entfernt. #013: Doc-/Live-Drift zwischen Snap 16/17 (+163 Einträge, +117 Stale) — durch Live-Run aufgeklärt. #014: quality_score-Spalte FALSIFIED — existiert in Live-DB (PRAGMA table_info bestätigt). #015: REVIEW-BASE Naming-Bug — korrupte console.log-Zeile entfernt.
+- **Ursache der Obsoleszenz:** Alle drei Anomalien behoben oder durch spätere Erkenntnisse überholt. #013 durch V0.21-Audit erklärt, #014 FALSIFIED, #015 gefixt.
+- **LIVE-Ersatz:** CHANGELOG [0.20.0-pre-release] + MASTER_FREEZE §3.2 + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-007 — §7 CHANGELOG / Git-Verlauf
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Doppelte Chronik
+- **Zusammenfassung:** Tag/Commit/Summary-Tabelle: v0.20.0-pre-release → eae4c81, v0.20.0-pre-review-base (pending), v0.19.7 (mehrere Snapshots), v0.19.05c-17.06 (HANDSHAKE-Vorlage).
+- **Ursache der Obsoleszenz:** Doppelt zu CHANGELOG.md. CHANGELOG ist die SSOT für Version-Historie — HANDSHAKE-Kopie ist redundant.
+- **LIVE-Ersatz:** CHANGELOG.md (vollständig, mit allen Commits)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-008 — §8 Offene Punkte (erledigte P0/P1/P2/P3)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte Prio-Liste
+- **Zusammenfassung:** 9 priorisierte Punkte: P0 REVIEW-BASE Naming-Bug (✅), P0 Anomalie #013 (✅ — durch Live-Run), P1 quality_score existiert (✅), P1 F.B Contract-Tests (✅ BU-023), P2 Snapshot-18 (✅), P3 Effort-Doku (überholt). Nur F.C, S4, S6, S7 noch offen.
+- **Ursache der Obsoleszenz:** 6 von 9 Punkten erledigt. Erledigte Punkte sind reine Historie — gehören nicht in ein LIVE-Dokument.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 (Roadmap mit aktuellem Status) + CHANGELOG (alle erledigten Punkte)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-009 — §10 Effort to Next Scope S1/S2/S3/S5(F.B)/S8
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte Scopes
+- **Zusammenfassung:** S1: REVIEW-BASE Naming-Bug ✅. S2: Erster v0.20 Live-Run ✅ (8 Mods, 9.492 Einträge). S3: quality_score existiert ✅. S5 F.B: Plugin-Boundary Contract-Tests ✅ BU-023. S8: Snapshot 18 + Doku ✅.
+- **Ursache der Obsoleszenz:** Alle fünf Scopes erledigt und im CHANGELOG dokumentiert. Historische Planung ohne aktuellen Wert.
+- **LIVE-Ersatz:** CHANGELOG [v0.20.0] + [REVIEW-LIMIT-PIPELINE] + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-010 — §12 Signoff
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Meta
+- **Zusammenfassung:** Author: Buffy, Approved by: Vannon (TODO), Gültig bis: nächster HANDSHAKE. READY FOR HANDOFF.
+- **Ursache der Obsoleszenz:** Reine Meta-Information des Dokuments selbst. Mit der Archivierung des Dokuments obsolet. Der nächste HANDSHAKE (2026-06-20) existiert bereits.
+- **LIVE-Ersatz:** HANDSHAKE_2026-06-20.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-011 — §2.4 REVIEW-BASE Naming-Bug (Anomalie #015)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobener Bug
+- **Zusammenfassung:** Naming-Pattern: `SyxBridge_v0.20.0-pre-release-review-base` (Suffix-Doppelung) statt `SyxBridge_v0.20.0-pre-review-base`. Korrupte console.log-Zeile in build-review-base.js:294 als Ursache. cleanVersion-Logik war bereits korrekt.
+- **Ursache der Obsoleszenz:** BEHOBEN. Ordner heißt jetzt sauber `SyxBridge_v0.20.0-pre-review-base`.
+- **LIVE-Ersatz:** CHANGELOG [0.20.0-pre-release] Anomalie #015
+- **Status:** ✅ Archiviert
+
+### 📋 HH-012 — §2.2 Provider-Verteilung Snapshot 17
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Historische Provider-Statistik
+- **Zusammenfassung:** Detaillierte Provider-Statistiken aus Snapshot 17: Stale-Verteilung (native_runtime 68.0 %, argos 28.5 %, polish_single 14.2 %), Provider-Shift-Delta (native_runtime +630, argos -273, google_free -59).
+- **Ursache der Obsoleszenz:** Durch Live-Run und V0.21-Audit komplett überholt. Aktuelle DB zeigt völlig andere Verteilung.
+- **LIVE-Ersatz:** MASTER_DOC.md §5 + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+---
+
+## 15. HANDSHAKE_2026-06-20 — Partielle Archivierung
+
+> **Aktion:** 11 OBSOLETE Sektionen aus HANDSHAKE_2026-06-20.md ins Buch überführt.
+> **Quelle:** `core/archive/docs/HANDSHAKE_2026-06-20.md` (8 Sektionen, ~65 % OBSOLETE)
+> **Regel:** HANDSHAKE = historisches Übergabe-Dokument. Was erledigt/veraltet ist, gehört ins Buch.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 HH-013 — §1 Executive Summary (Performance-HDD Session)
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Übergabe
+- **Zusammenfassung:** Performance-HDD-Optimierung: Schema-Version (_schema_meta), PREFLIGHT aggregierte Query (8→1 Table-Scan), NATIVE_STALE relabeling (915 Einträge korrekt als ℹ️ deklariert), Snapshot-Gating (nur bei echten Issues). Parallel: B4-Silent-Dead-Loop-Fix (3× .catch beseitigt), MASTER_DOC-Konsolidierung Durchlauf 1 (KD-001–016). Commit bd9dee2.
+- **Ursache der Obsoleszenz:** Session ist abgeschlossen. Alle fünf Optimierungen sind implementiert und im CHANGELOG [PERFORMANCE-HDD] dokumentiert. Commit bd9dee2 ist längst durch neuere Commits überholt (Schema jetzt v6, aktuelle Arbeiten auf v21-experimental-workbench).
+- **LIVE-Ersatz:** CHANGELOG [PERFORMANCE-HDD] + [B4-SILENT-CATCH-FIX]
+- **Status:** ✅ Archiviert
+
+### 📋 HH-014 — §2.1 Version-Layer + §2.2 Live-DB (Snapshot 24)
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** DB-Metrik
+- **Zusammenfassung:** v0.20.0-pre-release, git HEAD bd9dee2, Schema-Version 5, PREFLIGHT HEALTHY. Live-DB: 4.185 Einträge, 51.3 % Stale, 39.5 % Flagged, Ø Score 81.2. Provider: native_runtime 2.123 (50.7 %), google_free 1.027 (24.5 %), polish_single 466 (11.1 %). Groq 429-Dauerfeuer (nur 16 Einträge).
+- **Ursache der Obsoleszenz:** Version überholt (v0.21 Scope definiert), Schema jetzt v6, DB-Stand durch V0.21-Audit (9.492 Einträge) und mehrere Runs überholt. Provider-Verteilung komplett anders (nvidia existiert NULL Mal im Snapshot 24).
+- **LIVE-Ersatz:** MASTER_DOC.md §5 + PREFLIGHT_LATEST.md + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-015 — §2.3 Code-Änderungen dieser Session
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Commit-Historie
+- **Zusammenfassung:** Detaillierte Liste aller Datei-Änderungen in Commit bd9dee2: db.js (Schema-Version), preflight.js (aggregierte Query + NATIVE_STALE + Snapshot-Gating), translation-runtime.js (B4-Fix), CHANGELOG, MASTER_DOC, FREEZE_INDEX, DOKU_KONSOLIDIERUNG_2026-06-20.md, diverse aus Vorsession mitgezogene Dateien.
+- **Ursache der Obsoleszenz:** Reine Commit-Historie. Jede Änderung ist im CHANGELOG [PERFORMANCE-HDD] + [B4-SILENT-CATCH-FIX] dokumentiert. Doppelt zu CHANGELOG.
+- **LIVE-Ersatz:** CHANGELOG.md ([PERFORMANCE-HDD], [B4-SILENT-CATCH-FIX])
+- **Status:** ✅ Archiviert
+
+### 📋 HH-016 — §3 Bewegungen (Timeline 2026-06-19 → 2026-06-20)
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Chronik
+- **Zusammenfassung:** 12-Ereignis-Timeline: HANDSHAKE 19.06., better-sqlite3-Migration, translateHttpError, 4 Dev-Scripts, Plugin-Readiness-Audit, B4-Fix, DOKU-KONSOLIDIERUNG, MASTER_DOC-Konsolidierung, Performance-HDD, Live-Run (4.185 Einträge), Commit bd9dee2, HANDSHAKE 20.06.
+- **Ursache der Obsoleszenz:** Reine Historie. Jedes Ereignis ist im CHANGELOG.md dokumentiert. CHANGELOG ist die SSOT für Chronologie.
+- **LIVE-Ersatz:** CHANGELOG.md
+- **Status:** ✅ Archiviert
+
+### 📋 HH-017 — §4 DD-NEU-1: B4 in MASTER_DOC §3+§6
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobene Doku-Divergenz
+- **Zusammenfassung:** MASTER_DOC §3 listete "3× silent .catch(() => {})" als OFFEN, §6 als "~0.5h". ABER: Der Fix war bereits im Code (translation-runtime.js) und im CHANGELOG [B4-SILENT-CATCH-FIX]. MASTER_DOC wurde nach dem Fix nicht nachgezogen.
+- **Ursache der Obsoleszenz:** BEHOBEN. MASTER_DOC §3 zeigt jetzt "✅ Erledigt", §6 zeigt "Done". Kein offener Rest.
+- **LIVE-Ersatz:** MASTER_DOC.md §3 + §6 (aktueller Stand)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-018 — §4 DD-NEU-2: MASTER_DOC §5 Provider-Zahlen falsch
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobene Doku-Divergenz
+- **Zusammenfassung:** MASTER_DOC §5 behauptete falsche Provider-Verteilung (openrouter 987, groq 980, nvidia 99). Live-DB zeigte: native_runtime 2.126, google_free 786, openrouter 391, nvidia NULL. Zahlen aus Live-DB wurden übernommen.
+- **Ursache der Obsoleszenz:** BEHOBEN. MASTER_DOC §5 wurde aus Live-DB aktualisiert (5.547 Einträge, aktuelle Provider-Verteilung).
+- **LIVE-Ersatz:** MASTER_DOC.md §5 (aktueller Stand)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-019 — §4 Groq-Modellname + PREFLIGHT HEALTHY
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte Issues
+- **Zusammenfassung:** Groq-Modellname: `groq/auto`→`llama-3.1-8b-instant` (404-Fix). PREFLIGHT: HEALTHY, 0 Issues, 915 nativeStale als ℹ️. Beides Status-Notizen, keine offenen Probleme.
+- **Ursache der Obsoleszenz:** Groq-Modellname-Fix ist implementiert. PREFLIGHT-Status ist ein Zustands-Schnappschuss — aktueller Stand in PREFLIGHT_LATEST.md.
+- **LIVE-Ersatz:** PREFLIGHT_LATEST.md + CHANGELOG
+- **Status:** ✅ Archiviert
+
+### 📋 HH-020 — §6.3 Empfohlene Reihenfolge
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Veraltete Priorisierung
+- **Zusammenfassung:** Task-Reihenfolge: 1) DD-NEU-1 fixen (~5 Min), 2) DD-NEU-2 fixen (~5 Min), 3) --skip-preflight CLI-Flag (~30 Min), 4) saveTranslation-Batching (~1h), 5) Groq TPM-Limit lösen.
+- **Ursache der Obsoleszenz:** DD-NEU-1/2 sind längst behoben. Die restlichen Tasks sind in MASTER_DOC §6 priorisiert. Diese spezifische Reihenfolge war für die Session vom 20.06. gedacht — nicht mehr aktuell.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 (aktuelle Roadmap)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-021 — §7 P0 + Erledigt-Liste
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte Roadmap
+- **Zusammenfassung:** P0: DD-NEU-1 + DD-NEU-2 (beide ~5 Min, beide erledigt). Erledigt-Liste: Schema-Version, PREFLIGHT aggregierte Query, NATIVE_STALE relabeling, Snapshot-Gating, B4-Fix, MASTER_DOC-Konsolidierung, better-sqlite3-Migration, translateHttpError, 4 Dev-Scripts.
+- **Ursache der Obsoleszenz:** P0-Items sind erledigt. Erledigt-Liste ist reine Historie — alle Items im CHANGELOG dokumentiert.
+- **LIVE-Ersatz:** CHANGELOG.md (alle erledigten Items) + MASTER_DOC.md §6 (aktuelle Roadmap)
+- **Status:** ✅ Archiviert
+
+### 📋 HH-022 — §8 Signoff
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Meta
+- **Zusammenfassung:** Author: Buffy, Approved by: Vannon (TODO), READY FOR HANDOFF. Bemerkungen zu Schema-Version 5, PREFLIGHT HEALTHY, Live-Run 4.185 Einträge, Commit bd9dee2.
+- **Ursache der Obsoleszenz:** Reine Meta-Information. Schema-Version ist jetzt 6, Commit bd9dee2 ist überholt, DB-Stand veraltet. Dokument existiert als PARTIAL weiter — Signoff für die Ursprungsversion irrelevant.
+- **LIVE-Ersatz:** Keiner nötig — Meta des archivierten Dokuments.
+- **Status:** ✅ Archiviert
+
+### 📋 HH-023 — §7 P0 DD-NEU-1 + DD-NEU-2 (Roadmap-Detail)
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Erledigte P0-Items
+- **Zusammenfassung:** Zwei P0-Items à ~5 Min: DD-NEU-1 (B4 in MASTER_DOC durchstreichen) und DD-NEU-2 (Provider-Zahlen aktualisieren). Beide inzwischen erledigt.
+- **Ursache der Obsoleszenz:** BEHOBEN. MASTER_DOC §3+§5+§6 auf aktuellem Stand.
+- **LIVE-Ersatz:** MASTER_DOC.md §3 + §5 + §6
+- **Status:** ✅ Archiviert
+
+---
+
+## 16. DOKU_KONSOLIDIERUNG_2026-06-20 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — ALLE 12 Divergenzen waren BEHOBEN.
+> **Quelle:** `core/archive/docs/DOKU_KONSOLIDIERUNG_2026-06-20.md` (Konsolidierungsbericht, 100 % OBSOLETE)
+> **Regel:** Ein Konsolidierungsbericht dessen sämtliche Findings behoben sind, hat keinen LIVE-Wert mehr.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 DK-001 — Inventur: 28 LIVE-Dokumente + 5 FREEZE (Snapshot)
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Inventur
+- **Zusammenfassung:** Dokumenten-Inventur vom 2026-06-20: 28 LIVE .md-Dateien (viele vom 19.06.) + 5 FREEZE-Dokumente + 1 preflight_history.log. FREEZE_INDEX damals bei 48 Glossary-Einträgen (jetzt 112).
+- **Ursache der Obsoleszenz:** Historischer Schnappschuss. Viele der gelisteten 28 LIVE-Dokumente wurden seither archiviert (18 Audit-Reports → FREEZE_INDEX §13). FREEZE_INDEX ist von 48 auf 112 Einträge gewachsen.
+- **LIVE-Ersatz:** FREEZE_INDEX.md (aktueller Stand) + MASTER_DOC.md §9 (aktueller Doku-Baum)
+- **Status:** ✅ Archiviert
+
+### 📋 DK-002 — P0: HANDSHAKE BU-023 Status-Divergenz + NMT-Referenzen
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Behobene P0-Divergenz
+- **Zusammenfassung:** Zwei P0-Funde: (1) HANDSHAKE_2026-06-19 listete F.B als "Offen", obwohl BU-023 (73/73 PASS) bereits implementiert war. (2) NMT Local Provider wurde in HANDSHAKE+MASTER_FREEZE noch als aktiv referenziert, obwohl BU-040 NMT_LOCAL_ENABLED entfernt hatte.
+- **Fix:** HANDSHAKE §4/§8/§10 → F.B ✅ BEHOBEN. HANDSHAKE §5.3 → NMT-Zeile entfernt. MASTER_FREEZE §4.7 → ENTFERNT (BU-040). HANDSHAKE §10 OUT OF SCOPE → NACH BU-040 ergänzt.
+- **Status:** ✅ Archiviert — BEHOBEN
+
+### 📋 DK-003 — P1: LIVE_INDEX "Max 3" vs 28 + MASTER_DOC §9 Tree unvollständig
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Behobene P1-Divergenzen
+- **Zusammenfassung:** Zwei P1-Funde: (1) LIVE_INDEX.md Header-Regel sagte "Max 3 LIVE-Dokumente", aber es existierten 28. (2) MASTER_DOC §9 Doku-Baum zeigte nur 10 Dokumente — 18 fehlten komplett.
+- **Fix:** LIVE_INDEX → "Max 3" auf "Max 10" gelockert + Doku-Clean-Referenz. MASTER_DOC §9 Tree → auf alle existierenden Docs erweitert (22 Audit-Reports als Block referenziert).
+- **Status:** ✅ Archiviert — BEHOBEN
+
+### 📋 DK-004 — P1: KNOWN_BUGS Cluster D + §3 BU-023 Status falsch
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Behobene P1-Divergenzen
+- **Zusammenfassung:** Zwei KNOWN_BUGS-Fehler: (1) Cluster D zeigte "0/5 behoben", obwohl BU-023 (und BU-021) bereits behoben waren. (2) §3 listete BU-023 als PERSISTENT statt GEHEILT.
+- **Fix:** Cluster D → "2/5 behoben" (BU-021 + BU-023). §3 → BU-023 GEHEILT, Zähler 14→15.
+- **Status:** ✅ Archiviert — BEHOBEN
+
+### 📋 DK-005 — P2: FREEZE_MASTER_CHECKLIST Phantom-Referenzen + MASTER_DOC Roadmap/DB
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Behobene P2-Divergenzen
+- **Zusammenfassung:** Drei P2-Funde: (1) FREEZE_MASTER_CHECKLIST referenzierte 5 nicht-existente Dateien (FREEZE_AUDIT_CONSOLIDATED.md etc.). (2) MASTER_DOC §6 listete S5 Plugin-Boundary noch als aktiv (3h). (3) MASTER_DOC §5 zeigte doppelte DB-Zahlen (6.540 historisch vs 1.508 aktuell).
+- **Fix:** FREEZE_MASTER_CHECKLIST → Phantom-Referenzen als GELÖSCHT markiert. MASTER_DOC §6 → S5 ✅ ERLEDIGT. MASTER_DOC §5 → Historische Tabelle hinter `<details>`.
+- **Status:** ✅ Archiviert — BEHOBEN
+
+### 📋 DK-006 — P3: FREEZE_INDEX §7 Zählung + AGENTS.md Sync + Audit-Report-Kandidaten
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Behobene P3-Divergenzen
+- **Zusammenfassung:** Drei P3-Funde: (1) FREEZE_INDEX §7 zeigte "(4)" im TOC aber nur 1 Eintrag. (2) AGENTS.md SSOT-Sync zwischen Root und core/archive/docs/ sollte verifiziert werden. (3) 22 einmalige Audit-Reports vom 19.06. waren Doku-Clean-Kandidaten — überschritten LIVE_INDEX-Regel.
+- **Fix:** FREEZE_INDEX §7 → "(4)"→"(1)", Gesamtzählung korrigiert. AGENTS.md → diff bestätigt identisch. Audit-Reports → als Doku-Clean-Kandidaten in MASTER_DOC + LIVE_INDEX referenziert (später in §13 DC-001–018 überführt).
+- **Status:** ✅ Archiviert — BEHOBEN
+
+### 📋 DK-007 — Zusammenfassung: 12 Divergenzen, alle BEHOBEN
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Meta
+- **Zusammenfassung:** Abschlusstabelle: 2× P0, 4× P1, 3× P2, 3× P3 — alle 12 als BEHOBEN markiert. Durchgeführte Korrekturen 1–12 im Detail aufgelistet.
+- **Ursache der Obsoleszenz:** Reine Ergebnis-Doku eines abgeschlossenen Konsolidierungslaufs. Alle Korrekturen sind implementiert und verifiziert.
+- **LIVE-Ersatz:** CHANGELOG.md + MASTER_DOC.md §9 (aktueller Stand)
+- **Status:** ✅ Archiviert
+
+### 📋 DK-008 — Gesamtdokument: DOKU_KONSOLIDIERUNG_2026-06-20.md
+- **Datum:** 2026-06-20 | **Version:** Post v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Komplettes LIVE-Dokument (28→1: Inventur + 12 Divergenz-Befunde + Zusammenfassung + 12 Korrekturen) vollständig ins Buch überführt. Methode: 2 unabhängige thinker-with-files-gemini analysierten LIVE- und FREEZE-Doku getrennt, dann Cross-Konsolidierung.
+- **Ursache der Obsoleszenz:** 100 % der Inhalte sind behoben/erledigt/überholt. Kein einziger ACTIVE Claim verbleibt. Das Dokument war ein Einmal-Konsolidierungslauf — sein Zweck ist erfüllt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §16 (diese Einträge) + MASTER_DOC.md §9
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 17. FORENSIC_FULLSCAN_v0.20_2026-06-19_V2 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Einmal-Audit, alle Findings überholt.
+> **Quelle:** `core/archive/docs/FORENSIC_FULLSCAN_v0.20_2026-06-19_V2.md` (Forensischer Vollscan, ~100 % OBSOLETE)
+> **Regel:** Ein forensischer Scan vom 19.06. mit LOC-Zahlen, Findings und Fragen — alles durch spätere Entwicklung überholt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 FF-001 — §1 Inventar: 27 Source-Dateien, Plugins, Tests, Scripts
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Inventar
+- **Zusammenfassung:** Vollständige Inventur: 27 core/src/-Dateien (11.535 LOC total), 3 Plugin-Dateien (GameAdapter/GamePlugin/SongsOfSyxPlugin), index.js (~800 LOC), 9 Tests (Smoke+E2E), 20 Scripts in core/scripts/. LOC-Tabelle pro Datei mit Exports.
+- **Ursache der Obsoleszenz:** Historischer Schnappschuss. LOC-Zahlen veraltet (db.js 339→376, translation-db.js 355→440, translation-runtime.js 1210→1300+, text-core.js 535→530+). Script-Liste unvollständig (db_query.js, db_snapshot.js, export_stage2.js, test_providers.js fehlen). Tests jetzt bei 100/100 (plugin-boundary-contract statt 73/73).
+- **LIVE-Ersatz:** core/src/INDEX.md (aktuelle LOC + Funktionen) + core/scripts/INDEX.md + core/tests/INDEX.md
+- **Status:** ✅ Archiviert
+
+### 📋 FF-002 — §2 Importketten + §4 Veränderung (Diff)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Architektur-Snapshot + Working-Tree-Diff
+- **Zusammenfassung:** Dependency-Flow: translation-runtime.js als Hub-and-Spoke-Wurzel, Factory-Composition via create*(), kein zirkulärer Import. Externe Deps: sqlite3 (jetzt better-sqlite3), axios, dotenv, inquirer (jetzt prompts), express. §4 listet Unstaged-Changes (db.js BU-021, dispatcher.js Tier-1-Fix, translation-runtime.js GOD-001, etc.) — alle längst committed.
+- **Ursache der Obsoleszenz:** sqlite3→better-sqlite3 migriert, inquirer→prompts migriert. Alle §4-Changes sind committed (BU-021, Tier-1-Fix, GOD-001). Architektur-Pattern (Factory-Composition) ist noch gültig, aber die spezifischen Datei-Referenzen und Paketnamen sind veraltet.
+- **LIVE-Ersatz:** core/src/INDEX.md + package.json + CHANGELOG [BETTER-SQLITE3-MIGRATION]
+- **Status:** ✅ Archiviert
+
+### 📋 FF-003 — §3 Auffälligkeiten: 15 Findings (F1–F15, P0–P3)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Forensische Findings
+- **Zusammenfassung:** 15 Findings: F1 Watermark-Code BROKEN (P0), F2 Duplicate require (P1), F3 Indentation-Artefakt (P1), F4 PREFLIGHT HEALTHY bei WAL-Lock (P1), F5 ROUTING_AUDIT §4 alt (P1), F6 ZWSP undokumentiert (P2), F7 171× console.log (P2), F8 3× process.exit (P2), F9 5× swallowed .catch (P2), F10 localhost-URLs hardcoded (P2), F11 34× leere catch (P2), F12 12× .catch mit Fallback (P2), F13 PRAGMA hardcoded (P3), F14 MAX_REVIEW_COUNT hardcoded (P3), F15 Adapter-Interface ohne Validation (P3).
+- **Ursache der Obsoleszenz:** F9 (swallowed .catch) → BEHOBEN durch B4-SILENT-CATCH-FIX. F14 (MAX_REVIEW_COUNT) → BEHOBEN durch REVIEW-LIMIT-PIPELINE. F1 (Watermark) → adressiert in V0.21 P0-1/P0-3. F15 (Adapter-Validation) → adressiert durch plugin-boundary-contract (BU-023). F2-F8, F10-F13 sind Beobachtungen ohne Aktionswert. Rest durch Code-Evolution überholt.
+- **LIVE-Ersatz:** CHANGELOG [B4-SILENT-CATCH-FIX] + [REVIEW-LIMIT-PIPELINE] + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 FF-004 — §5 Offene Fragen (Q1–Q6) + §6 Konsolidierung (Cluster A–G)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Entscheidungsfragen + Cluster-Analyse
+- **Zusammenfassung:** 6 offene Fragen: Q1 Watermark fixen/entfernen (→ V0.21 beantwortet), Q2 ZWSP dokumentieren (→ obsolet), Q3 Test-Framework (→ jest?), Q4 config-runtime.js splitten (→ alter Vorschlag), Q5 Client-Factory Strategy-Pattern (→ alter Vorschlag), Q6 DB-Backup konsolidieren (→ Snapshot-Lage hat sich weiterentwickelt). §6: 7 Cluster (A: Dead Code, B: Code-Hygiene, C: Doku-Drift, D: Undokumentiert, E: Logging, F: Error-Handling, G: Hardcoded Config).
+- **Ursache der Obsoleszenz:** Q1/Q2 durch V0.21 beantwortet. Q3–Q6 sind historische Vorschläge — aktuelle Roadmap in MASTER_DOC §6. Cluster-Analyse basiert auf veralteten Findings.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 (aktuelle Roadmap) + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 FF-005 — Gesamtdokument: FORENSIC_FULLSCAN_v0.20_2026-06-19_V2.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Forensischer Vollscan: 10 Code-Searcher-Subagenten parallel, 15 Such-Patterns, 27 Dateien gescannt. Methode: Nur Ist-Zustand dokumentieren, nichts im selben Lauf ändern. 15 Findings (1×P0, 4×P1, 7×P2, 3×P3), 6 offene Fragen, 7 Ursachen-Cluster.
+- **Ursache der Obsoleszenz:** 100 % der Inhalte sind überholt. LOC-Zahlen veraltet, alle kritischen Findings (F1/F9/F14/F15) in späteren Sessions behoben, Fragen durch Roadmap-Entwicklung beantwortet. Das Dokument war ein Einmal-Audit — sein Zweck ist erfüllt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §17 (diese Einträge) + core/src/INDEX.md (aktueller Code-Stand)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 18. REDUNDANZ_AUDIT_V2_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Einmal-Audit, alle Cluster-Referenzen veraltet.
+> **Quelle:** `core/archive/docs/REDUNDANZ_AUDIT_V2_2026-06-19.md` (Redundanz-Audit, ~100 % OBSOLETE)
+> **Regel:** Ein Redundanz-Audit mit Release-Ordner-Referenzen von v0.19.7/v0.20.0-pre-release — alles durch neue Releases überholt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 RD-001 — §1 Tendenz seit v1: 6 Metriken
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Trend-Analyse
+- **Zusammenfassung:** Vergleich v1 (18.06.) vs v2 (19.06.): Root stale-Dateien 4→0 ✅, nul-Artefakt 1→1 🔴, Release-Ordner 3→3 (andere Versionen), Root-Duplikate ~8→~10 ↗️, Archive-Bloat 7+→3 ✅, Untracked 1→0 ✅. 5 von 8 v1-Findings behoben.
+- **Ursache der Obsoleszenz:** Historischer Vergleich zweier Zeitpunkte. Release-Ordner sind jetzt v0.20.0 (nicht mehr v0.19.7/v0.20.0-pre-release). Archive-Bloat hat sich weiterentwickelt. Die spezifischen Zahlen sind für den 19.06. — kein aktueller Wert.
+- **LIVE-Ersatz:** Keiner — einmalige Trend-Analyse ohne aktuellen Bezug.
+- **Status:** ✅ Archiviert
+
+### 📋 RD-002 — §2 Duplikat-Cluster C1–C13
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Duplikat-Inventur
+- **Zusammenfassung:** 13 Cluster: C1 start.bat (5×), C2 README.md (6×), C3 package.json (4×), C4 index.js (4×), C5 _Info.txt (4+×), C6 LICENSE (4×), C7 TREE.md (3×), C8 AGENTS.md (2×), C9 TUTORIAL.txt (2×), C10 eslint.config.mjs (2×), C11 check_workshop_damage.ps1 (2×), C12 .db Dateien (3×), C13 nul (1×). Kanonische Pfade identifiziert, Release-Snapshots als erwartbar bewertet.
+- **Ursache der Obsoleszenz:** Release-Ordner-Referenzen (v0.19.7, v0.20.0-pre-release, v0.20.0-pre-review-base) sind veraltet — aktuelles Release ist v0.20.0. DB-Snapshots haben sich weiterentwickelt. Die Cluster-Analyse ist eine Momentaufnahme.
+- **LIVE-Ersatz:** Keiner — Duplikate sind Release-Artefakte, keine LIVE-Doku.
+- **Status:** ✅ Archiviert
+
+### 📋 RD-003 — §3 Tote Dateien + §4 Konsolidierungsplan
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Cleanup-Empfehlungen
+- **Zusammenfassung:** Tote Dateien: nul (löschen), start.bat Redirect-Relikt (ignorieren), archive/ in Vendored Releases (release.js prüfen). Konsolidierungsplan: Sofort (S1 nul löschen, S2 alte Releases löschen), Mittelfristig (M1 archive/-Ausschluss, M2 --clean-old Flag), Langfristig (L1 ZIP-Only, L2 V70/V71 verschieben).
+- **Ursache der Obsoleszenz:** Empfehlungen aus einem spezifischen Audit. S1 (nul) mag noch relevant sein, aber der Audit selbst ist historisch. Der Konsolidierungsplan ist durch MASTER_DOC §6 Roadmap überholt.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 (aktuelle Roadmap)
+- **Status:** ✅ Archiviert
+
+### 📋 RD-004 — Gesamtdokument: REDUNDANZ_AUDIT_V2_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Redundanz-Audit v2: Full-scan `find . -name` + Hash-Vergleich + Code-Referenz-Check. 13 Duplikat-Cluster, 3 tote Dateien, Konsolidierungsplan (Sofort/Mittel/Langfristig), Statistik-Vergleich v1→v2.
+- **Ursache der Obsoleszenz:** 100 % der Cluster-Referenzen beziehen sich auf veraltete Release-Ordner und DB-Snapshots. Das Dokument war ein Einmal-Audit. Empfehlungen sind implementiert oder durch MASTER_DOC §6 überholt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §18 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 19. CODE_VS_DOCS_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Einmal-Audit, bereits in DC-001 referenziert.
+> **Quelle:** `core/archive/docs/CODE_VS_DOCS_AUDIT_2026-06-19.md` (Code-vs-Docs-Audit, ~100 % OBSOLETE)
+> **Regel:** Einmaliger Code-Doku-Abgleich vom 19.06. 08:17 UTC — DB-Zahlen, Provider, Drift-Einträge alle historisch.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 CD-001 — §1 CODE TRUTH: Provider, CostClass, Pipeline, DB, Bug-Marker
+- **Datum:** 2026-06-19 08:17 UTC | **Version:** v0.20.0-pre-release
+- **Kategorie:** Code-Verifikation
+- **Zusammenfassung:** Systematischer Code-Abgleich: 9 Provider (router.js:4-14), CostClass (router.js:24-36), Inheritance Chain (GameAdapter→GamePlugin→SongsOfSyxPlugin), 5-Phasen-Pipeline (translation-runtime.js), DB-Schema (6.540 Einträge, 2.444 flagged, 2.240 stale), 10 Bug-Marker (7 verified, 3 unverified), PREFLIGHT + Dual-Path verifiziert, NMT Local existiert in config aber NICHT als Provider.
+- **Ursache der Obsoleszenz:** Historischer Schnappschuss. DB-Zahlen völlig veraltet (6.540→9.492). NMT_LOCAL_ENABLED durch BU-040 entfernt. Bug-Marker durch spätere Fixes überholt. Provider-Liste und CostClass sind noch aktuell, aber der Audit als Ganzes ist ein Zeitdokument.
+- **LIVE-Ersatz:** router.js (aktuelle Provider/CostClass) + MASTER_DOC.md §5 (aktuelle DB-Zahlen)
+- **Status:** ✅ Archiviert
+
+### 📋 CD-002 — §2 DOC TRUTH: README, AGENTS.md, LLM-AGENTS, MASTER_DOC Claims
+- **Datum:** 2026-06-19 08:17 UTC | **Version:** v0.20.0-pre-release
+- **Kategorie:** Doku-Verifikation
+- **Zusammenfassung:** Claims aus 4 Doku-Dateien gegen Code geprüft: README (6 Claims → 2 DRIFT), AGENTS.md (7 Claims → 5 DRIFT, u.a. Version v0.19.7 statt v0.20.0), LLM-AGENTS-EntryPoint (5 Claims → 4 DRIFT), MASTER_DOC §2-§5 (mehrere Claims → CostClass-Tabelle 6/8 Werte falsch, 10 Provider statt 9).
+- **Ursache der Obsoleszenz:** Alle geprüften Doku-Dateien wurden seither aktualisiert oder selbst archiviert. AGENTS.md Version ist jetzt aktuell. LLM-AGENTS-EntryPoint.md ist archival. MASTER_DOC §2 Provider-Tabelle wurde korrigiert.
+- **LIVE-Ersatz:** AGENTS.md (aktuell) + MASTER_DOC.md §2 (korrigierte Provider/CostClass)
+- **Status:** ✅ Archiviert
+
+### 📋 CD-003 — §3 DRIFT: 15 Abweichungen D-001–D-015 + §4 UNVERIFIZIERT U-001–U-006
+- **Datum:** 2026-06-19 08:17 UTC | **Version:** v0.20.0-pre-release
+- **Kategorie:** Drift-Inventur
+- **Zusammenfassung:** 15 Drift-Einträge: 4 CRITICAL (AGENTS.md Version, LLM-AGENTS Version, MASTER_DOC 10 Provider, BUG-FS-002), 5 HIGH (CostClass-Tabelle, translation-runtime.js LOC, NMT als Provider, AGENTS.md Datum, Agent-Tabelle), 3 MEDIUM, 3 LOW. 6 unverifizierte Claims (VISIONS.MD, BUG-FS-002/007, Stage 1, Hardcodes, #015).
+- **Ursache der Obsoleszenz:** Header des Dokuments selbst sagt: "4 CRITICAL + 5 HIGH + U-001 Einträge behoben." Restliche Drift-Einträge durch spätere Doku-Updates und diesen Doku-Konsolidierungs-Prozess überholt.
+- **LIVE-Ersatz:** MASTER_DOC.md (aktuell) + AGENTS.md (aktuell) + FREEZE_INDEX.md (archivierte Docs)
+- **Status:** ✅ Archiviert
+
+### 📋 CD-004 — §5 Veränderung + §6 Reconciliation + §7 Methodik
+- **Datum:** 2026-06-19 08:17 UTC | **Version:** v0.20.0-pre-release
+- **Kategorie:** Delta-Analyse + Empfehlungen
+- **Zusammenfassung:** MASTER_DOC §5 vs LIVE DB: Stage 0 −166 (−2.5pp), Stage 2 +166 (+2.6pp). 9 Reconciliation-Aktionen (4× P0, 3× P1, 2× P2) — alle inzwischen erledigt oder überholt. Methodik: 8 Code-Searcher + 2 Basher + manuelle Verifikation.
+- **Ursache der Obsoleszenz:** Delta-Analyse bezieht sich auf veraltete DB-Stände. Reconciliation-Aktionen sind implementiert (Provider-Tabelle korrigiert, Versionen aktualisiert, BUG-Marker bereinigt). Methodik-Beschreibung ist historisch.
+- **LIVE-Ersatz:** CHANGELOG.md + MASTER_DOC.md (aktuelle Reconciliation)
+- **Status:** ✅ Archiviert
+
+### 📋 CD-005 — Gesamtdokument: CODE_VS_DOCS_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 08:17 UTC | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Systematischer Code-vs-Doku-Abgleich: 8 Subagenten + manuelle Verifikation + DB-Live-Query. 4 Doku-Dateien gegen 33 Code-Module geprüft. 15 Drift-Einträge, 6 unverifizierte Claims, 9 Reconciliation-Aktionen. Bereits als DC-001 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Claims sind historisch. DB-Zahlen, Provider-Listen, Drift-Einträge, Reconciliation-Empfehlungen — alles vom 19.06. 08:17 UTC. Das Dokument war ein Einmal-Audit, dessen Findings längst implementiert sind.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-001) + §19 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 20. INTEGRITY_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Pre-Lösch-Verifikation, Löschung längst erfolgt.
+> **Quelle:** `core/archive/docs/INTEGRITY_AUDIT_2026-06-19.md` (Integritäts-Verifikation, 100 % OBSOLETE)
+> **Regel:** Einmalige Verifikation vor der Löschung der 44 FREEZE-Dokumente. Löschung ist abgeschlossen.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 IG-001 — 33 Claims code-verified (6 Kategorien)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Code-Verifikation
+- **Zusammenfassung:** 33 Claims in 6 Kategorien gegen echten Code verifiziert: Provider/Routing (7), Plugin/Architektur (6), Quality/Scoring (6), DB/Preflight (5), Pipeline/Export (6), Gap-Closer (3). Jeder Claim mit exakter Code-Evidence (Datei:Zeile). 100 % Integritäts-Score.
+- **Ursache der Obsoleszenz:** Die Verifikation war eine Voraussetzung für die Löschung der 44 FREEZE-Dokumente. Die Löschung ist längst erfolgt (Doku-Clean v0.20.0). Code-Evidence bezieht sich auf Code-Stand vom 19.06. — viele Zeilennummern haben sich verschoben.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §1–§13 (archivierte Docs) + MASTER_FREEZE (Verifikationsmatrix)
+- **Status:** ✅ Archiviert
+
+### 📋 IG-002 — 15 nicht verifizierbare Claims + 3 Lücken geschlossen
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Gap-Analyse
+- **Zusammenfassung:** 15 Claims als nicht code-verifizierbar klassifiziert: historische DB-Zahlen (5), Session-Aktionen (4), historische Bug-Zustände (3), manuelle Eingriffe (2), DB-Snapshot-Beschreibungen (1). 3 Lücken vor diesem Report geschlossen: Dual-Path-Copy (L1), NMT Local Provider (L2), SongsOfSyxAdapter Deprecation (L3).
+- **Ursache der Obsoleszenz:** Gap-Analyse bezog sich auf spezifische Claims aus den 44 zur Löschung anstehenden Dokumenten. NMT Local wurde später durch BU-040 entfernt. SongsOfSyxAdapter ist deprecated.
+- **LIVE-Ersatz:** FREEZE_INDEX.md (Glossary-Einträge für alle 44 gelöschten Dokumente)
+- **Status:** ✅ Archiviert
+
+### 📋 IG-003 — Methodik + Fazit + Lösch-Freigabe
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Prozess-Doku
+- **Zusammenfassung:** 4-Phasen-Methodik: Massen-Verifikation (5 Code-Searcher), Thinker-Analyse, Gap-Closing (3 Searcher), Final Report. Fazit: 100 % Integrität, alle 4 Doku-Clean-Kriterien erfüllt. Lösch-Freigabe: STATUS ERTEILT.
+- **Ursache der Obsoleszenz:** Die Lösch-Freigabe wurde erteilt und ausgeführt. Die 44 Dokumente sind gelöscht. Der Prozess ist abgeschlossen.
+- **LIVE-Ersatz:** Keiner — einmaliger Prozess, abgeschlossen.
+- **Status:** ✅ Archiviert
+
+### 📋 IG-004 — Gesamtdokument: INTEGRITY_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Pre-Lösch-Integritäts-Verifikation: 5+3 Code-Searcher + 1 Thinker. 33/33 Claims code-verified (100 %), 15 Claims als nicht-verifizierbar dokumentiert, 3 Lücken geschlossen, Lösch-Freigabe erteilt. Bereits als DC-008 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** Zweck vollständig erfüllt — die Verifikation autorisierte die Löschung, die Löschung ist erfolgt. Das Dokument ist ein historisches Zertifikat.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-008) + §20 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 21. DOKU_KONSOLIDIERUNG_2026-06-19_RUN2 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — vorherige Konsolidierungsrunde, alle Empfehlungen umgesetzt.
+> **Quelle:** `core/archive/docs/DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md` (Konsolidierung Run #2, 100 % OBSOLETE)
+> **Regel:** Ein Konsolidierungsbericht dessen Lösch-Empfehlungen ausgeführt sind und dessen referenzierte Dokumente selbst archiviert sind.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 KR-001 — Inventur: 9 LIVE + 4 FREEZE + Widersprüche W1–W9
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Konsolidierungs-Inventur
+- **Zusammenfassung:** Dokumenten-Inventur Run #2: 3 LIVE-Dokumente (CHANGELOG, MASTER_DOC, PREFLIGHT), 5 Struktur-Dokumente (LIVE_INDEX, HANDSHAKE_2026-06-19, DIVERGENZ_REPORT, FORENSIC_FULLSCAN, REDUNDANZ_AUDIT_V2), 1 offener Plan. 9 Widersprüche: W1–W5 bereits aufgelöst, W6–W9 neu identifiziert (DB-Drift, HANDSHAKE veraltet, Marker-Plan teilweise umgesetzt, Split-Plan umgesetzt). DB-Wert-Drift zwischen MASTER_DOC, MASTER_FREEZE und PREFLIGHT.
+- **Ursache der Obsoleszenz:** Alle referenzierten Dokumente sind selbst archiviert oder aktualisiert. FORENSIC_FULLSCAN → VOLLARCHIVIERT (§17), REDUNDANZ_AUDIT_V2 → VOLLARCHIVIERT (§18), HANDSHAKE_2026-06-19 → PARTIAL (§14). W6–W9 sind durch spätere Doku-Updates gelöst.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §1–§21 + MASTER_DOC.md §9 (aktueller Doku-Baum)
+- **Status:** ✅ Archiviert
+
+### 📋 KR-002 — 44 FREEZE-Dokumente + 8 permanent + Empfehlungen
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Lösch-Empfehlungen
+- **Zusammenfassung:** 44 FREEZE-Dokumente als löschbar klassifiziert (alle 4 Kriterien erfüllt), kategorisiert nach Session Reports (8), Audit (10), Bugfixes (4), Reviews (5), Doku-Konsolidierung (4), Quality (2), DB-Archiv (1), Struktur (6), Diagnostik (3). 8 Dokumente als permanent empfohlen. 2 Dokumente ins FREEZE verschiebbar (TRANSLATION_RUNTIME_SPLIT, COMMIT_MSG).
+- **Ursache der Obsoleszenz:** Alle 44 Dokumente sind gelöscht. Die 8 permanenten Dokumente sind teilweise selbst archiviert (HANDSHAKE_2026-06-19 → PARTIAL). Die Wachstums-Analyse (+17.6 % seit Run #1) ist historisch.
+- **LIVE-Ersatz:** FREEZE_INDEX.md (alle 44 gelöschten Dokumente als Glossary-Einträge) + MASTER_DOC.md §9
+- **Status:** ✅ Archiviert
+
+### 📋 KR-003 — Gesamtdokument: DOKU_KONSOLIDIERUNG_2026-06-19_RUN2.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Konsolidierung Run #2: 4 Thinker-with-Files-Gemini + Orchestrator. 60 Dokumente analysiert, 9 Widersprüche katalogisiert, 44 Dokumente zur Löschung freigegeben, 8 als permanent empfohlen. Methodik: Bootstrap → Vollesung → Subagent-Matrix → Tendenzenanalyse → Destillation.
+- **Ursache der Obsoleszenz:** Zweck vollständig erfüllt — die Lösch-Empfehlungen wurden ausgeführt, die Widersprüche gelöst, die referenzierten Dokumente sind ihrerseits archiviert. Das Dokument ist ein historischer Meilenstein der Doku-Bereinigung.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §21 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 22. CONTROL_TOWER_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Multi-Agenten-Audit, alle Findings überholt.
+> **Quelle:** `core/archive/docs/CONTROL_TOWER_AUDIT_2026-06-19.md` (Architektur-Audit, 100 % OBSOLETE)
+> **Regel:** Einmaliger Control-Tower-Audit vom 19.06. — Snapshot-17-Basis, Code-Muster haben sich weiterentwickelt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 CT-001 — §2 Hidden-Failure-Detector: 7 Findings + 41 Catch-Blöcke + SkipTruth
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Stille-Fehler-Analyse
+- **Zusammenfassung:** 7 Findings: F1 Cooldown-Bypass in buildRoutePlan (BY DESIGN), F2 BU-034 API-Credit-Bleeding (MIT BREAKER), F3 ZWSP-Akkumulation in DESC, F4 Watermark nach Validierung (KEIN BUG), F5 addColumnIfMissing String-Interpolation (FALSIFIED), F6 NVIDIA nur in uiCandidates wenn Primary (PARTIAL), F7 exporter.js Reihenfolge korrekt. 41 leere Catch-Blöcke in 9 Dateien. 8 SkipTruth-Risiken.
+- **Ursache der Obsoleszenz:** F2 (BU-034) → behoben durch REVIEW-LIMIT-PIPELINE P1/P2. F3 (ZWSP) → adressiert in V0.21 P0-1. F6 (NVIDIA) → Routing hat sich weiterentwickelt. Restliche Findings sind Design-Entscheidungen oder Beobachtungen ohne Aktionswert.
+- **LIVE-Ersatz:** CHANGELOG [REVIEW-LIMIT-PIPELINE] + V0.21_SCOPE.md
+- **Status:** ✅ Archiviert
+
+### 📋 CT-002 — §3 Delta-Ledger: 10 reale + 6 Doku-Änderungen
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Änderungsregister
+- **Zusammenfassung:** 10 reale Verhaltensänderungen (D-1 bis D-10): escalating cooldown, freeLlmFirst, google_free abschaltbar, BU-034 Refresh, addColumnIfMissing, debug_payloads→logs/, Watermark-Fix, ZWSP-Fallback, console.warn→log, CostClass-Update. 6 Doku-Änderungen (DD-1 bis DD-6): HANDSHAKE, MASTER_DOC, KNOWN_BUGS, ROUTING_AUDIT, CHANGELOG, PREFLIGHT.
+- **Ursache der Obsoleszenz:** Alle 10 Code-Änderungen sind längst committed und durch weitere Änderungen überholt. Die 6 Doku-Änderungen sind selbst veraltet (HANDSHAKE → PARTIAL, MASTER_DOC aktualisiert, ROUTING_AUDIT noch LIVE).
+- **LIVE-Ersatz:** CHANGELOG.md (alle Änderungen dokumentiert)
+- **Status:** ✅ Archiviert
+
+### 📋 CT-003 — Gesamtdokument: CONTROL_TOWER_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Multi-Agenten Control-Tower-Audit: 3 Thinker-with-Files-Gemini + 2 Code-Searcher + 1 Basher. 3 Wellen (Discovery → Verifikation → Synthese). 7 Hidden Failures, 41 stille Catch-Blöcke, 8 SkipTruth-Risiken, 10 reale Code-Änderungen, 8 aktive Risiken. Bereits als DC-002 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Findings beziehen sich auf Code-Stand vom 19.06. Snapshot-17-Basis. Alle kritischen Findings (F2 BU-034, F6 NVIDIA) in späteren Sessions adressiert.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-002) + §22 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 23. REALITY_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Reality-Audit, alle Findings überholt.
+> **Quelle:** `core/archive/docs/REALITY_AUDIT_2026-06-19.md` (Realitätsabgleich, 100 % OBSOLETE)
+> **Regel:** Einmaliger Reality-Check vom 19.06. — 18 Claims, 8 Drift-Findings, alle durch spätere Entwicklung überholt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 RA-001 — CODE TRUTH: 8 Dateien + DOC TRUTH: 18 Claims
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Code-Doku-Abgleich
+- **Zusammenfassung:** 8 Code-Dateien auf tatsächlichen Stand geprüft: db.js (addColumnIfMissing + Shield-Leak/Auto-Guard), dispatcher.js (freeLlmFirst + NVIDIA-Fix), router.js (CostClass + 429-Cooldown), logger.js (logs/-Pfad), translation-runtime.js (BU-034/028/029 + GOD-001), SongsOfSyxPlugin.js (ZWSP), text-core.js (WATERMARK BROKEN + duplicate require), exporter.js (Indentation). 18 Doku-Behauptungen gegen Code verifiziert — 18/18 ✅.
+- **Ursache der Obsoleszenz:** Code-Stand vom 19.06. Watermark-Code wurde in V0.21 P0-1 adressiert. Alle Bugfixes (BU-034/028/029) sind committed und weiterentwickelt. addColumnIfMissing hat jetzt 18 statt 13 Migrationen.
+- **LIVE-Ersatz:** CHANGELOG [STUFE2] + V0.21_SCOPE.md + aktueller Code
+- **Status:** ✅ Archiviert
+
+### 📋 RA-002 — DRIFT D1–D8 + Veränderung (13 Unstaged + 6 Untracked)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Drift-Inventur
+- **Zusammenfassung:** 8 Drift-Findings: D1 Watermark BROKEN (P0), D2 duplicate require (P2), D3 Indentation (P2), D4 ZWSP undokumentiert (P2), D5 PREFLIGHT HEALTHY (P1), D6 ROUTING_AUDIT alt (P1), D7 DB-Divergenz 5 Quellen (P1), D8 PRIORISIERUNG veraltet (P3). 13 Unstaged Changes + 6 Untracked Files dokumentiert (PRIORISIERUNG, TRIPLE_AUDIT, PRODUCT_PROTECTION, analyze_snapshots, watermark-config, verify_watermark).
+- **Ursache der Obsoleszenz:** D1 → V0.21 P0-1. D5 → PREFLIGHT wurde mehrfach aktualisiert. D6 → ROUTING_AUDIT noch LIVE (eigenes Quelldokument). D7 → DB-Stand durch V0.21-Audit (9.492) überholt. Unstaged-Changes sind längst committed.
+- **LIVE-Ersatz:** CHANGELOG.md + V0.21_SCOPE.md + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+### 📋 RA-003 — Gesamtdokument: REALITY_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Reality Audit: Direkte Code-Lesung + Doku-Cross-Referenz. 8 Code-Dateien, 12 Doku-Artefakte. 18 Claims verifiziert, 8 teilweise, 1 defekt (Watermark), 0 falsified. Verifikations-Bilanz: 18 ✅, 8 ⚠️, 1 🔴. Bereits als DC-011 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Findings beziehen sich auf Code- und Doku-Stand vom 19.06. Watermark-Defekt (D1) in V0.21 adressiert. Alle anderen Findings durch Code-Evolution überholt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-011) + §23 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 24. REALITY_AUDIT_RECONCILIATION_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Reconciliation-Nachtrag, alle Divergenzen behoben.
+> **Quelle:** `core/archive/docs/REALITY_AUDIT_RECONCILIATION_2026-06-19.md` (Reconciliation-Audit, 100 % OBSOLETE)
+> **Regel:** Einmaliger Reconciliation-Nachtrag zum Reality Audit — 5 Divergenzen behoben, 3 Doku-Dateien aktualisiert.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 RC-001 — Reconciliation: 5 Divergenzen aus Reality Audit behoben
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Behobene Divergenzen
+- **Zusammenfassung:** 5 Divergenzen aus dem Reality Audit (DC-011/RA-001–003) behoben: 3 Aktualisierungen (README.md Version 0.19.7→0.20.0, CHANGELOG.md Eintrag hinzugefügt, MASTER_DOC.md §5 DB-Zahlen aktualisiert), 2 als NON-ISSUE klassifiziert (Provider-Angaben in MASTER_FREEZE bereits korrekt, PREFLIGHT HEALTHY-Status war transient).
+- **Ursache der Obsoleszenz:** Alle 5 Divergenzen sind BEHOBEN. Keine offenen Reste. Das Dokument war ein einmaliger Nachtrag.
+- **Fix:** README.md, CHANGELOG.md, MASTER_DOC.md — alle drei Dateien sind aktualisiert und die Änderungen im CHANGELOG dokumentiert.
+- **LIVE-Ersatz:** README.md (aktuell), CHANGELOG.md, MASTER_DOC.md §5
+- **Status:** ✅ Archiviert
+
+### 📋 RC-002 — Methodik + Verifikation
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Prozess-Doku
+- **Zusammenfassung:** Reconciliation-Methodik: Diff-Vergleich Reality Audit Findings vs LIVE-Dokumente → 5 Abweichungen identifiziert → 3 Aktualisierungen + 2 NON-ISSUE-Klassifikationen → Cross-Reference mit MASTER_FREEZE bestätigt Konsistenz.
+- **Ursache der Obsoleszenz:** Die Methode ist dokumentiert, der Prozess abgeschlossen. Kein wiederkehrender Wert.
+- **LIVE-Ersatz:** Keiner — einmaliger Prozess.
+- **Status:** ✅ Archiviert
+
+### 📋 RC-003 — Gesamtdokument: REALITY_AUDIT_RECONCILIATION_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Reconciliation-Nachtrag zum Reality Audit: 5 Divergenzen behoben (3 Doku-Aktualisierungen + 2 NON-ISSUE). Bereits als DC-012 in FREEZE_INDEX §13 katalogisiert. Zweck vollständig erfüllt — alle Korrekturen sind implementiert und verifiziert.
+- **Ursache der Obsoleszenz:** 100 % der Divergenzen sind behoben. README, CHANGELOG, MASTER_DOC sind auf aktuellem Stand. Das Dokument war ein Einmal-Nachtrag.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-012) + §24 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 25. ROUTING_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Routing-Analyse, durch TRIPLE_AUDIT ersetzt.
+> **Quelle:** `core/archive/docs/ROUTING_AUDIT_2026-06-19.md` (Routing-Audit, 100 % OBSOLETE)
+> **Regel:** Einmaliger Routing-Audit — referenziert Code (`cheapProviders`) der nicht mehr existiert. Header sagt selbst "SUPERSEDED BY TRIPLE_AUDIT".
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 RT-001 — IST-Routing + Provider-Gate + Nutzungsverteilung
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Routing-Analyse
+- **Zusammenfassung:** Detaillierte Analyse des Routing-Systems: hasAccess() für 9 Provider, Key-Loading via index.js:125-128, Routing-Pipeline in dispatcher.js:56-133 (Tier 1-4). Nutzungsverteilung: google_free 574 (8.6%), argos 366 (5.5%), openrouter 60 (0.9%) — Schieflage dokumentiert.
+- **Ursache der Obsoleszenz:** Tier-1-Fix (cheapProviders→freeLlmFirst) ist längst implementiert. Die Root-Cause-Analyse referenziert `cheapProviders = ['google_free', 'argos']` — dieser Code existiert nicht mehr. Der Header des Dokuments sagt selbst "SUPERSEDED BY TRIPLE_AUDIT".
+- **LIVE-Ersatz:** TRIPLE_AUDIT_2026-06-19.md + CHANGELOG [TIER-1-UI-STRING-FIX]
+- **Status:** ✅ Archiviert
+
+### 📋 RT-002 — Anpassungsvorschläge P0/P1/P2 + DB-Vergleich
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vorschläge
+- **Zusammenfassung:** 3 Routing-Vorschläge: P0 Tier-1-Hardcoding entfernen (umgesetzt), P1 google_free abschaltbar machen (umgesetzt via BU-036/GOOGLE_FREE_ENABLED), P2 UI-String-Klassifikation prüfen. DB-Vergleich Vorher/Nachher: Sync-Run reduzierte google_free/argos-Nutzung nur minimal.
+- **Ursache der Obsoleszenz:** P0 und P1 sind implementiert. P2 ist eine optionale Verbesserung ohne akuten Handlungsbedarf. Der DB-Vergleich basiert auf veralteten Snapshots (6.540→6.659).
+- **LIVE-Ersatz:** CHANGELOG [TIER-1-UI-STRING-FIX] + [BU-036]
+- **Status:** ✅ Archiviert
+
+### 📋 RT-003 — Gesamtdokument: ROUTING_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Routing-Audit: DB-Live-Query + Code-Pfad-Verifikation + Thinker-Root-Cause-Analyse. Entdeckte Tier-1-UI-String-Hardcoding als Ursache der Provider-Schieflage. Bereits als DC-014 in FREEZE_INDEX §13 katalogisiert. Header sagt selbst "SUPERSEDED BY TRIPLE_AUDIT — Dieses Dokument ist veraltet."
+- **Ursache der Obsoleszenz:** 100 % der Findings basieren auf Code der nicht mehr existiert. Das Dokument deklariert sich selbst als veraltet. TRIPLE_AUDIT hat es ersetzt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-014) + §25 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 26. TRIPLE_AUDIT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — 3-Rollen-Audit, alle Widersprüche behoben.
+> **Quelle:** `core/archive/docs/TRIPLE_AUDIT_2026-06-19.md` (Triple-Audit, 100 % OBSOLETE)
+> **Regel:** Einmaliger 3-Rollen-Audit (Routing, Repo-Struktur, Doku). 10 Widersprüche gefunden und behoben, 6 Modularisierungen empfohlen, 5 Top-Empfehlungen — alle erledigt oder überholt.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 TA-001 — Rolle 1 (Routing) + Rolle 2 (Repo-Struktur)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Routing + Architektur
+- **Zusammenfassung:** Routing: KRITISCHE ERKENNTNIS — altes ROUTING_AUDIT war veraltet (cheapProviders existiert nicht, freeLlmFirst ist implementiert). Provider-Schieflage als historisches Artefakt identifiziert. DB-Zahlen (openrouter 0.9%, nvidia 0%) aus Läufen vor dem Fix. 5 Anpassungsvorschläge. Repo-Struktur: 6 Monolithen identifiziert (config-runtime.js 975 LOC, client-factory.js 754 LOC, translation-runtime.js 1.210 LOC, gui-handlers.js, text-core.js, db.js).
+- **Ursache der Obsoleszenz:** Live-Run durchgeführt (V0.21-Audit, 9.492 Einträge). Modularisierungsvorschläge sind in MASTER_DOC §6 Roadmap überführt. DB-Zahlen komplett überholt.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 + V0.21_SCOPE.md + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+### 📋 TA-002 — Rolle 3 (Doku-Konsolidierung) + Globale Zusammenführung
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Doku-Abgleich
+- **Zusammenfassung:** 10 Widersprüche gefunden (W1-W10): DB-Eintragszahl divergiert, quality_score existiert, BUG-FS-003/006 Status, CostClasses falsch, Tier-1-Code veraltet, BU-018/GOD-001 Status. Alle durch Stufe 1 behoben. 5 Top-Empfehlungen: Live-Run, ROUTING_AUDIT ersetzen, config-runtime.js split, MASTER_DOC aktualisieren, NVIDIA Key prüfen.
+- **Ursache der Obsoleszenz:** Alle 10 Widersprüche sind behoben. Alle 5 Top-Empfehlungen sind erledigt (Live-Run done, ROUTING_AUDIT archiviert, MASTER_DOC aktualisiert, NVIDIA Key geprüft).
+- **LIVE-Ersatz:** CHANGELOG [STUFE1] + [STUFE2] + MASTER_DOC.md
+- **Status:** ✅ Archiviert
+
+### 📋 TA-003 — Gesamtdokument: TRIPLE_AUDIT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Triple Audit: 3 Rollen × 7 Sub-Agents parallel. Routing-Auditor, Repo-Strukturierung, Doku-Konsolidierung + globale Zusammenführung. 10 Widersprüche, 6 Modularisierungen, 5 Top-Empfehlungen. Bereits als DC-017 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Findings sind behoben oder überholt. Das Dokument war ein Einmal-Audit als Grundlage für Stufe 1-3 Implementierung. Alle Empfehlungen sind umgesetzt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-017) + §26 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 27. VERIFICATION_REPORT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Dynamische Verifikation, 7/7 Claims bestätigt.
+> **Quelle:** `core/archive/docs/VERIFICATION_REPORT_2026-06-19.md` (Verifikations-Report, 100 % OBSOLETE)
+> **Regel:** Einmaliger Verifikationslauf — 7 Claims (BU-035 bis BU-039 + 2 Dead Flags) alle mit echtem Befehl+Output verifiziert.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 VR-001 — BU-035–BU-039 Verifikation (Claims 1-5)
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Dynamische Verifikation
+- **Zusammenfassung:** 5 Bug-Verifikationen mit echtem Runtime-Output: BU-035 Watermark ZWSP/ZWNJ Injection ✅, BU-036 GOOGLE_FREE_ENABLED Verdrahtung ✅, BU-037 Keine Doppelprüfung ✅, BU-038 Logger console.error ✅, BU-039 NUL gelöscht ✅. Jeder Claim mit node -e Befehl + rohem Output.
+- **Ursache der Obsoleszenz:** Alle 5 Bugs sind behoben und verifiziert. Die Verifikation war ein Einmal-Durchlauf. Kein offener Rest.
+- **LIVE-Ersatz:** CHANGELOG [BU-035–039] + aktueller Code
+- **Status:** ✅ Archiviert
+
+### 📋 VR-002 — Dead Flag Verifikation (Claims 6-7) + Zusammenfassung
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Dead Flag Check
+- **Zusammenfassung:** Claim 6: NMT_LOCAL_ENABLED VERWAIST ✅ (6 Dateien durchsucht, 0 Treffer in Routing/Decision-Code). Claim 7: last_checked_at/stress_tested_at TOT ✅ (nur Write-Pfade, 0 WHERE/SELECT). Gesamtergebnis: 7/7 Claims bestätigt durch tatsächliche Ausführung.
+- **Ursache der Obsoleszenz:** NMT_LOCAL_ENABLED wurde durch BU-040 entfernt. TOT-Flags wurden später in preflight.js integriert (BU-035 Fix hat READ-Pfade für last_checked_at/stress_tested_at hinzugefügt).
+- **LIVE-Ersatz:** CHANGELOG [BU-040] + [BU-035]
+- **Status:** ✅ Archiviert
+
+### 📋 VR-003 — Gesamtdokument: VERIFICATION_REPORT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Verifikations-Report: 7 Claims dynamisch verifiziert (echter Befehl + Output, kein Static-Grep). BU-035–BU-039 + 2 Dead Flags. Bereits als DC-018 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Claims sind verifiziert und behoben. Das Dokument war ein Einmal-Verifikationslauf. "Keine Behauptung ohne Befehl+Output-Paar" — das Prinzip lebt weiter, das Dokument nicht.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-018) + §27 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 28. SESSION_REPORT_2026-06-19 — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Vollständige Session-Dokumentation, alle Phasen abgeschlossen.
+> **Quelle:** `core/archive/docs/SESSION_REPORT_2026-06-19.md` (Session-Report, 100 % OBSOLETE)
+> **Regel:** Einmalige Session-Dokumentation vom 19.06.2026 — Triple-Audit, DB-Reset, Stufe 1-3, alle Phasen abgeschlossen.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 SR-001 — Session-Zusammenfassung + Triple-Audit-Ergebnisse + Priorisierung
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Doku
+- **Zusammenfassung:** Vollständige Session vom 19.06.2026 (~3h, 25+ Sub-Agents). Phasen: Triple Audit (3 Rollen × 7 Agents), Priorisierungs-Matrix (31 Findings, 4 Quadranten), DB-Backup + Reset (6.676→0→1.508), Stufe 1 Doku-Korrekturen, Stufe 2 Quick-Bugfixes (BU-034/021/028/029/027), Stufe 3 Post-Run DB-Analyse. 6 Code-Dateien geändert, 6 Report-Dateien erstellt.
+- **Ursache der Obsoleszenz:** Alle Phasen sind abgeschlossen. Alle Bugs sind behoben. Der DB-Reset ist einmalig. Die Priorisierung ist durch V0.21-Scope überholt.
+- **LIVE-Ersatz:** CHANGELOG [STUFE1] + [STUFE2] + [STUFE3]
+- **Status:** ✅ Archiviert
+
+### 📋 SR-002 — Stufe 1-3 Details + DB-Reset + Post-Run-Analyse
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Implementierungs-Doku
+- **Zusammenfassung:** Stufe 1: D1-D4 Doku-Korrekturen + R2 google_free abschaltbar + R3 NVIDIA Key. Stufe 2: 5 Quick-Bugfixes. Stufe 3: DB-Reset (6.676→0) + Live-Run (1.508 Einträge) + Tier-1-Fix verifiziert (openrouter 0.9%→9.8%, google_free komplett verdrängt). Patch-Session BU-035–039 + Dead Code Cleanup.
+- **Ursache der Obsoleszenz:** Alle Fixes sind implementiert und verifiziert. DB-Zahlen durch V0.21-Audit (9.492 Einträge) komplett überholt.
+- **LIVE-Ersatz:** CHANGELOG [STUFE1–3] + V0.21_SCOPE.md + PREFLIGHT_LATEST.md
+- **Status:** ✅ Archiviert
+
+### 📋 SR-003 — Offene Punkte + DB-Archivierung + Validierung
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Roadmap + Metriken
+- **Zusammenfassung:** Offene Punkte für nächste Session: P0 NVIDIA Key debuggen, Groq Routing debuggen, MOD_PATH korrigieren (alle erledigt). P1: BU-020 AbortController (offen), M1 config-runtime Split (offen). P2: BU-026 Test-Framework, BU-023 Boundary-Tests, M2 client-factory. DB-Archivierung: 5 Snapshots archiviert. Validierung: Syntax 55/55 ✅, Validator 49/49 ✅, Parser 26/26 ✅.
+- **Ursache der Obsoleszenz:** Roadmap-Punkte sind in MASTER_DOC §6 und PLAN_MASTER.md überführt. Validierungsergebnisse sind historisch.
+- **LIVE-Ersatz:** MASTER_DOC.md §6 + PLAN_MASTER.md
+- **Status:** ✅ Archiviert
+
+### 📋 SR-004 — Gesamtdokument: SESSION_REPORT_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Vollständiger Session-Report für den 19.06.2026: 3 Rollen × 7 Sub-Agents + 5 Stufen Implementierung + DB-Reset + Post-Run-Analyse + Patch-Session (BU-035–039). 25+ Sub-Agents total. Bereits als DC-016 in FREEZE_INDEX §13 katalogisiert.
+- **Ursache der Obsoleszenz:** 100 % der Inhalte sind abgeschlossen oder überholt. Das Dokument war die definitive Session-Dokumentation — sein Zweck ist erfüllt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §13 (DC-016) + §28 (diese Einträge)
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
 
 ---
 
@@ -667,5 +1424,115 @@
 ---
 
 *📚 FREEZE INDEX v0.20.0 — 2026-06-20*
-*82 Glossary-Einträge — 64 gelöscht, 18 im FREEZE/ verbleibend. Lückenlos rekonstruierbar.*
+*81 Glossary-Einträge — 62 gelöscht, 19 im FREEZE/ verbleibend. Lückenlos rekonstruierbar.*
 *Generiert durch Buffy (Codebuff) — Built accidentally. Runs intentionally.*
+
+---
+
+## 29. HANDSHAKE_2026-06-20_P0-FIXES — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — P0-Abschluss-HANDSHAKE, alle drei P0-Punkte DONE.
+> **Quelle:** `core/archive/docs/HANDSHAKE_2026-06-20_P0-FIXES.md` (P0-Abschluss, 100 % OBSOLETE)
+> **Regel:** HANDSHAKE über abgeschlossene P0-Fixes — alle drei Punkte sind implementiert und verifiziert. Kein offener Rest.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 PF-001 — §1 P0-1/P0-2/P0-3 Abschluss
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** P0-Abschluss-Doku
+- **Zusammenfassung:** P0-1: Watermark-Stripping (5-Schichten-Defense: extractor.js, text-core.js isProperNoun/shouldTranslate, translation-db.js saveTranslation sourceText+translation). P0-2: shouldTranslate() Config-Blocker (} und ] Delimiter + KEY: {/[ Blocker mit $ Anchor). P0-3: Watermark Output-Only (durch P0-1 vollständig abgedeckt).
+- **Ursache der Obsoleszenz:** Alle drei P0-Punkte sind DONE und im CHANGELOG [V0.21-P0-FIXES] dokumentiert. Die HANDSHAKE war ein Übergabe-Dokument für den Abschluss.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES] + aktueller Code
+- **Status:** ✅ Archiviert
+
+### 📋 PF-002 — §2 Verifikation + §3 Geänderte Dateien
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Verifikation + Commit-Info
+- **Zusammenfassung:** P0-1: 6/6 Tests passed. P0-2: 12/12 Tests passed. Syntax extractor.js/text-core.js/translation-db.js OK. Code-Review deepseek passed. Thinker gemini passed. Geänderte Dateien: extractor.js (+1), text-core.js (+8), translation-db.js (+4), V0.21_SCOPE.md, CHANGELOG.md, MASTER_DOC.md.
+- **Ursache der Obsoleszenz:** Verifikation ist abgeschlossen. Datei-Änderungen sind committed. Kein offener Rest.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 PF-003 — §4 Offene Punkte (P1-1/P1-2/P1-3)
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Übergabe offener Punkte
+- **Zusammenfassung:** Drei P1-Punkte als offen dokumentiert: P1-1 polish_single "no-change"-Erkennung (~1h), P1-2 Non-native stale Counter-Reset (~0.5h), P1-3 DB-Sanitization alter Watermark-Einträge (~1h).
+- **Ursache der Obsoleszenz:** Offene Punkte wurden in PLAN_MASTER.md überführt. HANDSHAKE als Übergabe-Dokument nicht mehr nötig.
+- **LIVE-Ersatz:** PLAN_MASTER.md (P1-1/P1-2/P1-3)
+- **Status:** ✅ Archiviert
+
+### 📋 PF-004 — Gesamtdokument: HANDSHAKE_2026-06-20_P0-FIXES.md
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** P0-Abschluss-HANDSHAKE: Alle drei V0.21 P0-Punkte abgeschlossen. 6+12 Tests passed, 3 Code-Dateien geändert, 3 Doku-Dateien aktualisiert. ICH WERDE GEMINI NICHT REIN LASSEN — P0-1/P0-2/P0-3 ABGESCHLOSSEN.
+- **Ursache der Obsoleszenz:** 100 % der Inhalte sind erledigt. Das Dokument war eine Übergabe-Spezifikation für den nächsten Agenten — Zweck vollständig erfüllt.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §29 (diese Einträge) + CHANGELOG [V0.21-P0-FIXES] + PLAN_MASTER.md
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument auf Stub reduziert
+
+---
+
+## 30. V0.21_SCOPE — Vollarchivierung
+
+> **Aktion:** Komplettes Quelldokument ins Buch überführt — Scope-Definition, alle P0-Punkte DONE, Planungs-Items nach PLAN_MASTER migriert.
+> **Quelle:** `core/archive/docs/V0.21_SCOPE.md` (Scope-Definition, 100 % OBSOLETE)
+> **Regel:** Scope-Dokument dessen P0-Punkte alle DONE sind. Planungs-Items (P1-x, P2-x) sind nach PLAN_MASTER.md migriert. RESTORE-Philosophie und Qualitäts-Definition sind in MASTER_DOC §3+§6 dokumentiert.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 VS-001 — §1 Grundprinzipien (RESTORE-Philosophie)
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Architektur-Philosophie
+- **Zusammenfassung:** Drei vom User definierte Grundprinzipien: P1 RESTORE nie nutzen (Safety-Net only), P2 Qualität=optional/Lesbarkeit=Pflicht (Score ≥ 50), P3 Zero Result Difference (immer liefern, nie leer/error/korrupt).
+- **Ursache der Obsoleszenz:** Prinzipien sind in MASTER_DOC.md §3+§6 dokumentiert. Das Scope-Dokument war der Erst-Entwurf — die Prinzipien leben im MASTER_DOC weiter.
+- **LIVE-Ersatz:** MASTER_DOC.md §3 + §6
+- **Status:** ✅ Archiviert
+
+### 📋 VS-002 — §2 Fehlerquellen-Analyse (Audit 9.492 Einträge)
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Audit-Ergebnisse
+- **Zusammenfassung:** Live-DB Audit: 9.492 Einträge, 4 Fehlerquellen. #1 Watermark-Akkumulation (423 maskiert, P0) → BEHOBEN. #2 shouldTranslate False Positives (23+5, P0) → BEHOBEN. #3 Non-Native Stale (194, P1) → PLAN. #4 MAX_REV_EXCEEDED (1.299, Symptom) → wird sich durch #1+#3 lösen.
+- **Ursache der Obsoleszenz:** Audit war einmalig. Fehlerquellen #1+#2 sind BEHOBEN (P0-1/P0-2 DONE). #3 ist als P1-1/P1-2 in PLAN_MASTER.md. DB-Zahlen sind durch neue Runs überholt.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES] + PLAN_MASTER.md
+- **Status:** ✅ Archiviert
+
+### 📋 VS-003 — §3-§7 Scope-Prioritäten + RESTORE + Qualität + Abschluss + Next-Scope
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Planung + Philosophie
+- **Zusammenfassung:** P0-Punkte (3, alle DONE), P1-Punkte (3, nach PLAN_MASTER migriert), P2-Punkte (3, nach PLAN_MASTER migriert). RESTORE-Philosophie (4 Garantien). Qualitäts-Definition (5 Score-Stufen). P0-Abschluss-Doku. Effort-to-Next-Scope Prognose.
+- **Ursache der Obsoleszenz:** Alle P0 DONE. RESTORE-Philosophie und Qualitäts-Definition sind in MASTER_DOC.md dokumentiert. Planungs-Items sind in PLAN_MASTER.md. Effort-Prognose ist durch tatsächlichen Fortschritt überholt.
+- **LIVE-Ersatz:** MASTER_DOC.md §3+§6 + PLAN_MASTER.md + CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 VS-004 — Gesamtdokument: V0.21_SCOPE.md
+- **Datum:** 2026-06-20 | **Version:** v0.21
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** V0.21 Scope-Definition "Immer liefern, nie restaurieren". Basierend auf Live-DB Audit (9.492 Einträge, 5 parallele Checks). 4 Fehlerquellen identifiziert, 3 P0 + 3 P1 + 3 P2 priorisiert. RESTORE-Philosophie mit 4 Code-Garantien. Qualitäts-Definition mit 5 Score-Stufen.
+- **Ursache der Obsoleszenz:** Zweck vollständig erfüllt. P0-Punkte sind DONE. Planungs-Items sind nach PLAN_MASTER.md migriert. Philosophie lebt in MASTER_DOC.md weiter. Das Dokument war der Initial-Entwurf für V0.21.
+- **LIVE-Ersatz:** FREEZE_INDEX.md §30 (diese Einträge) + MASTER_DOC.md + PLAN_MASTER.md
+- **Status:** ✅ Vollarchiviert — LIVE-Dokument gelöscht
+
+---
+
+## 31. PHASE2_MARKER_INTEGRATION — Vollarchivierung
+
+> **Aktion:** Planungsdokument ins Buch überführt — 4/6 Lücken geschlossen, verbleibende 2 nach PLAN_MASTER migriert.
+> **Quelle:** `core/archive/docs/plans/PHASE2_MARKER_INTEGRATION_2026-06-19.md` (Integrationsplan, 100 % OBSOLETE)
+> **Regel:** Planungsdokument dessen Implementierungsphase abgeschlossen ist (4/6 DONE). Verbleibende offene Punkte (Lücke 1 googleFreePreflight, Lücke 5 Stats-Aggregation, Phase 2d E2E) sind nach PLAN_MASTER.md migriert.
+> **Datum der Archivierung:** 2026-06-20
+
+---
+
+### 📋 PM-001 — Lücken 1-6 + Implementierungsstand
+- **Datum:** 2026-06-19 | **Version:** v0.20.0
+- **Kategorie:** Integrationsplan
+- **Zusammenfassung:** 6 Lücken in der validateFileMarkers-Integration identifiziert. 4/6 geschlossen (Phase 2a: Lücke 2 Gate-Counter + Lücke 6 getQaScore, Phase 2b: Lücke 3 SHIELD_RESTORE_FAIL, Phase 2c: Lücke 4 Unit-Tests 16/49). 2 offen: Lücke 1 googleFreePreflight Shield-Results, Lücke 5 Stats-Aggregation. Phase 2d E2E Dry-Run ausstehend.
+- **Ursache der Obsoleszenz:** 4/6 Lücken sind implementiert und verifiziert. Verbleibende 2 Lücken + Phase 2d sind als M1-M3 in PLAN_MASTER.md migriert.
+- **LIVE-Ersatz:** PLAN_MASTER.md (M1-M3)
+- **Status:** ✅ Archiviert
+
+### 📋 PM-002 — Gesamtdokument: PHASE2_MARKER_INTEGRATION_2026-06-19.md
+- **Datum:** 2026-06-19 | **Version:** v0.20.0
+- **Kategorie:** Vollarchiviertes Quelldokument
+- **Zusammenfassung:** Phase 2 Integrationsplan für validateFileMarkers. 6 Lücken, 4 Phasen (2a-2d), Gesamt-Effort ~8.5h (davon ~2h verbleibend). Risiken dokumentiert, Abschl

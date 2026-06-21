@@ -1,4 +1,4 @@
-# 📖 INDEX — core/src/ (29 Dateien, ~10.049 LOC)
+# 📖 INDEX — core/src/ (27 Dateien, ~10.000 LOC)
 
 > **Generiert:** 2026-06-20 | **Version:** v0.20.0-pre-release
 > **Zuletzt verifiziert:** 2026-06-20 (better-sqlite3-Migration + translateHttpError)
@@ -27,7 +27,6 @@
 | [model-registry.js](#model-registryjs) | 210 | 6 | Modell-Status, Install, Ollama-Pull |
 | [parser.js](#parserjs) | 190 | 7 | Format-Parser (SoS, Raw, JSON) |
 | [planner.js](#plannerjs) | 210 | 9 | Run-Orchestrierung, File-Processing |
-| [plugin-registry.js](#plugin-registryjs) | 28 | 2 | Game-Plugin Registry + Factory |
 | [polish-arbiter.js](#polish-arbiterjs) | 195 | 6 | Multi-Provider A/B Polish |
 | [preflight.js](#preflightjs) | 260 | 6 | DB-Health-Check, Auto-Repair, Snapshots |
 | [router.js](#routerjs) | 180 | 4 | Provider-Routing, Cost-Class, Error-Handler |
@@ -35,12 +34,11 @@
 | [scanner.js](#scannerjs) | 48 | 3 | File-Klassifikation, Mod-Scanning |
 | [sos-runtime.js](#sos-runtimejs) | 60 | 4 | SoS-Config, Launcher-Sync |
 | [text-core.js](#text-corejs) | 530 | 17 | Prompt-Building, Validation, Placeholder |
-| [translation-db.js](#translation-dbjs) | 230 | 10 | DB-Interface, Cache, Glossary, Save |
+| [translation-db.js](#translation-dbjs) | 419 | 11 | DB-Interface, Cache, Glossary, Save, Recovery |
 | [translation-quality.js](#translation-qualityjs) | 170 | 7 | Quality-Scoring, Native-Decision, Flagging |
-| [translation-runtime.js](#translation-runtimejs) | 1210 | 18 | Pipeline-Kern: Translate, Polish, Deep-Polish |
+| [translation-runtime.js](#translation-runtimejs) | 1300 | 21 | Pipeline-Kern: Translate, Polish, Deep-Polish, Recovery |
 | [ui.js](#uijs) | 65 | 3 | CLI-Menü, Mod-Auswahl, Bestätigung |
 | [validator.js](#validatorjs) | 240 | 8 | Marker-Validation, Syntax-Check, QA-Score |
-| [watermark-config.js](#watermark-configjs) | 21 | 2 | Watermark-Konfiguration, ZWSP/ZWNJ-Marker |
 
 ---
 
@@ -362,19 +360,6 @@
 
 ---
 
-## plugin-registry.js (28 LOC)
-*Game Plugin Registry + Factory — erzeugt Plugin-Instanzen basierend auf GAME-Env-Var*
-
-| Zeile | Funktion | Beschreibung |
-|-------|----------|--------------|
-| 3-8 | `PLUGIN_REGISTRY` | Map: game-name → PluginClass (z.B. songs_of_syx → SongsOfSyxPlugin) |
-| 18 | `createPlugin(gameName)` | Factory: erzeugt Plugin-Instanz, Fallback auf SongsOfSyxPlugin |
-
-**CHANGELOG-Ref:**
-- Kein separater CHANGELOG-Eintrag — erstellt im Rahmen der Plugin-Architektur (v0.19.9)
-
----
-
 ## polish-arbiter.js (195 LOC)
 *Multi-Provider A/B Polish via Promise.allSettled*
 
@@ -519,8 +504,8 @@
 
 ---
 
-## translation-db.js (230 LOC)
-*DB-Interface: Cache, Glossary, Save, Stress-Test*
+## translation-db.js (419 LOC)
+*DB-Interface: Cache, Glossary, Save, Stress-Test, Review-Recovery*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -533,14 +518,16 @@
 | 121-140 | `learnGlossary(...)` | Glossary lernen |
 | 141-152 | `saveStressTestResult(...)` | Stress-Test-Ergebnis |
 | 153-202 | `getCachedTranslations(...)` | **Cache-Lookup** |
-| 203-230 | `saveTranslation(...)` | **Translation speichern** |
+| 203-350 | `saveTranslation(...)` | **Translation speichern** — mit P1 konfigurierbarem Review-Limit + P3 skipReviewIncrement |
+| 358-415 | `recoverTerminatedEntries()` | **P1 Recovery** — terminierte Einträge nach Timeout zurücksetzen |
 
-**CHANGELOG-Ref (4× translation-db):**
+**CHANGELOG-Ref (6× translation-db):**
 - [CL:0.15.0-alpha] enrichWithContext implementiert, saveTranslation erstellt
 - [CL:0.16.0] saveStressTestResult
 - [CL:0.19.8] polish_status/requires_deep_polish/overwrite_fallback_used Spalten in saveTranslation
 - [CL:QUALITY-OFFENSIVE] saveTranslation sequentiell statt Promise.all
 - [CL:0.20.0-pre-release] 8→9 Funktionen (getEntryHash nachträglich)
+- [CL:REVIEW-LIMIT-PIPELINE] P1 konfigurierbares MAX_REVIEW_COUNT + recoverTerminatedEntries, P2 critical_reject Recovery, P3 skipReviewIncrement in saveTranslation
 
 ---
 
@@ -565,8 +552,8 @@
 
 ---
 
-## translation-runtime.js (1210 LOC)
-*Pipeline-Kern: Translate, Polish, Deep-Polish, DNT-Shielding, 5-Phasen-Orchestrator*
+## translation-runtime.js (1300 LOC)
+*Pipeline-Kern: Translate, Polish, Deep-Polish, DNT-Shielding, 5-Phasen-Orchestrator, Review-Recovery*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -581,12 +568,12 @@
 | 521-623 | `fixGrammarBatch(...)` | **Grammar-Fix** (Polish) |
 | 624-658 | `flagPotentialErrors(...)` | Error-Flagging |
 | 659-666 | `getBestAvailableQualityModel()` | Bestes Quality-Modell |
-| 667-721 | `cachePhase(ctx)` | **Phase 1: Cache** |
+| 667-721 | `cachePhase(ctx)` | **Phase 1: Cache** — mit P2 critical_reject Loop-Breaker |
 | 722-768 | `nativePhase(ctx)` | **Phase 2: Native** |
-| 769-932 | `translatePhase(ctx)` | **Phase 3: Translate** |
+| 769-960 | `translatePhase(ctx)` | **Phase 3: Translate** — mit P2 critical_reject flagging + P3 skipReviewIncrement |
 | 933-1043 | `qaPhase(ctx)` | **Phase 4: QA** |
 | 1044-1067 | `deepPolishPhase(ctx)` | **Phase 5: Deep Polish** |
-| 1068-1109 | `ensureTranslations(texts, options)` | **ORCHESTRATOR** — 5 Phasen |
+| 1068-1140 | `ensureTranslations(texts, options)` | **ORCHESTRATOR** — 5 Phasen + P1 Recovery (once per session) |
 | 1110-1210 | `runDeepPolishBatch(...)` | Deep-Polish-Batch |
 
 **CHANGELOG-Ref (16× translateBatch, 12× ensureTranslations):**
@@ -600,6 +587,7 @@
 - [CL:QUALITY-OFFENSIVE] needsRefresh polish_single, Retry-Loop, runDeepPolishBatch, ensureTranslations consecutiveGrammarFailures Reset, saveTranslation sequentiell
 - [CL:0.20.0-alpha.3] subPhase-Tracking in ensureTranslations (caching/native/translating/polishing)
 - [CL:GOD-001] ensureTranslations Split in 5 Phasen (cachePhase/nativePhase/translatePhase/qaPhase/deepPolishPhase), GOD-002 translateBatch als nächster Split-Kandidat
+- [CL:REVIEW-LIMIT-PIPELINE] P1 recoverTerminatedEntries (ensureTranslations), P2 isCriticalReject Loop-Breaker (cachePhase) + critical_reject flagging (translatePhase), P3 skipReviewIncrement (translatePhase fail-path)
 
 ---
 
@@ -637,20 +625,6 @@
 
 ---
 
-## watermark-config.js (21 LOC)
-*Shared Watermark Configuration — Single Source of Truth für unsichtbare Unicode-Marker (ZWSP/ZWNJ)*
-
-| Zeile | Funktion | Beschreibung |
-|-------|----------|--------------|
-| 7-13 | `WATERMARK_CONFIG` (Object.freeze) | Gefrorenes Config-Objekt |
-| 12 | `ZW_MARKERS` | Array mit 2 Markern: Zero-Width Space + Zero-Width Non-Joiner |
-| 16 | `randomZWMarker()` | Zufälligen Marker aus ZW_MARKERS auswählen |
-
-**CHANGELOG-Ref:**
-- [CL:WATERMARK-FIX] WATERMARK_CONFIG eingeführt — randomZWMarker() ersetzt manuelles Array-Indexing in text-core.js
-
----
-
-*📖 INDEX v0.20.0 — 2026-06-20*
-*29 Dateien, ~10.138 LOC, 245 Function/Class-Definitionen (verifiziert via wc -l + grep).*
+*📖 INDEX v0.20.0-pre-release — 2026-06-19*
+*27 Dateien, ~10.089 LOC, 243 Function/Class-Definitionen (verifiziert via wc -l + grep).*
 *Generiert durch Buffy (Codebuff) — Built accidentally. Runs intentionally.*
