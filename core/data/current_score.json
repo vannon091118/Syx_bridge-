@@ -1,0 +1,60 @@
+{
+  "globalScore": 90.105,
+  "formula": "weighted",
+  "coverage": 8,
+  "weightsSource": "default-revised-inline",
+  "computedAt": "2026-06-21T01:37:38.662Z",
+  "gitCommit": "980de4ad9e42d4ec5d1ef94a4c659c50f8e124f9",
+  "perCategory": [
+    {
+      "id": "casual",
+      "p": 97.5,
+      "w": 0.35,
+      "contribution": 34.125
+    },
+    {
+      "id": "mid-range-with-keys",
+      "p": 97,
+      "w": 0.15,
+      "contribution": 14.55
+    },
+    {
+      "id": "mid-range-no-keys",
+      "p": 85,
+      "w": 0.25,
+      "contribution": 21.25
+    },
+    {
+      "id": "schwache-hw",
+      "p": 74,
+      "w": 0.1,
+      "contribution": 7.4
+    },
+    {
+      "id": "power-ollama",
+      "p": 94,
+      "w": 0.08,
+      "contribution": 7.52
+    },
+    {
+      "id": "headless",
+      "p": 87.5,
+      "w": 0.02,
+      "contribution": 1.75
+    },
+    {
+      "id": "power-api-user",
+      "p": 77,
+      "w": 0.03,
+      "contribution": 2.31
+    },
+    {
+      "id": "offline",
+      "p": 60,
+      "w": 0.02,
+      "contribution": 1.2
+    }
+  ],
+  "personaModel": "single-tag (8 Personas, nicht multi-tag)",
+  "assumptions": "REVISED.Default wenn weights-source \"default-revised-inline\", sonst aus --weights-JSON"
+}
