@@ -49,6 +49,34 @@
 
 ---
 
+---
+
+## 📂 SUB-PLÄNE (Detail-Ausarbeitung pro Topic)
+
+> **Regel:** Jeder Topic-Plan hat YAML-Header `type:plan`, Origin-Referenz zum auslösenden Doku-Doc,
+> Action-Items-Tabelle mit ID/Owner/Aufwand/Status, Acceptance-Criteria, und Cross-Refs zu den
+> verwandten Plänen. Quelle-Spalte zeigt jeweils das Origin-Doc.
+> **OPEN-ONLY-Policy:** Hier werden nur offene/geplante Items erfasst; abgeschlossene Items werden
+> im Original-Doc aktualisiert, NICHT im Sub-Plan nachgepflegt.
+
+| Plan | Origin-Doc | Topic | Status |
+|------|-----------|-------|--------|
+| [PLAN_BYPASS_REMOVAL](PLAN_BYPASS_REMOVAL.md) | `BYPASS_AUDIT_2026-06-21.md` | 36 Bypässe eliminieren | 🟡 OFFEN |
+| [PLAN_STABILISIERUNG](PLAN_STABILISIERUNG.md) | `STABILISIERUNGS_SCOPE_2026-06-21.md` | 9-Punkt-Stabilisierung (95%+ Score halten) | 🟡 OFFEN |
+| [PLAN_RUNTIME_PROBABILITY](PLAN_RUNTIME_PROBABILITY.md) | `FOREIGN_MACHINE_PROBABILITY_2026-06-21.md` | 8 Use-Cases auf ≥ 85% bringen | 🟡 OFFEN |
+| [PLAN_GLOBAL_SCORE](PLAN_GLOBAL_SCORE.md) | `CALCULATION_AND_INTEGRATION_2026-06-21.md` | runtime_score.js Dev-Tool | 🟡 OFFEN |
+| [PLAN_BUG_TRIAGE](PLAN_BUG_TRIAGE.md) | `KNOWN_BUGS_REPORT.md` | OFFEN-Bugs durcharbeiten | 🟡 OFFEN |
+| [PLAN_FEATURE_GAPS](PLAN_FEATURE_GAPS.md) | `FEATURE_VERIFICATION_2026-06-21.md` | 85% → 100% Feature-Score | 🟡 OFFEN |
+| [PLAN_DEAD_FLAGS](PLAN_DEAD_FLAGS.md) | `DEAD_FLAG_REPORT_2026-06-19.md` | Tote Flags entfernen | 🟡 OFFEN |
+| [PLAN_PRIORISIERUNG](PLAN_PRIORISIERUNG.md) | `PRIORISIERUNG_2026-06-19.md` | 5 Stufen-Matrix sequenziell | 🟡 OFFEN |
+| [PLAN_LATENT_RISKS](PLAN_LATENT_RISKS.md) | `CONTROL_TOWER_AUDIT_2026-06-19.md` | Latent-Risiken mitigieren | 🟡 OFFEN |
+
+**Erstellungsdatum:** 2026-06-21 (Session-Continue nach BROKEN-PUSH-RECOVERY)
+**Format-Spec:** YAML-Header + Markdown-Sektionen (cf. PLAN_BYPASS_REMOVAL als Template)
+**Cross-Ref-Pattern:** 📎 Origin-Doc | 🔗 PLAN_MASTER | 🛠️ Code-Target
+
+---
+
 ## 🔵 PHASE2 MARKER INTEGRATION (Verbleibend)
 
 > **Quelle:** `plans/PHASE2_MARKER_INTEGRATION_2026-06-19.md` — 4/6 Lücken geschlossen
