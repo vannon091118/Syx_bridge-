@@ -1,6 +1,24 @@
 const crypto = require('crypto');
 
 /**
+ * ZWSP/ZWNJ pattern for stripping invisible Unicode watermarks.
+ */
+const ZWSP_PATTERN = /[\u200B\u200C]/g;
+
+/**
+ * Single-source-of-truth for stripping invisible watermark characters.
+ * Centralizes the .replace(/[\u200B\u200C]/g, '') pattern that was
+ * duplicated across 7+ functions (isProperNoun, shouldTranslate,
+ * normalizeWhitespace, saveTranslation, et al.).
+ *
+ * @param {string} text  Input text possibly containing watermarks
+ * @returns {string}  Text with all ZWSP and ZWNJ characters removed
+ */
+function stripWatermarks(text) {
+  return String(text || '').replace(ZWSP_PATTERN, '');
+}
+
+/**
  * Generates a SHA-1 hash for a given text.
  */
 function getHash(text) {
@@ -11,8 +29,7 @@ function getHash(text) {
  * Unescapes special characters in a text value.
  */
 function unescapeTextValue(value) {
-  return String(value || '')
-    .replace(/[\u200B\u200C]/g, '')   // P0-1: Watermarks (ZWSP/ZWNJ) VOR dem Unescaping strippen.
+  return stripWatermarks(value)  // P0-1: Watermarks (ZWSP/ZWNJ) VOR dem Unescaping strippen.
     .replace(/\\n/g, '\n')             //      Sonst sabotiert ein Watermark zwischen \ und n
     .replace(/\\"/g, '"')              //      das \n→\n-Unescaping (unsichtbare Korruption).
     .replace(/\\\\/g, '\\');           //      \\→\ MUSS als letztes kommen (sonst Doppel-Unescape).
@@ -186,5 +203,7 @@ module.exports = {
   unescapeTextValue,
   escapeTextValue,
   shieldPlaceholders,
-  restorePlaceholders
+  restorePlaceholders,
+  stripWatermarks,
+  ZWSP_PATTERN
 };

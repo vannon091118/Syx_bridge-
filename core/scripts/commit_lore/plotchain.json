@@ -1147,5 +1147,45 @@
       "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
     ],
     "dialogue_preview": "v0.22.0 Bump: Version von 0.21.0-untested auf 0.22.0 angehoben. ESLint-Hygiene: no-useless-catch in ..."
+  },
+  {
+    "id": "plot-2026-06-22T16:46:18",
+    "parent_id": "plot-2026-06-22T16:30:10",
+    "timestamp": "2026-06-22 16:46:18",
+    "status": "active",
+    "model_id": "deepseek-v4-flash",
+    "user_impulse": {
+      "text": "C-005 Watermark-Strip Helper zentralisieren - stripWatermarks in extractor.js",
+      "timestamp": "2026-06-22T16:46:18",
+      "effect": null
+    },
+    "arcs": [
+      "great-cleanup"
+    ],
+    "cross_arc_bridge": false,
+    "cross_references_used": [],
+    "lore_context": [
+      "2026-06-22 16:14:40",
+      "2026-06-22 16:30:10",
+      "2026-06-22 16:46:18"
+    ],
+    "session_changes": [
+      "core/src/extractor.js",
+      "core/src/providers/client-factory.js",
+      "core/src/text-core.js",
+      "core/src/translation-db.js",
+      "core/src/translation-runtime.js"
+    ],
+    "variables": [
+      "extractor",
+      "client-factory",
+      "text-core",
+      "translation-db",
+      "translation-runtime"
+    ],
+    "suggested_next_hooks": [
+      "Datenbank-Sanitierung auf Integrität prüfen und Altlasten beseitigen."
+    ],
+    "dialogue_preview": "C-005: Watermark-Strip Helper zentralisiert. Das Pattern /[\\u200B\\u200C]/g war in 14 Stellen über 7 ..."
   }
 ]

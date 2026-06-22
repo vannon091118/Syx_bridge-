@@ -5,6 +5,8 @@
  * Contains all 7 LLM/API provider batch functions + executeStageRequest.
  */
 
+const { stripWatermarks } = require('../extractor');
+
 function createProviderClients(ctx) {
   const {
     config, configRuntime, axios, langCodes,
@@ -79,7 +81,7 @@ function createProviderClients(ctx) {
   // Order matters: strip ZWSP/ZWNJ FIRST (they're zero-width, invisible),
   // then normalize remaining whitespace.
   function normalizeWhitespace(text) {
-    return String(text || '').replace(/[\u200B\u200C]/g, '').replace(/\s+/g, ' ').trim();
+    return stripWatermarks(text).replace(/\s+/g, ' ').trim();
   }
 
   // ── Item 0e: Adaptive Batch-Größen ─────────────────────────────────

@@ -13,6 +13,7 @@ const {
   buildContextPacket
 } = require('./context-packets');
 const { findRelevantGlossaryTerms, shouldLearnGlossaryTerm } = require('./glossary');
+const { stripWatermarks } = require('./extractor');
 
 // QUAL-OFFENSIVE Fix #2: Importiere Single Source of Truth aus translation-quality.js
 // Statt einer eigenen Konstanten-Definition (die mit translation-quality.js divergieren
@@ -204,12 +205,12 @@ function createTranslationDb(options) {
     // P0-1 FIX: Strip watermarks (ZWSP/ZWNJ) at DB boundary.
     // Defense-in-Depth alongside text-core.js extractReplacements() strip.
     // Prevents watermarked legacy entries from being saved/re-queried.
-    const sourceText = (typeof entry === 'string' ? entry : entry.source).replace(/[\u200B\u200C]/g, '');
+    const sourceText = stripWatermarks(typeof entry === 'string' ? entry : entry.source);
 
     // P0-1: Auch den translation-Wert von Watermarks säubern.
     // LLMs können ZWSP/ZWNJ aus dem Source-Text übernehmen oder selbst generieren.
     if (typeof translation === 'string') {
-      translation = translation.replace(/[\u200B\u200C]/g, '');
+      translation = stripWatermarks(translation);
     }
 
     // DEFENSIVE: Reject shield tokens at the DB boundary.

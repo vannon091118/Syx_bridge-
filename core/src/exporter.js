@@ -71,8 +71,8 @@ async function writeTranslatedFile(fullPath, content, replacements, translations
     if (header && !newContent.startsWith(header.trim())) {
       newContent = header + newContent;
     }
-  } else if (outputPath.includes('V71') && !newContent.includes('__OVERWRITE')) {
-    newContent = `__OVERWRITE: true,\n${newContent}`;
+  } else {
+    console.warn(`[EXPORTER] Kein Plugin fuer Header-Detection: ${outputPath}`);
   }
 
 

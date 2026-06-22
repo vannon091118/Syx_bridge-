@@ -1115,7 +1115,8 @@ function createTranslationRuntime(options) {
             // werden, da .set() den alten Wert ueberschreibt.
             const oldTranslation = ctx.translations.get(key);
             ctx.translations.set(key, improved);
-            const clean = (s) => normalizeWhitespace((s || '').replace(/[\u200B\u200C]/g, '')).trim();
+            // C-005: normalizeWhitespace ruft bereits stripWatermarks() auf.
+            const clean = (s) => normalizeWhitespace(s || '').trim();
             const isNoChange =
               !clean(improved) ||
               clean(improved) === clean(key) ||

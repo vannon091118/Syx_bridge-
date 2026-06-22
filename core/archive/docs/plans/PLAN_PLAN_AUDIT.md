@@ -138,9 +138,9 @@ Constraints getrennt, Schnittstellen durch Muster sichtbar.
 - **STATUS:** ⚠️ SOLL TEILWEISE — OpenRouter/NVIDIA haben dynamischen Free-Cache (P0-6b). Gemini hat Cache aber wird nie befüllt (API liefert kein Free-Tier-Flag). Player2/FCM kein Free-Cache.
 
 ### C.3 ensure[Provider]Model (config-runtime.js) — 3 Methoden
-- **IST:** Groq (PRIMARY+AUDITOR), Ollama (PRIMARY+AUDITOR), NVIDIA (PRIMARY+AUDITOR+POLISHER).
+- **IST:** Groq (PRIMARY+AUDITOR+POLISHER), Ollama (PRIMARY+AUDITOR+POLISHER), NVIDIA (PRIMARY+AUDITOR+POLISHER).
 - **SOLL:** Auto-Discovery für JEDEN Provider als PRIMARY, AUDITOR, und POLISHER.
-- **STATUS:** ❌ SOLL LÜCKE — ensureGroqModel/ensureOllamaModel checken POLISHER_PROVIDER nicht. ensureNvidiaModel macht es richtig (P0-3). Asymmetrie dokumentiert, noch nicht behoben.
+- **STATUS:** ✅ SOLL ERFÜLLT — ensureGroqModel/ensureOllamaModel/ensureNvidiaModel checken ALLE drei Provider-Rollen (PRIM+AUD+POL). Asymmetrie behoben.
 
 ### C.4 parseEnvFlag / parseKeys / isUsableTextModel (config-runtime.js)
 - **IST:** Boolean-Parsing. Key-Array-Parsing. Blacklist-Filter für Modelle (whisper, tts, etc.).
@@ -337,8 +337,8 @@ Constraints getrennt, Schnittstellen durch Muster sichtbar.
 | L-1 | CONFIG | ensureGroqModel/ensureOllamaModel | Nur PRIMARY+AUDITOR | Auch POLISHER | PLAN_STABILISIERUNG |
 | L-2 | TRANSLATION | Gemini Free-Cache | Cache existiert, nie befüllt | Manuelle Befüllung via Docs | P0-6b |
 | L-3 | QUALITY | GateCounter | Nur Zählung | Trend-Analyse + Eskalation | PLAN_LATENT_RISKS |
-| L-4 | PERSISTENCE | DB-Snapshot | Nur manuell | Automatischer Pre-Fix-Snapshot | PLAN_BUG_TRIAGE |
-| L-5 | EXPORT | checkVendorDrift | Nur manuell | Automatischer Pre-Release-Check | PLAN_MASTER |
+| L-4 | PERSISTENCE | DB-Snapshot | Manuell + Auto (preflight) | ✅ ERFÜLLT — preflight.js:259 erstellt automatisch Snapshot vor Reparatur |
+| L-5 | EXPORT | checkVendorDrift | Manuell + Auto (release.js) | ✅ ERFÜLLT — release.js ruft checkVendorDrift() vor Build auf |
 | L-6 | ROUTING | Player2/FCM Free-Cache | Kein Cache | Dynamischer Free-Cache | P0-6b |
 | L-7 | TRANSLATION | callOllamaBatch | handleRateLimits fehlt | handleRateLimits nach Erfolg | P1-7 (teilfixiert) |
 | L-8 | CONFIG | Dead-Flag-Cleanup | 2 Flags verdächtig | Vollständige Inventur | PLAN_DEAD_FLAGS |
@@ -350,9 +350,9 @@ Constraints getrennt, Schnittstellen durch Muster sichtbar.
 
 | Prio | Lücke | Begründung |
 |------|-------|------------|
-| P0 | L-1 | POLISHER Auto-Discovery für Groq/Ollama — verhindert Polish-Fehlschläge |
-| P1 | L-4 | Auto-Pre-Fix-Snapshot — Datenverlust-Schutz |
-| P1 | L-5 | Auto-Pre-Release-Check — Release-Integrität |
+| P0 | ~~L-1~~ | ✅ BEHOBEN — ensureGroqModel/ensureOllamaModel checken POLISHER_PROVIDER bereits |
+| P1 | ~~L-4~~ | ✅ BEHOBEN — preflight.js erstellt automatisch Snapshot vor Reparatur |
+| P1 | ~~L-5~~ | ✅ BEHOBEN — release.js ruft checkVendorDrift() vor Build auf |
 | P2 | L-2 | Gemini Free-Cache befüllen — Kostenkontrolle |
 | P2 | L-6 | Player2/FCM Free-Cache — Kostenkontrolle |
 | P2 | L-3 | GateCounter-Trends — Früherkennung |

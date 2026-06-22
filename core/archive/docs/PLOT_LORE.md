@@ -492,3 +492,8 @@ V60-V71 Filter-Fix in export_stage2.js. Der V6/V7 Filter (!src.includes('V6') &&
 > **User-Impuls:** v0.22.0 Bump - vollstaendiger globaler Version-Bump mit Code-Hygiene-Check
 
 v0.22.0 Bump: Version von 0.21.0-untested auf 0.22.0 angehoben. ESLint-Hygiene: no-useless-catch in client-factory.js gefixt (leerer try/catch in callChatCompletions entfernt). Alle Tests bestanden: 137/137 PASS (24 runtime_score + 78 plugin-boundary + 35 E2E). ES Lint: 0 Errors. Syntax: alle core/src + scripts Dateien OK. V60-V71 Filter bereits in vorherigem Commit entfernt (c4dc58d).
+
+### [2026-06-22 16:46:18]
+> **User-Impuls:** C-005 Watermark-Strip Helper zentralisieren - stripWatermarks in extractor.js
+
+C-005: Watermark-Strip Helper zentralisiert. Das Pattern /[\u200B\u200C]/g war in 14 Stellen über 7 Dateien dupliziert - jedes Mal das gleiche Regex, jedes Mal ein potentieller Sync-Punkt für neue Watermark-Formate. Die neue stripWatermarks()-Funktion in extractor.js ist jetzt der Single Source of Truth. Alle 7 Dateien (extractor.js, text-core.js, client-factory.js, translation-runtime.js, translation-db.js) nutzen sie jetzt. Einmal gefixt, nie wieder drüber nachdenken.

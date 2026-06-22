@@ -5,7 +5,8 @@ const {
   unescapeTextValue,
   escapeTextValue,
   classifyString,
-  getHash
+  getHash,
+  stripWatermarks
 } = require('./extractor');
 require('./extractor');
 const { validatePlaceholders, validateTags, checkStructure, classifyStructureIssues } = require('./validator');
@@ -76,7 +77,7 @@ const PROPER_NOUN_DENY_COMMON_ENGLISH = new Set([
 ]);
 
 function isProperNoun(text) {
-  const value = String(text || '').replace(/[\u200B\u200C]/g, '').trim();  // P0-1: Watermarks strippen vor Check
+  const value = stripWatermarks(text).trim();  // P0-1: Watermarks strippen vor Check
   // QUAL-OFFENSIVE Fix #3: Denylist für englische Gemeinwörter
   // Vorher: Jedes Wort das mit Großbuchstaben beginnt, <40 Zeichen lang ist
   // und keine Satzzeichen enthält, wurde als ProperNoun klassifiziert → nie übersetzt.
@@ -115,7 +116,7 @@ function classifyPath(relativePath, plugin) {
 }
 
 function shouldTranslate(text) {
-  const value = String(text || '').replace(/[\u200B\u200C]/g, '').trim();  // P0-1: Watermarks strippen vor Check
+  const value = stripWatermarks(text).trim();  // P0-1: Watermarks strippen vor Check
   if (!value) return false;
     
   if (!/[a-zA-Z]/.test(value)) return false;
@@ -520,7 +521,7 @@ function extractReplacements(content, relativePath = '') {
   const replacements = [];
   let match;
   while ((match = regex.exec(content)) !== null) {
-    const value = unescapeTextValue(match[1]).replace(/[\u200B\u200C]/g, '');
+    const value = stripWatermarks(unescapeTextValue(match[1]));
     if (shouldTranslate(value, relativePath)) {
       replacements.push({
         full: match[0],

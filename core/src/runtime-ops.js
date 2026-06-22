@@ -350,7 +350,7 @@ function createRuntimeOps(options) {
         if (config.NATIVE_MODE && config.TARGET_LANG && config.TARGET_LANG.toLowerCase() !== 'english') {
           targetRelPath = targetRelPath.replace(/(?:\/|\\)(English)(?:\/|\\)/i, `/${config.TARGET_LANG}/`);
         }
-        const result = await writeTranslatedFile({ ...job, relativePath: targetRelPath }, stagingPath, translations);
+        const result = await writeTranslatedFile({ ...job, relativePath: targetRelPath }, stagingPath, translations, undefined, undefined, gameAdapter);
         if (result.skipped) filesSkipped++;
         else filesWritten++;
         if (options.onProgress) {
