@@ -557,12 +557,20 @@ except Exception as e:
 
     try {
       const response = await axios.post(`${config.OLLAMA_URL}/api/chat`, payload, { headers, timeout: 45000, signal: getAbortSignal() });
+      // P1-7: Konsistenz mit executeStageRequest — handleRateLimits auch in callOllamaBatch.
+      // Ollama hat keine Rate-Limit-Header, aber Recovery (+0.05 pro Erfolg) ist aktiv.
+      handleRateLimits('ollama', response.headers);
       const raw = response.data.message.content;
       logPayload('ollama', 'RESPONSE', raw);
       return parseBatchResponseWithMaps(raw, items.length, shieldMaps);
     } catch (e) {
       const status = e.response ? e.response.status : 0;
-      if ((status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey('ollama')) {
+      // P1-7: 503 = Ollama Queue voll → Batch halbieren, Key rotieren.
+      if (status === 429 || status === 503) {
+        batchMultipliers['ollama'] = Math.max(0.25, (batchMultipliers['ollama'] || 1.0) * 0.5);
+        if (configRuntime) configRuntime.updateProviderRateLimit('ollama', true);
+      }
+      if ((status === 429 || status === 503 || status === 401) && attemptCount < keys.length && rotateApiKey('ollama')) {
         return callOllamaBatch(items, modelOverride, attemptCount + 1);
       }
       throw e;
@@ -648,11 +656,16 @@ except Exception as e:
         const modelPath = activeModel.includes('/') ? activeModel : `models/${activeModel}`;
         const url = `https://generativelanguage.googleapis.com/v1beta/${modelPath}:generateContent?key=${key}`;
         const response = await withRetry(`Gemini ${stage}`, () => axios.post(url, buildGeminiRequest(prompt, mode, expectedCount), { timeout: mode === 'flags' ? 60000 : 90000, signal: getAbortSignal() }));
+        // P1-7: Gemini liefert KEINE Rate-Limit-Header (nur 429 ohne Quota-Info).
+        // handleRateLimits() ist trotzdem aufgerufen — für Batch-Multiplier-Recovery (+0.05).
+        handleRateLimits('gemini', response.headers);
+        if (configRuntime) configRuntime.markKeyStatus('gemini', true);
         const raw = (response.data.candidates?.[0]?.content?.parts || []).map(part => part.text || '').join('');
         logPayload(provider, `RESPONSE [${stage}]`, raw);
         return parseRaw(raw);
       }
       if (provider === 'ollama') {
+        const ollamaHeaders = key ? { Authorization: `Bearer ${key}` } : {};
         const response = await axios.post(`${config.OLLAMA_URL}/api/chat`, {
           model: activeModel,
           messages: [
@@ -661,7 +674,10 @@ except Exception as e:
           ],
           stream: false,
           format: 'json'
-        }, { timeout: mode === 'flags' ? 30000 : 60000, signal: getAbortSignal() });
+        }, { headers: ollamaHeaders, timeout: mode === 'flags' ? 30000 : 60000, signal: getAbortSignal() });
+        // P1-7: Ollama liefert KEINE Rate-Limit-Header (lokaler Server).
+        // handleRateLimits() ist trotzdem aufgerufen — für Batch-Multiplier-Recovery.
+        handleRateLimits('ollama', response.headers);
         const raw = response.data.message.content;
         logPayload(provider, `RESPONSE [${stage}]`, raw);
         return parseRaw(raw);
@@ -693,11 +709,30 @@ except Exception as e:
 
       throw new Error(`Nicht unterstuetzter ${stage}-Provider: ${provider}`);
     } catch (e) {
-      // P0-1: _callProviderApi handled key rotation for OpenAI-compatible providers.
-      // Gemini + Ollama need manual rotation (they use their own API formats).
+      // P1-7: Gemini + Ollama Rate-Limit-Handling (vor generischem Fallthrough).
+      // callGeminiBatch + callOllamaBatch hatten bereits 429-Handling;
+      // executeStageRequest hatte es NICHT — nur Key-Rotation im Fallthrough.
+      // Jetzt: batchMultiplier-Halbierung, Key-Cooldown, Provider-Rate-Limit-Status.
       const status = e.response ? e.response.status : 0;
+      if (provider === 'gemini' && status === 429) {
+        batchMultipliers['gemini'] = Math.max(0.25, (batchMultipliers['gemini'] || 1.0) * 0.5);
+        if (configRuntime) configRuntime.updateProviderRateLimit('gemini', true);
+        const ci = (config.KEY_INDICES && config.KEY_INDICES.gemini) || 0;
+        if (configRuntime && configRuntime.markKeyCooldown) configRuntime.markKeyCooldown('gemini', ci, 30000);
+        if (attemptCount < keys.length && rotateApiKey('gemini')) {
+          return executeStageRequest(stage, route, prompt, options, attemptCount + 1);
+        }
+      }
+      if (provider === 'ollama' && (status === 429 || status === 503)) {
+        batchMultipliers['ollama'] = Math.max(0.25, (batchMultipliers['ollama'] || 1.0) * 0.5);
+        if (configRuntime) configRuntime.updateProviderRateLimit('ollama', true);
+        if (attemptCount < keys.length && rotateApiKey('ollama')) {
+          return executeStageRequest(stage, route, prompt, options, attemptCount + 1);
+        }
+      }
+      // P0-1: _callProviderApi handled key rotation for OpenAI-compatible providers.
       const isOpenAiCompatible = !!PROVIDER_CHAT_CONFIG[provider];
-      if (!isOpenAiCompatible && (status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey(provider)) {
+      if (!isOpenAiCompatible && status === 401 && attemptCount < keys.length && rotateApiKey(provider)) {
         return executeStageRequest(stage, route, prompt, options, attemptCount + 1);
       }
       throw e;
