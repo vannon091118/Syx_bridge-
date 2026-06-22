@@ -856,5 +856,39 @@
       "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
     ],
     "dialogue_preview": "--model=deepseek-v4-pro"
+  },
+  {
+    "id": "plot-2026-06-22T13:21:09",
+    "parent_id": "plot-2026-06-22T13:07:50",
+    "timestamp": "2026-06-22 13:21:08",
+    "status": "active",
+    "user_impulse": null,
+    "session_changes": [
+      "ore/archive/docs/PLOT_LORE.md",
+      "core/scripts/release.js",
+      "core/src/db.js",
+      "core/src/dispatcher.js",
+      "core/src/plugins/GamePlugin.js",
+      "core/src/plugins/SongsOfSyxPlugin.js",
+      "core/src/translation-db.js",
+      "core/src/translation-quality.js",
+      "core/archive/docs/plans/PLAN_PLAN_AUDIT.md",
+      "core/logs/"
+    ],
+    "variables": [
+      "PLOT_LORE",
+      "release",
+      "dispatcher",
+      "GamePlugin",
+      "SongsOfSyxPlugin",
+      "translation-db",
+      "translation-quality",
+      "PLAN_PLAN_AUDIT",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Datenbank-Sanitierung auf Integrität prüfen und Altlasten beseitigen."
+    ],
+    "dialogue_preview": "--model=deepseek-v4-pro"
   }
 ]
