@@ -45,22 +45,26 @@ if (commitMsg.trim().length === 0) {
   process.exit(1);
 }
 
-// ─── Load Writing Rules & Plotchain (Layer 3) ──────────────────────
+// ─── Load Writing Rules & Plotchain & Lore Arcs (Layer 3) ─────────
 const rulesPath = path.join(repoRoot, 'core/scripts/commit_lore/writing_rules.json');
 const jokePoolPath = path.join(repoRoot, 'core/scripts/commit_lore/sidejoke_pool.json');
 const plotchainPath = path.join(repoRoot, 'core/scripts/commit_lore/plotchain.json');
+const loreArcsPath = path.join(repoRoot, 'core/scripts/commit_lore/lore_arcs.json');
 
 if (!fs.existsSync(rulesPath) || !fs.existsSync(jokePoolPath)) {
   console.error('BLOCKED: Outsource rules registry (Layer 3 Lore) not found.');
   process.exit(1);
 }
 
-let rules, sidejokes, plotchain = [];
+let rules, sidejokes, plotchain = [], loreArcs = null;
 try {
   rules = JSON.parse(fs.readFileSync(rulesPath, 'utf8')).rules;
   sidejokes = JSON.parse(fs.readFileSync(jokePoolPath, 'utf8'));
   if (fs.existsSync(plotchainPath)) {
     plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+  }
+  if (fs.existsSync(loreArcsPath)) {
+    loreArcs = JSON.parse(fs.readFileSync(loreArcsPath, 'utf8'));
   }
 } catch (e) {
   console.error('BLOCKED: Failed to parse lore rules/plotchain files.');
@@ -318,6 +322,73 @@ if (rules.cross_references.required) {
     } catch (e) {
       console.warn(`WARN: cross_references.json konnte nicht geparst werden: ${e.message}`);
     }
+  }
+}
+
+// ─── Arc Membership Check ──────────────────────────────────────────
+// narrative_continuity: Jeder Commit gehoert zu mindestens EINEM der
+// vier Handlungsboegen (lore_arcs.json). Der Arc-Name muss im Commit-Text
+// referenziert werden (entweder arc_id oder arc.name).
+if (rules.narrative_continuity && loreArcs && loreArcs.arcs) {
+  const arcNames = Object.entries(loreArcs.arcs).map(([id, def]) => ({
+    id,
+    name: def.name || ''
+  }));
+  const foundArc = arcNames.some(arc =>
+    commitMsg.toLowerCase().includes(arc.id.toLowerCase()) ||
+    (arc.name && commitMsg.includes(arc.name))
+  );
+  if (!foundArc) {
+    console.error('──────────────────────────────────────────────────────────');
+    console.error('  LORE L3 — COMMIT BLOCKED: NO ARC MEMBERSHIP');
+    console.error('──────────────────────────────────────────────────────────');
+    console.error('Jeder Commit muss zu mindestens EINEM Handlungsbogen gehoeren.');
+    console.error('Verfuegbare Arcs:');
+    for (const arc of arcNames) {
+      console.error(`  ${arc.id} — ${arc.name}`);
+    }
+    console.error('');
+    console.error('Referenziere den Arc-Name oder die Arc-ID in der Commit-Message.');
+    console.error('Beispiel: "Der great-cleanup geht weiter..." oder "tower-of-babel..."');
+    process.exit(1);
+  }
+
+  // ─── Temporal Anchor Check ──────────────────────────────────────
+  // narrative_continuity: Jeder Commit referenziert mindestens EINEN
+  // zeitlichen Anker aus lore_arcs.json temporal_references.
+  const temporalAnchors = loreArcs.temporal_references?.anchors || [];
+  if (temporalAnchors.length > 0) {
+    const foundAnchor = temporalAnchors.some(anchor =>
+      commitMsg.toLowerCase().includes(anchor.ref.toLowerCase()) ||
+      (anchor.label && commitMsg.includes(anchor.label))
+    );
+    if (!foundAnchor) {
+      console.error('──────────────────────────────────────────────────────────');
+      console.error('  LORE L3 — COMMIT BLOCKED: NO TEMPORAL ANCHOR');
+      console.error('──────────────────────────────────────────────────────────');
+      console.error('Jeder Commit muss mindestens EINEN zeitlichen Anker referenzieren.');
+      console.error('Verfuegbare Anker:');
+      for (const a of temporalAnchors) {
+        console.error(`  ${a.ref} — ${a.label}: ${a.description}`);
+      }
+      console.error('');
+      console.error('Fuege einen temporalen Anker in die Commit-Message ein.');
+      console.error('Beispiel: "Seit der-erste-tag hat sich viel getan..."');
+      process.exit(1);
+    }
+  }
+
+  // ─── Cross-Arc-Bridge Warnung ───────────────────────────────────
+  // narrative_continuity: Mindestens jeder dritte Commit soll eine
+  // Bruecke zwischen zwei Arcs schlagen. Warnung ab 3+ ohne Bridge.
+  const prevNodes = plotchain.slice(-4, -1); // Letzte 3 Vorgaenger (nicht aktueller)
+  const hasRecentBridge = prevNodes.some(n => n.cross_arc_bridge === true);
+  if (!hasRecentBridge && prevNodes.length >= 3) {
+    console.warn('⚠️  LORE HINWEIS: Seit 3+ Commits keine Cross-Arc-Bridge.');
+    console.warn('   narrative_continuity KANN-Regel: mind. jeder 3. Commit');
+    console.warn('   sollte eine Bruecke zwischen zwei Arcs schlagen.');
+    console.warn('   Bsp: "tower-of-babel und great-cleanup ueberschneiden sich"');
+    console.warn('   (DOKU-FLAG — kein Block, nur Hinweis)');
   }
 }
 

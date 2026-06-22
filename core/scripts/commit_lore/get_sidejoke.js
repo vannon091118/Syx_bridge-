@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 /**
- * get_sidejoke.js — Gibt einen zufaelligen Sidejoke-Template aus dem Pool aus.
+ * get_sidejoke.js — Gibt einen Sidejoke-Template aus dem Pool aus.
+ *
+ * Unterstuetzt Arc-bewusste Auswahl:
+ *   --arc=<arc-id>  Filtert Sidejokes die zum angegebenen Arc passen
  *
  * WICHTIG: Die Ausgabe ist ein TEMPLATE. Platzhalter wie {FILE}, {COUNT} etc.
  * MUESSEN manuell angepasst werden. verify_commit_msg.js blockiert sonst den Commit.
  *
- * Usage: node core/scripts/commit_lore/get_sidejoke.js
+ * Usage: node core/scripts/commit_lore/get_sidejoke.js [--arc=great-cleanup]
  */
 
 const fs = require('fs');
@@ -22,6 +25,17 @@ try {
 
 const poolPath = path.join(__dirname, 'sidejoke_pool.json');
 const plotLorePath = path.join(repoRoot, 'core/archive/docs/PLOT_LORE.md');
+const plotchainPath = path.join(__dirname, 'plotchain.json');
+const loreArcsPath = path.join(__dirname, 'lore_arcs.json');
+
+// ─── Argument-Parsing ────────────────────────────────────────────────
+const args = process.argv.slice(2);
+let arcFilter = null;
+for (const arg of args) {
+  if (arg.startsWith('--arc=')) {
+    arcFilter = arg.slice('--arc='.length);
+  }
+}
 
 // ─── Pool laden ─────────────────────────────────────────────────────
 if (!fs.existsSync(poolPath)) {
@@ -44,8 +58,42 @@ if (!Array.isArray(pool) || pool.length === 0) {
   process.exit(1);
 }
 
+// ─── Arc-bewusste Sidejoke-Auswahl ─────────────────────────────────
+// Wenn --arc gegeben, filtere Sidejokes die Keyword-UEbereinstimmungen
+// mit dem angegebenen Arc haben (Stichworte aus lore_arcs.json).
+let filteredPool = pool;
+if (arcFilter && fs.existsSync(loreArcsPath)) {
+  try {
+    const loreArcs = JSON.parse(fs.readFileSync(loreArcsPath, 'utf8'));
+    const arcDef = loreArcs.arcs?.[arcFilter];
+    if (arcDef) {
+      const arcKeywords = [
+        arcFilter,
+        arcDef.name || '',
+        arcDef.theme || '',
+        ...(arcDef.key_characters || []),
+        ...(arcDef.anchor_events || []).map(e => (e.event || '').substring(0, 40))
+      ].filter(Boolean).map(k => k.toLowerCase());
+
+      // Filtere Sidejokes die mindestens ein Arc-Keyword enthalten
+      filteredPool = pool.filter(joke => {
+        const jokeLower = joke.toLowerCase();
+        return arcKeywords.some(kw => kw.length > 3 && jokeLower.includes(kw));
+      });
+      if (filteredPool.length === 0) filteredPool = pool; // Fallback auf gesamten Pool
+    }
+  } catch (e) {
+    // Fallback: ignorieren
+  }
+}
+
 // ─── Sidejoke auswaehlen ────────────────────────────────────────────
-const randomJoke = pool[Math.floor(Math.random() * pool.length)];
+const randomJoke = filteredPool[Math.floor(Math.random() * filteredPool.length)];
+
+// ─── Ausgabe Arc-Info ───────────────────────────────────────────────-
+if (arcFilter) {
+  console.log(`🎭 Arc-Filter: ${arcFilter} (${filteredPool.length}/${pool.length} passende Sidejokes)`);
+}
 
 // ─── Ausgabe ────────────────────────────────────────────────────────
 console.log('');
@@ -93,11 +141,12 @@ if (fs.existsSync(plotLorePath)) {
   }
 }
 
-// ─── Letzter User-Impuls aus plotchain ──────────────────────────────
-const plotchainPath = path.join(__dirname, 'plotchain.json');
+// ─── Letzter User-Impuls + Suggested Next Hooks aus plotchain ──────
 if (fs.existsSync(plotchainPath)) {
   try {
     const plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+    const lastNode = plotchain[plotchain.length - 1];
+    
     // Rueckwaerts suchen: letzter Node MIT user_impulse (nicht null)
     for (let i = plotchain.length - 1; i >= 0; i--) {
       const node = plotchain[i];
@@ -108,6 +157,22 @@ if (fs.existsSync(plotchainPath)) {
         console.log('');
         break;
       }
+    }
+
+    // Suggested Next Hooks vom letzten Node anzeigen
+    if (lastNode && lastNode.suggested_next_hooks && lastNode.suggested_next_hooks.length > 0) {
+      console.log('📋 Naechste Schritte (vom letzten Plot-Node):');
+      for (const hook of lastNode.suggested_next_hooks) {
+        console.log(`   → ${hook}`);
+      }
+      console.log('');
+    }
+
+    // Arc-Info vom letzten Node
+    if (lastNode && lastNode.arcs && lastNode.arcs.length > 0) {
+      console.log(`🎭 Aktiver Arc: ${lastNode.arcs.join(', ')} (letzter Commit)`);
+      console.log('   Nutze --arc=<name> um passende Sidejokes zu filtern.');
+      console.log('');
     }
   } catch (e) {
     // Kein Fehler wenn plotchain nicht lesbar — optionaler Kontext

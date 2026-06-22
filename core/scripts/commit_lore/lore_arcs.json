@@ -8,7 +8,7 @@
       "anchor_events": [
         { "date": "2026-06-14", "event": "Erster Prototyp — 'Ich wollte doch nur spielen'", "commit": null },
         { "date": "2026-06-19", "event": "Der große Audit — 20 systemische Befunde", "commit": "9a853ef" },
-        { "date": "2026-06-21", "event": "Live-Run — 440 Übersetzungen, 0 Watermarks", "commit": null }
+        { "date": "2026-06-21", "event": "Live-Run — 440 Übersetzungen, 0 Watermarks", "commit": "6083563" }
       ],
       "tone": "stolz, selbstironisch",
       "key_characters": ["Vannon", "Buffy"]
@@ -45,7 +45,8 @@
       "span": "2026-06-20 → heute",
       "anchor_events": [
         { "date": "2026-06-20", "event": "\"Achte dass der Stripper nicht das nächste unsichtbare Problem verursacht\" — er hatte Recht", "commit": null },
-        { "date": "2026-06-22", "event": "User-Impuls-Tracking eingeführt — jeder Commit dokumentiert jetzt Vannons Input", "commit": "82082fd" }
+        { "date": "2026-06-22", "event": "User-Impuls-Tracking eingeführt — jeder Commit dokumentiert jetzt Vannons Input", "commit": "82082fd" },
+        { "date": "2026-06-22", "event": "Arc-System organisch in Commit-Layer integriert — verify_commit_msg.js, get_sidejoke.js, update_plot.js vernetzt", "commit": null }
       ],
       "tone": "respektvoll, selbstironisch",
       "key_characters": ["Vannon", "Buffy"]

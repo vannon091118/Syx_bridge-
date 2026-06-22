@@ -109,13 +109,23 @@ while ((match = hashtagRegex.exec(dialogue)) !== null) {
   variables.add(match[1]);
 }
 
-// ─── Keywords: aus cross_references.json lesen ──────────────────
+// ─── Keywords + Cross-References: aus cross_references.json lesen ──
 const crossRefPath = path.join(__dirname, 'cross_references.json');
 let keywords = [];
+const usedCrossReferences = []; // Track welche Cross-References im Dialog vorkommen
 if (fs.existsSync(crossRefPath)) {
   try {
     const refs = JSON.parse(fs.readFileSync(crossRefPath, 'utf8'));
     keywords = refs.filter(r => typeof r === 'string' && !/^[a-f0-9]{7}$/.test(r));
+    
+    // Erkenne welche Cross-References im Dialog referenziert werden
+    for (const ref of refs) {
+      const escaped = ref.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+      const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+      if (regex.test(dialogue)) {
+        usedCrossReferences.push(ref);
+      }
+    }
   } catch (e) {
     console.warn('Hinweis: cross_references.json nicht lesbar.');
   }
@@ -210,6 +220,15 @@ if (detectedArcs.length === 0 && lastNode && lastNode.arcs && lastNode.arcs.leng
   detectedArcs.push(lastNode.arcs[0]); // Arc-Kontinuitaet bewahren
 }
 
+// ─── Cross-Arc-Bridge erkennen ────────────────────────────────────────
+// Ein Commit schlaegt eine Bruecke zwischen zwei Arcs wenn detectedArcs
+// mindestens 2 Eintraege hat (die automatische Arc-Erkennung hat mehrere
+// Arcs in der Dialogue-Beschreibung gefunden).
+const isCrossArcBridge = detectedArcs.length >= 2;
+if (isCrossArcBridge) {
+  console.log(`   🔗 Cross-Arc-Bridge erkannt: ${detectedArcs.join(' ↔ ')}`);
+}
+
 // ─── Build and save new Node ───────────────────────────────────────
 const newNode = {
   id: nodeId,
@@ -223,6 +242,8 @@ const newNode = {
     effect: null // Retroaktiv via --set-effect befuellbar
   } : null,
   arcs: detectedArcs,
+  cross_arc_bridge: isCrossArcBridge,
+  cross_references_used: usedCrossReferences,
   lore_context: loreContext,
   session_changes: sessionFiles,
   variables: Array.from(variables),
