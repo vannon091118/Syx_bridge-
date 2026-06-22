@@ -513,5 +513,53 @@
       "Datenbank-Sanitierung auf Integrität prüfen und Altlasten beseitigen."
     ],
     "dialogue_preview": "### [2026-06-22 13:45] — Item 5+8: Das Ende der Batch-Tabelle\\n\\n**Buffy:** *(liest client-factory.j..."
+  },
+  {
+    "id": "plot-2026-06-22T11:39:05",
+    "parent_id": "plot-2026-06-22T11:30:51",
+    "timestamp": "2026-06-22 11:39:04",
+    "status": "active",
+    "user_impulse": {
+      "text": "Commit-Layer ueberarbeiten: Meine Regeln sollen zusammen immer eine Commit-Basis ergeben die aufeinander aufbaut. Jeder Commit eine kleine Kurzgeschichte mit technischer Basis auf einer uebergreifenden Lore. Mit Rueckbezuegen auf vergangene Tage.",
+      "timestamp": "2026-06-22T11:39:05",
+      "effect": null
+    },
+    "session_changes": [
+      "ore/archive/docs/PLOT_LORE.md",
+      "core/scripts/commit_lore/cross_references.json",
+      "core/scripts/commit_lore/sidejoke_pool.json",
+      "core/scripts/commit_lore/writing_rules.json",
+      "core/scripts/release.js",
+      "core/src/db.js",
+      "core/src/dispatcher.js",
+      "core/src/plugins/GamePlugin.js",
+      "core/src/plugins/SongsOfSyxPlugin.js",
+      "core/src/router.js",
+      "core/src/translation-db.js",
+      "core/src/translation-quality.js",
+      "core/logs/",
+      "core/scripts/commit_lore/lore_arcs.json"
+    ],
+    "variables": [
+      "Watermarks",
+      "PLOT_LORE",
+      "lore_arcs",
+      "cross_references",
+      "sidejoke_pool",
+      "writing_rules",
+      "release",
+      "dispatcher",
+      "GamePlugin",
+      "SongsOfSyxPlugin",
+      "router",
+      "translation-db",
+      "translation-quality",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Validierung der neuen L3-Lore-Kriterien im Live-Betrieb testen.",
+      "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
+    ],
+    "dialogue_preview": "### [2026-06-22 14:00] — Lore-Overhaul: Die Commit-Chain wird zum Roman\\n\\n**Vannon:** Die Commits e..."
   }
 ]

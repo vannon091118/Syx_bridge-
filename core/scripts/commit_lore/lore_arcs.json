@@ -1,0 +1,73 @@
+{
+  "description": "Narrative Arcs — die übergreifenden Handlungsbögen der SyxBridge-Lore. Jeder Commit gehört zu mindestens einem Arc. Die Arcs spannen sich über Tage, nicht über Stunden — sie verbinden den ersten Commit mit dem aktuellen.",
+  "arcs": {
+    "tower-of-babel": {
+      "name": "Der Turmbau zu Babel",
+      "theme": "Aus 'drei Schritte' wurde ein KI-Übersetzungssystem mit 9 Providern, Web-Dashboard und Watermark-Defense.",
+      "span": "2026-06-14 → heute",
+      "anchor_events": [
+        { "date": "2026-06-14", "event": "Erster Prototyp — 'Ich wollte doch nur spielen'", "commit": null },
+        { "date": "2026-06-19", "event": "Der große Audit — 20 systemische Befunde", "commit": "9a853ef" },
+        { "date": "2026-06-21", "event": "Live-Run — 440 Übersetzungen, 0 Watermarks", "commit": null }
+      ],
+      "tone": "stolz, selbstironisch",
+      "key_characters": ["Vannon", "Buffy"]
+    },
+    "invisible-enemies": {
+      "name": "Die unsichtbaren Feinde",
+      "theme": "Watermarks, stille Catches, Bugs die wochenlang unentdeckt blieben — und die Defense-Schichten die sie endlich stoppten.",
+      "span": "2026-06-19 → 2026-06-22",
+      "anchor_events": [
+        { "date": "2026-06-19", "event": "423 Watermarks in der DB entdeckt", "commit": "9a853ef" },
+        { "date": "2026-06-21", "event": "V6/V7-Filter — alle Textordner blockiert", "commit": null },
+        { "date": "2026-06-21", "event": "5-Schichten-Defense aktiv — 0 Watermarks", "commit": "6cb5efb" },
+        { "date": "2026-06-22", "event": "Deep Polish umging alle 5 Schichten — gefixt", "commit": "8d4bac5" }
+      ],
+      "tone": "zynisch, passiv-aggressiv",
+      "key_characters": ["Buffy", "Thinker", "Basher"]
+    },
+    "great-cleanup": {
+      "name": "Die große Aufräumaktion",
+      "theme": "Doku-Konsolidierung (76→7 Dateien), Dead-Code-Exorzismus, Architektur-Korrekturen — das Projekt räumt sich selbst auf.",
+      "span": "2026-06-20 → 2026-06-22",
+      "anchor_events": [
+        { "date": "2026-06-20", "event": "Doku-Konsolidierung beginnt — 76 Dokumente gelöscht", "commit": "bcb6e1e" },
+        { "date": "2026-06-22", "event": "5 Thin-Wrapper exorziert (Item 4)", "commit": "5f5387c" },
+        { "date": "2026-06-22", "event": "String-Heuristik beerdigt (Item 3/9)", "commit": "6083563" },
+        { "date": "2026-06-22", "event": "15 Batch-Branches → eine Formel (Item 5+8)", "commit": "0cc2251" }
+      ],
+      "tone": "stolz, müde, euphorisch",
+      "key_characters": ["Buffy", "Basher"]
+    },
+    "user-knows-best": {
+      "name": "Der User weiß es besser",
+      "theme": "Vannons Warnungen und Vorhersagen die sich jedes Mal als präzise Treffer erwiesen — und was passierte wenn sie ignoriert wurden.",
+      "span": "2026-06-20 → heute",
+      "anchor_events": [
+        { "date": "2026-06-20", "event": "\"Achte dass der Stripper nicht das nächste unsichtbare Problem verursacht\" — er hatte Recht", "commit": null },
+        { "date": "2026-06-22", "event": "User-Impuls-Tracking eingeführt — jeder Commit dokumentiert jetzt Vannons Input", "commit": "82082fd" }
+      ],
+      "tone": "respektvoll, selbstironisch",
+      "key_characters": ["Vannon", "Buffy"]
+    }
+  },
+  "cross_arc_references": {
+    "description": "Ereignisse die mehrere Arcs verbinden. Diese Referenzen sollen in Commit-Nachrichten und PLOT_LORE-Dialogen genutzt werden um die Erzählung zusammenzuhalten.",
+    "bridges": [
+      { "from": "tower-of-babel", "to": "great-cleanup", "event": "Aus dem Prototyp wurde ein System das sich selbst aufräumen musste" },
+      { "from": "invisible-enemies", "to": "great-cleanup", "event": "Die Bugs die wir fanden waren oft schon seit Tagen im Code — wie die 5 Thin-Wrapper" },
+      { "from": "user-knows-best", "to": "invisible-enemies", "event": "Vannon warnte vor dem Stripper — der Watermark-Bug bestätigte ihn" },
+      { "from": "tower-of-babel", "to": "user-knows-best", "event": "Je komplexer das System wurde, desto öfter hatte Vannon den richtigen Riecher" }
+    ]
+  },
+  "temporal_references": {
+    "description": "Zeitliche Anker für Querverweise in Commit-Nachrichten. Statt 'vor zwei Wochen' sollen konkrete, lore-basierte Zeitbezüge verwendet werden.",
+    "anchors": [
+      { "ref": "der-erste-tag", "label": "der erste Tag (14. Juni)", "description": "Als alles begann — der erste Prototyp, drei Schritte, keine Ahnung was kommt" },
+      { "ref": "der-grosse-audit", "label": "der große Audit (19. Juni)", "description": "Forensic Fullscan — 20 Befunde, 15 echt, das System unter der Lupe" },
+      { "ref": "die-filter-katastrophe", "label": "die Filter-Katastrophe (21. Juni)", "description": "V6/V7-Filter blockierte ALLE Mods — 440 Übersetzungen ins Leere" },
+      { "ref": "der-erste-live-run", "label": "der erste Live-Run (21. Juni)", "description": "5 Mods, 440 Übersetzungen, 0 Watermarks — und dann waren sie auf Englisch" },
+      { "ref": "heute", "label": "heute (variabel)", "description": "Der aktuelle Tag — für relative Zeitbezüge in Commit-Nachrichten" }
+    ]
+  }
+}

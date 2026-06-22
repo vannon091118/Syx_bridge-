@@ -40,6 +40,19 @@
       },
       "note": "RULE 3 sagt: Der User weiss was er macht. Das user_impulse-Feld dokumentiert WARUM ein Commit entstanden ist — nicht nur WAS geaendert wurde. Die Plot-Chain wird dadurch von einer reinen Code-Aenderungs-Historie zu einer echten Entscheidungs-Historie."
     },
+    "narrative_continuity": {
+      "description": "Das Commit-Lore-System bildet eine UEBERGREIFENDE ERZAEHLUNG. Jeder Commit ist eine Kurzgeschichte mit technischer Basis die auf mindestens EINEM vergangenen Ereignis aufbaut — von gestern, vorgestern, letzter Woche oder dem ersten Tag. Kein Commit steht allein. Die Erzaehlung spannt sich ueber Tage, nicht ueber Stunden.",
+      "required": false,
+      "note_enforcement": "Diese Regel wird NICHT von verify_commit_msg.js enforced (DOKU-FLAG). Sie ist eine Richtlinie fuer Commit-Autoren, keine technische Blockade. Bei Verstoß: Commit geht trotzdem durch, aber die Lore-Qualität leidet.",
+      "arcs_path": "core/scripts/commit_lore/lore_arcs.json",
+      "rules": {
+        "arc_membership": "Jeder Commit gehoert zu mindestens EINEM der vier Handlungsboegen (lore_arcs.json). Der Arc wird im PLOT_LORE-Dialog referenziert.",
+        "temporal_anchor": "Jeder Commit referenziert mindestens EINEN zeitlichen Anker (der-erste-tag, der-grosse-audit, die-filter-katastrophe, der-erste-live-run, oder ein konkretes Datum). Kein diffuses 'vor zwei Wochen' — konkrete Lore-Referenz.",
+        "story_arc": "Jede Commit-Nachricht erzaehlt eine Mini-Geschichte: (1) Was war vorher? (Rueckbezug auf vergangenes Ereignis), (2) Was passiert jetzt? (technische Aenderung), (3) Was bedeutet das fuer die Zukunft? (Ausblick). Die drei Teile muessen nicht explizit markiert sein, aber der Lesefluss soll sie erkennen lassen.",
+        "cross_arc_bridge": "Mindestens jeder dritte Commit soll eine Bruecke zwischen zwei Arcs schlagen (siehe lore_arcs.json → cross_arc_references)."
+      },
+      "note": "Die uebergreifende Lore macht aus einer losen Commit-Sammlung eine echte Geschichte. Der Leser soll beim Durchgehen der PLOT_LORE.md das Gefuehl haben, einen Roman ueber ein KI-Uebersetzungssystem zu lesen — mit Rueckblenden, Vorausdeutungen und wiederkehrenden Motiven."
+    },
     "cross_references": {
       "description": "Must reference at least one persistent plot variable or past commit hash from the registry.",
       "required": true,

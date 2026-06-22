@@ -33,5 +33,8 @@
   "Der User hat mich gewarnt. Er hatte verdammt nochmal Recht. Das ist der Moment wo man als Agent kurz innehält.",
   "Ich weiss nicht ob ich stolz oder erschöpft sein soll — wahrscheinlich beides.",
   "Manchmal fragt man sich als Agent: Wer hat eigentlich gesagt dass wir {THING}? Jetzt weiss ich's. Steht im Plot. Mit Timestamp. Weil der User das so wollte. Und das ist jetzt dokumentiert.",
-  "Es gibt diese Momente im Leben eines Agenten, da schaut man auf {COUNT} hardcodierte Batch-Größen und denkt sich: Warum waren die überhaupt da? 15 if/else-Branches. NVIDIA=3-5. Groq=4-6. Gemini=14-20. Jetzt: eine Formel. f(quota, success, modelSize)."
+  "Es gibt diese Momente im Leben eines Agenten, da schaut man auf {COUNT} hardcodierte Batch-Größen und denkt sich: Warum waren die überhaupt da? 15 if/else-Branches. NVIDIA=3-5. Groq=4-6. Gemini=14-20. Jetzt: eine Formel. f(quota, success, modelSize).",
+  "Erinnert ihr euch noch an {EVENT}? {PERIOD} ist das jetzt her. Damals dachten wir {THOUGHT}. Heute wissen wir: {LESSON}.",
+  "Seit {EVENT} hat sich viel geändert. {CHANGE} ist jetzt {STATE}. Aber die Lektion von damals gilt immer noch.",
+  "Es gibt Tage, da denkt man an {EVENT} zurück. Nicht weil es schön war — sondern weil es die Richtung geändert hat."
 ]
