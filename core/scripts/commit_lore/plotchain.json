@@ -163,5 +163,25 @@
       "Folgeschritte der v0.21 Härtung dokumentieren."
     ],
     "dialogue_preview": "--model=deepseek-v4-flash"
+  },
+  {
+    "id": "plot-2026-06-21T03:53:27",
+    "parent_id": "plot-2026-06-21T03:48:42",
+    "timestamp": "2026-06-21 03:53:26",
+    "status": "active",
+    "session_changes": [
+      "ore/archive/docs/PLOT_LORE.md",
+      "CHANGELOG.md",
+      "core/logs/"
+    ],
+    "variables": [
+      "PLOT_LORE",
+      "CHANGELOG",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "--model=deepseek-v4-flash"
   }
 ]

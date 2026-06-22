@@ -40,8 +40,10 @@ core/archive/backups/
 !core/tests/runtime_score*.test.js
 # core/archive/assets/ — NICHT ignoriert: Banner.png + Screenshots für README
 core/archive/plans/
-V70/
-V71/
+# V70/ + V71/ — Mod-Asset-Verzeichnisse (release.js, vendor-sync.js, check_vendor_drift.js)
+# Ordnerstruktur wird getrackt (.gitkeep), generierte Runtime-Textdateien NICHT.
+V70/assets/**/*.txt
+V71/assets/**/*.txt
 
 # Windows reserved device name
 nul

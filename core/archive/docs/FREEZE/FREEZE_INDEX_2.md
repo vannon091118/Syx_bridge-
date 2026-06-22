@@ -20,8 +20,16 @@
 8. [Patch Mode Hard-Coded Disabled — Origin Trace (2026-06-21)](#8-patch-mode-hard-coded-disabled--origin-trace)
 9. [GRAMMAR_CHECK CLI-Default — FALSE ALARM (2026-06-21)](#9-grammar_check-cli-default--false-alarm)
 10. [Stabilisierungs-Scope — "0 Bypasses Needed" (2026-06-21)](#10-stabilisierungs-scope--0-bypasses-needed)
+11. [P0-1/P0-3/P1-1 Stabilisierung — 3 Fixes, 85%→95% (2026-06-21)](#11-p0-1p0-3p1-1-stabilisierung--3-fixes-85--95)
+12. [Live-Run 5 Mods — 440 Übersetzungen (2026-06-21)](#12-live-run-5-mods--440-übersetzungen-0-watermarks)
+13. [Session 5 — SHIELD-LEAK Fix (2026-06-21)](#13-session-5--shield-leak-fix-verify_flag_separation-doku-cleanup-2026-06-21)
+14. [MASTER_DOC §3 — B4-Silent-Catch archiviert (2026-06-21)](#14-master_doc--3--b4-silent-catch-fix--archiviert-aus-master_docmd-3)
+15. [MASTER_DOC §6 — 10 erledigte ROADMAP-Items archiviert (2026-06-21)](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6)
+16. [KNOWN_BUGS_REPORT — 27 behobene Bugs archiviert (2026-06-21)](#16-known_bugs_report--27-behobene-bugs-archiviert)
+17. [Analysis-Docs Batch — 5 Einmal-Audits archiviert (2026-06-21)](#17-analysis-docs-batch--5-einmal-audits-archiviert)
+18. [HANDSHAKE-Dateien — 8 Session-Übergaben archiviert (2026-06-21)](#18-handshake-dateien--8-session-bergaben-archiviert)
 
-> **Gesamtzahl dieser Runde:** 15 Fixes + 7 DD-Korrekturen + 1 P0 Hardening + 1 Bypass-Audit + 1 Origin-Trace + 1 False-Alarm-Korrektur + 1 Feature-Verification + 1 Stabilisierungs-Scope, Commits `9a853ef` + `bcb6e1e` + `c1517ef` + `6cb5efb` + `575db6c` + `bfba48b` + `d497225`
+> **Gesamtzahl Buch-Einträge (dieses Dokument):** **78** (§1–§13: 26 + §14: 1 + §15: 10 + §16: 28 + §17: 5 + §18: 8)
 
 ---
 
@@ -527,6 +535,321 @@
 
 ---
 
+---
+
+## 14. MASTER_DOC §3 — B4-Silent-Catch Fix — Archiviert aus MASTER_DOC.md §3 {#14-master_doc--3--b4-silent-catch-fix--archiviert-aus-master_docmd-3}
+
+> **Aktion:** 1 OBSOLETE-Eintrag aus MASTER_DOC.md §3 (Offene Bugs) ins Buch überführt.
+> **Quelle:** `core/archive/docs/MASTER_DOC.md` §3 Zeile: "~~3× silent .catch(() => {})~~ ✅ Erledigt"
+> **Regel:** Behobene Bugs die im CHANGELOG dokumentiert sind gehören nicht in die SSOT — Verweis reicht.
+> **Datum der Archivierung:** 2026-06-21
+
+---
+
+### 📋 B4-001 — 3× silent .catch(() => {}) in Kernfunktionen (Plugin-Readiness-Audit B4)
+- **Datum:** 2026-06-20 | **Version:** v0.20.0
+- **Kategorie:** Behobener Bug (aus MASTER_DOC §3 archiviert)
+- **Zusammenfassung:** 3 stille `.catch(() => {})` in translation-runtime.js beseitigt: (1) runDeepPolishBatch Dead-Loop bei polish_status='failed'-UPDATE — Fehler verschluckt, Eintrag bleibt pending, wird bei jedem Run erneut versucht. (2+3) googleFreePreflight saveStressTestResult — Ergebnisse bei DB-Fehler stillschweigend verworfen. Fix: Retry-Loop (3 Versuche × 500ms Pause) + console.warn/error Logging + aggregierter deepPolishUpdateFailures-Zähler.
+- **Ursache der Obsoleszenz:** BEHOBEN + VERIFIZIERT. Code-Fix implementiert, Code-Review bestätigt, CHANGELOG-Eintrag [B4-SILENT-CATCH-FIX] vorhanden.
+- **LIVE-Ersatz:** CHANGELOG [B4-SILENT-CATCH-FIX]
+- **Status:** ✅ Archiviert — kein offener Rest
+
+---
+
+## 15. MASTER_DOC §6 — 10 erledigte ROADMAP-Items archiviert
+
+> **Aktion:** 10 OBSOLETE-Roadmap-Items aus MASTER_DOC.md §6 (Roadmap) ins Buch überführt.
+> **Quelle:** `core/archive/docs/MASTER_DOC.md` §6 — alle mit ✅ markierten Einträge.
+> **Regel:** Erledigte ROADMAP-Items mit CHANGELOG-Verweis gehören nicht in die SSOT-Roadmap — nur aktive Planungs-Items bleiben.
+> **Datum der Archivierung:** 2026-06-21
+>
+> **MASTER_DOC §6 nach Bereinigung:** Nur aktive P1/P2-Items verbleiben (DB-Sanitization, sos-runtime, Plugin-Instanziierung, DB-Cleanup, Vendor-Sync Phase 2).
+
+---
+
+### 📋 RD-001 — Sinnhaftigkeitsanalyse (15 systemische Fixes)
+- **Datum:** 2026-06-20 | **Commit:** `9a853ef` | **Version:** v0.21-experimental-workbench
+- **Kategorie:** Systemische Cross-Chain-Analyse
+- **Zusammenfassung:** 10 Funktionsketten, 30 Quellcode-Dateien (~11.500 LOC). 20 Befunde (A–J), 15 verifiziert, 3 falsifiziert, 2 Bagatelle. Fixes: J1/J2 Transaction-Leaks, G1 Infinite-Retry, D1 warnings.critical ignoriert, C1/C2 Empty-Guards, H2 Watermark-Ghosting, A1 Rollback-Logging, A2 Stream-Kommentare, G2 All-True-Fallback, H1 DNT-Dokumentation, I1 patchNotice-Dead-Code, D2/E1/E2 Bagatellen.
+- **LIVE-Ersatz:** CHANGELOG [v0.21.0-untested] + FREEZE_INDEX_2 §1–§5 (Commit `9a853ef`)
+- **Status:** ✅ Archiviert
+
+### 📋 RD-002 — Erster v0.20 Live-Run (8 Mods, 9.492 Einträge)
+- **Datum:** 2026-06-20 | **Version:** v0.20.0
+- **Kategorie:** E2E-Verifikation
+- **Zusammenfassung:** Erster vollständiger Live-Run mit 8 Workshop-Mods. Provider-Verteilung dokumentiert. V0.21-Audit identifizierte 423 Watermarks + 28 shouldTranslate False-Positives + 194 Non-Native Stale.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-SCOPE]
+- **Status:** ✅ Archiviert
+
+### 📋 RD-003 — Live-Run 5 Mods (440 Übersetzungen, 0 Watermarks, Score 95%)
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental-workbench
+- **Kategorie:** E2E-Verifikation
+- **Zusammenfassung:** 5 Mods, DB 165→1.363 (+1.198), 440 deutsche Übersetzungen, 0 Watermarks. Backup-Restore 3 English-Originals. Provider: groq 176, openrouter 120, polish_single 108, native_fallback 101, google_free 28. Dual-Path-Copy Workshop+AppData intakt.
+- **LIVE-Ersatz:** CHANGELOG [LIVE-RUN-5-MODS] + FREEZE_INDEX_2 §12
+- **Status:** ✅ Archiviert
+
+### 📋 RD-004 — Watermark-Stripping P0-1 (5-Schichten-Defense)
+- **Datum:** 2026-06-20 | **Commit:** `9a853ef` | **Version:** v0.21-experimental
+- **Kategorie:** P0 Release-Blocker
+- **Zusammenfassung:** 423 maskierte Strings eliminiert. 5 Schichten: (1) extractor.js unescapeTextValue, (2) text-core.js isProperNoun, (3) text-core.js shouldTranslate, (4) translation-db.js saveTranslation source, (5) translation-db.js saveTranslation translation.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 RD-005 — shouldTranslate Config-Blocker P0-2
+- **Datum:** 2026-06-20 | **Version:** v0.21-experimental
+- **Kategorie:** P0 Release-Blocker
+- **Zusammenfassung:** 23+5 False Positives geblockt. 2 neue Regex-Regeln: (1) Strukturelle Delimiter (`}`, `]`), (2) Standalone KEY: `{`/`[` mit $-Anchor.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 RD-006 — Watermark nur in Output P0-3
+- **Datum:** 2026-06-20 | **Version:** v0.21-experimental
+- **Kategorie:** P0 Release-Blocker
+- **Zusammenfassung:** Kein neuer Code nötig — durch P0-1 (5-Schichten-Defense) abgedeckt. Watermarks werden NUR in applyTranslations()→Disk injiziert, nicht in DB.
+- **LIVE-Ersatz:** CHANGELOG [V0.21-P0-FIXES]
+- **Status:** ✅ Archiviert
+
+### 📋 RD-007 — polish_single no-change Erkennung P1-1
+- **Datum:** 2026-06-20 | **Version:** v0.21-experimental
+- **Kategorie:** P1 Quality
+- **Zusammenfassung:** qaPhase() prüft ob Polishing Änderung bewirkt. 3 no-change-Bedingungen: leer, identisch zu Source, identisch zu Pre-Polish. skipReviewIncrement verhindert Counter-Inflation. 19.5% stale polish_single eliminiert.
+- **LIVE-Ersatz:** CHANGELOG [P1-1-NO-CHANGE]
+- **Status:** ✅ Archiviert
+
+### 📋 RD-008 — better-sqlite3 try/catch P0-1 Stabilisierung
+- **Datum:** 2026-06-21 | **Commit:** `1d89544` | **Version:** v0.21-experimental
+- **Kategorie:** Stabilisierung (+5% Score)
+- **Zusammenfassung:** `require('better-sqlite3')` in try/catch gewrappt. Klare 3-Schritt-Fehleranleitung (npm rebuild, Visual Studio Build Tools, prebuild-install). Kein kryptisches "Cannot find module" mehr.
+- **LIVE-Ersatz:** CHANGELOG [P0-1-P0-3-P1-1-STABILISIERUNG] + FREEZE_INDEX_2 §11
+- **Status:** ✅ Archiviert
+
+### 📋 RD-009 — db_repair.js CLI sync-API P0-3 Stabilisierung
+- **Datum:** 2026-06-21 | **Commit:** `1d89544` | **Version:** v0.21-experimental
+- **Kategorie:** Stabilisierung (+2% Score)
+- **Zusammenfassung:** Callback-Wrapper auf sync-API umgestellt. `db.all(sql, params, callback)` → `db.prepare(sql).all(...(params || []))`. Drei Wrapper (q, q1, run) konvertiert.
+- **LIVE-Ersatz:** CHANGELOG [P0-1-P0-3-P1-1-STABILISIERUNG] + FREEZE_INDEX_2 §11
+- **Status:** ✅ Archiviert
+
+### 📋 RD-010 — Patch Mode User-Opt-Out P1-1 Stabilisierung
+- **Datum:** 2026-06-21 | **Commit:** `1d89544` | **Version:** v0.21-experimental
+- **Kategorie:** Stabilisierung (+3% Score)
+- **Zusammenfassung:** PATCH_MODE_ENABLED=false als Default. loadInitialConfig() force-NATIVE_MODE nur wenn !PATCH_MODE_ENABLED. Persistenz via PERSISTED_KEYS in .env. GUI zeigt deaktivierten Zustand in muted-Farben.
+- **LIVE-Ersatz:** CHANGELOG [P0-1-P0-3-P1-1-STABILISIERUNG] + FREEZE_INDEX_2 §11
+- **Status:** ✅ Archiviert
+
+---
+
+---
+
+## 16. KNOWN_BUGS_REPORT — 27 behobene Bugs archiviert {#16-known_bugs_report--27-behobene-bugs-archiviert}
+
+> **Aktion:** 27 behobene Bugs aus KNOWN_BUGS_REPORT.md ins Buch überführt.
+> **Quelle:** `core/archive/docs/KNOWN_BUGS_REPORT.md` — alle mit ✅ BEHOBEN markierten Einträge.
+> **Regel:** Behobene Bugs mit CHANGELOG-Verweis gehören nicht in den aktiven Bug-Triage-Report.
+> **Datum der Archivierung:** 2026-06-21
+>
+> **KNOWN_BUGS_REPORT nach Bereinigung:** 7 aktive Bugs verbleiben (BU-004, BU-019, BU-022, BU-024, BU-025, BU-026, BU-030).
+
+---
+
+### 📋 KB-001 — Cluster A: Quality-Pipeline-Lücken (5/5 behoben)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-A1 | BU-006 Google Free False-Positive Flagging | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-A2 | BU-007 Numeric Garbage passiert Quality Gates | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-A3 | BU-008 Argos/Google Free Names-Mangling | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-A4 | BU-010 Score-System binär | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-A5 | BU-034 polish_single Low-Score-Cluster | [STUFE2-QUICKBUGFIXES] | ✅ Archiviert |
+
+### 📋 KB-002 — Cluster B: Routing & Fallback (3/3 behoben)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-B1 | BU-011 Argos DE→DE Feedback-Loop | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-B2 | BU-016 Argos Placeholder-Korruption | [0.19.05b-19.06] | ✅ Archiviert |
+| — | Argos CostClass 0→10 | [0.19.05b-19.06] | ✅ Archiviert |
+| — | (BU-031 → Cluster E KB-E1, dedupliziert) | — | — |
+
+### 📋 KB-003 — Cluster C: Code-Qualität (2/5 behoben, 3 offen → im Report verbleibend)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-C1 | BU-018 GOD-001 Monolith (354 Zeilen) | [GOD-001] | ✅ Archiviert |
+| KB-C2 | BU-028 Allowlist dupliziert | [STUFE2-QUICKBUGFIXES] | ✅ Archiviert |
+
+### 📋 KB-004 — Cluster D: Infrastruktur (1/3 behoben, 2 offen → im Report verbleibend)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-D1 | BU-020 Keine AbortController | [BU-020] | ✅ Archiviert (Code seit CL:0.20.0-bu020) |
+
+### 📋 KB-005 — Cluster E: DB-Health (4/4 behoben)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-E1 | BU-031 Flagged-Rate 31.5% | PREFLIGHT 2026-06-21 | ✅ Archiviert (0 issues) |
+| KB-E2 | BU-032 14.6% Stage 0 | GRAMMAR_CHECK default=true | ✅ Archiviert (nächster Run) |
+| KB-E3 | BU-033 22.9% aktive Revisions | [BUG-005] | ✅ Archiviert (neue korrekt) |
+| KB-E4 | BU-034 82 Low-Score | [STUFE2-QUICKBUGFIXES] | ✅ Archiviert |
+
+### 📋 KB-006 — Cluster F: Datei-Integrität (3/3 behoben)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-F1 | BU-013 INFO-Block-Korruption | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-F2 | BU-014 Write-Verlust processed_files | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-F3 | BU-015 Shield-Token-Format [[N]]→__SHLD_N__ | [Phase 1A] | ✅ Archiviert |
+
+### 📋 KB-007 — Cluster G: Argos/Google-Free (3/3 behoben)
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-G1 | BU-008 Names-Mangling | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-G2 | BU-011 DE→DE Feedback-Loop | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-G3 | BU-012 Shell-Escaping check_argos | [0.19.05b-19.06] | ✅ Archiviert |
+
+### 📋 KB-008 — Einzelne behobene Bugs
+| ID | Bug | CHANGELOG-Ref | Status |
+|----|-----|---------------|--------|
+| KB-S1 | BU-001 Dead References Plugin-Boundary | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-S2 | BU-002 SongsOfSyxAdapter Migration | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-S3 | BU-003 User-Env-Vars persistConfig | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-S4 | BU-005 Revision is_active=0 | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-S5 | BU-009 Stage 0 46% nie auditiert | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-S6 | BU-017 flagPotentialErrors null | [0.19.05b-19.06] | ✅ Archiviert |
+| KB-S7 | BU-021 14 ALTER TABLE Startup | [STUFE2-QUICKBUGFIXES] | ✅ Archiviert |
+| KB-S8 | BU-023 Plugin-Boundary Contract-Tests | [BU-023] | ✅ Archiviert (73/73 PASS) |
+| KB-S9 | BU-027 debug_payloads in CWD | [STUFE2-QUICKBUGFIXES] | ✅ Archiviert |
+| KB-S10 | BU-029 console.warn leere Caches | [STUFE2-QUICKBUGFIXES] | ✅ Archiviert |
+| KB-S11 | BU-035 Watermark toter Code | [BU-035] | ✅ Archiviert |
+| KB-S12 | BU-036 GOOGLE_FREE_ENABLED Verdrahtung | [BU-036] | ✅ Archiviert (11/11 Tests) |
+| KB-S13 | BU-037 dispatcher.js Doppelprüfung | [BU-037] | ✅ Archiviert |
+| KB-S14 | BU-038 logger.js stiller mkdir-Fehler | [BU-038] | ✅ Archiviert |
+| KB-S15 | BU-039 NUL Windows-Gerätename | [BU-039] | ✅ Archiviert |
+| KB-S16 | BU-041 gitignore Pattern Re-Include | Session 4 2026-06-21 | ✅ Archiviert |
+| KB-S17 | BU-004 Backup-Race-Condition | [0.19.05b-19.06] | 🟡 Teilweise → im Report verbleibend |
+
+---
+
+---
+
+## 17. Analysis-Docs Batch — 5 Einmal-Audits archiviert {#17-analysis-docs-batch--5-einmal-audits-archiviert}
+
+> **Aktion:** 5 Einmal-Audits/Specs aus core/archive/docs/ ins Buch überführt.
+> **Quelle:** BYPASS_AUDIT, FEATURE_VERIFICATION, CALCULATION_AND_INTEGRATION, FOREIGN_MACHINE_PROBABILITY (2×), STABILISIERUNGS_SCOPE.
+> **Regel:** Alle Findings sind in CHANGELOG + FREEZE_INDEX_2 dokumentiert. Dokumente haben keinen LIVE-Wert mehr.
+> **Datum der Archivierung:** 2026-06-21
+
+---
+
+### 📋 AD-001 — BYPASS_AUDIT_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Projektweite Skip/Bypass-Analyse
+- **Zusammenfassung:** 36 Bypass-Punkte identifiziert (14 Silent-Catch, 9 Feature-Flag, 6 Continue, 4 process.exit, 3 Test-Skips). 34/36 geplant+dokumentiert. 1 RISK (Patch Mode Hard-Coded → Origin Trace in FREEZE_INDEX_2 §8). 1 FALSE ALARM (GRAMMAR_CHECK Default=true). Grundlage für STABILISIERUNGS_SCOPE.
+- **LIVE-Ersatz:** CHANGELOG + FREEZE_INDEX_2 §8 (Origin Trace) + §9 (False Alarm)
+- **Status:** ✅ Archiviert
+
+### 📋 AD-002 — FEATURE_VERIFICATION_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Global Function Audit
+- **Zusammenfassung:** 14/14 README-Features verifiziert, 175/175 Smoke-Tests PASS, 35/35 Source-Dateien funktional. Score 85% (Fremdsystem). 3 Logiklücken: db_repair CLI defekt, Patch Mode disabled, GRAMMAR_CHECK False-Alarm. Abzüge: better-sqlite3 -5%, Python -3%, Ollama -2%, Patch Mode -3%, db_repair -2%.
+- **LIVE-Ersatz:** CHANGELOG [P0-1-P0-3-P1-1-STABILISIERUNG] (Score 85%→95%)
+- **Status:** ✅ Archiviert
+
+### 📋 AD-003 — CALCULATION_AND_INTEGRATION_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Runtime-Score Spec (Iteration 2)
+- **Zusammenfassung:** Mathematische Definition des Globalen Runtime-Score (Weighted Mixture Average). 8 Use-Case-Kategorien mit REVISED Population-Weights (Thinker-Korrektur). Integration als Standalone-Dev-Tool (Option A). Implementiert als `core/scripts/runtime_score.js` (~290 LOC, 13/13 Tests PASS). Score: 90.105%.
+- **LIVE-Ersatz:** CHANGELOG [RUNTIME-SCORE-CLI] + `core/scripts/runtime_score.js`
+- **Status:** ✅ Archiviert
+
+### 📋 AD-004 — FOREIGN_MACHINE_PROBABILITY_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Statische Runtime Probability Matrix
+- **Zusammenfassung:** 8 Use-Case-Kategorien mit P(Full)-Ranges (55-99%). 3 Top-SPOFs: better-sqlite3 sync, 429-Cascade, Argos Subprocess. Konfidenz: MEDIUM (statisch, nicht gemessen). Grundlage für CALCULATION.
+- **LIVE-Ersatz:** `core/scripts/runtime_score.js` (konsumiert Matrix via parseMatrixFromMd)
+- **Status:** ✅ Archiviert
+
+### 📋 AD-005 — FOREIGN_MACHINE_PROBABILITY_KALIBRIERT_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Empirische T2-Kalibrierung
+- **Zusammenfassung:** 20 Trials auf T2-Hardware (12GB RAM, 6 CPUs, win32). Mean=130ms, P50=128ms, P95=141ms, 20/20 PASS. Threshold <200ms P95 hält. Kein Re-Calibration auf Stage-3 nötig.
+- **LIVE-Ersatz:** `core/archive/dbold/calibration_T2_2026-06-21.json` (Snapshot)
+- **Status:** ✅ Archiviert
+
+### 📋 AD-006 — STABILISIERUNGS_SCOPE_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21 → v0.22 Ziel
+- **Kategorie:** Strategischer Scope (9 Tasks, ~9h)
+- **Zusammenfassung:** 9 Tasks abgeleitet aus BYPASS_AUDIT (36 Funde) + FEATURE_VERIFICATION (85%). Ziel: 95% Score. P0-1/P0-3/P1-1 implementiert (Commit `1d89544`, Score 85%→95%). Restliche Tasks in PLAN_MASTER.md migriert.
+- **LIVE-Ersatz:** CHANGELOG [P0-1-P0-3-P1-1-STABILISIERUNG] + PLAN_MASTER.md
+- **Status:** ✅ Archiviert
+
+---
+
+## 18. HANDSHAKE-Dateien — 8 Session-Übergaben archiviert {#18-handshake-dateien--8-session-bergaben-archiviert}
+
+> **Aktion:** 8 HANDSHAKE-Dateien ins Buch überführt.
+> **Quelle:** core/archive/docs/HANDSHAKE_2026-06-20*.md (3) + HANDSHAKE_2026-06-21*.md (5)
+> **Regel:** HANDSHAKEs sind Session-Übergaben. Nach Abschluss der Session haben sie keinen LIVE-Wert — der aktuelle Stand ist in MASTER_DOC + CHANGELOG.
+> **Datum der Archivierung:** 2026-06-21
+>
+> **Hinweis:** HANDSHAKE_2026-06-19.md und HANDSHAKE_2026-06-20.md wurden bereits in FREEZE_INDEX.md §14/§15 partiell archiviert. Die hier archivierten 8 Dateien sind die restlichen Session-Übergaben.
+
+---
+
+### 📋 HS-001 — HANDSHAKE_2026-06-20.md
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Übergabe (Performance-HDD)
+- **Zusammenfassung:** Performance-HDD-Optimierung: Schema-Version, PREFLIGHT aggregierte Query, NATIVE_STALE relabeling, Snapshot-Gating. Parallel: B4-Silent-Dead-Loop-Fix, MASTER_DOC-Konsolidierung.
+- **LIVE-Ersatz:** CHANGELOG [PERFORMANCE-HDD] + [B4-SILENT-CATCH-FIX]
+- **Status:** ✅ Archiviert
+
+### 📋 HS-002 — HANDSHAKE_2026-06-20_session-2.md
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Übergabe (Sinnhaftigkeitsanalyse + better-sqlite3)
+- **Zusammenfassung:** Sinnhaftigkeitsanalyse 15 Fixes (Commit `9a853ef`), better-sqlite3-Migration, translateHttpError, 4 Dev-Scripts, Plugin-Readiness-Audit.
+- **LIVE-Ersatz:** CHANGELOG [BETTER-SQLITE3-MIGRATION] + FREEZE_INDEX_2 §1–§5
+- **Status:** ✅ Archiviert
+
+### 📋 HS-003 — HANDSHAKE_2026-06-20_session-3.md
+- **Datum:** 2026-06-20 | **Version:** v0.20.0-pre-release
+- **Kategorie:** Session-Übergabe (Doku-Divergenz-Audit + COMMIT-TAGEBUCH)
+- **Zusammenfassung:** Doku-Divergenz-Audit (🔵) 7 DD-Einträge (Commit `bcb6e1e`), RULE 2 Rewrite (Commit-Tagebuch Edition), verify_commit_msg.js Härtung.
+- **LIVE-Ersatz:** CHANGELOG [COMMIT-TAGEBUCH] + FREEZE_INDEX_2 §6
+- **Status:** ✅ Archiviert
+
+### 📋 HS-004 — HANDSHAKE_2026-06-21.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Session-Übergabe (V0.21 Tag)
+- **Zusammenfassung:** V0.21-Tag Session-Start. Scope-Definition, Live-Run-Vorbereitung.
+- **LIVE-Ersatz:** CHANGELOG + MASTER_DOC
+- **Status:** ✅ Archiviert
+
+### 📋 HS-005 — HANDSHAKE_2026-06-21_session-2.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Session-Übergabe (Session 2)
+- **Zusammenfassung:** 32-File-Bundle Push, sos-runtime Lazy-Load, cleanup_zombies, app.js PATCH_MODE Härtung.
+- **LIVE-Ersatz:** CHANGELOG [SESSION-3-BROKEN-PUSH-RECOVERY]
+- **Status:** ✅ Archiviert
+
+### 📋 HS-006 — HANDSHAKE_2026-06-21_session-3.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Session-Übergabe (Runtime Score + Phase-2 Calibration)
+- **Zusammenfassung:** Runtime-Score-CLI Implementierung (Commit `980de4a`), Phase-2 Foreign-Machine Kalibrierung (T2-Baseline), .gitignore Pattern-Symmetrie.
+- **LIVE-Ersatz:** CHANGELOG [RUNTIME-SCORE-CLI] + [PHASE-2-FMP-CALIBRATION]
+- **Status:** ✅ Archiviert
+
+### 📋 HS-007 — HANDSHAKE_2026-06-21_session-4.md
+- **Datum:** 2026-06-21 | **Version:** v0.21-experimental
+- **Kategorie:** Session-Übergabe (Session 4)
+- **Zusammenfassung:** Runtime Score Dashboard, PLAN_MASTER Cleanup, Release-Härtung, README-Update.
+- **LIVE-Ersatz:** CHANGELOG + MASTER_DOC
+- **Status:** ✅ Archiviert
+
+### 📋 HS-008 — HANDSHAKE_2026-06-21_session-5.md
+- **Datum:** 2026-06-21 | **Version:** v0.21.0-untested
+- **Kategorie:** Session-Übergabe (Feierabend)
+- **Zusammenfassung:** BU-041 SHIELD-LEAK Fix, verify_flag_separation --future Flag, verify_commit_msg REF-Format, LIVE-1 Dry-Run 22/22 PASS. Doku-Cleanup.
+- **LIVE-Ersatz:** CHANGELOG [SESSION-5-FEIERABEND] + FREEZE_INDEX_2 §13
+- **Status:** ✅ Archiviert
+
+---
+
 *📚 FREEZE INDEX 2 — Fortsetzung ab 2026-06-20*
 *Vorgänger: FREEZE_INDEX_v0.20.0_archived.md (142 Einträge, 16.06.–20.06.2026)*
+*Gesamt: 142 (archiviert) + 78 (dieses Dokument) = **220 Buch-Einträge**.*
 *CODE IST DIE EINZIGE WAHRHEIT.*

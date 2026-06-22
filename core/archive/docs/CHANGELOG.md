@@ -1,3 +1,50 @@
+## [REALITY-CHECK-DIVERGENZ-FIXES] - 2026-06-21 — 10 Doku-Divergenzen behoben (Doku-vs-Code/DB)
+
+Reality Check auf alle 10 LIVE-Dokumente: Jede testbare Behauptung gegen den tatsächlichen Code- und DB-Stand geprüft. Ergebnis: 12 Claims stimmen noch, 10 Divergenzen gefunden und behoben.
+
+### Divergenzen behoben
+- **DD-01:** FREEZE_COUNT 4→5 — `FREEZE_INDEX_v0.20.0_archived.md` (Archivkopie) fehlte in der Zählung
+- **DD-02:** PLAN_COUNT 1→10 — 9 Einzelpläne in `plans/` nie in LIVE_INDEX gelistet
+- **DD-03:** BUCH-EINTRÄGE 220→212 — Zählfehler (FREEZE_INDEX 147 + FREEZE_INDEX_2 65 = 212)
+- **DD-04:** DB_TOTAL 1.363→2.721 — alte Zahlen vom Live-Run 20.06.
+- **DD-05:** DB_FLAGGED 101→839 — gleiche Ursache
+- **DD-06:** DB_GERMAN 440→0 — target_lang='de' hat keine Einträge
+- **DD-07:** PROVIDER_DIST komplett abweichend — native_runtime 945, polish_single 810, groq 525 statt alter Zahlen
+- **DD-08:** PLUGIN_A3 Bugs (sos-runtime Hardcode + index.js Hardcode) — Code zeigt `getLauncherSettingsPath()` + `createPlugin(CONFIG.GAME)`, Doku sagte OFFEN → BEHOBEN
+- **DD-09:** ROADMAP P1 Items A3-1/A3-2 — bereits erledigt, als ✅ ERLEDIGT markiert
+- **DD-10:** PREFLIGHT 165→307 — PREFLIGHT_LATEST zeigt 14 UNFLAGGED_STALE + 293 NATIVE_STALE
+
+### Verifizierte Claims (12, keine Divergenz)
+- LOC: translation-quality.js=187, translation-db.js=456, translation-runtime.js=1370 — exakt
+- 9 Provider in PROVIDER_CAPABILITIES — bestätigt
+- Version 0.21.0-untested — bestätigt
+- Alle 16 Dateien aus MASTER_DOC §9 Baum existieren
+- PATCH_MODE_ENABLED in config-runtime.js:842 — bestätigt
+- 55 Watermark-bezogene Zeilen in translation-db.js + translation-runtime.js — bestätigt
+- 10 LIVE-Dokumente — korrekt
+- createPlugin in plugin-registry.js:23, importiert in index.js:21 — bestätigt
+- V70/V71 Struktur + .gitignore — korrekt
+- Schema-Version 6 im Code (db.js:107) — bestätigt
+- 2 Plugins, 1 Adapter — bestätigt
+- Dual-Path-Copy in runtime-ops.js:390 + export_stage2.js:259 — bestätigt
+
+### Files Changed
+- `core/archive/docs/MASTER_DOC.md` — §3 A3-Bugs BEHOBEN, §5 aktuelle DB-Zahlen, §6 Roadmap bereinigt, §9 Struktur korrigiert (FREEZE=5, PLAN=10, Buch=212)
+- `core/archive/docs/LIVE_INDEX.md` — Komplett neu: FREEZE=5, PLAN=10 (9 Einzelpläne mit Status), Buch=212
+- `core/archive/docs/CHANGELOG.md` — Dieser Eintrag
+
+### Tests
+- DB-Verifikation: node -e mit better-sqlite3 → 2.721 total, 839 flagged, 0 watermarks
+- Code-Search: 9 Provider confirmed, createPlugin confirmed, getLauncherSettingsPath confirmed
+- File-Existenz: Alle 16 Dokumente + V70/V71 Struktur confirmed
+
+### EFFORT TO NEXT SCOPE
+- Commits (Doku-Fixes + V70/V71 + Doku-Konsolidierung)
+- DB-Snapshot archivieren (Rule 9): 2.721 Einträge
+- 9 Einzelpläne: Reihenfolge für nächste Arbeitsrunde festlegen
+
+---
+
 ## [SESSION-5-FEIERABEND] - 2026-06-21 — SHIELD-LEAK Fix (BU-041), verify_flag_separation deploy, Session-Cleanup
 
 Zwei Bugs in zwei verify-Scripts, ein Commit — gefolgt von Doku-Cleanup und Feierabend. Der scanFile-Fehler in verify_flag_separation.js war doppelt tot: der catch-Block loggte nur still, und der nach main() gepflanzte Guard lag im Temporal Dead Zone — nie erreicht, nie exit 2. Der --future Flag listet jetzt DOKU-Patterns ohne RUNTIME-Äquivalent (6 Future-Patterns identifiziert).

@@ -542,6 +542,79 @@ PRAGMA busy_timeout = 5000;      -- 5s
 | VS-003 | §3-§7 Prioritäten + RESTORE + Qualität + Abschluss | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
 | VS-004 | Gesamtdokument: Vollarchiviert | [FREEZE_INDEX §30](#30-v021_scope--vollarchivierung) |
 
+### MASTER_DOC §3 B4-Silent-Catch Archivierung (2026-06-21)
+
+> **Aktion:** 1 OBSOLETE-Eintrag (behobener Bug) aus MASTER_DOC.md §3 ins Buch überführt.
+> **Begründung:** Bug behoben + verifiziert + CHANGELOG-dokumentiert. Gehört nicht in die SSOT-Liste offener Bugs.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| B4-001 | 3× silent .catch(() => {}) Dead-Loop | [FREEZE_INDEX_2 §14](#14-master_doc--3--b4-silent-catch-fix--archiviert-aus-master_docmd-3) |
+
+### MASTER_DOC §6 ROADMAP-KOMPLETT Archivierung (2026-06-21)
+
+> **Aktion:** 10 erledigte ROADMAP-Items aus MASTER_DOC.md §6 ins Buch überführt.
+> **Begründung:** Alle 10 Items implementiert + verifiziert + CHANGELOG-dokumentiert. ROADMAP auf aktive P1/P2-Items verschlankt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| RD-001 | Sinnhaftigkeitsanalyse 15 Fixes | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-002 | Erster v0.20 Live-Run (8 Mods) | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-003 | Live-Run 5 Mods (440 Übersetzungen) | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-004 | Watermark-Stripping P0-1 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-005 | shouldTranslate Config-Blocker P0-2 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-006 | Watermark nur Output P0-3 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-007 | polish_single no-change P1-1 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-008 | better-sqlite3 try/catch P0-1 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-009 | db_repair.js CLI sync-API P0-3 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+| RD-010 | Patch Mode User-Opt-Out P1-1 | [FREEZE_INDEX_2 §15](#15-master_doc--6--10-erledigte-roadmap-items-aus-master_docmd-6) |
+
+### KNOWN_BUGS_REPORT 27 behobene Bugs Archivierung (2026-06-21)
+
+> **Aktion:** 27 behobene Bugs aus KNOWN_BUGS_REPORT.md ins Buch überführt.
+> **Begründung:** Alle 27 Bugs mit Status ✅ BEHOBEN — CHANGELOG-Verweise vorhanden. Report auf 7 aktive Bugs verschlankt.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| KB-001 | Cluster A: Quality-Pipeline (5 Bugs) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-002 | Cluster B: Routing (4 Bugs) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-003 | Cluster C: Code-Qualität (2 Bugs) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-004 | Cluster D: Infrastruktur (1 Bug) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-005 | Cluster E: DB-Health (4 Bugs) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-006 | Cluster F: Datei-Integrität (3 Bugs) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-007 | Cluster G: Argos/Google-Free (3 Bugs) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+| KB-008 | Einzelne behobene Bugs (16+1 teilweise) | [FREEZE_INDEX_2 §16](#16-known_bugs_report--27-behobene-bugs-archiviert) |
+
+### Analysis-Docs Batch Vollarchivierung (2026-06-21)
+
+> **Aktion:** 5 Einmal-Audits/Specs ins Buch überführt.
+> **Begründung:** Alle Findings in CHANGELOG + FREEZE_INDEX_2 dokumentiert. Kein LIVE-Wert mehr.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| AD-001 | BYPASS_AUDIT (36 Bypasses) | [FREEZE_INDEX_2 §17](#17-analysis-docs-batch--5-einmal-audits-archiviert) |
+| AD-002 | FEATURE_VERIFICATION (85% Score) | [FREEZE_INDEX_2 §17](#17-analysis-docs-batch--5-einmal-audits-archiviert) |
+| AD-003 | CALCULATION_AND_INTEGRATION (Score-Spec) | [FREEZE_INDEX_2 §17](#17-analysis-docs-batch--5-einmal-audits-archiviert) |
+| AD-004 | FOREIGN_MACHINE_PROBABILITY (Matrix) | [FREEZE_INDEX_2 §17](#17-analysis-docs-batch--5-einmal-audits-archiviert) |
+| AD-005 | FOREIGN_MACHINE_PROBABILITY_KALIBRIERT | [FREEZE_INDEX_2 §17](#17-analysis-docs-batch--5-einmal-audits-archiviert) |
+| AD-006 | STABILISIERUNGS_SCOPE (9 Tasks) | [FREEZE_INDEX_2 §17](#17-analysis-docs-batch--5-einmal-audits-archiviert) |
+
+### HANDSHAKE-Dateien Vollarchivierung (2026-06-21)
+
+> **Aktion:** 8 Session-Übergaben ins Buch überführt.
+> **Begründung:** HANDSHAKEs sind Session-Übergaben. Nach Abschluss kein LIVE-Wert — aktueller Stand in MASTER_DOC + CHANGELOG.
+
+| ID | Kurztitel | Buch-Verweis |
+|----|-----------|-------------|
+| HS-001 | HANDSHAKE_2026-06-20 (Performance-HDD) | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-002 | HANDSHAKE_2026-06-20_session-2 | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-003 | HANDSHAKE_2026-06-20_session-3 | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-004 | HANDSHAKE_2026-06-21 (V0.21 Tag) | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-005 | HANDSHAKE_2026-06-21_session-2 | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-006 | HANDSHAKE_2026-06-21_session-3 | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-007 | HANDSHAKE_2026-06-21_session-4 | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+| HS-008 | HANDSHAKE_2026-06-21_session-5 (Feierabend) | [FREEZE_INDEX_2 §18](#18-handshake-dateien--8-session-bergaben-archiviert) |
+
 ### PHASE2_MARKER_INTEGRATION Vollarchivierung (2026-06-20)
 
 > **Aktion:** Planungsdokument (6 Lücken, 4/6 DONE) ins Buch überführt.
