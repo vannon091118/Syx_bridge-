@@ -372,3 +372,6 @@ Runtime Score Dashboard + PLAN_MASTER Cleanup + Release-Härtung + README-Update
 
 ### [2026-06-21 03:53:26]
 --model=deepseek-v4-flash
+
+### [2026-06-22 08:20:10]
+--model=mimo-v2.5-pro
