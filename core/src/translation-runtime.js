@@ -49,18 +49,23 @@ function createTranslationRuntime(options) {
     // so in-flight HTTP requests can be cancelled on Ctrl+C.
     getAbortSignal,
     langCodes,
-    isArgosInstalled
+    isArgosInstalled,
+    // Item 0d: DB-Metriken-Snapshot für dynamisches Modell-Routing
+    getMetricsSnapshot
   } = options;
 
   let consecutiveGrammarFailures = 0;
   let _recoveryDone = false;  // P1 Fix: Recovery einmalig pro Session
 
   // ── Dispatcher ───────────────────────────────────────────────────────
+  // Item 0d: getMetricsSnapshot wird an Dispatcher durchgereicht für
+  // dynamisches DB-gestütztes Modell-Routing.
   const dispatcher = createDispatcher({
     config,
     routingEngine,
     extractErrorMessage,
-    isArgosInstalled
+    isArgosInstalled,
+    getMetricsSnapshot
   });
 
   // ── Provider Clients ─────────────────────────────────────────────────
@@ -371,24 +376,22 @@ function createTranslationRuntime(options) {
     // The expansion logic handles zero-length rawTranslations correctly, so just skip.
     if (batchInput.length === 0) {
       rawTranslations = [];
-    } else if (resolvedRoute.provider === 'gemini') rawTranslations = await clients.callGeminiBatch(batchInput, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'groq') rawTranslations = await clients.callGroqBatch(batchInput, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'openrouter') rawTranslations = await clients.callOpenRouterBatch(batchInput, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'ollama') rawTranslations = await clients.callOllamaBatch(batchInput, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'argos') {
+    }    else if (resolvedRoute.provider === 'argos') {
       // BUG-FS-003: DNT double-shield before sending to non-LLM provider
       const { dntTexts, dntMaps } = dntShieldEntries(filteredEntries);
       let raw = await clients.callArgosBatch(dntTexts);
       rawTranslations = dntRestoreTranslations(raw, dntMaps);
     }
-    else if (resolvedRoute.provider === 'player2') rawTranslations = await clients.callPlayer2Batch(batchInput, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'nvidia') rawTranslations = await clients.callNvidiaBatch(batchInput, resolvedRoute.model);
-    else if (resolvedRoute.provider === 'fcm') rawTranslations = await clients.callFcmBatch(batchInput, resolvedRoute.model);
     else if (resolvedRoute.provider === 'google_free') {
       // BUG-FS-003: DNT double-shield before sending to non-LLM provider
       const { dntTexts, dntMaps } = dntShieldEntries(filteredEntries);
       let raw = await clients.callGoogleTranslateFree(dntTexts);
       rawTranslations = dntRestoreTranslations(raw, dntMaps);
+    }
+    else {
+      // Item 4: Alle LLM-Provider (gemini, groq, openrouter, ollama, player2, nvidia, fcm)
+      // via callProvider() — zentraler Dispatcher in client-factory.js
+      rawTranslations = await clients.callProvider(resolvedRoute.provider, batchInput, resolvedRoute.model);
     }
 
     // P0-Fix: Make expansion provider-agnostic. Vorher nur fuer argos/google_free.
@@ -875,6 +878,8 @@ function createTranslationRuntime(options) {
 
           const saveMeta = {
             provider: saveProvider,
+            model: result.model,
+            taskType: 'translate',
             flagReason,
             qualityScore: properNounOverride ? NATIVE_RUNTIME_DEFAULT_QUALITY : qualityScore,
             // C-Fix (Reviewer-Pass-2): Override-Indikator dominiert die Save-Semantik.
@@ -959,6 +964,8 @@ function createTranslationRuntime(options) {
           //   liefert).
           failPromises.push(saveTranslation(item, item.source, isPN ? 2 : 0, {
             provider: failProvider,
+            model: 'native_fallback',
+            taskType: 'translate',
             flagReason: failReason,
             qualityScore: failScore,
             polishStatus: isPN ? 'completed' : 'pending',
@@ -1045,6 +1052,8 @@ function createTranslationRuntime(options) {
         if (cached.polishLevel < 1) {
           batchUpdatePromises.push(saveTranslation(entry, ctx.translations.get(key), 1, {
             provider: cached.provider || 'native_review',
+            model: 'native_review',
+            taskType: 'audit',
             flagReason: (flags[j] === true) ? 'needs_polish' : '',
             qualityScore: scoreTranslationQuality(key, ctx.translations.get(key))
           }));
@@ -1061,12 +1070,10 @@ function createTranslationRuntime(options) {
           }));
 
           let corrected;
-          let polishProvider = 'single';
           let polishShieldResults = null;
           const abResult = await polishArbiter.runAbPolishing(problematicEntries, config.TARGET_LANG);
           if (abResult) {
             corrected = abResult;
-            polishProvider = 'ab_multi';
           } else {
             corrected = await fixGrammarBatch(problematicEntries, 'polish');
             // Extract shield restoration results from polish path
@@ -1110,8 +1117,13 @@ function createTranslationRuntime(options) {
               clean(improved) === clean(key) ||
               clean(improved) === clean(oldTranslation);
 
+            // Item 2 Phase 2: Echte Polish-Route (polishRoute.provider/model) statt
+            // SyxBridge-interner Labels ('ab_polish'/'polish_single').
+            // model_task_metrics braucht den tatsächlichen LLM-Provider.
             batchUpdatePromises.push(saveTranslation(entry, improved, 2, {
-              provider: polishProvider === 'ab_multi' ? 'ab_polish' : 'polish_single',
+              provider: polishRoute.provider,
+              model: polishRoute.model,
+              taskType: 'polish',
               flagReason: persistentViolation ? 'terminology_violation_persistent' : '',
               qualityScore: scoreTranslationQuality(key, improved),
               skipReviewIncrement: isNoChange
@@ -1242,6 +1254,11 @@ function createTranslationRuntime(options) {
   // ── Deep Polish Batch ────────────────────────────────────────────────
 
   async function runDeepPolishBatch(targetLang, batchSize = 20) {
+    // Item 2 Phase 2: Echte Polish-Route auflösen (Provider + Model) für
+    // model_task_metrics. Vorher wurde runDeepPolishBatch via direktem dbRun
+    // gespeichert — keine Metriken. Jetzt via saveTranslation() mit echter Route.
+    const polishRoute = dispatcher.buildStageRoutePlan('polish')[0] || dispatcher.resolveProviderModel('polish');
+
     const pending = await dbAll(
       `SELECT source_text, translation, provider, quality_score, flag_reason, overwrite_fallback_used
        FROM translations
@@ -1257,7 +1274,7 @@ function createTranslationRuntime(options) {
       return { processed: 0, fixed: 0 };
     }
 
-    console.log(`[DEEP-POLISH] ${pending.length} Eintraege mit pending Deep Polish gefunden. Verarbeite in Batches...`);
+    console.log(`[DEEP-POLISH] ${pending.length} Eintraege mit pending Deep Polish gefunden. Verarbeite in Batches (${polishRoute.provider}/${polishRoute.model})...`);
 
     let processed = 0;
     let fixed = 0;
@@ -1287,21 +1304,28 @@ function createTranslationRuntime(options) {
           }
           const corrected = await fixGrammarBatch(entries, 'polish');
 
+          // Item 2 Phase 2: saveTranslation() statt direktem dbRun.
+          // saveTranslation() ruft automatisch recordModelTaskMetric() auf
+          // mit dem echten polishRoute.provider/model — statt SyxBridge-internen Labels.
+          // Der polishRoute-Parameter dokumentiert WELCHES Modell tatsächlich gepolisht hat.
           for (let j = 0; j < batch.length; j++) {
             const row = batch[j];
             const improved = corrected[j];
             const wasImproved = improved !== row.translation;
 
-            await dbRun(
-              `UPDATE translations SET
-                  translation = ?,
-                  polish_status = 'completed',
-                  requires_deep_polish = 0,
-                  audit_stage = MAX(audit_stage, 2),
-                  quality_score = ?,
-                  updated_at = CURRENT_TIMESTAMP
-              WHERE source_text = ? AND target_lang = ?`,
-              [improved, scoreTranslationQuality(row.source_text, improved), row.source_text, targetLang]
+            await saveTranslation(
+              { source: row.source_text },
+              improved,
+              2,  // polishLevel = 2 (final/deep-polished)
+              {
+                provider: polishRoute.provider,
+                model: polishRoute.model,
+                taskType: 'polish',
+                qualityScore: scoreTranslationQuality(row.source_text, improved),
+                polishStatus: 'completed',
+                requiresDeepPolish: false,
+                skipReviewIncrement: !wasImproved  // P1-1: kein no-change als Revision zählen
+              }
             );
 
             if (wasImproved) fixed++;
