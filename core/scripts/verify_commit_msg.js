@@ -155,9 +155,13 @@ if (rules.model_signature.required) {
   }
 }
 
-// ─── Plotchain Cross Reference Verification ────────────────────────
+// ─── Plotchain Cross Reference Verification (verschärft) ──────────
+// RULE 3.7 v2: REF MUSS auf den LETZTEN plotchain-Node verweisen.
+// Kein beliebiger alter Node — nur der soeben via update_plot.js erstellte.
+// Begründung: Die Plot-Chain ist eine Kette. Jeder Commit setzt den
+// VORGÄNGER als REF, nicht einen beliebigen historischen Eintrag.
+// REF:none ist nur für den ersten Eintrag einer Modell-Linie erlaubt.
 if (rules.cross_references.required) {
-  // Regex muss Doppelpunkte für ISO-T Format (plot-2026-06-21T06:42:18) erlauben
   const refMatch = commitMsg.match(/\[REF:([a-z0-9._:T-]+)\]/i);
   if (!refMatch) {
     console.error('═══════════════════════════════════════════');
@@ -169,22 +173,90 @@ if (rules.cross_references.required) {
   }
 
   const referencedId = refMatch[1];
-  if (referencedId !== 'none' && plotchain.length > 0) {
+
+  // Bootstrap: REF:none ist erlaubt (erster Eintrag einer Modell-Linie)
+  if (referencedId === 'none') {
+    // OK — kein Vorgänger
+  } else if (plotchain.length === 0) {
+    console.error('═══════════════════════════════════════════');
+    console.error('  LORE L3 — COMMIT BLOCKED: REF HAS NO CHAIN');
+    console.error('═══════════════════════════════════════════');
+    console.error(`REF [${referencedId}] verweist auf einen Plot-Node, aber plotchain.json ist leer.`);
+    console.error('Führe ZUERST update_plot.js aus, dann den Commit.');
+    process.exit(1);
+  } else {
+    // Scharfe Prüfung: REF MUSS der LETZTE Node sein
+    const lastNode = plotchain[plotchain.length - 1];
+    if (referencedId !== lastNode.id) {
+      console.error('═══════════════════════════════════════════');
+      console.error('  LORE L3 — COMMIT BLOCKED: REF NOT LAST NODE');
+      console.error('═══════════════════════════════════════════');
+      console.error(`REF [${referencedId}] ist NICHT der letzte Plot-Node.`);
+      console.error(`Erwartet: [REF:${lastNode.id}] (letzter Node in plotchain.json)`);
+      console.error(`Gefunden: [REF:${referencedId}]`);
+      if (plotchain.length > 1) {
+        const prevNode = plotchain[plotchain.length - 2];
+        console.error(`Vorletzter Node: ${prevNode.id} (wäre ebenfalls ungültig)`);
+      }
+      console.error('');
+      console.error('Die Plot-Chain ist eine KETTE. Jeder Commit referenziert den');
+      console.error('VORGÄNGER — nicht irgendeinen beliebigen historischen Eintrag.');
+      console.error('Lösung: update_plot.js ausführen, dann [REF:NEUER-NODE] im Commit verwenden.');
+      process.exit(1);
+    }
+
+    // Zusätzlich: Existenz prüfen (redundant aber sicher)
     const exists = plotchain.some(node => node.id === referencedId);
     if (!exists) {
       console.error('═══════════════════════════════════════════');
       console.error('  LORE L3 — COMMIT BLOCKED: INVALID REF ID');
       console.error('═══════════════════════════════════════════');
-      console.error(`The referenced ID [REF:${referencedId}] does not exist in plotchain.json.`);
-      if (plotchain.length > 0) {
-        console.error(`Suggested valid reference (last plot node): [REF:${plotchain[plotchain.length - 1].id}]`);
-      }
+      console.error(`Die referenzierte ID [REF:${referencedId}] existiert nicht in plotchain.json.`);
       process.exit(1);
     }
   }
 }
 
-// ─── Helper: build match candidates from a file path ───────────────
+// ─── Cross-References Enforcement (verschärft) ────────────────────
+// RULE 3.7 v2: Commit-Message MUSS mindestens EINEN Eintrag aus
+// cross_references.json referenzieren — entweder einen Commit-Hash
+// oder ein persistentes Plot-Variable (z.B. "Watermarks", "PLOT_LORE").
+// Begründung: Jeder Commit ist Teil einer übergreifenden Erzählung.
+// Die Cross-References verbinden ihn mit vergangenen Ereignissen.
+if (rules.cross_references.required) {
+  const crossRefPath = path.join(repoRoot, 'core/scripts/commit_lore/cross_references.json');
+  if (fs.existsSync(crossRefPath)) {
+    try {
+      const crossRefs = JSON.parse(fs.readFileSync(crossRefPath, 'utf8'));
+      const foundRef = crossRefs.some(ref => {
+        const escaped = ref.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        return new RegExp('\\b' + escaped + '\\b', 'i').test(commitMsg);
+      });
+      if (!foundRef) {
+        console.error('═══════════════════════════════════════════');
+        console.error('  LORE L3 — COMMIT BLOCKED: NO CROSS-REFERENCE');
+        console.error('═══════════════════════════════════════════');
+        console.error('Commit message MUST reference at least ONE entry from cross_references.json.');
+        console.error('');
+        console.error('Verfügbare Cross-References (Commit-Hashes + Plot-Variablen):');
+        // Nur letzte 5 Hashes + alle Variablen zeigen (nicht alle 20 Hashes)
+        const hashes = crossRefs.filter(r => /^[a-f0-9]{7}$/.test(r));
+        const variables = crossRefs.filter(r => !/^[a-f0-9]{7}$/.test(r));
+        const recent = hashes.slice(-5);
+        for (const h of recent) console.error(`  Hash: ${h}`);
+        if (hashes.length > 5) console.error(`  ... +${hashes.length - 5} weitere Hashes`);
+        for (const v of variables) console.error(`  Variable: ${v}`);
+        console.error('');
+        console.error('Binde mindestens EINE dieser Referenzen in die Commit-Message ein.');
+        process.exit(1);
+      }
+    } catch (e) {
+      console.warn(`WARN: cross_references.json konnte nicht geparst werden: ${e.message}`);
+    }
+  }
+}
+
+// ─── File reference check ──────────────────────────────────────────
 function buildCandidates(filePath) {
   const normalized = filePath.replace(/\\/g, '/');
   const segments = normalized.split('/');

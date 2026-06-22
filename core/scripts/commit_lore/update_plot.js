@@ -173,3 +173,32 @@ if (suggestedNextHooks.length > 0) {
   console.log('Nächste Plot-Vorschläge generiert:');
   suggestedNextHooks.forEach(hook => console.log(`  -> ${hook}`));
 }
+
+// ─── Auto-Add aktuellen Commit-Hash zu cross_references.json ──────
+// RULE 3.7 v2: Nach jedem erfolgreichen Plot-Eintrag wird der aktuelle
+// Commit-Hash (falls vorhanden) in cross_references.json gespeichert.
+// Dies stellt sicher dass verify_commit_msg.js beim NÄCHSTEN Commit
+// eine valide Cross-Reference findet. Keine Duplikate.
+try {
+  const crossRefPath = path.join(__dirname, 'cross_references.json');
+  let crossRefs = [];
+  if (fs.existsSync(crossRefPath)) {
+    crossRefs = JSON.parse(fs.readFileSync(crossRefPath, 'utf8'));
+  }
+
+  // Versuche den aktuellen Commit-Hash zu ermitteln
+  let currentHash = null;
+  try {
+    currentHash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  } catch (_) {
+    // Noch kein Commit vorhanden — nichts zu tun
+  }
+
+  if (currentHash && !crossRefs.includes(currentHash)) {
+    crossRefs.push(currentHash);
+    fs.writeFileSync(crossRefPath, JSON.stringify(crossRefs, null, 2), 'utf8');
+    console.log(`Commit-Hash ${currentHash} zu cross_references.json hinzugefügt.`);
+  }
+} catch (e) {
+  console.warn(`Hinweis: cross_references.json konnte nicht aktualisiert werden: ${e.message}`);
+}

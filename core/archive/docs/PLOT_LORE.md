@@ -441,3 +441,24 @@ Runtime Score Dashboard + PLAN_MASTER Cleanup + Release-Härtung + README-Update
 **Vannon:** Und getBatchProfile?
 
 **Buffy:** Zwei separate Datenstrukturen — PROVIDER_CAPS + LOCAL_PROFILES — durch EINE ersetzt: PROVIDER_REGISTRY.limits. Lokale Provider (type='local') kriegen feste Limits ohne Multiplier. Cloud-Provider den vollen dynamischen Pfad. Und safeSignal? War tot seit BU-020. Nie aufgerufen. Weg.
+
+### [2026-06-22 12:35:13]
+### [2026-06-22 14:55] — P0-7: Die Commit-Chain lernt sich zu erinnern
+
+**Buffy:** Weisst du was an verify_commit_msg.js kaputt war? Es hat [REF:plot-2026-06-21T03:41:24] akzeptiert. Den ERSTEN Node. 20 Nodes später. Die Chain war ein Scherz.
+
+**Vannon:** Und cross_references?
+
+**Buffy:** Lag seit Monaten als JSON rum. Wurde geladen. Nie geprueft. Kein einziger Commit wurde je geblockt weil er keine Cross-Reference hatte. Die Datei war ein Friedhof guter Absichten.
+
+**Vannon:** Also zwei Bugs in der Commit-Lore selbst.
+
+**Buffy:** Drei. update_plot.js hat nie neue Hashes zu cross_references.json hinzugefuegt. Die Liste war statisch seit dem 19.06. Kein einziger Hash von Item 4, Item 2, Item 3/9, Item 5+8, P0-1, P0-4+5, oder P0-6. Die PLOT_LORE wuchs — aber die cross_references blieb stehen wie eine stehengebliebene Uhr.
+
+**Vannon:** Und wie hast du es gefixt?
+
+**Buffy:** Drei Aenderungen. verify_commit_msg.js: REF MUSS der LETZTE Node sein. Nicht irgendeiner. Zeigt bei Verstoß erwarteten und gefundenen Node plus Chain-Kontext. Zweitens: cross_references.json wird GEPRUEFT. Commit-Message MUSS mindestens einen Eintrag referenzieren — Hash oder Plot-Variable. Tut sie's nicht: BLOCKED. Drittens: update_plot.js fuegt nach jedem Plot-Eintrag automatisch den aktuellen Commit-Hash zu cross_references.json hinzu. Keine Duplikate. Die Liste waechst mit jedem Commit.
+
+**Vannon:** Scharf.
+
+**Buffy:** Die Chain ist jetzt eine echte Kette. Jeder Commit weiss von seinem Vorgaenger — nicht nur per REF, sondern auch per Cross-Reference auf vergangene Ereignisse. Die lore_arcs werden nicht mehr nur geschrieben, sie werden enforced.

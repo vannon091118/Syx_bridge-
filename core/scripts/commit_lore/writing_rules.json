@@ -54,9 +54,17 @@
       "note": "Die uebergreifende Lore macht aus einer losen Commit-Sammlung eine echte Geschichte. Der Leser soll beim Durchgehen der PLOT_LORE.md das Gefuehl haben, einen Roman ueber ein KI-Uebersetzungssystem zu lesen — mit Rueckblenden, Vorausdeutungen und wiederkehrenden Motiven."
     },
     "cross_references": {
-      "description": "Must reference at least one persistent plot variable or past commit hash from the registry.",
+      "description": "MUSS mindestens einen Eintrag aus cross_references.json im Commit-Text referenzieren — entweder einen vergangenen Commit-Hash oder eine persistente Plot-Variable (z.B. Watermarks, PLOT_LORE, runtime_score). Dies VERBINDET den Commit mit der übergreifenden Erzählung.",
       "required": true,
-      "db_path": "core/scripts/commit_lore/cross_references.json"
+      "db_path": "core/scripts/commit_lore/cross_references.json",
+      "enforced_by": "verify_commit_msg.js — BLOCKED wenn keine Cross-Reference im Commit-Text gefunden wird. Zeigt verfügbare Referenzen in der Fehlermeldung.",
+      "auto_populated_by": "update_plot.js — fügt nach jedem Plot-Eintrag den aktuellen Commit-Hash hinzu (keine Duplikate)."
+    },
+    "chain_continuity": {
+      "description": "Der [REF:<id>]-Tag MUSS auf den LETZTEN Node in plotchain.json verweisen — nicht auf irgendeinen beliebigen historischen Eintrag. Die Plot-Chain ist eine KETTE: jeder Commit referenziert seinen VORGÄNGER. Nur [REF:none] ist für Bootstrap (erster Eintrag einer Modell-Linie) erlaubt.",
+      "required": true,
+      "enforced_by": "verify_commit_msg.js — BLOCKED wenn REF nicht der letzte Node ist. Zeigt erwarteten und gefundenen Node in der Fehlermeldung.",
+      "rationale": "Ohne diese Regel könnte ein Commit auf plot-2026-06-21T03:41:24 (Tag 1) verweisen obwohl 20 Nodes später existieren. Die Chain wäre nicht rekonstruierbar."
     }
   }
 }
