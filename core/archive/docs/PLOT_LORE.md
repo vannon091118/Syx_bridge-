@@ -487,3 +487,8 @@ Commit-Layer Arc-Integration: verify_commit_msg.js, get_sidejoke.js, update_plot
 > **User-Impuls:** V60-V71 Filter-Fix — V6/V7 Filter aus export_stage2.js entfernt
 
 V60-V71 Filter-Fix in export_stage2.js. Der V6/V7 Filter (!src.includes('V6') && !src.includes('V7')) wurde entfernt — er blockierte fälschlich ALLE V60-V71 Versionsordner beim Mod-Kopieren ins Staging. SongsOfSyxPlugin.isVersionDirectory() unterstützt bereits alle V\d+-Ordner korrekt. Der Fix stellt sicher, dass Mods mit mehreren Versionsordnern (V60, V61, ..., V71) vollständig kopiert und verarbeitet werden.
+
+### [2026-06-22 16:30:10]
+> **User-Impuls:** v0.22.0 Bump - vollstaendiger globaler Version-Bump mit Code-Hygiene-Check
+
+v0.22.0 Bump: Version von 0.21.0-untested auf 0.22.0 angehoben. ESLint-Hygiene: no-useless-catch in client-factory.js gefixt (leerer try/catch in callChatCompletions entfernt). Alle Tests bestanden: 137/137 PASS (24 runtime_score + 78 plugin-boundary + 35 E2E). ES Lint: 0 Errors. Syntax: alle core/src + scripts Dateien OK. V60-V71 Filter bereits in vorherigem Commit entfernt (c4dc58d).

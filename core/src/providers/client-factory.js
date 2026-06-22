@@ -319,45 +319,41 @@ function createProviderClients(ctx) {
 
     logPayload(provider, 'REQUEST', payload);
 
-    try {
-      const response = await _callProviderApi(provider, payload, attemptCount);
+    const response = await _callProviderApi(provider, payload, attemptCount);
 
-      const raw = response.data.choices?.[0]?.message?.content ?? null;
-      if (!raw) throw new Error(`${provider} returned no message content.`);
-      logPayload(provider, 'RESPONSE', raw);
-      let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+    const raw = response.data.choices?.[0]?.message?.content ?? null;
+    if (!raw) throw new Error(`${provider} returned no message content.`);
+    logPayload(provider, 'RESPONSE', raw);
+    let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
 
-      // JSON-Retry: some providers return markdown/truncated JSON
-      if (pc.jsonRetry && parsed.length !== items.length) {
-        console.warn(`[${provider.toUpperCase()}] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
-        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
-        const strictPayload = {
-          model,
-          messages: [
-            { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
-            { role: 'user', content: strictPrompt.prompt }
-          ],
-          temperature: 0.1
-        };
-        try {
-          const retryResp = await _callProviderApi(provider, strictPayload, 0);
-          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
-          if (retryRaw) {
-            logPayload(provider, 'RESPONSE (Retry)', retryRaw);
-            parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
-            console.log(`[${provider.toUpperCase()}] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
-          }
-        } catch (retryErr) {
-          console.warn(`[${provider.toUpperCase()}] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
+    // JSON-Retry: some providers return markdown/truncated JSON
+    if (pc.jsonRetry && parsed.length !== items.length) {
+      console.warn(`[${provider.toUpperCase()}] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
+      const strictPrompt = await buildBatchPromptForCurrentConfig(items);
+      const strictPayload = {
+        model,
+        messages: [
+          { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
+          { role: 'user', content: strictPrompt.prompt }
+        ],
+        temperature: 0.1
+      };
+      try {
+        const retryResp = await _callProviderApi(provider, strictPayload, 0);
+        const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
+        if (retryRaw) {
+          logPayload(provider, 'RESPONSE (Retry)', retryRaw);
+          parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
+          console.log(`[${provider.toUpperCase()}] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
         }
+      } catch (retryErr) {
+        console.warn(`[${provider.toUpperCase()}] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
       }
-
-      return parsed;
-    } catch (e) {
-      // _callProviderApi handled key rotation internally; if we get here,
-      // all keys exhausted or non-retryable error
-      throw e;
     }
+
+    return parsed;
+    // Note: _callProviderApi handles key rotation internally.
+    // If we reach here, all keys were exhausted or error is non-retryable.
   }
 
   // ── Item 4: callProvider — zentraler Dispatcher für ALLE Provider ──

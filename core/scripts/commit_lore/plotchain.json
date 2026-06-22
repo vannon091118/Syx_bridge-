@@ -1092,5 +1092,60 @@
       "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
     ],
     "dialogue_preview": "V60-V71 Filter-Fix in export_stage2.js. Der V6/V7 Filter (!src.includes('V6') && !src.includes('V7')..."
+  },
+  {
+    "id": "plot-2026-06-22T16:30:10",
+    "parent_id": "plot-2026-06-22T16:14:40",
+    "timestamp": "2026-06-22 16:30:10",
+    "status": "active",
+    "model_id": "deepseek-v4-flash",
+    "user_impulse": {
+      "text": "v0.22.0 Bump - vollstaendiger globaler Version-Bump mit Code-Hygiene-Check",
+      "timestamp": "2026-06-22T16:30:10",
+      "effect": null
+    },
+    "arcs": [
+      "great-cleanup"
+    ],
+    "cross_arc_bridge": false,
+    "cross_references_used": [
+      "runtime_score"
+    ],
+    "lore_context": [
+      "2026-06-22 16:05:00",
+      "2026-06-22 16:14:40",
+      "2026-06-22 16:30:10"
+    ],
+    "session_changes": [
+      "ore/archive/docs/PLOT_LORE.md",
+      "core/package.json",
+      "core/scripts/commit_lore/cross_references.json",
+      "core/scripts/commit_lore/get_sidejoke.js",
+      "core/scripts/commit_lore/lore_arcs.json",
+      "core/scripts/commit_lore/update_plot.js",
+      "core/scripts/verify_commit_msg.js",
+      "core/src/providers/client-factory.js",
+      "core/logs/",
+      "core/scripts/commit_lore/sidejoke_pool.backup.json"
+    ],
+    "variables": [
+      "c4dc58d",
+      "runtime_score",
+      "PLOT_LORE",
+      "package",
+      "cross_references",
+      "get_sidejoke",
+      "lore_arcs",
+      "update_plot",
+      "verify_commit_msg",
+      "client-factory",
+      "logs",
+      "sidejoke_pool.backup"
+    ],
+    "suggested_next_hooks": [
+      "Validierung der neuen L3-Lore-Kriterien im Live-Betrieb testen.",
+      "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
+    ],
+    "dialogue_preview": "v0.22.0 Bump: Version von 0.21.0-untested auf 0.22.0 angehoben. ESLint-Hygiene: no-useless-catch in ..."
   }
 ]
