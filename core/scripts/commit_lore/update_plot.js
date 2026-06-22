@@ -64,8 +64,15 @@ die parallel zur echten Commit-History geschrieben werden. Jeder Commit erweiter
 // Append dialogue to PLOT_LORE.md
 // Timestamp: YYYY-MM-DD HH:MM:SS (für lesbaren PLOT_LORE-Header)
 const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
-fs.appendFileSync(plotPath, `\n### [${timestamp}]\n${dialogue}\n`, 'utf8');
+// Impuls-Annotation: Wenn --impulse gegeben, als Markdown-Annotation anfuegen
+const loreEntry = userImpulse
+  ? `\n### [${timestamp}]\n> **User-Impuls:** ${userImpulse}\n\n${dialogue}\n`
+  : `\n### [${timestamp}]\n${dialogue}\n`;
+fs.appendFileSync(plotPath, loreEntry, 'utf8');
 console.log('Plot-Dialog in PLOT_LORE.md aktualisiert.');
+if (userImpulse) {
+  console.log(`  Impuls-Annotation: "${userImpulse.substring(0, 80)}${userImpulse.length > 80 ? '...' : ''}"`);
+}
 
 // ─── Determine Session Changes via Git ─────────────────────────────
 let sessionFiles = [];

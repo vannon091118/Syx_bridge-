@@ -452,3 +452,8 @@ Na gut. Der Doku-Konsolidierungs-Prozess läuft, und das erste Opfer ist der COM
 
 ### [2026-06-22 14:19:39]
 Und dann hat der User gesagt: Achte dass der Stripper nicht das nächste unsichtbare Problem verursacht weil er nicht in der richtigen Reihenfolge sitzt. Und er hatte recht. 13 plotchain-Nodes ohne arcs und lore_context — alle aus der Zeit vor dem Arc-System. Jetzt hat jeder einzelne Node von 17 seinen Handlungsbogen und seinen Kontext-Anker. Die Kette ist lückenlos.
+
+### [2026-06-22 15:23:46]
+> **User-Impuls:** Commit-Layer flexibler machen, Sidejoke-Pool organische Matches erlauben, Impulse tracken
+
+Sidejoke-Pool wurde flexibler, Impulse werden jetzt getrackt. writing_rules.json erlaubt jetzt organische Sidejoke-Integration statt exaktem Match. verify_commit_msg.js prüft jetzt auf [IMPULSE:] Token und erkennt 3+ aufeinanderfolgende Wörter aus dem Pool. get_sidejoke.js zeigt jetzt den letzten User-Impuls aus plotchain an. update_plot.js akzeptiert --impulse Parameter und schreibt user_impulse-Feld in plotchain-Node.

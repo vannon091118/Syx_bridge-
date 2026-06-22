@@ -13,9 +13,15 @@
       "no_changelogs_no_bullet_lists": true
     },
     "sidejoke_pool": {
-      "description": "First sentence must adapt a sidejoke from the pool seamlessly.",
+      "description": "First sentence must adapt a sidejoke from the pool. Titel muessen NICHT exakt mit dem Pool-Eintrag uebereinstimmen — Variationen, Umbenennungen und kreative Anpassungen sind erwuenscht. Der Pool-Eintrag ist eine Inspirationsquelle, keine Schablone. WICHTIG: Der Sidejoke muss organisch in den Commit-Text eingebettet sein, nicht als isolierter Block.",
       "required": true,
-      "pool_path": "core/scripts/commit_lore/sidejoke_pool.json"
+      "pool_path": "core/scripts/commit_lore/sidejoke_pool.json",
+      "flexibility": {
+        "exact_match_not_required": true,
+        "variation_allowed": true,
+        "creative_adaptation": "Umbenennen, kuerzen, erweitern, Kontext anpassen — Hauptsache die Seele des Sidejokes bleibt erkennbar.",
+        "organic_integration": "Der Sidejoke MUSS als organischer Teil der Commit-Message lesbar sein, nicht als losgeloesster Prefix."
+      }
     },
     "plot_documentation": {
       "description": "Dialog text must be added to the persistent PLOT_LORE.md.",
@@ -42,6 +48,16 @@
       },
       "note": "RULE 3 sagt: Der User weiss was er macht. Das user_impulse-Feld dokumentiert WARUM ein Commit entstanden ist — nicht nur WAS geaendert wurde. Die Plot-Chain wird dadurch von einer reinen Code-Aenderungs-Historie zu einer echten Entscheidungs-Historie."
     },
+    "impulse_token": {
+      "description": "Commit message must contain [IMPULSE:<user-input>] token documenting the literal (or close paraphrase) user input that triggered this commit. Der Impuls ist der AUSLOESER — nicht die Beschreibung der Aenderung.",
+      "required": true,
+      "token_format": "[IMPULSE:<user-input>]",
+      "regex": "\\[IMPULSE:(.{5,}?)\\]",
+      "min_length": 5,
+      "example": "[IMPULSE:Impuls in commit Layer vollstaendig integrieren]",
+      "note": "Enforced by verify_commit_msg.js — BLOCKED if missing or shorter than 5 chars. Der Impuls wird NICHT aus dem plotchain gelesen — er muss IMMER frisch vom Commit-Autor kommen, da er den AUSLOESENDEN User-Input dokumentiert.",
+      "relation_to_plotchain": "update_plot.js schreibt den Impuls via --impulse auch in den plotchain-Node UND als Annotation in PLOT_LORE.md. Der [IMPULSE:] Token in der Commit-Message ist die QUELLE, das plotchain-Feld ist die PERSISTENZ."
+    },
     "narrative_continuity": {
       "description": "Das Commit-Lore-System bildet eine UEBERGREIFENDE ERZAEHLUNG. Jeder Commit ist eine Kurzgeschichte mit technischer Basis die auf mindestens EINEM vergangenen Ereignis aufbaut — von gestern, vorgestern, letzter Woche oder dem ersten Tag. Kein Commit steht allein. Die Erzaehlung spannt sich ueber Tage, nicht ueber Stunden.",
       "required": true,
@@ -61,6 +77,18 @@
       "db_path": "core/scripts/commit_lore/cross_references.json",
       "enforced_by": "verify_commit_msg.js — BLOCKED wenn keine Cross-Reference im Commit-Text gefunden wird. Zeigt verfügbare Referenzen in der Fehlermeldung.",
       "auto_populated_by": "update_plot.js — fügt nach jedem Plot-Eintrag den aktuellen Commit-Hash hinzu (keine Duplikate)."
+    },
+    "commit_diversity": {
+      "description": "Commits sollen ABWECHSLUNGSREICH sein. Keine zwei Commits duerfen denselben Ton, dieselbe Struktur oder dieselbe Erzaehlformel verwenden. Jeder Commit reflektiert seinen TASK: Bugfixes klingen anders als Features, Doku-Aenderungen anders als Refactoring. Die Commit-Message soll dem Leser sofort sagen WAS passiert ist — nicht nur dass irgendetwas passiert ist.",
+      "required": false,
+      "note_enforcement": "DOKU-FLAG — Diese Regel wird NICHT von verify_commit_msg.js enforced. Sie ist eine Richtlinie fuer Commit-Autoren. Bei Verstoss: Commit geht trotzdem durch, aber die Commit-Qualitaet leidet.",
+      "rules": {
+        "no_repeating_openers": "Kein Sidejoke-Titel darf in 5 aufeinanderfolgenden Commits identisch oder nahezu identisch sein.",
+        "task_reflection": "Die Commit-Message MUSS den konkreten Task widerspiegeln: Was wurde geaendert, warum, und was bedeutet das? Generische Phrases wie 'Code updated' oder 'Bug fixed' sind verboten.",
+        "tone_variation": "Nutze verschiedene Toene aus dem Pool (euphorisch, zynisch, stolz, muede, passiv-aggressiv). Nicht zweimal hintereinander denselben Ton.",
+        "structural_variety": "Nicht jeder Commit muss 5 Absaetze haben. Manchmal reicht ein guter Absatz. Manchmal braucht es drei. Die Laenge soll dem Task entsprechen, nicht einer Regel."
+      },
+      "enforcement": "DOKU-FLAG — wird NICHT von verify_commit_msg.js oder update_plot.js enforced. Reine Richtlinie fuer Commit-Autoren. Tracking der letzten 5 Titel fuer Diversitaets-Checks ist als zukuenftige Erweiterung vorgesehen (Roadmap)."
     },
     "chain_continuity": {
       "description": "Der [REF:<id>]-Tag MUSS auf den LETZTEN Node in plotchain.json verweisen — nicht auf irgendeinen beliebigen historischen Eintrag. Die Plot-Chain ist eine KETTE: jeder Commit referenziert seinen VORGÄNGER. Nur [REF:none] ist für Bootstrap (erster Eintrag einer Modell-Linie) erlaubt.",

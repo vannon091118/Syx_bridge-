@@ -93,5 +93,26 @@ if (fs.existsSync(plotLorePath)) {
   }
 }
 
+// ─── Letzter User-Impuls aus plotchain ──────────────────────────────
+const plotchainPath = path.join(__dirname, 'plotchain.json');
+if (fs.existsSync(plotchainPath)) {
+  try {
+    const plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+    // Rueckwaerts suchen: letzter Node MIT user_impulse (nicht null)
+    for (let i = plotchain.length - 1; i >= 0; i--) {
+      const node = plotchain[i];
+      if (node.user_impulse && node.user_impulse.text) {
+        console.log(`🗣️  Letzter User-Impuls: "${node.user_impulse.text}"`);
+        console.log(`   (${node.timestamp})`);
+        console.log('   Dokumentiere den AUSLOESENDEN Impuls in [IMPULSE:...] — nicht diesen hier!');
+        console.log('');
+        break;
+      }
+    }
+  } catch (e) {
+    // Kein Fehler wenn plotchain nicht lesbar — optionaler Kontext
+  }
+}
+
 console.log('Nutze dieses Template und passe es auf die aktuellen Commits/Aenderungen an.');
-console.log('Vergiss nicht: [MODEL:<name>] und [REF:<letzter-plot-node>] in der Message.');
+console.log('Vergiss nicht: [MODEL:<name>], [REF:<letzter-plot-node>] und [IMPULSE:<user-input>] in der Message.');

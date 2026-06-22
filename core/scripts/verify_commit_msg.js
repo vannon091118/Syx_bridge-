@@ -149,26 +149,42 @@ if (foundPlaceholders.length > 0) {
   process.exit(1);
 }
 
-// ─── Sidejoke Pool Check ───────────────────────────────────────────
+// ─── Sidejoke Pool Check (FLEXIBLE — Titel muessen NICHT exakt sein) ──
+// writing_rules.json: "Variationen, Umbenennungen und kreative Anpassungen
+// sind erwuenscht. Der Pool-Eintrag ist eine Inspirationsquelle, keine Schablone."
+// Pruefung: Mindestens 3 aufeinanderfolgende Woerter aus einem Pool-Eintrag
+// muessen im Commit-Text vorkommen (organische Referenz, kein exakter Match).
 if (rules.sidejoke_pool.required) {
-  const cleanMsg = commitMsg.trim();
-  const startsWithJoke = sidejokes.some(joke => {
-    let regexStr = joke
-      .replace(/[-/\\^$*+?.()|[\]{}]/g, (c) => {
-        if (c === '{' || c === '}') return c;
-        return '\\' + c;
-      })
-      .replace(/\{[A-Za-z0-9_]+\}/g, '.*');
-    
-    const regex = new RegExp('^' + regexStr, 'i');
-    return regex.test(cleanMsg);
+  const cleanMsg = commitMsg.trim().toLowerCase();
+  const MIN_MATCH_WORDS = 3;
+
+  const hasOrganicReference = sidejokes.some(joke => {
+    // Pool-Eintrag in Woerter zerlegen, Template-Variablen entfernen
+    const jokeWords = joke
+      .replace(/\{[A-Za-z0-9_]+\}/g, '')  // {FILE}, {COUNT} etc. entfernen
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(w => w.length > 3);  // Nur Woerter > 3 Zeichen (vermeidet false-positive bei kurzen Woertern)
+
+    if (jokeWords.length < MIN_MATCH_WORDS) return false;
+
+    // Pruefe ob MIN_MATCH_WORDS aufeinanderfolgende Woerter im Commit vorkommen
+    for (let i = 0; i <= jokeWords.length - MIN_MATCH_WORDS; i++) {
+      const slice = jokeWords.slice(i, i + MIN_MATCH_WORDS).join(' ');
+      if (cleanMsg.includes(slice)) return true;
+    }
+    return false;
   });
 
-  if (!startsWithJoke) {
+  if (!hasOrganicReference) {
     console.error('═══════════════════════════════════════════');
     console.error('  LORE L3 — COMMIT BLOCKED: SIDEJOKE POOL');
     console.error('═══════════════════════════════════════════');
-    console.error('Commit message MUST start with an entry from the sidejoke pool.');
+    console.error('Commit message must contain an organic reference to a sidejoke pool entry.');
+    console.error('Titel muessen NICHT exakt sein — aber mindestens 3 aufeinanderfolgende');
+    console.error('Woerter aus einem Pool-Eintrag muessen im Text vorkommen.');
+    console.error('');
+    console.error('Kreative Anpassungen, Umbenennungen und Variationen sind erwuenscht!');
     process.exit(1);
   }
 }
@@ -182,6 +198,24 @@ if (rules.model_signature.required) {
     console.error('═══════════════════════════════════════════');
     console.error('Commit message MUST contain a valid [MODEL:<model-name>] token.');
     console.error('Example: [MODEL:gemini-3.5-flash]');
+    process.exit(1);
+  }
+}
+
+// ─── User Impulse Token Check ──────────────────────────────────────
+// RULE 3 Addendum: Jeder Commit dokumentiert den User-Input der ihn ausgeloest hat.
+// Der [IMPULSE:] Token ist Pflicht — er ist die QUELLE, das plotchain user_impulse-Feld
+// ist die PERSISTENZ. Beide muessen konsistent sein.
+if (rules.impulse_token && rules.impulse_token.required) {
+  const impulseMatch = commitMsg.match(/\[IMPULSE:(.{5,}?)\]/i);
+  if (!impulseMatch) {
+    console.error('═══════════════════════════════════════════');
+    console.error('  LORE L3 — COMMIT BLOCKED: IMPULSE TAG');
+    console.error('═══════════════════════════════════════════');
+    console.error('Commit message MUST contain a valid [IMPULSE:<user-input>] token.');
+    console.error('Dokumentiere den User-Input der diesen Commit ausgeloest hat.');
+    console.error('Example: [IMPULSE:Impuls in commit Layer vollstaendig integrieren]');
+    console.error('Mindestlaenge: 5 Zeichen.');
     process.exit(1);
   }
 }

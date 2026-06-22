@@ -769,5 +769,56 @@
       "Folgeschritte der v0.21 Härtung dokumentieren."
     ],
     "dialogue_preview": "Und dann hat der User gesagt: Achte dass der Stripper nicht das nächste unsichtbare Problem verursac..."
+  },
+  {
+    "id": "plot-2026-06-22T15:23:46",
+    "parent_id": "plot-2026-06-22T14:19:39",
+    "timestamp": "2026-06-22 15:23:46",
+    "status": "active",
+    "model_id": "deepseek-v4-flash",
+    "user_impulse": {
+      "text": "Commit-Layer flexibler machen, Sidejoke-Pool organische Matches erlauben, Impulse tracken",
+      "timestamp": "2026-06-22T15:23:46",
+      "effect": null
+    },
+    "arcs": [
+      "great-cleanup"
+    ],
+    "lore_context": [
+      "2026-06-22 14:08:29",
+      "2026-06-22 14:19:39",
+      "2026-06-22 15:23:46"
+    ],
+    "session_changes": [
+      "HANGELOG.md",
+      "core/archive/docs/CHANGELOG.md",
+      "core/archive/docs/PLOT_LORE.md",
+      "core/scripts/commit_lore/get_sidejoke.js",
+      "core/scripts/commit_lore/update_plot.js",
+      "core/scripts/commit_lore/writing_rules.json",
+      "core/scripts/verify_commit_msg.js",
+      "SCOPE_REPORT.md",
+      "SQUIZZLE_REPORT.md",
+      "core/logs/",
+      "core/scripts/commit_lore/sidejoke_pool.backup.json"
+    ],
+    "variables": [
+      "HANGELOG",
+      "CHANGELOG",
+      "PLOT_LORE",
+      "get_sidejoke",
+      "update_plot",
+      "writing_rules",
+      "verify_commit_msg",
+      "SCOPE_REPORT",
+      "SQUIZZLE_REPORT",
+      "logs",
+      "sidejoke_pool.backup"
+    ],
+    "suggested_next_hooks": [
+      "Validierung der neuen L3-Lore-Kriterien im Live-Betrieb testen.",
+      "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
+    ],
+    "dialogue_preview": "Sidejoke-Pool wurde flexibler, Impulse werden jetzt getrackt. writing_rules.json erlaubt jetzt organ..."
   }
 ]
