@@ -327,9 +327,14 @@ function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = 
     `Task: Translate the following ${items.length} strings into ${targetLang}.`,
     '',
     'CRITICAL RULES:',
-    ...ctx.rules.map((r, i) => `${i + 1}. ${r}`),
-    ctx.rules.length === 0 ? '1. PRESERVE TAGS: Keep all tokens like [[0]], [[1]], etc. EXACTLY unchanged.' : '',
-    ctx.rules.length === 0 ? '2. FORMAT: Respond ONLY with a raw JSON array of strings.' : '',
+    // SHIELD-PRESERVATION-FIX: Diese Regel MUSS IMMER als erste CRITICAL RULE stehen,
+    // auch wenn das Plugin eigene Regeln liefert (z.B. songs-of-syx getPromptContext rules).
+    // Ohne diese Regel entfernt die LLM __SHLD_N__-Tokens, weil sie keinen Grund hat
+    // sie zu erhalten — sie sind in keinem bekannten Sprach-Format. Die Folge: shield_leak
+    // in der DB und unbrauchbare Übersetzungen mit korrumpierten Platzhaltern.
+    '1. PRESERVE SHIELD TOKENS: Tokens like __SHLD_0__, __SHLD_1__ MUST remain EXACTLY unchanged. Never translate, modify, or remove them.',
+    ...ctx.rules.map((r, i) => `${i + 2}. ${r}`),
+    `${ctx.rules.length + 2}. FORMAT: Respond ONLY with a raw JSON array of strings.`,
     ctx.styleGuide ? `STYLE: ${ctx.styleGuide}` : '',
     `BATCH SIZE: Your response MUST contain exactly ${items.length} elements.`,
     ''
@@ -400,8 +405,8 @@ function buildProofreadPrompt(items, targetLang = 'German', grammarContext = '',
   const proofCtx = (buildProofreadPrompt._plugin?.getPromptContext?.())
     ?? { gameName: 'Game', styleGuide: '', rules: [] };
   const consistencyNote = proofCtx.styleGuide
-    ? `2. CONSISTENCY: ${proofCtx.styleGuide}`
-    : '2. CONSISTENCY: Maintain consistent terminology and tone.';
+    ? `CONSISTENCY: ${proofCtx.styleGuide}`
+    : 'CONSISTENCY: Maintain consistent terminology and tone.';
 
   const lines = [
     `You are a senior editor for "${proofCtx.gameName}" game localizations.`,
@@ -409,9 +414,13 @@ function buildProofreadPrompt(items, targetLang = 'German', grammarContext = '',
     '',
     'INSTRUCTIONS:',
     '1. FIX: Grammar, spelling, and unnatural phrasing.',
-    consistencyNote,
-    '3. SAFETY: Only fix grammar and phrasing — do NOT add new placeholders, tags, or markup.',
-    '4. FORMAT: Respond ONLY with a JSON array of strings.',
+    // SHIELD-PRESERVATION-FIX: Muss IMMER im Proofread-Prompt stehen, weil
+    // Deep Polish die SHIELD-geschützten Texte erneut durch die LLM schickt.
+    // Ohne diese Regel entfernt die LLM __SHLD_N__-Tokens auch hier.
+    '2. PRESERVE SHIELD TOKENS: Tokens like __SHLD_0__, __SHLD_1__ MUST remain EXACTLY unchanged. Only fix grammar, never remove or modify these tokens.',
+    `3. ${consistencyNote}`,
+    '4. SAFETY: Only fix grammar and phrasing — do NOT add new placeholders, tags, or markup.',
+    '5. FORMAT: Respond ONLY with a JSON array of strings.',
     ''
   ];
 

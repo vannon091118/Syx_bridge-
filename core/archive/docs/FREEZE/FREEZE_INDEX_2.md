@@ -1,7 +1,9 @@
 # 📚 FREEZE INDEX 2 — Das Buch (Fortsetzung)
 
-> **Version:** v0.21-experimental | **Stand:** 2026-06-20
+> **Version:** v0.22.0 | **Stand:** 2026-06-22
 > **Funktion:** Fortsetzung des FREEZE_INDEX — dokumentiert den Entwicklungsprozess AB der Sinnhaftigkeitsanalyse (15 systemische Fixes).
+> **Vorgänger:** `FREEZE_INDEX.md` (142 Einträge, 16.06.–20.06.2026, archiviert).
+> **Gesamt:** FREEZE_INDEX (142) + FREEZE_INDEX_2 (85+) = **227+ Buch-Einträge**
 > **Vorgänger:** `FREEZE_INDEX_v0.20.0_archived.md` — 142 Glossary-Einträge, 33 Sektionen, gesamter Entwicklungsprozess 16.06.–20.06.2026.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
 > **Archivstand:** FREEZE_INDEX_v0.20.0.md wurde am 2026-06-20 als abgeschlossen archiviert. Dieses Dokument (FREEZE_INDEX_2) setzt die Indexierung ab Commit `9a853ef` fort.

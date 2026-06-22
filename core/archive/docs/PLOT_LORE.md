@@ -517,3 +517,8 @@ Bulk Commit der vorherigen Session: OVERWRITE-Critical-Fix, _Info-File-Fix, DB-T
 > **User-Impuls:** teile die commits auf auch die die bis jetzt nicht in commits ermittelt werden können nachträglich nicht alles auf einmal
 
 Doku+Lore Nachzug aus vorheriger Session. Reports und Dokumentation die in der Bulk-Code-Session nicht committed wurden. SQUIZZLE_REPORT.md mit aktualisierten v0.22-Status-Markierungen. KNOWN_BUGS_REPORT.md mit BU-OVERWRITE-2026-06-22. PREFLIGHT_LATEST.md mit auto-repaired-Status. BUGREPORT_OVERWRITE_CRIT_2026-06-22.md als Critical-Bug-Doku. PROTOTYPE_COMPARISON_2026-06-22.md als Feature-Comparison. cross_references.json mit Lore-Referenzen. sidejoke_pool.backup.json als Sicherung. logs/ als Betriebs-Logs.
+
+### [2026-06-22 21:41:21]
+> **User-Impuls:** User-Auftrag: Vollstaendigen Commit aller uncommitted Changes erstellen (CHANGELOG-Split, Language-Tag, Credit, SHIELD-Fix, Doku-Konsolidierung)
+
+CHANGELOG-Split: Doku-Konsolidierung + Language-Tag + SHIELD-Fix + Translation-Credit — v0.22.0 Doku komplett nachgezogen.

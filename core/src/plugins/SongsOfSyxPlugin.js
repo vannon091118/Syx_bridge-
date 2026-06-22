@@ -79,11 +79,7 @@ class SongsOfSyxPlugin extends GamePlugin {
   }
 
   getCoreModMetadata(sosMajorVersion) {
-    let bridgeVersion = '0.0.0';
-    try {
-      const pkg = require('../../package.json');
-      bridgeVersion = pkg.releaseVersion || pkg.version;
-    } catch (e) { /* fallback */ }
+    const bridgeVersion = this.getBridgeVersion();
     return this.formatMetadata({
       VERSION: '1.0.0',
       GAME_VERSION_MAJOR: sosMajorVersion,
@@ -96,11 +92,17 @@ class SongsOfSyxPlugin extends GamePlugin {
   }
 
   applyPatchModifications(infoObj, targetLanguage) {
-    // I1-Fix: patchNotice parameter entfernt — wurde nie vom Caller (runtime-ops.js) übergeben
-    const patchSuffix = ` (${targetLanguage} Patch)`;
+    // LANGUAGE-TAG: Name bekommt Sprach-Tag (z.B. "DEUTSCH") statt " (Deutsch Patch)".
+    // SoS zeigt diesen Namen im Launcher an — der Tag macht auf Anhieb sichtbar
+    // welche Sprache diese Mod-Patch-Version enthält.
+    const langTag = targetLanguage.toUpperCase();
     const currentName = infoObj.NAME || 'BridgePatch';
-    if (!currentName.endsWith(patchSuffix)) {
-      infoObj.NAME = `${currentName}${patchSuffix}`;
+    if (!currentName.endsWith(langTag)) {
+      infoObj.NAME = `${currentName} ${langTag}`;
+    }
+    // Translation-Credit in INFO-Feld: erscheint im Spiel im Mod-Tooltip.
+    if (!infoObj.INFO) {
+      infoObj.INFO = this.getTranslationCredit();
     }
     const notice = this.formatPatchNotice(targetLanguage);
     infoObj.DESC = (infoObj.DESC ? infoObj.DESC + String.fromCharCode(10) + String.fromCharCode(10) : '') + notice;
@@ -126,7 +128,28 @@ class SongsOfSyxPlugin extends GamePlugin {
   }
 
   formatPatchNotice(targetLanguage) {
-    return `--- ${targetLanguage.toUpperCase()} PATCH ---\nDiese Mod wurde automatisch auf ${targetLanguage} uebersetzt. Nutze die Syx-Bridge GUI zum Anpassen.`;
+    return `--- ${targetLanguage.toUpperCase()} PATCH (SyxBridge) ---\nUebersetzt von Vannon mit SyxBridge v${this.getBridgeVersion()}. Bei Fehlern: SyxBridge neu starten und VOLL-AUTO SYNC ausfuehren.`;
+  }
+
+  /**
+   * Liest die aktuelle SyxBridge-Version aus package.json.
+   */
+  getBridgeVersion() {
+    try {
+      const pkg = require('../../package.json');
+      return pkg.releaseVersion || pkg.version;
+    } catch (e) {
+      return '0.0.0';
+    }
+  }
+
+  /**
+   * Translation-Credit-Text für das INFO-Feld in _Info.txt.
+   * Single-Source-of-Truth: wird von applyPatchModifications() und
+   * runtime-ops.js (Native Mode) aufgerufen.
+   */
+  getTranslationCredit() {
+    return 'Translation by Vannon with SyxBridge';
   }
 
   getParserFormat(filePath) {

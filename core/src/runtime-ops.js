@@ -293,6 +293,16 @@ function createRuntimeOps(options) {
       if (!updatedInfo.NAME) updatedInfo.NAME = modName;
       if (!config.NATIVE_MODE) {
         gameAdapter.applyPatchModifications(updatedInfo, config.TARGET_LANG);
+      } else {
+        // Native Mode: applyPatchModifications wird übersprungen, aber Language-Tag
+        // und Translation-Credit sollen trotzdem gesetzt werden.
+        const langTag = config.TARGET_LANG.toUpperCase();
+        if (!updatedInfo.NAME.endsWith(langTag)) {
+          updatedInfo.NAME = `${updatedInfo.NAME} ${langTag}`;
+        }
+        if (!updatedInfo.INFO) {
+          updatedInfo.INFO = gameAdapter.getTranslationCredit();
+        }
       }
       updatedInfo.AUTHOR = info.AUTHOR || 'syx-bridge';
       if (!updatedInfo.VERSION) updatedInfo.VERSION = '1.0.0';

@@ -1,15 +1,13 @@
 # 📚 FREEZE INDEX — Das Buch [ARCHIVIERT 2026-06-20]
 
-> ⚠️ **ARCHIVIERT:** Dieses Dokument wurde am 2026-06-20 abgeschlossen und archiviert.
-> **Fortsetzung:** `FREEZE_INDEX_2.md` — indexiert die Entwicklung AB der Sinnhaftigkeitsanalyse (15 systemische Fixes, Commit `9a853ef`).
+> ⚠️ **ARCHIVIERT** (2026-06-20) — Historische Entwicklung 16.06.–20.06.2026.
+> **Aktive Fortsetzung:** [`FREEZE_INDEX_2.md`](FREEZE_INDEX_2.md) — Entwicklung AB Sinnhaftigkeitsanalyse (Commit `9a853ef`).
 > **Archivkopie:** `FREEZE_INDEX_v0.20.0_archived.md`
+> **CHANGELOG:** [`CHANGELOG.md`](../../CHANGELOG.md) (aktuell) · [`CHANGELOG_1.md`](../../CHANGELOG_1.md) (v0.19–v0.21 Historie)
 
-> **Version:** v0.20.0 | **Stand:** 2026-06-20
-> **Funktion:** Das EINE große, lückenlose Dokument das den GESAMTEN Entwicklungsprozess (16.06.–20.06.2026) dokumentiert.
-> Jeder gelöschte FREEZE-Eintrag wird hier als Glossary-Eintrag überführt — MIT Kausalität, Beobachtungen, Cross-Referenzen.
-> **Rekonstruierbarkeit:** Aus diesem Dokument kann der gesamte Entwicklungsprozess (16.06. – 20.06.2026) lückenlos nachvollzogen werden.
-> **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
-> **Umfang:** 44 Lösch-Kandidaten + 5 permanente Dokumente + 18 Doku-Clean Reports + 12 HANDSHAKE-19 + 11 HANDSHAKE-20 + 8 DOKU-KONSOLIDIERUNG + 5 FORENSIC_FULLSCAN + 4 REDUNDANZ_AUDIT + 5 CODE_VS_DOCS + 4 INTEGRITY_AUDIT + 3 DOKU_KONSOL_RUN2 = **119 total katalogisiert** (62 gelöscht, 5 im FREEZE/ verbleibend).
+> **Version:** v0.22.0 (archiviert: v0.20.0)
+> **Funktion:** Historisches Dokument — kompletter Entwicklungsprozess 16.06.–20.06.2026.
+> **Umfang:** **142 Glossary-Einträge**, 33 Sektionen, 119 katalogisierte Lösch-Kandidaten.
 
 ---
 

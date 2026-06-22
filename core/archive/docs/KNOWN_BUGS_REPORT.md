@@ -1,7 +1,7 @@
-# 🐛 KNOWN BUGS REPORT — SyxBridge v0.21.0-untested
+# 🐛 KNOWN BUGS REPORT — SyxBridge v0.22.0
 
 > **Typ:** Persistenter Bug-Triage-Report (fortschreiben, nicht überschreiben)
-> **Datum:** 2026-06-19 (erstellt) · 2026-06-21 (letztes Update) | **Methodik:** PHASE 0-4
+> **Datum:** 2026-06-19 (erstellt) · 2026-06-22 (letztes Update) | **Methodik:** PHASE 0-4
 > **Faktenbasis:** PREFLIGHT 2026-06-21: 2.702 Einträge, 0 issues, DB HEALTHY
 > **Grundregel:** Kein Fix in diesem Lauf — nur Finden, Beschreiben, Clustern.
 > **Archivierung:** 27 behobene Bugs → FREEZE_INDEX_2.md §16 (KB-001–KB-008, 28 Einträge).

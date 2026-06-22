@@ -1413,5 +1413,67 @@
       "Folgeschritte der v0.21 Härtung dokumentieren."
     ],
     "dialogue_preview": "Doku+Lore Nachzug aus vorheriger Session. Reports und Dokumentation die in der Bulk-Code-Session nic..."
+  },
+  {
+    "id": "plot-2026-06-22T21:41:21",
+    "parent_id": "plot-2026-06-22T20:44:44",
+    "timestamp": "2026-06-22 21:41:21",
+    "status": "active",
+    "model_id": "deepseek-v4-flash",
+    "user_impulse": {
+      "text": "User-Auftrag: Vollstaendigen Commit aller uncommitted Changes erstellen (CHANGELOG-Split, Language-Tag, Credit, SHIELD-Fix, Doku-Konsolidierung)",
+      "timestamp": "2026-06-22T21:41:21",
+      "effect": null
+    },
+    "arcs": [
+      "great-cleanup"
+    ],
+    "cross_arc_bridge": false,
+    "cross_references_used": [],
+    "lore_context": [
+      "2026-06-22 20:42:46",
+      "2026-06-22 20:44:44",
+      "2026-06-22 21:41:21"
+    ],
+    "session_changes": [
+      "HANGELOG.md",
+      "core/archive/docs/CHANGELOG.md",
+      "core/archive/docs/FREEZE/FREEZE_INDEX.md",
+      "core/archive/docs/FREEZE/FREEZE_INDEX_2.md",
+      "core/archive/docs/KNOWN_BUGS_REPORT.md",
+      "core/archive/docs/LIVE_INDEX.md",
+      "core/archive/docs/MASTER_DOC.md",
+      "core/archive/docs/PLOT_LORE.md",
+      "core/archive/docs/PREFLIGHT_LATEST.md",
+      "core/scripts/release.js",
+      "core/src/plugins/SongsOfSyxPlugin.js",
+      "core/src/runtime-ops.js",
+      "core/src/text-core.js",
+      "CHANGELOG_1.md",
+      "core/archive/docs/LANGUAGE_TAG_CREDIT_FIX_2026-06-22.md",
+      "core/logs/"
+    ],
+    "variables": [
+      "HANGELOG",
+      "CHANGELOG",
+      "FREEZE_INDEX",
+      "FREEZE_INDEX_2",
+      "KNOWN_BUGS_REPORT",
+      "LIVE_INDEX",
+      "MASTER_DOC",
+      "PLOT_LORE",
+      "PREFLIGHT_LATEST",
+      "release",
+      "SongsOfSyxPlugin",
+      "runtime-ops",
+      "text-core",
+      "CHANGELOG_1",
+      "LANGUAGE_TAG_CREDIT_FIX_2026-06-22",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "CHANGELOG-Split: Doku-Konsolidierung + Language-Tag + SHIELD-Fix + Translation-Credit — v0.22.0 Doku..."
   }
 ]

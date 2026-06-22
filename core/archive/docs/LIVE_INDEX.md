@@ -1,6 +1,6 @@
 # 📖 LIVE INDEX — SyxBridge Dokumentation
 
-> **Stand:** 2026-06-21 | **Version:** v0.21 (Reality-Check Divergenz-Fixes)
+> **Stand:** 2026-06-22 | **Version:** v0.22.0
 > **Status:** 10 LIVE + 5 FREEZE + 10 PLAN
 > **Regel:** Nur Pflicht-Dokus bleiben. Alle Einmal-Audits, HANDSHAKEs und Specs vollarchiviert.
 > **V70/V71:** Wiederhergestellt (README.md Dummy-Platzhalter + .gitkeep).

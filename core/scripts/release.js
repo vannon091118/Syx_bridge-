@@ -29,7 +29,7 @@ try {
 console.log(`\n[RELEASE] ${STAGE}\n`);
 if (fs.existsSync(STAGE_DIR)) fs.rmSync(STAGE_DIR, { recursive: true, force: true });
 if (fs.existsSync(ZIP)) fs.unlinkSync(ZIP);
-fs.mkdirSync(path.dirname(STAGE_DIR), { recursive: true });
+fs.mkdirSync(STAGE_DIR, { recursive: true });
 
 // ── 2. Copy ─────────────────────────────────────────────────────────
 const SKIP = new Set([
