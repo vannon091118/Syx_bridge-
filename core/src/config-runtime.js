@@ -172,6 +172,7 @@ function filterLLMs(models, freeOnly = false) {
 
 const { translateHttpError, PROVIDER_REGISTRY } = require('./router');
 const { setOpenRouterFreeModels, setNvidiaFreeModels, setGeminiFreeModels } = require('./router');
+const { DEFAULT_GAME } = require('./plugin-registry');
 
 function getDefaultModelForProvider(provider) {
   const reg = PROVIDER_REGISTRY[provider];
@@ -1021,7 +1022,7 @@ const PERSISTED_KEYS = [
   ['BATCH_SIZE',            (c) => firstDefined(c.BATCH_SIZE)],
   ['MAX_REVIEW_COUNT',      (c) => firstDefined(c.MAX_REVIEW_COUNT, '15')],
   ['REVIEW_RECOVERY_HOURS', (c) => firstDefined(c.REVIEW_RECOVERY_HOURS, '24')],
-  ['GAME',                  (c) => firstDefined(c.GAME, 'songs_of_syx')],
+  ['GAME',                  (c) => firstDefined(c.GAME, DEFAULT_GAME)],
 ];
 
 async function persistConfigToEnv(config) {

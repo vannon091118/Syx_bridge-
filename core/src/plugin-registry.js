@@ -9,6 +9,8 @@
 
 const SongsOfSyxPlugin = require('./plugins/SongsOfSyxPlugin');
 
+const DEFAULT_GAME = 'songs_of_syx';
+
 const PLUGIN_REGISTRY = {
   'songs_of_syx': SongsOfSyxPlugin
   // 'rimworld': RimWorldPlugin   ← example future entry
@@ -21,8 +23,8 @@ const PLUGIN_REGISTRY = {
  * @returns {GamePlugin}  Instantiated plugin
  */
 function createPlugin(gameName) {
-  const PluginClass = PLUGIN_REGISTRY[gameName] || PLUGIN_REGISTRY['songs_of_syx'];
+  const PluginClass = PLUGIN_REGISTRY[gameName] || PLUGIN_REGISTRY[DEFAULT_GAME];
   return new PluginClass();
 }
 
-module.exports = { PLUGIN_REGISTRY, createPlugin };
+module.exports = { PLUGIN_REGISTRY, createPlugin, DEFAULT_GAME };

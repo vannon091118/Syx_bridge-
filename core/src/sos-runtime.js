@@ -2,12 +2,12 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
 const os = require('os');
-const { createPlugin } = require('./plugin-registry');
+const { createPlugin, DEFAULT_GAME } = require('./plugin-registry');
 
 let _activePlugin = null;
 function getActivePlugin() {
   if (!_activePlugin) {
-    _activePlugin = createPlugin(process.env.GAME || 'songs_of_syx');
+    _activePlugin = createPlugin(process.env.GAME || DEFAULT_GAME);
   }
   return _activePlugin;
 }

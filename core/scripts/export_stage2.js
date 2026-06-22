@@ -44,8 +44,8 @@ const { getHash } = require('../src/extractor');
 const { shouldTranslate } = require('../src/text-core');
 const { validateFileSyntax, validateFileMarkers } = require('../src/validator');
 // Dynamic plugin loading via GAME env var (default: songs_of_syx)
-const { createPlugin } = require('../src/plugin-registry');
-const plugin = createPlugin(process.env.GAME || 'songs_of_syx');
+const { createPlugin, DEFAULT_GAME } = require('../src/plugin-registry');
+const plugin = createPlugin(process.env.GAME || DEFAULT_GAME);
 const { getActiveMods, syncLauncherSettings, parseSoSConfig, stringifySoSConfig, SETTINGS_PATH } = require('../src/sos-runtime');
 
 let dbRW;  // lazy-init DB-Write-Connection für processed_files (nur bei !DRY_RUN)

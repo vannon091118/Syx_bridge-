@@ -944,5 +944,49 @@
       "Folgeschritte der v0.21 Härtung dokumentieren."
     ],
     "dialogue_preview": "S-003 dispatcher classifzPath Fix: activePlugin wird von index.js durch translation-runtime.js bis i..."
+  },
+  {
+    "id": "plot-2026-06-22T15:55:46",
+    "parent_id": "plot-2026-06-22T15:48:52",
+    "timestamp": "2026-06-22 15:55:46",
+    "status": "active",
+    "model_id": "deepseek-v4-flash",
+    "user_impulse": {
+      "text": "C-002 DEFAULT_GAME zentralisieren - 'songs_of_syx' Hardcodes durch zentrale Konstante ersetzen",
+      "timestamp": "2026-06-22T15:55:46",
+      "effect": null
+    },
+    "arcs": [
+      "great-cleanup"
+    ],
+    "lore_context": [
+      "2026-06-22 15:32:39",
+      "2026-06-22 15:48:52",
+      "2026-06-22 15:55:46"
+    ],
+    "session_changes": [
+      "ore/archive/docs/PLOT_LORE.md",
+      "core/index.js",
+      "core/scripts/export_stage2.js",
+      "core/src/config-runtime.js",
+      "core/src/plugin-registry.js",
+      "core/src/sos-runtime.js",
+      "core/logs/",
+      "core/scripts/commit_lore/sidejoke_pool.backup.json"
+    ],
+    "variables": [
+      "PLOT_LORE",
+      "index",
+      "export_stage2",
+      "config-runtime",
+      "plugin-registry",
+      "sos-runtime",
+      "logs",
+      "sidejoke_pool.backup"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "C-002: DEFAULT_GAME zentralisiert. Bisher war 'songs_of_syx' an 6 Stellen hardcodiert (index.js, sos..."
   }
 ]

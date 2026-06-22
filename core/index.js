@@ -18,7 +18,7 @@ const { createRuntimeOps } = require('./src/runtime-ops');
 // plugin-registry: Dynamic plugin loading via GAME config flag.
 // Replaces hardcoded `new SongsOfSyxPlugin()` with `createPlugin(CONFIG.GAME)`.
 // Default is 'songs_of_syx' — backward compatible. New games register in plugin-registry.js.
-const { createPlugin } = require('./src/plugin-registry');
+const { createPlugin, DEFAULT_GAME } = require('./src/plugin-registry');
 const { createTranslationRuntime } = require('./src/translation-runtime');
 const { 
   ConfigRuntime, 
@@ -90,7 +90,7 @@ let translationRuntime;
 // BU-002: Single game-authority — the plugin IS the adapter. runtime-ops.js,
 // planner.js, and parser.js consume this through the GameAdapter interface,
 // while buildBatchPrompt / serializer hooks use it through the GamePlugin.
-let activePlugin = createPlugin(envFirst('GAME') || 'songs_of_syx');
+let activePlugin = createPlugin(envFirst('GAME') || DEFAULT_GAME);
 let gameAdapter = activePlugin;
 // Wire plugin into buildBatchPrompt for game-specific LLM prompts
 buildBatchPrompt._plugin = activePlugin;
@@ -110,7 +110,7 @@ const DEFAULT_GAME_MOD_ROOT = process.platform === 'win32'
 
 // Configuration
 let CONFIG = {
-  GAME: envFirst('GAME') || 'songs_of_syx',
+  GAME: envFirst('GAME') || DEFAULT_GAME,
   MOD_ROOT: envFirst('MOD_PATH', 'MOD_ROOT') || 'C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\1162750',
   GAME_MOD_ROOT: envFirst('OUTPUT_PATH', 'GAME_MOD_ROOT') || DEFAULT_GAME_MOD_ROOT,
   PATCH_ROOT: path.join(__dirname, 'patches'),

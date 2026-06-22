@@ -472,3 +472,8 @@ SCOPE_REPORT.md und SQUIZZLE_REPORT.md sind die finalen Ergebnisse des v0.22 Squ
 > **User-Impuls:** S-003 dispatcher classifyPath fix - plugin durchreichen für game-spezifische Path-Rules
 
 S-003 dispatcher classifzPath Fix: activePlugin wird von index.js durch translation-runtime.js bis in dispatcher.js durchgereicht, damit classifyPath() die game-spezifischen Path-Rules aus SongsOfSyxPlugin.getPathRules() anwenden kann. Room/ und tech/ Pfade werden jetzt korrekt als 'ui_string' klassifiziert statt als 'translate', was die Routing-Entscheidung beeinflusst (billigere Provider fuer UI-Strings). FREEZE_INDEX_2.md um Sektion 25 ergaenzt (3 Doku-Commits). PLAN_MASTER.md um SCOPE_REPORT.md als Sub-Plan ergaenzt.
+
+### [2026-06-22 15:55:46]
+> **User-Impuls:** C-002 DEFAULT_GAME zentralisieren - 'songs_of_syx' Hardcodes durch zentrale Konstante ersetzen
+
+C-002: DEFAULT_GAME zentralisiert. Bisher war 'songs_of_syx' an 6 Stellen hardcodiert (index.js, sos-runtime.js, export_stage2.js, config-runtime.js, plugin-registry.js). Jetzt lebt die Konstante ausschliesslich in plugin-registry.js und wird von allen Consumern importiert. Langfristige Falsifikation: Wenn ein neues Spiel registriert wird (z.B. RimWorld), reicht DEFAULT_GAME = 'rimworld' an EINER Stelle. Kein Suchen nach Hardcodes mehr.
