@@ -457,3 +457,8 @@ Und dann hat der User gesagt: Achte dass der Stripper nicht das nächste unsicht
 > **User-Impuls:** Commit-Layer flexibler machen, Sidejoke-Pool organische Matches erlauben, Impulse tracken
 
 Sidejoke-Pool wurde flexibler, Impulse werden jetzt getrackt. writing_rules.json erlaubt jetzt organische Sidejoke-Integration statt exaktem Match. verify_commit_msg.js prüft jetzt auf [IMPULSE:] Token und erkennt 3+ aufeinanderfolgende Wörter aus dem Pool. get_sidejoke.js zeigt jetzt den letzten User-Impuls aus plotchain an. update_plot.js akzeptiert --impulse Parameter und schreibt user_impulse-Feld in plotchain-Node.
+
+### [2026-06-22 15:28:16]
+> **User-Impuls:** CHANGELOG SSOT-Sync — Root und Archive auf identischen Stand bringen nach SQUIZZLE-Audit
+
+CHANGELOG.md (Root) und core/archive/docs/CHANGELOG.md waren seit dem SQUIZZLE-Audit nicht mehr synchron. Das Root-Changelog hatte den SQUIZZLE-REPORT-Eintrag, das Archive-Changelog war die alte Vollversion. Fix: Beide auf denselben Stand gebracht -- Root = Archive = konsolidierte Zusammenfassung mit Verweisen auf die Vollhistorie im Archive. SSOT wiederhergestellt.

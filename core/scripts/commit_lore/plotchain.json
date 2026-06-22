@@ -820,5 +820,47 @@
       "Dokumenten-Abgleich der ausgelagerten Schreibregeln."
     ],
     "dialogue_preview": "Sidejoke-Pool wurde flexibler, Impulse werden jetzt getrackt. writing_rules.json erlaubt jetzt organ..."
+  },
+  {
+    "id": "plot-2026-06-22T15:28:16",
+    "parent_id": "plot-2026-06-22T15:23:46",
+    "timestamp": "2026-06-22 15:28:16",
+    "status": "active",
+    "model_id": "deepseek-v4-flash",
+    "user_impulse": {
+      "text": "CHANGELOG SSOT-Sync — Root und Archive auf identischen Stand bringen nach SQUIZZLE-Audit",
+      "timestamp": "2026-06-22T15:28:16",
+      "effect": null
+    },
+    "arcs": [
+      "great-cleanup"
+    ],
+    "lore_context": [
+      "2026-06-22 14:19:39",
+      "2026-06-22 15:23:46",
+      "2026-06-22 15:28:16"
+    ],
+    "session_changes": [
+      "HANGELOG.md",
+      "core/archive/docs/CHANGELOG.md",
+      "core/archive/docs/PLOT_LORE.md",
+      "SCOPE_REPORT.md",
+      "SQUIZZLE_REPORT.md",
+      "core/logs/",
+      "core/scripts/commit_lore/sidejoke_pool.backup.json"
+    ],
+    "variables": [
+      "HANGELOG",
+      "CHANGELOG",
+      "PLOT_LORE",
+      "SCOPE_REPORT",
+      "SQUIZZLE_REPORT",
+      "logs",
+      "sidejoke_pool.backup"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "CHANGELOG.md (Root) und core/archive/docs/CHANGELOG.md waren seit dem SQUIZZLE-Audit nicht mehr sync..."
   }
 ]

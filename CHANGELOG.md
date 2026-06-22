@@ -5,6 +5,32 @@
 
 ---
 
+## [SQUIZZLE-REPORT] — 2026-06-22 — v0.22 Audit abgeschlossen (6 Schritte, sequenziell)
+
+Vollständiger Repo-Audit im Squizzle-Modus: Doku-Scan, CHANGELOG-Check, Plan-Präzisierung (Gemini), SoS-Pipeline-Status, Code-Pattern-Review, Scope-Finalisierung.
+
+### Ergebnisse
+- **40 Doku-Dateien** inventarisiert (~12.800 Zeilen)
+- **2 SSOT-Verletzungen** behoben (AGENTS.md + CHANGELOG.md Root≠Archive → synchronisiert)
+- **17 Items** in SCOPE_REPORT + PLAN_PLAN_AUDIT konsolidiert, 3 Überschneidungen
+- **v0.22 Scope definiert**: SoS-Finalisierung (~4h), RimWorld → v0.23 (~16h)
+- **35/35 Module** Syntax-OK, 295 Funktionen, 9 Provider, 7 Klassen
+- **4 Redundanz-Patterns** identifiziert (SoS-Hardcodes, V71-Hardcodes, Watermark-Strip, escape-Funktionen)
+- **0 Layer-Trennungs-Verletzungen** (L1→L3, L2→L3, L4→L1 sauber)
+
+### v0.22 Minimum-Scope (7 Items, ~4h)
+1. S-003: dispatcher classifyPath fix (0.5h)
+2. C-002: zentraler DEFAULT_GAME (0.5h)
+3. C-004: escapeText Re-Export entfernen (0.25h)
+4. C-005: Watermark-Strip Helper (0.5h)
+5. L-4: Auto-Pre-Fix-Snapshot (1h)
+6. L-5: Auto-Pre-Release-Check (1h)
+7. SSOT-Verletzungen (0.25h) ✅ DONE
+
+→ Vollständiger Report: [`SQUIZZLE_REPORT.md`](SQUIZZLE_REPORT.md)
+
+---
+
 ## [COMMIT-LAYER-REWRITE] - 2026-06-22 — Commit-Infrastruktur überarbeitet + Broken-Entry-Repair
 
 7 Schritte, 25 atomare Aufgaben, 6 Verifikationschecks. Die Commit-Layer-Infrastruktur (verify_commit_msg.js, update_plot.js, get_sidejoke.js, build_pool.js, writing_rules.json) wurde vollständig überarbeitet. Zusätzlich wurden 11 kaputte plotchain-Nodes und 7 kaputte PLOT_LORE-Einträge repariert, die durch fehlerhafte `update_plot.js`-Aufrufe entstanden waren (Flags als erstes Argument statt Dialog-Text).
