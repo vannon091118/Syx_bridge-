@@ -375,3 +375,12 @@ Runtime Score Dashboard + PLAN_MASTER Cleanup + Release-Härtung + README-Update
 
 ### [2026-06-22 08:20:10]
 --model=mimo-v2.5-pro
+
+### [2026-06-22 09:41:02]
+--help
+
+### [2026-06-22 09:43:55]
+--model=deepseek-v4-pro
+
+### [2026-06-22 11:01:29]
+### [2026-06-22 12:45] — Item 4: Fuenf Gespenster im Code\n\n**Buffy:** *(liest client-factory.js)* callGroqBatch. callOpenRouterBatch. callNvidiaBatch. callFcmBatch. callPlayer2Batch. Fuenf Funktionen. Alle Delegatoren — sie rufen callChatCompletions auf und geben das Ergebnis zurueck. Das ist alles was sie tun.\n\n**Basher:** Code-Scan zeigt: null externe Caller. Nirgends. Die Funktionen existieren nur in client-factory.js selbst und in INDEX.md.\n\n**Buffy:** Fuenf Gespenster. Sie existieren, aber niemand ruft sie. Sie werden exportiert, aber niemand importiert sie. Sie sind... toter Code. Seit wann?\n\n**Basher:**  — callNvidiaBatch und callFcmBatch kamen mit CL:0.19.7 rein. Vor zwei Wochen.\n\n**Buffy:** Zwei Wochen haben diese Wrapper ueberlebt. Niemand hat sie gebraucht. Niemand hat sie vermisst. Und callProvider — der zentrale Dispatcher — existiert direkt daneben und macht genau dasselbe: dispatch an callChatCompletions. Aber mit EINER Funktion statt fuenf.\n\n**Vannon:** Entfern sie.\n\n**Buffy:** *(ein str_replace, fuenf Funktionen weg, Exports gesaeubert)* Fertig. INDEX.md nachgezogen. CHANGELOG aktualisiert. Junk-Check: null Restreferenzen. Die Gespenster sind exorziert.\n\n**Basher:**  — PASS. Commit durch.

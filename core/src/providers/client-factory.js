@@ -21,6 +21,59 @@ function createProviderClients(ctx) {
   // so axios gracefully ignores the missing signal instead of throwing TypeError.
   const safeSignal = () => getAbortSignal ? getAbortSignal() : undefined;
 
+  // ── Item 4: Provider-Chat-Config ───────────────────────────────────
+  // Zentrale Konfiguration für alle OpenAI-kompatiblen Provider.
+  // callChatCompletions() nutzt diese Map für URL, Timeout, Auth, Retry-Verhalten.
+  const PROVIDER_CHAT_CONFIG = {
+    groq: {
+      getUrl: () => 'https://api.groq.com/openai/v1/chat/completions',
+      timeout: 60000,
+      requiresKey: true,
+      authType: 'bearer',
+      handleRateLimits: true,
+      markKeyStatus: true,
+      jsonRetry: true
+    },
+    openrouter: {
+      getUrl: () => 'https://openrouter.ai/api/v1/chat/completions',
+      timeout: 60000,
+      requiresKey: true,
+      authType: 'bearer',
+      extraHeaders: { 'HTTP-Referer': 'https://github.com/vannon/syx-bridge' },
+      handleRateLimits: true,
+      markKeyStatus: true,
+      jsonRetry: true
+    },
+    nvidia: {
+      getUrl: () => 'https://integrate.api.nvidia.com/v1/chat/completions',
+      timeout: 90000,
+      requiresKey: true,
+      authType: 'bearer',
+      handleRateLimits: true,
+      markKeyStatus: true,
+      jsonRetry: true
+    },
+    fcm: {
+      getUrl: () => `${config.FCM_URL || 'http://localhost:19280/v1'}/chat/completions`,
+      timeout: 90000,
+      requiresKey: false,
+      authType: 'none',
+      handleRateLimits: false,
+      markKeyStatus: true,
+      jsonRetry: true,
+      noKeyRotation: true
+    },
+    player2: {
+      getUrl: () => `${config.PLAYER2_URL}/chat/completions`,
+      timeout: 60000,
+      requiresKey: false,
+      authType: 'bearer-optional',
+      handleRateLimits: false,
+      markKeyStatus: false,
+      jsonRetry: false
+    }
+  };
+
   // P0-1 DEFENSE-IN-DEPTH: Strip invisible Unicode watermarks (ZWSP/ZWNJ)
   // alongside whitespace normalization. This is the last line of defense —
   // isLikelyTargetLanguageText(), scoreTranslationQuality(), inferFlagReason(),
@@ -32,6 +85,14 @@ function createProviderClients(ctx) {
   function normalizeWhitespace(text) {
     return String(text || '').replace(/[\u200B\u200C]/g, '').replace(/\s+/g, ' ').trim();
   }
+
+  // ── Item 0e: Adaptive Batch-Größen ─────────────────────────────────
+  // Multiplikatoren pro Provider — passen Batch-Größen dynamisch an
+  // die tatsächliche Rate-Limit-Situation an (statt hartcodierter Werte).
+  // Range: [0.25, 1.0]. Start bei 1.0 (= hartcodiertes Maximum).
+  // Shrink: Halbierung bei 429, -0.2 wenn remaining < 20%.
+  // Recovery: +0.1 bei remaining > 80%, +0.05 bei erfolgreichem Call ohne Limit-Info.
+  const batchMultipliers = {};
 
   function buildGeminiSchema(expectedCount, mode = 'text') {
     const itemType = mode === 'flags' ? 'boolean' : 'string';
@@ -67,51 +128,63 @@ function createProviderClients(ctx) {
     const isLite  = name.includes('lite') || name.includes('flash') || name.includes('instant') || name.includes('8b') || name.includes('3b');
     const isLarge = name.includes('70b') || name.includes('pro') || name.includes('sonnet') || name.includes('opus') || name.includes('405b');
 
+    // ── Item 0e: Lokale Provider ohne Rate-Limits → sofortiger Return ──
     if (provider === 'google_free') return { maxItems: 8,  maxChars: 1200 };
     if (provider === 'ollama')      return { maxItems: mode === 'polish' ? 8  : 12, maxChars: 1800 };
     if (provider === 'argos')       return { maxItems: 10, maxChars: 1500 };
-
-    // FCM: local daemon proxy — smaller batches for quality
     if (provider === 'fcm')         return { maxItems: mode === 'polish' ? 8  : 14, maxChars: 2000 };
 
-    // NVIDIA NIM: Max-Effort — smaller batches = more context per item = better quality
-    // NVIDIA NIM: Reduced limits to respect 50 TPM (tokens per minute) quota.
-    // Larger batches exhaust the quota immediately (429 → cooldown → argos fallback).
-    // Small batches spread load across minutes and stay within rate limits.
-    if (provider === 'nvidia' && isLarge) return { maxItems: mode === 'polish' ? 4 : 6, maxChars: 1500 };
-    if (provider === 'nvidia')            return { maxItems: mode === 'polish' ? 3 : 5, maxChars: 1000 };
+    // ── LLM-Provider: Basis-Profil berechnen, DANN adaptiven Multiplikator anwenden ──
+    let base;
+    if (provider === 'nvidia' && isLarge) { base = { maxItems: mode === 'polish' ? 4 : 6, maxChars: 1500 }; }
+    else if (provider === 'nvidia')       { base = { maxItems: mode === 'polish' ? 3 : 5, maxChars: 1000 }; }
+    else if (provider === 'openrouter' && isFree)  { base = { maxItems: mode === 'polish' ? 4  : 8,  maxChars: 1200 }; }
+    else if (provider === 'openrouter' && isLarge) { base = { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2800 }; }
+    else if (provider === 'openrouter')            { base = { maxItems: mode === 'polish' ? 8  : 14, maxChars: 2200 }; }
+    else if (provider === 'groq' && isLarge) { base = { maxItems: mode === 'polish' ? 6 : 9, maxChars: 1200 }; }
+    else if (provider === 'groq' && isLite)  { base = { maxItems: mode === 'polish' ? 5 : 7, maxChars: 1000 }; }
+    else if (provider === 'groq')            { base = { maxItems: mode === 'polish' ? 4 : 6, maxChars: 900 }; }
+    else if (provider === 'gemini' && isLite)  { base = { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2600 }; }
+    else if (provider === 'gemini' && isLarge) { base = { maxItems: mode === 'polish' ? 16 : 24, maxChars: 4000 }; }
+    else if (provider === 'gemini')            { base = { maxItems: mode === 'polish' ? 14 : 20, maxChars: 3000 }; }
+    else { base = { maxItems: mode === 'polish' ? 8 : 12, maxChars: 1800 }; }
 
-    // OpenRouter: conservative batches for quality
-    if (provider === 'openrouter' && isFree)  return { maxItems: mode === 'polish' ? 4  : 8,  maxChars: 1200 };
-    if (provider === 'openrouter' && isLarge) return { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2800 };
-    if (provider === 'openrouter')            return { maxItems: mode === 'polish' ? 8  : 14, maxChars: 2200 };
-
-    // Groq: TPM-Limit 6000 — Batch-Größe halbiert (2026-06-20)
-    // Bei voller Batch (18 Items × ~200 Zeichen = ~3600 Tokens Input + Output)
-    // wird das 6000 TPM-Limit schnell erreicht → 429-Dauerfeuer. Halbierte Batches
-    // verteilen die Last über mehrere Minuten und bleiben im Rate-Limit.
-    if (provider === 'groq' && isLarge) return { maxItems: mode === 'polish' ? 6 : 9, maxChars: 1200 };
-    if (provider === 'groq' && isLite)  return { maxItems: mode === 'polish' ? 5 : 7, maxChars: 1000 };
-    if (provider === 'groq')            return { maxItems: mode === 'polish' ? 4 : 6, maxChars: 900 };
-
-    // Gemini: large context window — reduce for quality
-    if (provider === 'gemini' && isLite)  return { maxItems: mode === 'polish' ? 12 : 18, maxChars: 2600 };
-    if (provider === 'gemini' && isLarge) return { maxItems: mode === 'polish' ? 16 : 24, maxChars: 4000 };
-    if (provider === 'gemini')            return { maxItems: mode === 'polish' ? 14 : 20, maxChars: 3000 };
-
-    // Generic paid provider — quality over speed
-    return { maxItems: mode === 'polish' ? 8 : 12, maxChars: 1800 };
+    // Item 0e: Adaptive Batch-Größen — wende dynamischen Multiplikator an
+    const mult = batchMultipliers[provider] || 1.0;
+    if (mult < 1.0) {
+      base = {
+        maxItems: Math.max(1, Math.floor(base.maxItems * mult)),
+        maxChars: Math.max(200, Math.floor(base.maxChars * mult))
+      };
+    }
+    return base;
   }
 
   function handleRateLimits(provider, headers) {
     if (!headers) return;
     const remainingTokens = parseInt(headers['x-ratelimit-remaining-tokens'] || headers['ratelimit-remaining-tokens'] || '999999', 10);
     const remainingRequests = parseInt(headers['x-ratelimit-remaining-requests'] || headers['ratelimit-remaining-requests'] || '999999', 10);
+    const limitTokens = parseInt(headers['x-ratelimit-limit-tokens'] || headers['ratelimit-limit-tokens'] || '0', 10);
     
     // Update health stats
     if (configRuntime && configRuntime.updateProviderRateLimit) {
       configRuntime.updateProviderRateLimit(provider, remainingTokens < 200 || remainingRequests < 1);
     }
+
+    // Item 0e: Adaptive Batch-Größen — passe Multiplikator an Rate-Limit-Status an
+    let mult = batchMultipliers[provider] || 1.0;
+    if (limitTokens > 0) {
+      const ratio = remainingTokens / limitTokens;
+      if (ratio < 0.2) {
+        mult = Math.max(0.25, mult - 0.2);
+      } else if (ratio > 0.8) {
+        mult = Math.min(1.0, mult + 0.1);
+      }
+    } else {
+      // Keine Limit-Info im Header — sanfte Recovery bei Erfolg
+      mult = Math.min(1.0, mult + 0.05);
+    }
+    batchMultipliers[provider] = mult;
 
     if (remainingTokens < 2000 || remainingRequests < 2) {
       console.log(`[QUOTA] ${provider} Limit fast erreicht (Tokens: ${remainingTokens}, Req: ${remainingRequests}). Rotiere Key...`);
@@ -122,6 +195,122 @@ function createProviderClients(ctx) {
       }
       rotateApiKey(provider);
     }
+  }
+
+  // ── Item 4: callChatCompletions — generisch für alle OpenAI-kompatiblen Provider ──
+  async function callChatCompletions(provider, items, modelOverride = '', attemptCount = 0) {
+    const pc = PROVIDER_CHAT_CONFIG[provider];
+    if (!pc) throw new Error(`Nicht unterstuetzter Chat-Provider: ${provider}`);
+
+    const key = getApiKey(provider);
+    if (pc.requiresKey && !key) throw new Error(`${provider} API Key fehlt.`);
+
+    const model = getModelForProvider(provider, modelOverride);
+    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
+
+    const headers = { 'Content-Type': 'application/json' };
+    if ((pc.authType === 'bearer' || pc.authType === 'bearer-optional') && key) {
+      headers.Authorization = `Bearer ${key}`;
+    }
+    if (pc.extraHeaders) Object.assign(headers, pc.extraHeaders);
+
+    const payload = {
+      model,
+      messages: [
+        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.1
+    };
+
+    logPayload(provider, 'REQUEST', payload);
+    const url = pc.getUrl();
+
+    try {
+      const response = await withRetry(`${provider} Batch`, () => axios.post(url, payload, {
+        headers,
+        timeout: pc.timeout,
+        signal: getAbortSignal()
+      }));
+
+      if (pc.handleRateLimits) handleRateLimits(provider, response.headers);
+      if (pc.markKeyStatus && configRuntime) configRuntime.markKeyStatus(provider, true);
+
+      const raw = response.data.choices?.[0]?.message?.content ?? null;
+      if (!raw) throw new Error(`${provider} returned no message content.`);
+      logPayload(provider, 'RESPONSE', raw);
+      let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+
+      // JSON-Retry: some providers return markdown/truncated JSON
+      if (pc.jsonRetry && parsed.length !== items.length) {
+        console.warn(`[${provider.toUpperCase()}] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
+        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
+        const strictPayload = {
+          model,
+          messages: [
+            { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
+            { role: 'user', content: strictPrompt.prompt }
+          ],
+          temperature: 0.1
+        };
+        try {
+          const retryResp = await withRetry(`${provider} Batch (JSON-Retry)`, () => axios.post(url, strictPayload, {
+            headers,
+            timeout: pc.timeout,
+            signal: getAbortSignal()
+          }));
+          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
+          if (retryRaw) {
+            logPayload(provider, 'RESPONSE (Retry)', retryRaw);
+            parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
+            console.log(`[${provider.toUpperCase()}] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
+          }
+        } catch (retryErr) {
+          console.warn(`[${provider.toUpperCase()}] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
+        }
+      }
+
+      return parsed;
+    } catch (e) {
+      const status = e.response ? e.response.status : 0;
+
+      if (status === 401 || status === 403) {
+        if (pc.markKeyStatus && configRuntime) configRuntime.markKeyStatus(provider, false);
+      }
+      if (status === 429) {
+        // Item 0e: Halbiere Batch-Größe bei Rate-Limit sofort
+        batchMultipliers[provider] = Math.max(0.25, (batchMultipliers[provider] || 1.0) * 0.5);
+        if (pc.handleRateLimits && configRuntime) configRuntime.updateProviderRateLimit(provider, true);
+        const ci = (config.KEY_INDICES && config.KEY_INDICES[provider]) || 0;
+        if (pc.markKeyStatus && configRuntime && configRuntime.markKeyCooldown) {
+          configRuntime.markKeyCooldown(provider, ci, 30000);
+        }
+      }
+
+      if (!pc.noKeyRotation && (status === 429 || status === 401)) {
+        const keys = config[`${provider.toUpperCase()}_KEYS`] || [];
+        if (attemptCount < keys.length && rotateApiKey(provider)) {
+          return callChatCompletions(provider, items, modelOverride, attemptCount + 1);
+        }
+      }
+
+      throw e;
+    }
+  }
+
+  // ── Item 4: callProvider — zentraler Dispatcher für ALLE Provider ──
+  // Ersetzt callGroqBatch, callOpenRouterBatch, callNvidiaBatch, callFcmBatch,
+  // callPlayer2Batch (entfernt — waren Thin-Wrapper ohne externe Caller).
+  // Behält callGeminiBatch/callOllamaBatch als interne Implementierung.
+  async function callProvider(provider, items, modelOverride = '') {
+    if (provider === 'gemini') return callGeminiBatch(items, modelOverride);
+    if (provider === 'ollama') return callOllamaBatch(items, modelOverride);
+    // Item 4: player2-Modell-Fallback (war in callPlayer2Batch)
+    if (provider === 'player2') {
+      const effectiveModel = modelOverride || config.EFFECTIVE_PRIMARY_MODEL || config.PRIMARY_MODEL;
+      return callChatCompletions('player2', items, effectiveModel);
+    }
+    return callChatCompletions(provider, items, modelOverride);
   }
 
   async function callGeminiBatch(items, modelOverride = '', attemptCount = 0) {
@@ -144,6 +333,8 @@ function createProviderClients(ctx) {
       const status = e.response ? e.response.status : 0;
       if (status === 401 || status === 403) if (configRuntime) configRuntime.markKeyStatus('gemini', false);
       if (status === 429) {
+        // Item 0e: Halbiere Batch-Größe bei Rate-Limit sofort
+        batchMultipliers['gemini'] = Math.max(0.25, (batchMultipliers['gemini'] || 1.0) * 0.5);
         if (configRuntime) configRuntime.updateProviderRateLimit('gemini', true);
         // Mark this key as cooled so rotateApiKey() skips it
         const ci = (config.KEY_INDICES && config.KEY_INDICES.gemini) || 0;
@@ -158,154 +349,7 @@ function createProviderClients(ctx) {
     }
   }
 
-  async function callGroqBatch(items, modelOverride = '', attemptCount = 0) {
-    const keys = config.GROQ_KEYS || [];
-    const key = getApiKey('groq');
-    if (!key) throw new Error('Groq API Key fehlt.');
-    const model = getModelForProvider('groq', modelOverride);
-    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
-    const payload = {
-      model,
-      messages: [
-        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.1
-    };
-    logPayload('groq', 'REQUEST', payload);
-
-    try {
-      const response = await withRetry('Groq Batch', () => axios.post('https://api.groq.com/openai/v1/chat/completions', payload, {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        timeout: 60000,
-        signal: getAbortSignal()
-      }));
-      handleRateLimits('groq', response.headers);
-      if (configRuntime) configRuntime.markKeyStatus('groq', true);
-      const raw = response.data.choices?.[0]?.message?.content ?? null;
-      if (!raw) throw new Error('Groq returned no message content.');
-      logPayload('groq', 'RESPONSE', raw);
-      let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
-
-      // JSON-Retry: Groq free models sometimes return markdown or truncated JSON.
-      // Retry once with a stricter prompt before accepting wrong count.
-      if (parsed.length !== items.length) {
-        console.warn(`[GROQ] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
-        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
-        const strictPayload = {
-          model,
-          messages: [
-            { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
-            { role: 'user', content: strictPrompt.prompt }
-          ],
-          temperature: 0.1
-        };
-        try {
-          const retryResp = await withRetry('Groq Batch (JSON-Retry)', () => axios.post('https://api.groq.com/openai/v1/chat/completions', strictPayload, {
-            headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-            timeout: 60000,
-            signal: getAbortSignal()
-          }));
-          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
-          if (retryRaw) {
-            logPayload('groq', 'RESPONSE (Retry)', retryRaw);
-            parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
-            console.log(`[GROQ] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
-          }
-        } catch (retryErr) {
-          console.warn(`[GROQ] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
-        }
-      }
-      return parsed;
-    } catch (e) {
-      const status = e.response ? e.response.status : 0;
-      if (status === 401 || status === 403) if (configRuntime) configRuntime.markKeyStatus('groq', false);
-      if (status === 429) {
-        if (configRuntime) configRuntime.updateProviderRateLimit('groq', true);
-        const ci = (config.KEY_INDICES && config.KEY_INDICES.groq) || 0;
-        if (configRuntime && configRuntime.markKeyCooldown) configRuntime.markKeyCooldown('groq', ci, 30000);
-      }
-      if ((status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey('groq')) {
-        return callGroqBatch(items, modelOverride, attemptCount + 1);
-      }
-      throw e;
-    }
-  }
-
-  async function callOpenRouterBatch(items, modelOverride = '', attemptCount = 0) {
-    const keys = config.OPENROUTER_KEYS || [];
-    const key = getApiKey('openrouter');
-    if (!key) throw new Error('OpenRouter API Key fehlt.');
-    const model = getModelForProvider('openrouter', modelOverride);
-    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
-    const payload = {
-      model,
-      messages: [
-        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
-        { role: 'user', content: prompt }
-      ]
-    };
-    logPayload('openrouter', 'REQUEST', payload);
-
-    try {
-      const response = await withRetry('OpenRouter Batch', () => axios.post('https://openrouter.ai/api/v1/chat/completions', payload, {
-        headers: {
-          Authorization: `Bearer ${key}`,
-          'HTTP-Referer': 'https://github.com/vannon/syx-bridge',
-          'Content-Type': 'application/json'
-        },
-        timeout: 60000,
-        signal: getAbortSignal()
-      }));
-      handleRateLimits('openrouter', response.headers);
-      if (configRuntime) configRuntime.markKeyStatus('openrouter', true);
-      const raw = response.data.choices?.[0]?.message?.content ?? null;
-      if (!raw) throw new Error('OpenRouter returned no message content.');
-      logPayload('openrouter', 'RESPONSE', raw);
-      let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
-
-      // JSON-Retry: OpenRouter free models sometimes return markdown or truncated JSON.
-      // Retry once with a stricter prompt before accepting wrong count.
-      if (parsed.length !== items.length) {
-        console.warn(`[OPENROUTER] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
-        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
-        try {
-          const retryResp = await withRetry('OpenRouter Batch (JSON-Retry)', () => axios.post('https://openrouter.ai/api/v1/chat/completions', {
-            model,
-            messages: [
-              { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
-              { role: 'user', content: strictPrompt.prompt }
-            ]
-          }, {
-            headers: { Authorization: `Bearer ${key}`, 'HTTP-Referer': 'https://github.com/vannon/syx-bridge', 'Content-Type': 'application/json' },
-            timeout: 60000,
-            signal: getAbortSignal()
-          }));
-          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
-          if (retryRaw) {
-            logPayload('openrouter', 'RESPONSE (Retry)', retryRaw);
-            parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
-            console.log(`[OPENROUTER] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
-          }
-        } catch (retryErr) {
-          console.warn(`[OPENROUTER] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
-        }
-      }
-      return parsed;
-    } catch (e) {
-      const status = e.response ? e.response.status : 0;
-      if (status === 401 || status === 403) if (configRuntime) configRuntime.markKeyStatus('openrouter', false);
-      if (status === 429) {
-        if (configRuntime) configRuntime.updateProviderRateLimit('openrouter', true);
-        const ci = (config.KEY_INDICES && config.KEY_INDICES.openrouter) || 0;
-        if (configRuntime && configRuntime.markKeyCooldown) configRuntime.markKeyCooldown('openrouter', ci, 30000);
-      }
-      if ((status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey('openrouter')) {
-        return callOpenRouterBatch(items, modelOverride, attemptCount + 1);
-      }
-      throw e;
-    }
-  }
+  // Item 4: callGroqBatch + callOpenRouterBatch ENTFERNT — callProvider('groq', ...) / callProvider('openrouter', ...) nutzen.
 
   async function callArgosBatch(texts) {
     const tl = langCodes[config.TARGET_LANG] || 'de';
@@ -463,161 +507,8 @@ except Exception as e:
     }
   }
 
-  async function callPlayer2Batch(items, modelOverride = '', attemptCount = 0) {
-    const keys = config.PLAYER2_KEYS || [];
-    const key = getApiKey('player2');
-    const headers = key ? { Authorization: `Bearer ${key}` } : {};
-    const model = getModelForProvider('player2', modelOverride) || config.EFFECTIVE_PRIMARY_MODEL || config.PRIMARY_MODEL;
-    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
-    try {
-      const response = await withRetry('Player2 Batch', () => axios.post(`${config.PLAYER2_URL}/chat/completions`, {
-        model,
-        messages: [
-          { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.1
-      }, { headers, timeout: 60000, signal: getAbortSignal() }));
-      const raw = response.data.choices?.[0]?.message?.content ?? null;
-      if (!raw) throw new Error('Player2 returned no message content.');
-      return parseBatchResponseWithMaps(raw, items.length, shieldMaps);
-    } catch (e) {
-      const status = e.response ? e.response.status : 0;
-      if ((status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey('player2')) {
-        return callPlayer2Batch(items, modelOverride, attemptCount + 1);
-      }
-      throw e;
-    }
-  }
-
-  async function callNvidiaBatch(items, modelOverride = '', attemptCount = 0) {
-    const keys = config.NVIDIA_KEYS || [];
-    const key = getApiKey('nvidia');
-    if (!key) throw new Error('NVIDIA API Key fehlt.');
-    const model = getModelForProvider('nvidia', modelOverride);
-    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
-    const payload = {
-      model,
-      messages: [
-        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.1
-    };
-    logPayload('nvidia', 'REQUEST', payload);
-
-    try {
-      const response = await withRetry('NVIDIA Batch', () => axios.post('https://integrate.api.nvidia.com/v1/chat/completions', payload, {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        timeout: 90000,
-        signal: getAbortSignal()
-      }));
-      handleRateLimits('nvidia', response.headers);
-      if (configRuntime) configRuntime.markKeyStatus('nvidia', true);
-      const raw = response.data.choices?.[0]?.message?.content ?? null;
-      if (!raw) throw new Error('NVIDIA returned no message content.');
-      logPayload('nvidia', 'RESPONSE', raw);
-      let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
-
-      // JSON-Retry: NVIDIA models sometimes return markdown or truncated JSON.
-      if (parsed.length !== items.length) {
-        console.warn(`[NVIDIA] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
-        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
-        const strictPayload = {
-          model,
-          messages: [
-            { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
-            { role: 'user', content: strictPrompt.prompt }
-          ],
-          temperature: 0.1
-        };
-        try {
-          const retryResp = await withRetry('NVIDIA Batch (JSON-Retry)', () => axios.post('https://integrate.api.nvidia.com/v1/chat/completions', strictPayload, {
-            headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-            timeout: 90000,
-            signal: getAbortSignal()
-          }));
-          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
-          if (retryRaw) {
-            logPayload('nvidia', 'RESPONSE (Retry)', retryRaw);
-            parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
-            console.log(`[NVIDIA] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
-          }
-        } catch (retryErr) {
-          console.warn(`[NVIDIA] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
-        }
-      }
-      return parsed;
-    } catch (e) {
-      const status = e.response ? e.response.status : 0;
-      if (status === 401 || status === 403) if (configRuntime) configRuntime.markKeyStatus('nvidia', false);
-      if (status === 429) {
-        if (configRuntime) configRuntime.updateProviderRateLimit('nvidia', true);
-        const ci = (config.KEY_INDICES && config.KEY_INDICES.nvidia) || 0;
-        if (configRuntime && configRuntime.markKeyCooldown) configRuntime.markKeyCooldown('nvidia', ci, 30000);
-      }
-      if ((status === 429 || status === 401) && attemptCount < keys.length && rotateApiKey('nvidia')) {
-        return callNvidiaBatch(items, modelOverride, attemptCount + 1);
-      }
-      throw e;
-    }
-  }
-
-  async function callFcmBatch(items, modelOverride = '', attemptCount = 0) {
-    const fcmUrl = config.FCM_URL || 'http://localhost:19280/v1';
-    const model = getModelForProvider('fcm', modelOverride);
-    const { prompt, shieldMaps } = await buildBatchPromptForCurrentConfig(items);
-    const payload = {
-      model,
-      messages: [
-        { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. Output only JSON.` },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.1
-    };
-    logPayload('fcm', 'REQUEST', payload);
-
-    try {
-      const response = await withRetry('FCM Batch', () => axios.post(`${fcmUrl}/chat/completions`, payload, {
-        timeout: 90000,
-        signal: getAbortSignal()
-      }));
-      if (configRuntime) configRuntime.markKeyStatus('fcm', true);
-      const raw = response.data.choices?.[0]?.message?.content ?? null;
-      if (!raw) throw new Error('FCM returned no message content.');
-      logPayload('fcm', 'RESPONSE', raw);
-      const parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
-
-      // JSON-Retry: FCM routes to various free models that may return markdown
-      if (parsed.length !== items.length) {
-        console.warn(`[FCM] JSON-Parsing: ${parsed.length}/${items.length} Eintraege. Retry mit strikterem Prompt...`);
-        const strictPrompt = await buildBatchPromptForCurrentConfig(items);
-        try {
-          const retryResp = await withRetry('FCM Batch (JSON-Retry)', () => axios.post(`${fcmUrl}/chat/completions`, {
-            model,
-            messages: [
-              { role: 'system', content: `Translate to ${config.TARGET_LANG}. Keep placeholders unchanged. CRITICAL: Respond ONLY with a raw JSON array of strings. NO markdown, NO code fences, NO explanation. Just: ["result 1", "result 2"]` },
-              { role: 'user', content: strictPrompt.prompt }
-            ],
-            temperature: 0.1
-          }, { timeout: 90000, signal: getAbortSignal() }));
-          const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
-          if (retryRaw) {
-            logPayload('fcm', 'RESPONSE (Retry)', retryRaw);
-            const retryParsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
-            console.log(`[FCM] JSON-Retry: ${retryParsed.length}/${items.length} Eintraege.`);
-            return retryParsed;
-          }
-        } catch (retryErr) {
-          console.warn(`[FCM] JSON-Retry fehlgeschlagen: ${retryErr.message}. Nutze Original-Ergebnis.`);
-        }
-      }
-      return parsed;
-    } catch (e) {
-      if (configRuntime) configRuntime.markKeyStatus('fcm', false);
-      throw e;
-    }
-  }
+  // Item 4: callPlayer2Batch + callNvidiaBatch + callFcmBatch ENTFERNT —
+  // callProvider('player2', ...) / callProvider('nvidia', ...) / callProvider('fcm', ...) nutzen.
 
   async function executeStageRequest(stage, route, prompt, options = {}, attemptCount = 0) {
     const {
@@ -813,15 +704,12 @@ except Exception as e:
   return {
     normalizeWhitespace,
     getBatchProfile,
-    callGeminiBatch,
-    callGroqBatch,
-    callOpenRouterBatch,
-    callArgosBatch,
-    callGoogleTranslateFree,
-    callOllamaBatch,
-    callPlayer2Batch,
-    callNvidiaBatch,
-    callFcmBatch,
+    // Item 4: Konsolidierte Exports — nur callProvider + nicht-Chat-Provider + executeStageRequest
+    callProvider,
+    callGeminiBatch,       // intern für Gemini-spezifische generateContent-API
+    callArgosBatch,         // Offline-Übersetzung (Argos Translate via Python subprocess)
+    callGoogleTranslateFree, // Google-Translate-Free-Fallback (Einzel-Requests)
+    callOllamaBatch,        // intern für Ollama-spezifisches /api/chat-Format
     executeStageRequest
   };
 }

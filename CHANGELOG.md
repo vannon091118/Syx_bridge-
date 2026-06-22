@@ -5,6 +5,84 @@
 
 ---
 
+## [ITEM-3/9] — 2026-06-22 — rankModel() DB-gestützt statt String-Heuristik
+
+### Fix
+- `rankModel(model, provider)` von reiner Namens-Heuristik auf DB-Metriken umgestellt
+- **Alte Heuristik entfernt**: Kein +100 für 'free', +20 für 'flash', +10 für '70b', +5 für Whitelist-Match mehr
+- **Neue Logik**: Aggregiert `avg_quality` aus `model_task_metrics` über alle `task_types` pro Provider+Model-Paar
+- `setMetricsCache(snapshot)` — Modul-Level-Cache aus `getMetricsSnapshot()`, beim Startup in `index.js` gewired
+- `filterLLMs()`-Sort: `rankModel(b, 'openrouter') - rankModel(a, 'openrouter')` (mit alphabetischem Tiebreaker)
+- `enhanceModelListWithFcm()`-Sort: `rankModel(b, fb.provider)` — FCM liefert `.provider` für jedes Modell
+- Fallback: 0 wenn keine Metriken vorhanden (Cold-Start-tolerant)
+
+### 🗑️ Junk entfernt
+- ❌ `MODEL_WHITELIST` (war nur in alter rankModel-Heuristik verwendet)
+- ❌ String-Pattern-Heuristik (+100/+50/+20/+10/+5 — komplett ersatzlos gestrichen)
+
+### Files Changed
+- `core/src/config-runtime.js` — rankModel() umgebaut, setMetricsCache() neu, MODEL_WHITELIST entfernt
+- `core/index.js` — setMetricsCache Import + Wiring nach DB-Init
+
+### Tests
+- Unit-Test: groq/llama-3.1-8b = 85 (aggregiert), openrouter/nonexistent = 0 ✅
+- Syntax-Check: Beide Module laden ohne Fehler ✅
+- Code-Review: deepseek approved ✅
+
+---
+
+## [ITEM-2-Phase2] — 2026-06-22 — deepPolishBatch in model_task_metrics aufgenommen
+
+### Fix
+- `runDeepPolishBatch()`: Direkte `dbRun()`-UPDATEs → `saveTranslation()` mit echter Polish-Route (`polishRoute.provider`/`polishRoute.model`)
+- `qaPhase()`-Polish-Save: SyxBridge-interne Labels (`'ab_polish'`/`'polish_single'`/`'ab_multi'`) → echte Route-Werte aus `dispatcher.buildStageRoutePlan('polish')`
+- `saveTranslation()` ruft automatisch `recordModelTaskMetric()` auf — Metriken fließen jetzt für JEDEN Deep-Polish-Durchlauf
+- Tote Variable `polishProvider` entfernt
+
+### Nebeneffekte (alle positiv)
+- Revision-Tracking: Alte Übersetzung wird vor Deep-Polish-Update als Revision archiviert (war vorher nicht der Fall)
+- Watermark-Strip: ZWSP/ZWNJ an DB-Grenze gestrippt (P0-1 Defense-in-Depth)
+- Shield-Token-Rejection: Korrupte Deep-Polish-Ergebnisse werden abgewiesen statt gespeichert
+- Review-Count-Guard: MAX_REVIEW_COUNT-Loop-Prävention jetzt auch für Deep-Polish
+
+### Files Changed
+- `core/src/translation-runtime.js` — `runDeepPolishBatch()` + `qaPhase()` Polish-Save
+
+### Tests
+- Syntax-Check: Modul lädt ohne Fehler
+- Code-Review: deepseek approved (2 Issues gefunden, beide behoben)
+
+---
+
+## [ITEM-4] — 2026-06-22 — client-factory.js Thin-Wrapper entfernt
+
+### Fix
+- 5 tote Thin-Wrapper aus `client-factory.js` entfernt: `callGroqBatch`, `callOpenRouterBatch`, `callNvidiaBatch`, `callFcmBatch`, `callPlayer2Batch`
+- Alle 5 waren reine Delegatoren an `callChatCompletions(provider, ...)` — null externe Caller
+- `callProvider(provider, items, modelOverride)` ist jetzt der einzige Einstiegspunkt für LLM-Provider
+- `callPlayer2Batch`-Modell-Fallback (`EFFECTIVE_PRIMARY_MODEL || PRIMARY_MODEL`) in `callProvider` integriert
+- Exports: 13 → 7 (callProvider, callGeminiBatch, callArgosBatch, callGoogleTranslateFree, callOllamaBatch, executeStageRequest, + helpers)
+- `provider/INDEX.md` aktualisiert: 17 → 12 Funktionen, 820 → 750 LOC
+
+### 🗑️ Junk entfernt
+- ❌ `callGroqBatch` (Z.344) — `callProvider('groq', ...)`
+- ❌ `callOpenRouterBatch` (Z.346) — `callProvider('openrouter', ...)`
+- ❌ `callNvidiaBatch` (Z.510) — `callProvider('nvidia', ...)`
+- ❌ `callFcmBatch` (Z.512) — `callProvider('fcm', ...)`
+- ❌ `callPlayer2Batch` (Z.505) — `callProvider('player2', ...)`
+
+### Files Changed
+- `core/src/providers/client-factory.js` — 5 Wrapper entfernt, callProvider erweitert, Exports gesäubert
+- `core/src/providers/INDEX.md` — 5 Einträge entfernt, callProvider hinzugefügt, CL-Ref ergänzt
+
+### Tests
+- Syntax-Check: `createProviderClients` lädt ohne Fehler
+- Verifikation: Alle 5 entfernten Funktionen → `false`, callProvider → `true`
+- Junk-Check: 0 externe Restreferenzen (nur interne Doku-Kommentare)
+- Code-Review: deepseek approved
+
+---
+
 ## [ITEM-0b] — 2026-06-22 — isFreeModel() Provider-bewusste Free-Erkennung
 
 ### Fix

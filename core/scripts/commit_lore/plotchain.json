@@ -203,5 +203,117 @@
       "Folgeschritte der v0.21 Härtung dokumentieren."
     ],
     "dialogue_preview": "--model=mimo-v2.5-pro"
+  },
+  {
+    "id": "plot-2026-06-22T09:41:02",
+    "parent_id": "plot-2026-06-22T08:20:10",
+    "timestamp": "2026-06-22 09:41:02",
+    "status": "active",
+    "session_changes": [
+      "HANGELOG.md",
+      "core/archive/docs/FREEZE/FREEZE_INDEX_2.md",
+      "core/archive/docs/PLOT_LORE.md",
+      "core/index.js",
+      "core/src/config-runtime.js",
+      "core/src/dispatcher.js",
+      "core/src/gui/public/app.js",
+      "core/src/providers/client-factory.js",
+      "core/src/router.js",
+      "core/src/translation-runtime.js",
+      "core/archive/docs/HANDSHAKE_2026-06-22_item-0a.md",
+      "core/archive/docs/HANDSHAKE_2026-06-22_item-0b.md",
+      "core/logs/",
+      "core/tests/item0a_auto_freeze_test.js"
+    ],
+    "variables": [
+      "HANGELOG",
+      "FREEZE_INDEX_2",
+      "PLOT_LORE",
+      "index",
+      "config-runtime",
+      "dispatcher",
+      "client-factory",
+      "router",
+      "translation-runtime",
+      "HANDSHAKE_2026-06-22_item-0a",
+      "HANDSHAKE_2026-06-22_item-0b",
+      "logs",
+      "item0a_auto_freeze_test"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "--help"
+  },
+  {
+    "id": "plot-2026-06-22T09:43:55",
+    "parent_id": "plot-2026-06-22T09:41:02",
+    "timestamp": "2026-06-22 09:43:55",
+    "status": "active",
+    "session_changes": [
+      "ore/archive/docs/PLOT_LORE.md",
+      "core/scripts/commit_lore/plotchain.json",
+      "core/logs/"
+    ],
+    "variables": [
+      "PLOT_LORE",
+      "plotchain",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Folgeschritte der v0.21 Härtung dokumentieren."
+    ],
+    "dialogue_preview": "--model=deepseek-v4-pro"
+  },
+  {
+    "id": "plot-2026-06-22T11:01:29",
+    "parent_id": "plot-2026-06-22T09:43:55",
+    "timestamp": "2026-06-22 11:01:29",
+    "status": "active",
+    "session_changes": [
+      "HANGELOG.md",
+      "core/archive/docs/PLOT_LORE.md",
+      "core/archive/docs/PREFLIGHT_LATEST.md",
+      "core/index.js",
+      "core/scripts/commit_lore/plotchain.json",
+      "core/scripts/commit_lore/sidejoke_pool.json",
+      "core/scripts/release.js",
+      "core/src/config-runtime.js",
+      "core/src/db.js",
+      "core/src/dispatcher.js",
+      "core/src/plugins/GamePlugin.js",
+      "core/src/plugins/SongsOfSyxPlugin.js",
+      "core/src/providers/INDEX.md",
+      "core/src/providers/client-factory.js",
+      "core/src/router.js",
+      "core/src/translation-db.js",
+      "core/src/translation-quality.js",
+      "core/src/translation-runtime.js",
+      "core/logs/"
+    ],
+    "variables": [
+      "HANGELOG",
+      "PLOT_LORE",
+      "PREFLIGHT_LATEST",
+      "index",
+      "plotchain",
+      "sidejoke_pool",
+      "release",
+      "config-runtime",
+      "dispatcher",
+      "GamePlugin",
+      "SongsOfSyxPlugin",
+      "INDEX",
+      "client-factory",
+      "router",
+      "translation-db",
+      "translation-quality",
+      "translation-runtime",
+      "logs"
+    ],
+    "suggested_next_hooks": [
+      "Datenbank-Sanitierung auf Integrität prüfen und Altlasten beseitigen."
+    ],
+    "dialogue_preview": "### [2026-06-22 12:45] — Item 4: Fuenf Gespenster im Code\\n\\n**Buffy:** *(liest client-factory.js)* ..."
   }
 ]
