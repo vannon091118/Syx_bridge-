@@ -36,6 +36,7 @@ const compositeChainPath = path.join(__dirname, 'composite_chain.json');
 const loreArcsPath = path.join(__dirname, 'lore_arcs.json');
 const plotchainPath = path.join(__dirname, 'plotchain.json');
 const narrativeParamsPath = path.join(__dirname, 'narrative_params.json');
+const characterSheetsPath = path.join(__dirname, 'character_sheets.json');
 const plotLorePath = path.join(repoRoot, 'core/archive/docs/PLOT_LORE.md');
 
 // ─── Chain lesen → letzten Composite + Mood holen ─────────────────
@@ -102,6 +103,14 @@ let narrativeParams = null;
 if (fs.existsSync(narrativeParamsPath)) {
   try {
     narrativeParams = JSON.parse(fs.readFileSync(narrativeParamsPath, 'utf8'));
+  } catch (_) {}
+}
+
+// ─── Character Sheets laden ───────────────────────────────────────
+let characterSheets = null;
+if (fs.existsSync(characterSheetsPath)) {
+  try {
+    characterSheets = JSON.parse(fs.readFileSync(characterSheetsPath, 'utf8'));
   } catch (_) {}
 }
 
@@ -204,6 +213,45 @@ console.log(`  Mood:       ${result.mood}`);
 console.log(`  Vorheriger: ${prevMood}`);
 console.log(`  Wiederholt: ${result.mood === prevMood && prevMood !== 'genesis' ? '⚠️ JA (BUG)' : 'NEIN (garantiert)'}`);
 console.log('');
+
+// ─── Narrator-Info (NEU v0.23a) ───────────────────────────────────
+let narratorName = `n${result.n}`;
+let narratorRole = '';
+let narratorVoice = '';
+let narratorRules = null;
+
+if (characterSheets && characterSheets.characters) {
+  const nKey = String(result.n);
+  if (characterSheets.characters[nKey]) {
+    const sheet = characterSheets.characters[nKey];
+    narratorName = sheet.name;
+    narratorRole = sheet.role;
+    narratorVoice = sheet.voice_traits;
+    narratorRules = sheet.verifier_rules || null;
+  }
+}
+
+// Mood × Narrator Kombination
+let moodNarratorCombo = '';
+if (narrativeParams?.narrator_mood_combination?.examples) {
+  const comboKey = `${narratorName}+${result.mood}`;
+  moodNarratorCombo = narrativeParams.narrator_mood_combination.examples[comboKey] || '';
+}
+
+console.log('  ── Erzähler (Narrator) ──');
+console.log(`  Charakter:  ${narratorName} (${narratorRole})`);
+console.log(`  Stimme:     ${narratorVoice}`);
+console.log(`  Token:      [NARRATOR:${narratorName}]`);
+if (moodNarratorCombo) {
+  console.log(`  Mood-Kombo: ${narratorName}+${result.mood} → ${moodNarratorCombo}`);
+}
+if (narratorRules) {
+  console.log(`  Wortzahl:   ${narratorRules.min_words || 20}–${narratorRules.max_words || 500} Wörter`);
+  if (narratorRules.must_contain_regex) {
+    console.log(`  Pattern:    ${narratorRules.must_contain_regex}`);
+  }
+}
+console.log('');
 console.log('  ── Narrative Anweisung ──');
 console.log(`  Ton:        ${narrative.tone}`);
 console.log(`  Struktur:   ${narrative.structure}`);
@@ -217,6 +265,7 @@ console.log(`  Commit-Seq: c${result.c}`);
 console.log('');
 console.log('  ── Für die Commit-Message ──');
 console.log(`  [COMPOSITE:${result.composite}]`);
+console.log(`  [NARRATOR:${narratorName}]`);
 console.log(`  [MODEL:<model-name>]`);
 console.log(`  [IMPULSE:<user-input>]`);
 console.log('');

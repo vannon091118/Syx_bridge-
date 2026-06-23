@@ -70,6 +70,7 @@ class XorShift128 {
 const COMPOSITE_FORMAT = [
   { key: 'c', prefix: 'c', source: 'sequence' },
   { key: 'j', prefix: 'j', source: 'rng', poolSize: 100 },
+  { key: 'n', prefix: 'n', source: 'rng', poolSize: 4 },
   { key: 'a', prefix: 'a', source: 'rng' },
   { key: 'p', prefix: 'p', source: 'rng' }
 ];

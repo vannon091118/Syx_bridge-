@@ -13,6 +13,20 @@
     "warm"
   ],
   "mood_rule": "Mood[N] != Mood[N-1] — nie derselbe Mood zweimal hintereinander. Deterministisch enforced via selectMood().",
+  "narrator_mood_combination": {
+    "description": "Mood legt sich als Overlay ÜBER die Charakterstimme. Die Kombination bestimmt den finalen Erzählton.",
+    "rule": "Charakterstimme (aus character_sheets.json) × Mood (aus selectMood) = finaler Erzählton",
+    "examples": {
+      "Buffy+triumphierend": "Euphorische technische Präzision. Ausrufe in Großbuchstaben.",
+      "Buffy+erschöpft": "Präzise aber müde. 'Nach dem dritten Kaffee...'",
+      "Basher+sachlich": "Reine CLI-Output-Protokolle. Null Kommentar.",
+      "Basher+alarmiert": "BLOCKED in Großbuchstaben. Dringlichkeit.",
+      "Thinker+neugierig": "Entdeckungsreise. 'Was bedeutet das?'",
+      "Thinker+sarkastisch": "'Das ist... eine String-Heuristik.'",
+      "Vannon+triumphierend": "Knappes Lob. 'Gut. Weiter.'",
+      "Vannon+erschöpft": "Noch kürzer. 'Fix it.'"
+    }
+  },
   "decoding": {
     "tone": {
       "formula": "j % 10",

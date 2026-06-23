@@ -130,6 +130,20 @@ VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturier
 - **Review:** deepseek approved (ReferenceError gefixt, dead openerHint entfernt, moodPool-Passing korrigiert)
 - **Dateien:** `core/scripts/commit_lore/rng.js`, `core/scripts/commit_lore/derive_composite.js`, `core/scripts/commit_lore/narrative_params.json`, `core/scripts/commit_lore/composite_chain.json`
 
+### CL-RNG Phase 5: Charakterblatt-System — deterministische Erzähler-Auswahl
+> **Commit:** `<hash>` | **Composite:** `c31j41n2a3p1`
+
+- **character_sheets.json:** NEU. 4 Charaktere definiert — Buffy (Orchestrator, zynisch-präzise), Basher (Terminal Bot, CLI-fokussiert), Thinker (Analyse-Agent, methodisch), Vannon (Regisseur, direktiv). Jeder mit voice_traits, verifier_rules (min/max_words, must_contain_regex)
+- **rng.js:** `n`-Feld in COMPOSITE_FORMAT (poolSize:4). Composite jetzt `cXjXnXaXpX`. Narrator deterministisch via XorShift128
+- **narrative_params.json:** `narrator_mood_combination` — Mood legt sich als Overlay über die Charakterstimme. 8 Beispiel-Kombinationen (Buffy+triumphierend, Basher+sachlich, etc.)
+- **writing_rules.json:** `narrator_token` Pflichtregel. `[NARRATOR:<Name>]` muss im Commit stehen
+- **verify_commit_msg.js:** Komplett neugeschrieben. 5 kompakte Checks: Tokens → IMPULSE-Integration (Text im Körper) → Storytelling (>50% Bullets=BLOCKED, Kausalität via weil/deshalb/Grund) → Narrator (Wortzahl+Stimme) → Composite (Seed-Kette+P/A+CHANGELOG)
+- **derive_composite.js:** Narrator-Sektion in der Ausgabe: Name, Rolle, Stimme, Mood-Kombo, Wortzahl-Grenzen
+- **update_plot.js:** `--narrator` Parameter. PLOT_LORE-Einträge jetzt Monolog aus Charakter-Perspektive statt Dialog aller 4
+- **composite_chain.json:** Genesis `c0j0n0a0p0`. 30 Commits rückwirkend via backfill_chain.js eingepflegt
+- **Syntax:** 4/4 PASS. **Review:** deepseek "Ship it"
+- **Dateien:** `character_sheets.json` (NEU), `rng.js`, `narrative_params.json`, `writing_rules.json`, `verify_commit_msg.js`, `derive_composite.js`, `update_plot.js`, `composite_chain.json`, `backfill_chain.js` (NEU)
+
 ---
 
 ## [v0.22.0-GUI-UPDATE] — 2026-06-23 — GUI v0.22.0 + README Global Rewrite

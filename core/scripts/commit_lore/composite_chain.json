@@ -1,7 +1,248 @@
 {
-  "genesis_composite": "c0j0a0p0",
+  "genesis_composite": "c0j0n0a0p0",
   "genesis_mood": "genesis",
   "created": "2026-06-23",
-  "description": "Deterministische Composite-Chain. Jeder Commit schreibt Composite + Mood fort. Mood[N] != Mood[N-1] garantiert.",
-  "chain": []
+  "description": "Deterministische Composite-Chain. Jeder Commit schreibt Composite + Mood + Narrator fort. Mood[N] != Mood[N-1] garantiert. Narrator deterministisch via n-Feld (1=Buffy, 2=Basher, 3=Thinker, 4=Vannon).",
+  "chain": [
+    {
+      "seq": 1,
+      "composite": "c1j64n3a4p20",
+      "commitHash": "ce0bbe9",
+      "mood": "selbstironisch",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:51"
+    },
+    {
+      "seq": 2,
+      "composite": "c2j91n1a5p3",
+      "commitHash": "d027d95",
+      "mood": "sarkastisch",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:51"
+    },
+    {
+      "seq": 3,
+      "composite": "c3j51n2a5p10",
+      "commitHash": "96d245a",
+      "mood": "erschöpft",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:51"
+    },
+    {
+      "seq": 4,
+      "composite": "c4j37n4a4p16",
+      "commitHash": "61ae99e",
+      "mood": "alarmiert",
+      "n": 4,
+      "timestamp": "2026-06-23T20:43:51"
+    },
+    {
+      "seq": 5,
+      "composite": "c5j66n1a2p19",
+      "commitHash": "a6af87a",
+      "mood": "müde-zufrieden",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:51"
+    },
+    {
+      "seq": 6,
+      "composite": "c6j18n2a1p12",
+      "commitHash": "244bd28",
+      "mood": "trocken",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:51"
+    },
+    {
+      "seq": 7,
+      "composite": "c7j98n2a3p10",
+      "commitHash": "5137e57",
+      "mood": "warm",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 8,
+      "composite": "c8j7n1a1p9",
+      "commitHash": "da770a7",
+      "mood": "alarmiert",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 9,
+      "composite": "c9j93n3a5p7",
+      "commitHash": "c5e3cdd",
+      "mood": "triumphierend",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 10,
+      "composite": "c10j24n2a4p19",
+      "commitHash": "db030f9",
+      "mood": "selbstironisch",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 11,
+      "composite": "c11j65n1a3p7",
+      "commitHash": "c4dc58d",
+      "mood": "neugierig",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 12,
+      "composite": "c12j87n2a3p14",
+      "commitHash": "49b1657",
+      "mood": "alarmiert",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 13,
+      "composite": "c13j73n1a1p6",
+      "commitHash": "7cdfa8b",
+      "mood": "triumphierend",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 14,
+      "composite": "c14j74n3a4p20",
+      "commitHash": "5fae0ce",
+      "mood": "selbstironisch",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 15,
+      "composite": "c15j75n2a1p1",
+      "commitHash": "f774b01",
+      "mood": "neugierig",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 16,
+      "composite": "c16j27n2a3p8",
+      "commitHash": "2288dc0",
+      "mood": "alarmiert",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 17,
+      "composite": "c17j77n2a2p15",
+      "commitHash": "8862c64",
+      "mood": "trocken",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 18,
+      "composite": "c18j5n3a3p19",
+      "commitHash": "911dee4",
+      "mood": "neugierig",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 19,
+      "composite": "c19j7n4a5p18",
+      "commitHash": "8c3c0d4",
+      "mood": "alarmiert",
+      "n": 4,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 20,
+      "composite": "c20j73n3a5p1",
+      "commitHash": "50da347",
+      "mood": "triumphierend",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 21,
+      "composite": "c21j99n2a1p15",
+      "commitHash": "2967398",
+      "mood": "warm",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 22,
+      "composite": "c22j93n4a4p6",
+      "commitHash": "fd632c9",
+      "mood": "triumphierend",
+      "n": 4,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 23,
+      "composite": "c23j75n3a2p10",
+      "commitHash": "087499f",
+      "mood": "neugierig",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 24,
+      "composite": "c24j49n3a4p17",
+      "commitHash": "08866f7",
+      "mood": "warm",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 25,
+      "composite": "c25j75n1a2p13",
+      "commitHash": "054b24b",
+      "mood": "neugierig",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 26,
+      "composite": "c26j15n1a5p4",
+      "commitHash": "711e519",
+      "mood": "müde-zufrieden",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 27,
+      "composite": "c27j67n2a2p2",
+      "commitHash": "2328046",
+      "mood": "alarmiert",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 28,
+      "composite": "c28j1n2a3p13",
+      "commitHash": "67808e2",
+      "mood": "sarkastisch",
+      "n": 2,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 29,
+      "composite": "c29j84n1a5p16",
+      "commitHash": "d1db5d4",
+      "mood": "selbstironisch",
+      "n": 1,
+      "timestamp": "2026-06-23T20:43:52"
+    },
+    {
+      "seq": 30,
+      "composite": "c30j53n3a3p11",
+      "commitHash": "1a8d303",
+      "mood": "triumphierend",
+      "n": 3,
+      "timestamp": "2026-06-23T20:43:52"
+    }
+  ]
 }

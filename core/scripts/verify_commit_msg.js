@@ -2,306 +2,255 @@
 /**
  * verify_commit_msg.js — Commit-Layer Enforcer (v0.23a)
  * 
- * Sammelt ALLE fehlenden Pflichtfelder und gibt sie gebuendelt
- * in EINER Fehlermeldung aus. Keine stufige Abfrage mehr.
+ * MINIMALE CHECKS, MAXIMALES ERGEBNIS.
+ * Jeder Check deckt mehrere Qualitäts-Dimensionen gleichzeitig ab.
+ * Keine stufige Abfrage — alle Fehler gesammelt in EINER Ausgabe.
  * 
- * PFLICHT: MODEL, IMPULSE, Datei-Referenzen, Wortzahl, COMPOSITE, Seed-Kette, CHANGELOG-Anker
- * OPTIONAL: Sidejoke, Arc-Referenz
+ * CHECKS:
+ *   1. TOKENS: [NARRATOR], [MODEL], [IMPULSE], [COMPOSITE] — alle auf einmal
+ *   2. IMPULSE-INTEGRATION: Impulse-Text muss im Körper vorkommen (KEIN separates Token-only)
+ *   3. STORYTELLING: Keine Bullet-Listen (>50% = BLOCKED), Kausalität (weil/deshalb/Grund)
+ *   4. COMPOSITE: Seed-Kette + P/A-Validierung + CHANGELOG-Anker
+ *   5. CHARAKTER: Wortzahl + Sprachmuster aus character_sheets.json
  * 
- * Exit 0 = PASS
- * Exit 1 = BLOCKED
+ * Exit 0 = PASS | Exit 1 = BLOCKED
  */
 
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// ─── Git-Repo finden ──────────────────────────────────────────────
+// ─── Git-Repo + Commit-Message ────────────────────────────────────
 let repoRoot;
-try {
-  repoRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
-  process.chdir(repoRoot);
-} catch (e) {
-  console.error('BLOCKED: Git-Umgebung nicht verfuegbar.');
-  process.exit(1);
-}
+try { repoRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim(); process.chdir(repoRoot); }
+catch (_) { console.error('BLOCKED: Git-Umgebung nicht verfuegbar.'); process.exit(1); }
 
-// ─── Commit-Message lesen ──────────────────────────────────────────
-const msgPathArg = process.argv[2];
-if (!msgPathArg) {
-  console.error('BLOCKED: Keine Commit-Message-Datei angegeben.');
-  console.error('USAGE: node verify_commit_msg.js <path-to-commit-msg>');
-  process.exit(1);
-}
-
-const msgFile = path.resolve(msgPathArg);
-if (!fs.existsSync(msgFile)) {
-  console.error(`BLOCKED: Datei nicht gefunden: ${msgFile}`);
+const msgFile = path.resolve(process.argv[2] || '');
+if (!msgFile || !fs.existsSync(msgFile)) {
+  console.error('BLOCKED: Keine Commit-Message-Datei. USAGE: node verify_commit_msg.js <path>');
   process.exit(1);
 }
 
 const commitMsg = fs.readFileSync(msgFile, 'utf8');
-if (!commitMsg.trim()) {
-  console.error('BLOCKED: Commit-Message ist leer.');
-  process.exit(1);
-}
+if (!commitMsg.trim()) { console.error('BLOCKED: Commit-Message ist leer.'); process.exit(1); }
 
-// ─── RNG + Composite laden ─────────────────────────────────────────
+// ─── Abhängigkeiten laden ─────────────────────────────────────────
 const { derive, parseComposite } = require('./commit_lore/rng.js');
 
 const compositeChainPath = path.join(repoRoot, 'core/scripts/commit_lore/composite_chain.json');
-const loreArcsPath = path.join(repoRoot, 'core/scripts/commit_lore/lore_arcs.json');
-const plotchainPath = path.join(repoRoot, 'core/scripts/commit_lore/plotchain.json');
-const changelogPath = path.join(repoRoot, 'CHANGELOG.md');
-const rulesPath = path.join(repoRoot, 'core/scripts/commit_lore/writing_rules.json');
-let rules = null;
-if (fs.existsSync(rulesPath)) {
-  try {
-    rules = JSON.parse(fs.readFileSync(rulesPath, 'utf8'));
-  } catch (e) {
-    console.warn('WARN: writing_rules.json konnte nicht geparst werden.');
-  }
-}
+const loreArcsPath      = path.join(repoRoot, 'core/scripts/commit_lore/lore_arcs.json');
+const plotchainPath     = path.join(repoRoot, 'core/scripts/commit_lore/plotchain.json');
+const changelogPath     = path.join(repoRoot, 'CHANGELOG.md');
+const characterSheetsPath = path.join(repoRoot, 'core/scripts/commit_lore/character_sheets.json');
 
-const minWordsConfig = rules?.rules?.commit_diary?.min_words || {
-  STANDARD: 150,
-  'TEST-ASSET': 80,
-  TRIVIAL: 30,
-  'LORE-ONLY': 50
-};
+let characterSheets = null;
+try { if (fs.existsSync(characterSheetsPath)) characterSheets = JSON.parse(fs.readFileSync(characterSheetsPath, 'utf8')); } catch (_) {}
 
-// Composite-Pflicht aus writing_rules.json lesen (default: true)
-const compositeRequired = rules?.rules?.composite_token?.required !== false;
-
-// ─── Staged Files lesen ────────────────────────────────────────────
+// ─── Staged Files ─────────────────────────────────────────────────
 let stagedFiles = [];
-try {
-  stagedFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' })
-    .trim().split('\n').filter(Boolean);
-} catch (e) {
-  console.error('BLOCKED: Konnte staged Files nicht lesen.');
-  process.exit(1);
-}
+try { stagedFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' }).trim().split('\n').filter(Boolean); }
+catch (_) { console.error('BLOCKED: Konnte staged Files nicht lesen.'); process.exit(1); }
+if (stagedFiles.length === 0) { console.error('BLOCKED: Keine Dateien gestaged.'); process.exit(1); }
 
-if (stagedFiles.length === 0) {
-  console.error('BLOCKED: Keine Dateien fuer den Commit gestaged.');
-  process.exit(1);
-}
+// ─── Messwerte ────────────────────────────────────────────────────
+const wordCount = commitMsg.split(/\s+/).filter(Boolean).length;
+const lines = commitMsg.split('\n').filter(l => l.trim());
+const bulletLines = lines.filter(l => /^\s*[-*]\s/.test(l));
+const bulletRatio = lines.length > 0 ? bulletLines.length / lines.length : 0;
 
-// ─── Kategorie bestimmen ───────────────────────────────────────────
-const allLore = stagedFiles.every(f => {
-  const norm = f.replace(/\\/g, '/');
-  return norm.includes('commit_lore/') ||
-         norm.includes('archive/docs/') ||
-         norm.endsWith('PLOT_LORE.md') ||
-         norm.endsWith('plotchain.json');
-});
-
-const allDocs = stagedFiles.every(f => /\.(md|txt)$/i.test(f));
-let smallDiff = false;
-try {
-  const stat = execSync('git diff --cached --stat', { encoding: 'utf8' }).trim();
-  const insMatch = stat.match(/(\d+) insertions?/);
-  const delMatch = stat.match(/(\d+) deletions?/);
-  const insertions = insMatch ? parseInt(insMatch[1]) : 0;
-  const deletions = delMatch ? parseInt(delMatch[1]) : 0;
-  smallDiff = (insertions + deletions) < 15 && stagedFiles.length <= 3;
-} catch (_) {}
-
-const allTests = stagedFiles.every(f => {
-  const norm = f.replace(/\\/g, '/');
-  return norm.startsWith('tests/') || norm.startsWith('core/tests/') || norm.startsWith('test_mods/');
-});
-
-const category = allLore ? 'LORE-ONLY' :
-  allTests ? 'TEST-ASSET' :
-    allDocs || smallDiff ? 'TRIVIAL' :
-      'STANDARD';
-
-const minWords = minWordsConfig[category] || minWordsConfig['STANDARD'] || 150;
-
-// ─── ALLE Pruefungen sammeln ───────────────────────────────────────
 const errors = [];
 
-// 1. Wortzahl
-const wordCount = commitMsg.split(/\s+/).filter(Boolean).length;
-if (wordCount < minWords) {
-  errors.push(`[WORTZAHL] ${wordCount}/${minWords} Woerter (Kategorie: ${category}).`);
-}
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 1: TOKENS — alle Pflicht-Token auf einmal
+// ═══════════════════════════════════════════════════════════════════
 
-// 2. MODEL-Token
-if (!/\[MODEL:([a-z0-9._-]+)\]/i.test(commitMsg)) {
-  errors.push('[MODEL] Token fehlt. Beispiel: [MODEL:mimo-v2.5-pro]');
-}
-
-// 3. IMPULSE-Token
 const impulseMatch = commitMsg.match(/\[IMPULSE:(.{5,}?)\]/i);
-if (!impulseMatch) {
-  errors.push('[IMPULSE] Token fehlt. Dokumentiere den User-Auftrag. Beispiel: [IMPULSE:Refactore den Router]');
-}
+const narratorMatch = commitMsg.match(/\[NARRATOR:(Buffy|Basher|Thinker|Vannon)\]/i);
+const modelMatch    = commitMsg.match(/\[MODEL:([a-z0-9._-]+)\]/i);
+const compositeMatch = commitMsg.match(/\[COMPOSITE:((?:[a-z]+\d+)+)\]/i);
 
-// 4. Datei-Referenzen
-function buildCandidates(filePath) {
-  const norm = filePath.replace(/\\/g, '/');
-  const basename = norm.split('/').pop();
-  const dotIdx = basename.lastIndexOf('.');
-  const stem = dotIdx > 0 ? basename.slice(0, dotIdx) : basename;
-  return [basename, stem];
-}
+if (!modelMatch)    errors.push('[MODEL] Token fehlt. [MODEL:<name>]');
+if (!impulseMatch)  errors.push('[IMPULSE] Token fehlt. [IMPULSE:<User-Auftrag>]');
+if (!compositeMatch) errors.push('[COMPOSITE] Token fehlt. [COMPOSITE:cXjXnXaXpX]');
 
-const missingFiles = [];
-for (const file of stagedFiles) {
-  const cands = buildCandidates(file);
-  const mentioned = cands.some(c => commitMsg.includes(c));
-  if (!mentioned) missingFiles.push(file);
-}
+let parsedComposite = compositeMatch ? parseComposite(compositeMatch[1]) : null;
 
-if (missingFiles.length > 0) {
-  errors.push(`[FILES] ${missingFiles.length} Datei(en) nicht referenziert:`);
-  for (const f of missingFiles.slice(0, 10)) {
-    errors.push(`    - ${f}`);
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 2: IMPULSE-INTEGRATION — der Impulse-Text MUSS im Körper leben
+// ═══════════════════════════════════════════════════════════════════
+
+if (impulseMatch) {
+  const impulseText = impulseMatch[1].trim();
+  // Körper = Commit-Message OHNE die Token-Zeile selbst
+  const body = commitMsg.replace(/\[IMPULSE:.*?\]/gi, '').replace(/\[NARRATOR:.*?\]/gi, '')
+    .replace(/\[MODEL:.*?\]/gi, '').replace(/\[COMPOSITE:.*?\]/gi, '');
+
+  // Mindestens 3 aufeinanderfolgende Zeichen aus dem Impulse-Text müssen im Körper vorkommen
+  let impulseIntegrated = false;
+  for (let i = 0; i <= impulseText.length - 5; i++) {
+    const chunk = impulseText.substring(i, i + 5).toLowerCase();
+    if (body.toLowerCase().includes(chunk)) { impulseIntegrated = true; break; }
   }
-  if (missingFiles.length > 10) {
-    errors.push(`    ... und ${missingFiles.length - 10} weitere`);
+  // Fallback: einzelne signifikante Wörter (≥4 chars) aus dem Impulse
+  if (!impulseIntegrated) {
+    const words = impulseText.split(/\s+/).filter(w => w.length >= 4);
+    impulseIntegrated = words.some(w => body.toLowerCase().includes(w.toLowerCase()));
+  }
+
+  if (!impulseIntegrated) {
+    errors.push(`[IMPULSE-INTEGRATION] Der Impulse-Text muss in die Erzählung eingewoben sein. "${impulseText.substring(0, 50)}${impulseText.length > 50 ? '...' : ''}" erscheint NUR als Token, nicht im narrativen Körper.`);
   }
 }
 
-// 5. Unresolved Placeholders
-const placeholderRegex = /\{[A-Z][A-Z0-9_]+\}/g;
-const placeholders = [...commitMsg.matchAll(placeholderRegex)].map(m => m[0]);
-if (placeholders.length > 0) {
-  errors.push(`[PLACEHOLDER] Unresolvte Templates: ${[...new Set(placeholders)].join(', ')}`);
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 3: STORYTELLING — keine Bullet-Listen, Kausalität muss da sein
+// ═══════════════════════════════════════════════════════════════════
+
+// 3a: Keine Bullet-Liste (>50% der Zeilen mit - oder * = keine Erzählung)
+if (bulletRatio > 0.5) {
+  errors.push(`[STORYTELLING] ${Math.round(bulletRatio * 100)}% der Zeilen sind Bullet-Punkte. Schreibe eine ERZÄHLUNG aus der Charakter-Perspektive, keine Liste.`);
 }
 
-// Composite Regex aus COMPOSITE_FORMAT ableiten (erweiterbar)
-function buildCompositeRegex() {
-  // Akzeptiert jedes c{N}j{N}a{N}p{N} Format — Reihenfolge flexibel
-  return /\[COMPOSITE:((?:[a-z]+\d+)+)\]/i;
+// 3b: Kausalität — mindestens EIN Kausal-Konnektor in der gesamten Message
+const causalityRegex = /\b(weil|deshalb|Ursache|Root.Cause|Grund|daher|somit|folglich|denn|darum|Auswirkung|Effekt|Resultat|Konsequenz)\b/i;
+if (!causalityRegex.test(commitMsg)) {
+  errors.push('[STORYTELLING] Keine Kausalität erkennbar. Die Erzählung braucht mindestens einen Konnektor: weil, deshalb, Grund, daher, Auswirkung...');
 }
 
-// 6. COMPOSITE-Token (regex aus COMPOSITE_FORMAT-Pattern — erweiterbar)
-const compositeRegex = buildCompositeRegex();
-const compositeMatch = commitMsg.match(compositeRegex);
-if (compositeRequired && !compositeMatch) {
-  errors.push('[COMPOSITE] Token fehlt. Beispiel: [COMPOSITE:c5j3a2p8]');
-}
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 4: NARRATOR — Token + Charakter-Regeln (Wortzahl, Sprachmuster)
+// ═══════════════════════════════════════════════════════════════════
 
-// 7. Seed-Kette prüfen (nur wenn Composite existiert)
-if (compositeMatch) {
-  const currentComposite = compositeMatch[1];
-  const parsed = parseComposite(currentComposite);
+if (parsedComposite) {
+  const nVal = String(parsedComposite.n || 0);
+  let expectedNarrator = null;
+  let narratorRules = null;
 
-  // Validiere gegen composite_chain.json
-  if (fs.existsSync(compositeChainPath)) {
-    try {
-      const chain = JSON.parse(fs.readFileSync(compositeChainPath, 'utf8'));
-      const chainEntries = chain.chain || [];
+  if (characterSheets?.characters?.[nVal]) {
+    expectedNarrator = characterSheets.characters[nVal].name;
+    narratorRules = characterSheets.characters[nVal].verifier_rules || {};
+  }
 
-      // Nur prüfen wenn die Chain bereits Einträge hat (nicht nur Genesis)
-      if (chainEntries.length > 0) {
-        const prevComposite = chainEntries[chainEntries.length - 1].composite;
+  if (!expectedNarrator) {
+    errors.push(`[NARRATOR] Composite n=${nVal} — kein Charakterblatt in character_sheets.json.characters.${nVal}`);
+  } else {
+    if (!narratorMatch) {
+      errors.push(`[NARRATOR] Token fehlt. Composite n=${nVal} → [NARRATOR:${expectedNarrator}]`);
+    } else if (narratorMatch[1].toLowerCase() !== expectedNarrator.toLowerCase()) {
+      errors.push(`[NARRATOR] Falsch. Composite n=${nVal} → ${expectedNarrator}, aber Commit hat [NARRATOR:${narratorMatch[1]}]`);
+    }
 
-        let arcCount = 4;
-        let plotCount = 1;
-        try {
-          if (fs.existsSync(loreArcsPath)) {
-            const arcs = JSON.parse(fs.readFileSync(loreArcsPath, 'utf8'));
-            arcCount = Object.keys(arcs.arcs || {}).length;
-          }
-          if (fs.existsSync(plotchainPath)) {
-            const plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
-            plotCount = Array.isArray(plotchain) ? plotchain.length : 0;
-          }
-        } catch (_) {}
+    // Wortzahl-Grenzen
+    const cMin = narratorRules.min_words || 20;
+    const cMax = narratorRules.max_words || 500;
+    if (wordCount < cMin) errors.push(`[NARRATOR-WORTZAHL] ${wordCount}/${cMin} Wörter. ${expectedNarrator} braucht ≥${cMin}.`);
+    if (wordCount > cMax) errors.push(`[NARRATOR-WORTZAHL] ${wordCount}/${cMax} Wörter. ${expectedNarrator} max ${cMax}.`);
 
-        let commitHash = '';
-        try {
-          commitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-        } catch (_) {}
-
-        if (commitHash) {
-          const expected = derive(prevComposite, commitHash, { a: arcCount, p: plotCount });
-          if (expected.composite !== currentComposite) {
-            errors.push(`[COMPOSITE-CHAIN] Seed-Kette gebrochen. Erwartet: ${expected.composite}, Gefunden: ${currentComposite}`);
-          }
-        }
+    // Sprachmuster
+    if (narratorRules.must_contain_regex) {
+      const p = new RegExp(narratorRules.must_contain_regex, 'i');
+      if (!p.test(commitMsg)) {
+        errors.push(`[NARRATOR-STIMME] ${expectedNarrator}s Sprachmuster fehlt. Pattern: ${narratorRules.must_contain_regex}`);
       }
-    } catch (e) {
-      errors.push(`[COMPOSITE-CHAIN] Fehler bei Seed-Ketten-Prüfung: ${e.message}`);
     }
   }
-
-  // Validiere p-Index gegen plotchain.json
-  if (parsed.p && fs.existsSync(plotchainPath)) {
-    try {
-      const plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
-      const maxP = Array.isArray(plotchain) ? plotchain.length : 0;
-      if (parsed.p < 1 || parsed.p > maxP) {
-        errors.push(`[COMPOSITE-P] p${parsed.p} ausserhalb der Plot-Chain (1..${maxP})`);
-      }
-    } catch (_) {}
-  }
-
-  // Validiere a-Index gegen lore_arcs.json
-  if (parsed.a && fs.existsSync(loreArcsPath)) {
-    try {
-      const arcs = JSON.parse(fs.readFileSync(loreArcsPath, 'utf8'));
-      const maxA = Object.keys(arcs.arcs || {}).length;
-      if (parsed.a < 1 || parsed.a > maxA) {
-        errors.push(`[COMPOSITE-A] a${parsed.a} ausserhalb der Arcs (1..${maxA})`);
-      }
-    } catch (_) {}
-  }
 }
 
-// 8. CHANGELOG-Anker (Composite im CHANGELOG.md)
-const changelogAnkerRequired = rules?.rules?.changelog_anchor?.required !== false;
-if (changelogAnkerRequired && compositeMatch) {
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 5: COMPOSITE — Seed-Kette + P/A-Validierung + CHANGELOG-Anker
+// ═══════════════════════════════════════════════════════════════════
+
+if (compositeMatch && fs.existsSync(compositeChainPath)) {
   try {
-    if (fs.existsSync(changelogPath)) {
-      const changelogContent = fs.readFileSync(changelogPath, 'utf8');
-      const currentComposite = compositeMatch[1];
-
-      // Prüfe ob Composite im CHANGELOG vorkommt
-      if (!changelogContent.includes(currentComposite)) {
-        errors.push(`[CHANGELOG] Composite \`${currentComposite}\` nicht in CHANGELOG.md gefunden. Jeder Eintrag braucht: **Composite:** \`cXjXaXpX\``);
-      }
+    const chain = JSON.parse(fs.readFileSync(compositeChainPath, 'utf8'));
+    const entries = chain.chain || [];
+    if (entries.length > 0) {
+      const prev = entries[entries.length - 1].composite;
+      let aCount = 1, pCount = 1;
+      try { const arcs = JSON.parse(fs.readFileSync(loreArcsPath, 'utf8')); aCount = Object.keys(arcs.arcs || {}).length; } catch (_) {}
+      try { const pc = JSON.parse(fs.readFileSync(plotchainPath, 'utf8')); pCount = Array.isArray(pc) ? pc.length : 0; } catch (_) {}
+      try {
+        const hash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+        const expected = derive(prev, hash, { a: aCount, p: pCount });
+        if (expected.composite !== compositeMatch[1]) {
+          errors.push(`[COMPOSITE-CHAIN] Kette gebrochen. Erwartet: ${expected.composite}, Gefunden: ${compositeMatch[1]}`);
+        }
+      } catch (_) {}
     }
-  } catch (e) {
-    // CHANGELOG-Prüfung ist optional wenn Datei nicht lesbar
-  }
+  } catch (e) { errors.push(`[COMPOSITE-CHAIN] Fehler: ${e.message}`); }
 }
 
-// ─── AUSWERTUNG ────────────────────────────────────────────────────
+// P-/A-Validierung
+if (parsedComposite?.p && fs.existsSync(plotchainPath)) {
+  try {
+    const pc = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+    const maxP = Array.isArray(pc) ? pc.length : 0;
+    if (parsedComposite.p < 1 || parsedComposite.p > maxP) errors.push(`[COMPOSITE-P] p${parsedComposite.p} nicht in 1..${maxP}`);
+  } catch (_) {}
+}
+if (parsedComposite?.a && fs.existsSync(loreArcsPath)) {
+  try {
+    const arcs = JSON.parse(fs.readFileSync(loreArcsPath, 'utf8'));
+    const maxA = Object.keys(arcs.arcs || {}).length;
+    if (parsedComposite.a < 1 || parsedComposite.a > maxA) errors.push(`[COMPOSITE-A] a${parsedComposite.a} nicht in 1..${maxA}`);
+  } catch (_) {}
+}
+
+// CHANGELOG-Anker
+if (compositeMatch && fs.existsSync(changelogPath)) {
+  try {
+    const cl = fs.readFileSync(changelogPath, 'utf8');
+    if (!cl.includes(compositeMatch[1])) {
+      errors.push(`[CHANGELOG] Composite \`${compositeMatch[1]}\` nicht in CHANGELOG.md. Jeder Eintrag braucht: **Composite:** \`cXjXnXaXpX\``);
+    }
+  } catch (_) {}
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Datei-Referenzen + Placeholder (Pflicht, aber kompakt)
+// ═══════════════════════════════════════════════════════════════════
+
+const missingFiles = stagedFiles.filter(f => {
+  const name = f.replace(/\\/g, '/').split('/').pop();
+  const stem = name.replace(/\.[^.]+$/, '');
+  return !commitMsg.includes(name) && !commitMsg.includes(stem);
+});
+if (missingFiles.length > 0) {
+  errors.push(`[FILES] ${missingFiles.length} Datei(en) nicht referenziert: ${missingFiles.slice(0, 5).join(', ')}${missingFiles.length > 5 ? '...' : ''}`);
+}
+
+const phMatch = commitMsg.match(/\{[A-Z][A-Z0-9_]+\}/g);
+if (phMatch) errors.push(`[PLACEHOLDER] Unaufgelöst: ${[...new Set(phMatch)].join(', ')}`);
+
+// ═══════════════════════════════════════════════════════════════════
+// AUSWERTUNG
+// ═══════════════════════════════════════════════════════════════════
+
 if (errors.length > 0) {
-  console.error('');
-  console.error('═══════════════════════════════════════════');
-  console.error('  COMMIT BLOCKED — PFLICHTFELDER FEHLEN');
-  console.error('═══════════════════════════════════════════');
-  console.error('');
-  for (const err of errors) {
-    console.error(`  ${err}`);
-  }
-  console.error('');
-  console.error('  Pflicht: [MODEL:<name>], [IMPULSE:<input>], [COMPOSITE:cXjXaXpX], Wortzahl, Datei-Referenzen, CHANGELOG-Anker');
-  console.error('  Optional: Sidejoke, Arc-Name');
-  console.error('');
+  console.error('\n═══════════════════════════════════════════');
+  console.error('  COMMIT BLOCKED');
+  console.error('═══════════════════════════════════════════\n');
+  errors.forEach(e => console.error(`  ${e}`));
+  console.error('\n  Pflicht: [NARRATOR], [MODEL], [IMPULSE], [COMPOSITE], Kausalität, Datei-Refs, CHANGELOG-Anker');
+  console.error('  Storytelling: Keine Bullet-Listen, Impulse eingewoben, Charakter-Stimme\n');
   process.exit(1);
 }
 
-// ─── PASS ──────────────────────────────────────────────────────────
-console.log('');
-console.log('═══════════════════════════════════════════');
+// PASS
+let narratorInfo = '';
+if (parsedComposite && compositeMatch) {
+  const nKey = String(parsedComposite.n || 0);
+  if (characterSheets?.characters?.[nKey]) {
+    const s = characterSheets.characters[nKey];
+    narratorInfo = ` | Narrator: ${s.name} (${s.role})`;
+  }
+}
+
+console.log('\n═══════════════════════════════════════════');
 console.log('  COMMIT VERIFIED');
-console.log('═══════════════════════════════════════════');
-console.log('');
-for (const f of stagedFiles) {
-  console.log(`  + ${f}`);
-}
-console.log('');
-console.log(`  ${stagedFiles.length} Datei(en) — ${wordCount} Woerter — ${category}`);
-if (compositeMatch) {
-  console.log(`  Composite: ${compositeMatch[1]}`);
-}
+console.log('═══════════════════════════════════════════\n');
+stagedFiles.forEach(f => console.log(`  + ${f}`));
+console.log(`\n  ${stagedFiles.length} Datei(en) — ${wordCount} Wörter${narratorInfo}`);
+if (compositeMatch) console.log(`  Composite: ${compositeMatch[1]}`);
 console.log('');
 process.exit(0);

@@ -3,19 +3,19 @@
  * update_plot.js — Plot-Chain Writer (v0.23a)
  * 
  * Fuegt EINEN Eintrag zur plotchain.json hinzu.
- * Format: { p_id, id, timestamp, summary, ref_to, [model_id] }
+ * Format: { p_id, id, timestamp, summary, ref_to, [model_id], [composite], [narrator] }
  * 
  * p_id wird automatisch aus dem letzten Node abgeleitet (p{N+1}).
- * Optional: Haengt Dialog an PLOT_LORE.md an.
- * Optional: --ref=<id> fuer freiwaehlbaren Rueckbezug.
- * Optional: --composite=<hash> fuer Composite-Hash (c5j3a2p8).
+ * 
+ * NEU v0.23a: Narrator-gesteuerte PLOT_LORE-Einträge.
+ *   --narrator=<Name> schreibt einen MONOLOG aus dieser Charakter-Perspektive.
+ *   Der PLOT_LORE-Header trägt jetzt den Narrator: [p23][NARRATOR:Buffy][COMPOSITE:c5j3n2a2p8]
  * 
  * USAGE:
  *   node update_plot.js "Kurze Zusammenfassung was passiert ist"
- *   node update_plot.js "Zusammenfassung" --ref=plot-2026-06-22T20:00:00
- *   node update_plot.js "Zusammenfassung" --lore="Dialog-Text fuer PLOT_LORE.md"
- *   node update_plot.js "Zusammenfassung" --model=mimo-v2.5-pro
- *   node update_plot.js "Zusammenfassung" --composite=c5j3a2p8
+ *   node update_plot.js "Zusammenfassung" --lore="Text" --narrator=Buffy
+ *   node update_plot.js "Zusammenfassung" --composite=c5j3n2a2p8 --narrator=Basher
+ *   node update_plot.js "Zusammenfassung" --model=mimo-v2.5-pro --narrator=Thinker
  */
 
 const fs = require('fs');
@@ -34,6 +34,7 @@ try {
 
 const plotchainPath = path.join(__dirname, 'plotchain.json');
 const plotPath = path.join(repoRoot, 'core/archive/docs/PLOT_LORE.md');
+const characterSheetsPath = path.join(__dirname, 'character_sheets.json');
 
 // ─── Argument-Parsing ──────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -42,6 +43,7 @@ let refTo = null;
 let loreText = null;
 let modelId = null;
 let compositeId = null;
+let narratorId = null;
 
 for (const arg of args) {
   if (arg.startsWith('--ref=')) {
@@ -52,6 +54,8 @@ for (const arg of args) {
     modelId = arg.slice('--model='.length);
   } else if (arg.startsWith('--composite=')) {
     compositeId = arg.slice('--composite='.length);
+  } else if (arg.startsWith('--narrator=')) {
+    narratorId = arg.slice('--narrator='.length);
   } else if (!arg.startsWith('--')) {
     if (!summary) summary = arg;
   }
@@ -110,6 +114,11 @@ if (compositeId) {
   newNode.composite = compositeId;
 }
 
+// Optional: Narrator im Node speichern
+if (narratorId) {
+  newNode.narrator = narratorId;
+}
+
 plotchain.push(newNode);
 fs.writeFileSync(plotchainPath, JSON.stringify(plotchain, null, 2), 'utf8');
 console.log(`Plot-Knoten ${nodeId} (${pId}) gespeichert.`);
@@ -117,18 +126,54 @@ console.log(`  Zusammenfassung: "${summary.substring(0, 80)}${summary.length > 8
 console.log(`  Verweis auf: ${refToResolved}`);
 if (compositeId) console.log(`  Composite: ${compositeId}`);
 
-// ─── Optional: PLOT_LORE.md Dialog anhaengen ───────────────────────
+// ─── Optional: PLOT_LORE.md Eintrag anhaengen (Narrator-gesteuert) ──
 if (loreText) {
   if (!fs.existsSync(plotPath)) {
     const header = '# PLOT LORE — SyxBridge\n\nPersistenter Dokumentations-Layer. Jeder Commit kann einen Eintrag erzeugen.\n\n---\n';
     fs.writeFileSync(plotPath, header, 'utf8');
   }
 
+  // Narrator-Info aus character_sheets.json laden
+  let narratorTag = '';
+  let narratorVoice = '';
+  if (narratorId) {
+    narratorTag = `[NARRATOR:${narratorId}]`;
+    if (fs.existsSync(characterSheetsPath)) {
+      try {
+        const sheets = JSON.parse(fs.readFileSync(characterSheetsPath, 'utf8'));
+        for (const [key, char] of Object.entries(sheets.characters || {})) {
+          if (char.name === narratorId) {
+            narratorVoice = char.voice_traits;
+            break;
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
   const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
-  const compositeTag = compositeId ? `[${pId}][COMPOSITE:${compositeId}]` : `[${pId}]`;
-  const entry = `\n### [${timestamp}] ${compositeTag}\n${loreText}\n`;
+  
+  // Header: [p{N}] [NARRATOR:Name] [COMPOSITE:hash]
+  let headerParts = [`[${pId}]`];
+  if (narratorId) headerParts.push(`[NARRATOR:${narratorId}]`);
+  if (compositeId) headerParts.push(`[COMPOSITE:${compositeId}]`);
+  const headerLine = headerParts.join(' ');
+
+  // Narrator-Monolog: Wenn Narrator gesetzt, schreibe als Monolog aus dieser Perspektive
+  let entry = '';
+  if (narratorId) {
+    entry = `\n### [${timestamp}] ${headerLine}\n`;
+    entry += `> **Erzähler:** ${narratorId} — ${narratorVoice || 'Siehe character_sheets.json'}\n`;
+    entry += `> **Perspektive:** Monolog — nur ${narratorId}s Stimme.\n`;
+    entry += `${loreText}\n`;
+  } else {
+    // Kein Narrator: traditionelles Format (Rückwärtskompatibel)
+    entry = `\n### [${timestamp}] ${headerLine}\n${loreText}\n`;
+  }
+  
   fs.appendFileSync(plotPath, entry, 'utf8');
-  console.log('  Dialog in PLOT_LORE.md angehaengt.');
+  console.log('  PLOT_LORE-Eintrag angehaengt.');
+  if (narratorId) console.log(`  Narrator: ${narratorId} (Monolog-Perspektive)`);
 }
 
 // ─── Optional: Commit-Hash zu cross_references.json ────────────────

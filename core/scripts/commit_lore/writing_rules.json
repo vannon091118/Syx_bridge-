@@ -28,22 +28,30 @@
       "regex": "\\[IMPULSE:(.{5,}?)\\]",
       "min_length": 5
     },
+    "narrator_token": {
+      "description": "[NARRATOR:<Name>] Pflicht-Token. Der Erzähler wird deterministisch aus dem Composite-Hash n-Feld abgeleitet (1=Buffy, 2=Basher, 3=Thinker, 4=Vannon). Die Commit-Message MUSS aus der Perspektive dieses Charakters geschrieben sein — mit dessen Stimme, Wortwahl und Denkmustern.",
+      "required": true,
+      "token_format": "[NARRATOR:<Buffy|Basher|Thinker|Vannon>]",
+      "regex": "\\[NARRATOR:(Buffy|Basher|Thinker|Vannon)\\]",
+      "source": "character_sheets.json → characters[n].name",
+      "enforcement": "verify_commit_msg.js prüft: Token existiert, Name matcht Composite n-Feld, charakterspezifische Wortzahl + Sprachmuster"
+    },
     "file_references": {
       "description": "Alle staged Files muessen in der Commit-Nachricht referenziert werden (basename oder stem reicht).",
       "required": true
     },
     "composite_token": {
-      "description": "[COMPOSITE:cXjXaXpX] Pflicht-Token. Kodiert Commit-Sequenz, narrative Anweisung, Arc- und Plot-Referenz. Deterministisch aus vorherigem Composite + Commit-Hash abgeleitet.",
+      "description": "[COMPOSITE:cXjXnXaXpX] Pflicht-Token. Kodiert Commit-Sequenz, narrative Anweisung, Narrator, Arc- und Plot-Referenz. Deterministisch aus vorherigem Composite + Commit-Hash abgeleitet.",
       "required": true,
-      "token_format": "[COMPOSITE:c<seq>j<narrative>a<arc>p<plot>]",
-      "regex": "\\[COMPOSITE:(c\\d+j\\d+a\\d+p\\d+)\\]"
+      "token_format": "[COMPOSITE:c<seq>j<narrative>n<narrator>a<arc>p<plot>]",
+      "regex": "\\[COMPOSITE:(c\\d+j\\d+n\\d+a\\d+p\\d+)\\]"
     },
     "seed_chain": {
       "description": "Die Composite-Chain muss deterministisch konsistent sein. composite[N] == derive(composite[N-1], commitHash). Wird von verify_commit_msg.js geprueft.",
       "required": true
     },
     "changelog_anchor": {
-      "description": "Jeder CHANGELOG.md-Eintrag MUSS Commit-Hash + Composite-Hash enthalten. Format: > **Commit:** `hash` | **Composite:** `cXjXaXpX`",
+      "description": "Jeder CHANGELOG.md-Eintrag MUSS Commit-Hash + Composite-Hash enthalten. Format: > **Commit:** `hash` | **Composite:** `cXjXnXaXpX`",
       "required": true
     },
     "optional_elements": {
