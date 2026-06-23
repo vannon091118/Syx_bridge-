@@ -131,5 +131,14 @@
     "ref_to": "plot-2026-06-23T19:16:00",
     "model_id": "deepseek-v4-pro",
     "composite": "c1j94a5p12"
+  },
+  {
+    "p_id": "p19",
+    "id": "plot-2026-06-23T19:29:39",
+    "timestamp": "2026-06-23 19:29:39",
+    "summary": "CL-RNG Phase 3: verify_commit_msg.js Composite-Enforcement — COMPOSITE-Token Pflicht, Seed-Ketten-Prüfung (derive-Konsistenz), CHANGELOG-Anker (Composite-Referenz). Flexibler compositeRegex, graceful Genesis-Skip, P/A-Index-Validierung. writing_rules.json: composite_token + seed_chain + changelog_anchor (required).",
+    "ref_to": "plot-2026-06-23T19:16:00",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c1j65a2p9"
   }
 ]

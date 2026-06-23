@@ -80,6 +80,17 @@ VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturier
 - **Review:** deepseek approved (4 Issues gefunden + alle gefixt: --composite parsing, composite im Node, derive Backward-Compat, decodeJ numerischer Sort)
 - **Dateien:** `core/scripts/commit_lore/lore_arcs.json`, `core/scripts/commit_lore/plotchain.json`, `core/scripts/commit_lore/update_plot.js`, `core/scripts/commit_lore/rng.js`
 
+### CL-RNG Phase 3: verify_commit_msg.js Composite-Enforcement
+> **Composite:** `c1j65a2p9`
+
+- **COMPOSITE-Token Pflicht:** `[COMPOSITE:cXjXaXpX]` muss im Commit-Text vorhanden sein. Regex flexibel aus `buildCompositeRegex()` — akzeptiert auch erweiterte Formate
+- **Seed-Kette prüfen:** `derive(prevComposite, HEAD-Hash, {a, p})` muss mit dem Composite im Commit übereinstimmen. Greift nur wenn `composite_chain.json.chain.length > 0` (nicht bei Genesis-Start)
+- **CHANGELOG-Anker:** Composite muss in `CHANGELOG.md` referenziert sein. Commit-Hash wird nicht geprüft (existiert pre-Commit nicht)
+- **P-/A-Index-Validierung:** `p{N}` muss in `1..plotCount` liegen, `a{N}` in `1..arcCount`
+- **writing_rules.json:** `composite_token` (required), `seed_chain` (required), `changelog_anchor` (required). `plotchain_reference` entfernt (durch COMPOSITE abgelöst)
+- **Review:** deepseek approved (alle 4 vorherigen Issues gefixt: compositeRequired definiert, compositeRegex flexibel, seed-chain skip bei Genesis, CHANGELOG ohne Hash)
+- **Dateien:** `core/scripts/verify_commit_msg.js`, `core/scripts/commit_lore/writing_rules.json`
+
 ---
 
 ## [v0.22.0-GUI-UPDATE] — 2026-06-23 — GUI v0.22.0 + README Global Rewrite

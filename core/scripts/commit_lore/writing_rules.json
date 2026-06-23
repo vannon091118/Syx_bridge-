@@ -32,19 +32,27 @@
       "description": "Alle staged Files muessen in der Commit-Nachricht referenziert werden (basename oder stem reicht).",
       "required": true
     },
+    "composite_token": {
+      "description": "[COMPOSITE:cXjXaXpX] Pflicht-Token. Kodiert Commit-Sequenz, narrative Anweisung, Arc- und Plot-Referenz. Deterministisch aus vorherigem Composite + Commit-Hash abgeleitet.",
+      "required": true,
+      "token_format": "[COMPOSITE:c<seq>j<narrative>a<arc>p<plot>]",
+      "regex": "\\[COMPOSITE:(c\\d+j\\d+a\\d+p\\d+)\\]"
+    },
+    "seed_chain": {
+      "description": "Die Composite-Chain muss deterministisch konsistent sein. composite[N] == derive(composite[N-1], commitHash). Wird von verify_commit_msg.js geprueft.",
+      "required": true
+    },
+    "changelog_anchor": {
+      "description": "Jeder CHANGELOG.md-Eintrag MUSS Commit-Hash + Composite-Hash enthalten. Format: > **Commit:** `hash` | **Composite:** `cXjXaXpX`",
+      "required": true
+    },
     "optional_elements": {
       "sidejoke": {
-        "description": "Freiwillig: Ein Sidejoke aus dem Pool kann eingebaut werden.",
-        "required": false,
-        "pool_path": "core/scripts/commit_lore/sidejoke_pool.json"
-      },
-      "plotchain_reference": {
-        "description": "Freiwaehlbar: Ein [REF:<id>] um thematisch an einen vergangenen Commit anzuknuepfen. Muss NICHT der letzte Node sein — jeder vergangene Node ist gueltig.",
-        "required": false,
-        "token_format": "[REF:<plot-id>]"
+        "description": "Freiwillig: Ein Sidejoke kann eingebaut werden. Kein fixer Pool mehr — generativ pro Commit.",
+        "required": false
       },
       "arc_reference": {
-        "description": "Freiwaehlbar: Verweis auf den aktuellen Versions-Arc oder einen archivierten Arc.",
+        "description": "Freiwaehlbar: Verweis auf den aktuellen Arc oder einen archivierten Arc. Wird jetzt ueber den Composite-Hash referenziert.",
         "required": false
       }
     }
