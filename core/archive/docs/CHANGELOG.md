@@ -5,7 +5,78 @@
 
 ---
 
+## [EXPORT-PIPELINE-FIX] — 2026-06-24 — countMatches Missing Export + Smoke-Test Assertions
+
+> **Task:** Export-Pipeline Killer Bug gefixt — Workshop-Output war komplett leer.
+> **Warum:** R-006 (countMatches Konsolidierung) importierte `countMatches` in validator.js, fügte die Funktion aber nie zu den Exports von context-packets.js hinzu. Das crashte `validateFileSyntax()` → `validateAndPrepareContent()` → `writeTranslatedFile()` → kein einziger File-Write → Workshop-Output leer.
+> **Composite:** Wird vom Commit-Layer generiert
+
+### context-packets.js — countMatches Export hinzugefügt
+- `countMatches` war definiert (line 53) und intern verwendet, aber nicht in `module.exports`
+- validator.js importierte `{ countMatches }` aus context-packets.js → `TypeError: countMatches is not a function`
+- Crashte die gesamte Export-Pipeline: `exporter.js:validateAndPrepareContent()` → `validator.js:validateFileSyntax()` → CRASH
+- **Fix:** `countMatches` zu `module.exports` hinzugefügt
+- **Dateien:** `core/src/context-packets.js`
+
+### plugin-boundary-smoke.js — 4 veraltete Assertions aktualisiert
+- `applyPatchModifications()` NAME-Check: `includes('Patch')` → `includes('GERMAN')` (Language-Tag Fix)
+- `getOverrideHeader('V71')`: `includes('__OVERWRITE')` → `=== ''` (BU-OVERWRITE Fix)
+- `classifyFile('_Info.txt')`: `'INFO_FILE'` → `'TEXT_FILE'` (_INFO-FILE-FIX)
+- `getFileHeader('V71')`: `includes('__OVERWRITE')` → `=== ''` (BU-OVERWRITE Fix)
+- **Dateien:** `core/tests/plugin-boundary-smoke.js`
+
+### Verifikation
+- Export-Pipeline: `validateAndPrepareContent()` → `skip: false, issues: 0` ✅
+- plugin-boundary-smoke: 100/100 PASS ✅
+- validator-smoke: 49/49 PASS ✅
+- parser-smoke: 26/26 PASS ✅
+- Code-Review: approved ✅
+
+---
+
+## [NATIVE-MODE-FIX] — 2026-06-24 — Fix Native Mode getTranslationCredit Crash
+
+> **Task:** Fix `TypeError: gameAdapter.getTranslationCredit is not a function` crash in Native Mode.
+> **Warum:** Ein kürzlicher Commit hat den Aufruf von `gameAdapter.getTranslationCredit()` in `runtime-ops.js` eingeführt, aber diese Methode war weder in der Basisklasse `GamePlugin` definiert, noch im Mock von `e2e_bug1_native_mode.js`, was zu Test- und potenziellen Runtime-Crashes bei anderen Plugins/Stubs führte.
+> **Dateien:** `core/src/plugins/GamePlugin.js`, `core/tests/e2e_bug1_native_mode.js`
+
+### GamePlugin.js
+- Standard-Fallbeschreibung `getTranslationCredit()` hinzugefügt, die `'Translation by Vannon with SyxBridge'` zurückgibt. Damit erben alle Plugins (wie RimWorldPlugin oder zukünftige Integrationen) automatisch die Methode und stürzen nicht ab.
+
+### e2e_bug1_native_mode.js
+- `getTranslationCredit` Methode im `gameAdapter` Mock hinzugefügt, sodass der Native-Mode E2E-Test wieder erfolgreich läuft (35/35 Passing).
+
+---
+
+## [README-REWRITE] — 2026-06-23 — Use-Case-First README + _Info.txt Update
+
+> **Task:** Repo-Startseite komplett überarbeitet — Use Cases statt Technik-Bla-Bla, persönlicher Ton, Mermaid-Diagramme
+> **Warum:** README war technisch korrekt aber kalt — kein User sieht sofort warum er das braucht
+> **Composite:** `c31j15n3a4p11`
+
+### README.md — Komplette Neuschreibung
+
+- **Use-Case-First:** 3 konkrete Szenarien an den Anfang (Mitspieler, Mod-Publisher, Qualitätsanspruch)
+- **Mermaid-Pipeline:** Visueller Überblick Scan → Shield → AI → Cache → Write
+- **Mermaid-Provider-Graph:** 9 Provider in 3 Gruppen (Free / API / Local) mit Smart Router
+- **Mermaid-Qualitäts-Stack:** 3-Stufen-Pipeline mit Placeholder-Shielding visualisiert
+- **Mermaid-Roadmap-Timeline:** Phasen 1-4 als Timeline
+- **Persönlicher Ton:** Direkter Schreibstil, kein Feature-Listen-Bla-Bla
+- **Native vs. Patch Mode:** Tabelle mit klaren Use Cases
+- **Version auf v0.23.0 aktualisiert:** Alle Badges + Status-Referenzen
+- **Bilingual:** EN + DE, beide komplett überarbeitet
+- **Dateien:** `README.md`
+
+### _Info.txt — Version + DESC Update
+
+- Version: `0.20.0` → `0.23.0`
+- DESC: Alter technischer Text → klarer Call-to-Action
+- **Dateien:** `_Info.txt`
+
+---
+
 ## [COMMIT-LAYER-CAUSALITY] — 2026-06-23 — Devin PR #7: Commit-Layer Causality-System
+
 > **Composite:** `c31j12n3a3p4`
 
 > **Merge:** `b9a2f0c` (PR #7 `devin/1750716929-fix-commit-layer-causality`)
