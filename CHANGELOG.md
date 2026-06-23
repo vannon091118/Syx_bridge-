@@ -91,6 +91,27 @@ VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturier
 - **Review:** deepseek approved (alle 4 vorherigen Issues gefixt: compositeRequired definiert, compositeRegex flexibel, seed-chain skip bei Genesis, CHANGELOG ohne Hash)
 - **Dateien:** `core/scripts/verify_commit_msg.js`, `core/scripts/commit_lore/writing_rules.json`
 
+### CL-RNG Phase 4: derive_composite.js — Deterministische Composite-Ableitung
+- **derive_composite.js:** Ersetzt get_sidejoke.js. Kein Math.random(), kein fixer Pool
+- Liest composite_chain.json → letzten Composite + HEAD-Hash → `derive()` → Composite + narrative Dekodierung
+- **Narrative Anweisung:** `decodeJ(j, params)` mit opener_hint + structurePattern aus narrative_params.json
+- **Kontext:** Letzter User-Impuls aus plotchain, letzter PLOT_LORE-Eintrag, Arc-Name + Plot-Summary aufgelöst
+- **Ausgabe:** Composite-Hash, Ton/Einstieg/Struktur/Rückbezug, [COMPOSITE:...] für Commit-Message, CHANGELOG-Anker-Vorlage
+- **Plot-Summary:** Wortgrenzen-Trunkierung (lastIndexOf statt blindem substring)
+- **Review:** deepseek approved (3 Issues + Edge-Case gefixt)
+- **Dateien:** `core/scripts/commit_lore/derive_composite.js` (NEU)
+
+### CL-RNG Mood-System: fester Mood-Pool, nie zweimal derselbe
+> **Composite:** `c1j8a5p13`
+
+- **narrative_params.json:** `mood_pool` (10 Stimmungen, nur Namen ohne Vorgaben). `opener_hint` aus tones entfernt
+- **rng.js:** `selectMood(j, prevMood, moodPool)` — deterministisch, garantiert `mood[N] != mood[N-1]`
+- **derive():** Akzeptiert `prevMood` + `moodPool` via `limits.moodPool`, gibt `mood` im Result zurück
+- **composite_chain.json:** `genesis_mood` + Chain-Einträge mit `mood`-Feld
+- **derive_composite.js:** Mood-Anzeige + Non-Repeat-Status, `moodPool` aus `narrative_params.json` an `derive()` durchgereicht
+- **Review:** deepseek approved (ReferenceError gefixt, dead openerHint entfernt, moodPool-Passing korrigiert)
+- **Dateien:** `core/scripts/commit_lore/rng.js`, `core/scripts/commit_lore/derive_composite.js`, `core/scripts/commit_lore/narrative_params.json`, `core/scripts/commit_lore/composite_chain.json`
+
 ---
 
 ## [v0.22.0-GUI-UPDATE] — 2026-06-23 — GUI v0.22.0 + README Global Rewrite

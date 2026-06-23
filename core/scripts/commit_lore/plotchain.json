@@ -140,5 +140,13 @@
     "ref_to": "plot-2026-06-23T19:16:00",
     "model_id": "deepseek-v4-pro",
     "composite": "c1j65a2p9"
+  },
+  {
+    "p_id": "p20",
+    "id": "plot-2026-06-23T19:46:30",
+    "timestamp": "2026-06-23 19:46:30",
+    "summary": "CL-RNG Mood-System: selectMood(j, prevMood, moodPool) — deterministisch, nie derselbe Mood zweimal. narrative_params.json mood_pool (10 Stimmungen, ohne Vorgaben). composite_chain.json genesis_mood. derive() akzeptiert moodPool + prevMood. derive_composite.js zeigt Mood + Non-Repeat-Status.",
+    "ref_to": "plot-2026-06-23T19:16:00",
+    "model_id": "deepseek-v4-pro"
   }
 ]

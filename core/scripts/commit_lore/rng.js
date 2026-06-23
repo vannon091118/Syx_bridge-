@@ -110,9 +110,10 @@ function buildComposite(parts) {
  * @param {string} prevComposite - z.B. "c4j12a3p7" oder Genesis "c0j0a0p0"
  * @param {string} commitHash    - Aktueller Git-Commit-Hash
  * @param {Object} limits        - z.B. {a: 5, p: 17} — RNG-Felder bekommen ihre Pool-Größen
- * @returns {{ composite: string, seed: number }}
+ * @param {string} [prevMood]    - Letzter Mood (um Wiederholung zu vermeiden)
+ * @returns {{ composite: string, seed: number, mood: string }}
  */
-function derive(prevComposite, commitHash, limitsOrArcCount, plotCount) {
+function derive(prevComposite, commitHash, limitsOrArcCount, plotCount, prevMood) {
   if (!commitHash) {
     throw new Error('derive: commitHash ist Pflichtfeld. Kann nicht undefined oder leer sein.');
   }
@@ -133,10 +134,8 @@ function derive(prevComposite, commitHash, limitsOrArcCount, plotCount) {
 
   for (const field of COMPOSITE_FORMAT) {
     if (field.source === 'sequence') {
-      // Sequenz-Felder: vorheriger Wert + 1
       next[field.key] = (prev[field.key] || 0) + 1;
     } else if (field.source === 'rng') {
-      // RNG-Felder: deterministisch aus Pool-Größe ziehen
       const max = (limits[field.key] !== undefined)
         ? limits[field.key]
         : (field.poolSize || 100);
@@ -144,14 +143,45 @@ function derive(prevComposite, commitHash, limitsOrArcCount, plotCount) {
     }
   }
 
+  // Mood selektieren — nie derselbe wie vorheriger
+  const mood = selectMood(next.j, prevMood, limits.moodPool || null);
+
   return {
     composite: buildComposite(next),
     seed,
+    mood,
     ...next
   };
 }
 
-// ─── Narrative Dekodierung ───────────────────────────────────────────
+// ─── Mood-Selektion ──────────────────────────────────────────────────
+
+// Built-in Mood-Pool (gespiegelt aus narrative_params.json)
+const DEFAULT_MOOD_POOL = ['sachlich', 'sarkastisch', 'erschöpft', 'triumphierend',
+  'selbstironisch', 'neugierig', 'müde-zufrieden', 'alarmiert', 'trocken', 'warm'];
+
+/**
+ * Wählt einen Mood deterministisch aus dem Pool.
+ * Garantiert: Mood[N] != Mood[N-1].
+ *
+ * @param {number} j - j-Wert aus dem Composite
+ * @param {string} [prevMood] - Vorheriger Mood
+ * @param {string[]} [moodPool] - Optionaler Pool (aus narrative_params.json)
+ * @returns {string} Der ausgewählte Mood
+ */
+function selectMood(j, prevMood, moodPool) {
+  const pool = moodPool || DEFAULT_MOOD_POOL;
+  if (pool.length === 0) return 'neutral';
+
+  let moodIndex = j % pool.length;
+
+  // Wenn derselbe wie vorheriger: nimm den nächsten (deterministisch)
+  if (pool[moodIndex] === prevMood) {
+    moodIndex = (moodIndex + 1) % pool.length;
+  }
+
+  return pool[moodIndex];
+}
 
 // Built-in Defaults (gespiegelt aus narrative_params.json).
 // Werden überschrieben wenn der Caller narrativeParams übergibt.
@@ -198,4 +228,4 @@ function decodeJ(j, params) {
   };
 }
 
-module.exports = { djb2, XorShift128, derive, decodeJ, parseComposite, buildComposite, COMPOSITE_FORMAT };
+module.exports = { djb2, XorShift128, derive, decodeJ, selectMood, parseComposite, buildComposite, COMPOSITE_FORMAT };

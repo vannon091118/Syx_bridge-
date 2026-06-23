@@ -1,6 +1,7 @@
 {
   "genesis_composite": "c0j0a0p0",
+  "genesis_mood": "genesis",
   "created": "2026-06-23",
-  "description": "Deterministische Composite-Chain. Jeder Commit schreibt seinen Composite-Hash fort.",
+  "description": "Deterministische Composite-Chain. Jeder Commit schreibt Composite + Mood fort. Mood[N] != Mood[N-1] garantiert.",
   "chain": []
 }
