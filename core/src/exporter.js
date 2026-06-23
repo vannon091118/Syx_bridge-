@@ -78,6 +78,21 @@ async function writeTranslatedFile(fullPath, content, replacements, translations
   const { applyTranslations } = require('./text-core');
   let newContent = applyTranslations(content, replacements, translations, plugin);
 
+  // ── OVERWRITE-STRIP: Entferne __OVERWRITE: true Zeilen ──────────────
+  // __OVERWRITE: true ist eine V71-Engine-Direktive die SoS zwingt, die
+  // komplette Vanilla-Datei durch den Mod-Inhalt zu ERSETZEN. Das zerstört
+  // alle unübersetzten Keys → Rest fällt auf Englisch-Defaults → CRASH.
+  // SyxBridge arbeitet im Patch-Modus: nur übersetzte Keys werden ergänzt,
+  // Vanilla bleibt erhalten. Die Zeile MUSS entfernt werden.
+  // Siehe: BU-OVERWRITE-2026-06-22, 131 korrupte Dateien im Spiel.
+  if (newContent.includes('__OVERWRITE')) {
+    const before = newContent;
+    newContent = newContent.replace(/^__OVERWRITE:\s*true,?\s*\n/gm, '');
+    if (before !== newContent) {
+      console.log(`[OVERWRITE-STRIP] __OVERWRITE entfernt aus: ${path.basename(outputPath)}`);
+    }
+  }
+
   // ── BUG-FS-004: Syntax/Marker-Validierung VOR Header-Präfix ──────────
   // Vorher wurde __OVERWRITE: true,\n VOR der Validierung eingefügt.
   // validateFileSyntax() zählt KEY:-Zeilen per Regex und __OVERWRITE:

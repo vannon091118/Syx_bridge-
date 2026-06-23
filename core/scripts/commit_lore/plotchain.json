@@ -245,5 +245,92 @@
     "model_id": "mimo-v2.5-pro",
     "composite": "c31j90n2a4p15",
     "narrator": "Basher"
+  },
+  {
+    "p_id": "p24",
+    "id": "plot-2026-06-23T22:40:11",
+    "timestamp": "2026-06-23 22:40:11",
+    "summary": "Game-Crash Fix: 131 Dateien mit __OVERWRITE: true im SoS-Mod-Ordner. applyTranslations() entfernte die Zeile nie weil sie nur quoted Strings ersetzt. Fix: Regex-Strip in exporter.js writeTranslatedFile(). Neue Regenbogen-Farben fuer den Parser.",
+    "ref_to": "plot-2026-06-23T22:24:03",
+    "recent_commits": [
+      {
+        "hash": "a9ecfce",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c31j90n2a4p15] [MODEL:mimo-v2.5-pro] [IMPULSE:Commit Layer Scripts sind verpflichtend, die ",
+        "date": "2026-06-24 00:28:56 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json"
+        ]
+      },
+      {
+        "hash": "581c677",
+        "subject": "chore: screenshots restructured + compressed + README references updated",
+        "date": "2026-06-24 00:21:28 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "README.md",
+          "screenshots/garthimi-mixed.jpg",
+          "screenshots/gui-idle.png",
+          "screenshots/gui-running.png",
+          "screenshots/onari-de.jpg",
+          "screenshots/vargen-de.jpg"
+        ]
+      },
+      {
+        "hash": "0ac334b",
+        "subject": "chore: SSOT-Sync archive/docs/CHANGELOG.md mit Root (EXPORT-PIPELINE-FIX + NATIVE-MODE-FIX)",
+        "date": "2026-06-24 00:14:15 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "core/archive/docs/CHANGELOG.md"
+        ]
+      },
+      {
+        "hash": "dce6e5f",
+        "subject": "fix: countMatches missing export kills export pipeline + smoke-test assertions",
+        "date": "2026-06-24 00:12:48 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/src/context-packets.js",
+          "core/tests/plugin-boundary-smoke.js"
+        ]
+      },
+      {
+        "hash": "2899d72",
+        "subject": "Glue, Coffee, and Three Diagrams Walk Into a Repo",
+        "date": "2026-06-23 23:58:56 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "README.md",
+          "_Info.txt",
+          "core/archive/docs/CHANGELOG.md"
+        ]
+      }
+    ],
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md",
+        "insertions": 14,
+        "deletions": 0
+      },
+      {
+        "file": "core/src/exporter.js",
+        "insertions": 15,
+        "deletions": 0
+      }
+    ],
+    "causal_chain_summary": [
+      "a9ecfce: [NARRATOR:Basher] [COMPOSITE:c31j90n2a4p15] [MODEL:mimo-v2.5-pro] [IMPULSE:Commit Layer Scripts sind verpflichtend, die ",
+      "581c677: chore: screenshots restructured + compressed + README references updated",
+      "0ac334b: chore: SSOT-Sync archive/docs/CHANGELOG.md mit Root (EXPORT-PIPELINE-FIX + NATIVE-MODE-FIX)",
+      "dce6e5f: fix: countMatches missing export kills export pipeline + smoke-test assertions",
+      "2899d72: Glue, Coffee, and Three Diagrams Walk Into a Repo"
+    ],
+    "model_id": "mimo-v2.5-pro"
   }
 ]

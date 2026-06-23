@@ -5,6 +5,21 @@
 
 ---
 
+## [OVERWRITE-CRASH-FIX] — 2026-06-24 — __OVERWRITE: true Game-Crash Fix
+
+> **Composite:** `c31j96n2a3p9`
+> **Task:** Game-Crash behoben — Songs of Syx crashte nach SyxBridge-Sync.
+> **Warum:** 131 Dateien im SoS-Mod-Ordner enthielten `__OVERWRITE: true` (V71-Engine-Direktive). SoS ersetzte dadurch die komplette Vanilla-Datei durch den Mod-Inhalt — alle unübersetzten Keys fielen auf Englisch-Defaults zurück → Crash. Der vorherige Fix (SongsOfSyxPlugin.getFileHeader() → '') verhinderte nur NEUE __OVERWRITE-Header, entfernte aber nicht bestehende aus kopierten Originaldateien.
+> **Dateien:** `core/src/exporter.js`
+
+### exporter.js — __OVERWRITE-Strip in writeTranslatedFile()
+- `applyTranslations()` ersetzt nur quoted Strings — `__OVERWRITE: true,` (unquoted) blieb erhalten
+- Runtime-ops.js kopiert ALLE Originaldateien nach staging → __OVERWRITE persistierte durch die gesamte Pipeline
+- **Fix:** Regex `^__OVERWRITE:\s*true,?\s*\n` entfernt die Zeile nach applyTranslations(), vor validateAndPrepareContent()
+- **Verifikation:** 100/100 plugin-boundary, 49/49 validator, 26/26 parser PASS. Code-Review: Ship it.
+
+---
+
 ## [EXPORT-PIPELINE-FIX] — 2026-06-24 — countMatches Missing Export + Smoke-Test Assertions
 
 > **Task:** Export-Pipeline Killer Bug gefixt — Workshop-Output war komplett leer.
