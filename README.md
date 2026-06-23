@@ -110,14 +110,14 @@ Each provider has a **Capability Matrix** — it knows whether it can translate,
 <td align="center" width="50%">
 
 **Idle Mode · DB Browser**
-![Dashboard Idle](GUI.png)
+![Dashboard Idle](screenshots/gui-idle.png)
 *Browse your 3,200+ cached translations. Edit entries. Check provider health. See what's cached.*
 
 </td>
 <td align="center" width="50%">
 
 **Run Mode · Live Terminal**
-![Dashboard Running](Screenshot%202026-06-22%20233836.png)
+![Dashboard Running](screenshots/gui-running.png)
 *Watch the AI work in real time. Live prompts, responses, progress bars. No black box.*
 
 </td>
@@ -130,19 +130,19 @@ Each provider has a **Capability Matrix** — it knows whether it can translate,
 <tr>
 <td align="center" width="33%">
 
-![Vargen DE](Screenshot%202026-06-22%20234147.png)
+![Vargen DE](screenshots/vargen-de.jpg)
 *Vargen — full species screen, DE*
 
 </td>
 <td align="center" width="33%">
 
-![Garthimi mixed](Screenshot%202026-06-22%20234157.png)
+![Garthimi mixed](screenshots/garthimi-mixed.jpg)
 *Garthimi — partial (not yet cached)*
 
 </td>
 <td align="center" width="33%">
 
-![Onari DE](Screenshot%202026-06-22%20234221.png)
+![Onari DE](screenshots/onari-de.jpg)
 *Onari — traits + UI, smooth.*
 
 </td>
@@ -385,14 +385,14 @@ flowchart TD
 <td align="center" width="50%">
 
 **Idle-Modus · DB-Browser**
-![Dashboard Idle](GUI.png)
+![Dashboard Idle](screenshots/gui-idle.png)
 *Deine 3.200+ gecachten Übersetzungen. Einträge bearbeiten. Provider-Status einsehen.*
 
 </td>
 <td align="center" width="50%">
 
 **Run-Modus · Live-Terminal**
-![Dashboard Running](Screenshot%202026-06-22%20233836.png)
+![Dashboard Running](screenshots/gui-running.png)
 *Die KI live bei der Arbeit zusehen. Keine Blackbox.*
 
 </td>
@@ -405,19 +405,19 @@ flowchart TD
 <tr>
 <td align="center" width="33%">
 
-![Vargen DE](Screenshot%202026-06-22%20234147.png)
+![Vargen DE](screenshots/vargen-de.jpg)
 *Vargen — komplett übersetzt*
 
 </td>
 <td align="center" width="33%">
 
-![Garthimi gemischt](Screenshot%202026-06-22%20234157.png)
+![Garthimi gemischt](screenshots/garthimi-mixed.jpg)
 *Garthimi — Teilübersetzung (noch nicht gecacht)*
 
 </td>
 <td align="center" width="33%">
 
-![Onari DE](Screenshot%202026-06-22%20234221.png)
+![Onari DE](screenshots/onari-de.jpg)
 *Onari — UI + Traits, sauber.*
 
 </td>
