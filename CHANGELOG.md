@@ -72,6 +72,14 @@ VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturier
 - **Nächste Phasen:** CHANGELOG-Anker, verify_commit_msg.js Composite-Validierung, lore_arcs A1..A4, plotchain p_id
 - **Dateien:** `core/scripts/commit_lore/rng.js` (NEU), `core/scripts/commit_lore/composite_chain.json` (NEU), `core/scripts/commit_lore/narrative_params.json` (NEU), `core/archive/docs/plans/PLAN_COMMIT_LAYER_RNG.md` (NEU)
 
+### CL-RNG Phase 2: lore_arcs A1..A5 + plotchain p_id + update_plot Extensibility
+- **lore_arcs.json:** Von nested active_arc/archive → flache arcs-Map mit A1..A5 Keys. `active`-Pointer zeigt auf "a5"
+- **plotchain.json:** Alle 17 Nodes mit `p_id` Feld annotiert (p1..p17), `id` backward-kompatibel erhalten
+- **update_plot.js:** p_id Auto-Assignment (letzter Node + 1), `--composite` Parameter geparst + im Node gespeichert
+- **rng.js Extensibility:** `COMPOSITE_FORMAT` Array — neue Entitätstypen per Eintrag hinzufügbar. `parseComposite()` + `buildComposite()` generisch. `derive()` mit `limits`-Objekt + Backward-Compat für alte `(prev, hash, arcCount, plotCount)` Signatur. `decodeJ(j, params)` lädt Töne/Strukturen dynamisch aus narrative_params.json — neue Narrative ohne Code-Änderung
+- **Review:** deepseek approved (4 Issues gefunden + alle gefixt: --composite parsing, composite im Node, derive Backward-Compat, decodeJ numerischer Sort)
+- **Dateien:** `core/scripts/commit_lore/lore_arcs.json`, `core/scripts/commit_lore/plotchain.json`, `core/scripts/commit_lore/update_plot.js`, `core/scripts/commit_lore/rng.js`
+
 ---
 
 ## [v0.22.0-GUI-UPDATE] — 2026-06-23 — GUI v0.22.0 + README Global Rewrite

@@ -63,73 +63,139 @@ class XorShift128 {
   }
 }
 
-// ─── Composite Derivation ────────────────────────────────────────────
-// Leitet den nächsten Composite-Hash aus dem vorherigen Composite +
-// dem aktuellen Commit-Hash ab.
+// ─── Composite Format ────────────────────────────────────────────────
+// Erweiterbar: Neue Entitätstypen einfach hier ergänzen.
+// Jeder Eintrag: { key, prefix, source } — source = 'sequence' | 'rng'
+
+const COMPOSITE_FORMAT = [
+  { key: 'c', prefix: 'c', source: 'sequence' },
+  { key: 'j', prefix: 'j', source: 'rng', poolSize: 100 },
+  { key: 'a', prefix: 'a', source: 'rng' },
+  { key: 'p', prefix: 'p', source: 'rng' }
+];
 
 /**
- * @param {string} prevComposite - Vorheriger Composite, z.B. "c4j12a3p7" oder Genesis "c0j0a0p0"
- * @param {string} commitHash    - Aktueller Git-Commit-Hash (kurz), z.B. "a6af87a"
- * @param {number} arcCount      - Anzahl der Arcs in lore_arcs.json
- * @param {number} plotCount     - Anzahl der Plot-Nodes in plotchain.json
- * @returns {{ composite: string, c: number, j: number, a: number, p: number, seed: number }}
+ * Parst einen Composite-String in seine Bestandteile.
+ * @param {string} composite - z.B. "c5j3a2p8"
+ * @returns {Object} Key-Value Map, z.B. {c:5, j:3, a:2, p:8}
  */
-function derive(prevComposite, commitHash, arcCount, plotCount) {
+function parseComposite(composite) {
+  const result = {};
+  for (const field of COMPOSITE_FORMAT) {
+    const regex = new RegExp(field.prefix + '(\\d+)');
+    const match = composite.match(regex);
+    result[field.key] = match ? parseInt(match[1]) : 0;
+  }
+  return result;
+}
+
+/**
+ * Baut einen Composite-String aus einer Key-Value Map.
+ * @param {Object} parts - z.B. {c:5, j:3, a:2, p:8}
+ * @returns {string} "c5j3a2p8"
+ */
+function buildComposite(parts) {
+  return COMPOSITE_FORMAT
+    .filter(f => parts[f.key] !== undefined)
+    .map(f => f.prefix + parts[f.key])
+    .join('');
+}
+
+// ─── Composite Derivation ────────────────────────────────────────────
+
+/**
+ * Leitet den nächsten Composite aus dem vorherigen + Commit-Hash ab.
+ * Nutzt COMPOSITE_FORMAT — neue Felder werden automatisch mitverarbeitet.
+ *
+ * @param {string} prevComposite - z.B. "c4j12a3p7" oder Genesis "c0j0a0p0"
+ * @param {string} commitHash    - Aktueller Git-Commit-Hash
+ * @param {Object} limits        - z.B. {a: 5, p: 17} — RNG-Felder bekommen ihre Pool-Größen
+ * @returns {{ composite: string, seed: number }}
+ */
+function derive(prevComposite, commitHash, limitsOrArcCount, plotCount) {
   if (!commitHash) {
     throw new Error('derive: commitHash ist Pflichtfeld. Kann nicht undefined oder leer sein.');
   }
+
+  // Backward-Compat: alter Aufruf derive(prev, hash, arcCount, plotCount)
+  let limits = limitsOrArcCount;
+  if (typeof limitsOrArcCount === 'number') {
+    limits = { a: limitsOrArcCount, p: plotCount || 1 };
+  } else if (!limitsOrArcCount) {
+    limits = {};
+  }
+
+  const prev = parseComposite(prevComposite);
   const seed = djb2(prevComposite + commitHash);
   const rng = new XorShift128(seed);
 
-  // C: Sequenznummer aus vorherigem Composite parsen
-  const cMatch = prevComposite.match(/c(\d+)/);
-  const prevC = cMatch ? parseInt(cMatch[1]) : 0;
-  const nextC = prevC + 1;
+  const next = {};
 
-  // J: 1..99 (narrative Anweisung)
-  const nextJ = rng.nextInt(1, 100);
-
-  // A: 1..arcCount
-  const nextA = arcCount > 0 ? rng.nextInt(1, arcCount + 1) : 1;
-
-  // P: 1..plotCount
-  const nextP = plotCount > 0 ? rng.nextInt(1, plotCount + 1) : 1;
+  for (const field of COMPOSITE_FORMAT) {
+    if (field.source === 'sequence') {
+      // Sequenz-Felder: vorheriger Wert + 1
+      next[field.key] = (prev[field.key] || 0) + 1;
+    } else if (field.source === 'rng') {
+      // RNG-Felder: deterministisch aus Pool-Größe ziehen
+      const max = (limits[field.key] !== undefined)
+        ? limits[field.key]
+        : (field.poolSize || 100);
+      next[field.key] = max > 0 ? rng.nextInt(1, max + 1) : 1;
+    }
+  }
 
   return {
-    composite: `c${nextC}j${nextJ}a${nextA}p${nextP}`,
-    c: nextC,
-    j: nextJ,
-    a: nextA,
-    p: nextP,
-    seed
+    composite: buildComposite(next),
+    seed,
+    ...next
   };
 }
 
 // ─── Narrative Dekodierung ───────────────────────────────────────────
 
+// Built-in Defaults (gespiegelt aus narrative_params.json).
+// Werden überschrieben wenn der Caller narrativeParams übergibt.
+const DEFAULT_TONES = ['sachlich', 'sarkastisch', 'erschöpft', 'triumphierend',
+  'selbstironisch', 'neugierig', 'müde-zufrieden', 'alarmiert', 'trocken', 'warm'];
+const DEFAULT_STRUCTURES = ['chronologisch', 'problem_lösung', 'flashback',
+  'dialog', 'faktenliste'];
+
 /**
  * Dekodiert j-Wert in narrative Anweisung.
- * Arrays gespiegelt aus narrative_params.json (kanonische Referenz).
+ *
  * @param {number} j - j-Wert (0 für Genesis, 1-99 für Commits)
+ * @param {Object} [params] - Optional: geladen aus narrative_params.json.
+ *   Wenn nicht übergeben, werden Built-in Defaults verwendet.
+ *   Neue Töne/Strukturen in narrative_params.json werden automatisch genutzt.
  * @returns {{ tone: string, structure: string, callback: boolean }}
  */
-function decodeJ(j) {
-  // j=0 ist Genesis-Composite — kein narrativer Commit
+function decodeJ(j, params) {
   if (j === 0) {
     return { tone: 'genesis', structure: 'genesis', callback: false };
   }
 
-  // Kanonische Arrays — gespiegelt aus narrative_params.json
-  const TONES = ['sachlich', 'sarkastisch', 'erschöpft', 'triumphierend',
-    'selbstironisch', 'neugierig', 'müde-zufrieden', 'alarmiert', 'trocken', 'warm'];
-  const STRUCTURES = ['chronologisch', 'problem_lösung', 'flashback',
-    'dialog', 'faktenliste'];
+  // Töne: Entweder aus params oder Built-in Defaults
+  let tones = DEFAULT_TONES;
+  let structures = DEFAULT_STRUCTURES;
+
+  if (params && params.decoding) {
+    // Extrahiere Töne aus narrative_params.json (erweiterbar)
+    if (params.decoding.tone && params.decoding.tone.values) {
+      const toneKeys = Object.keys(params.decoding.tone.values).sort((a, b) => Number(a) - Number(b));
+      tones = toneKeys.map(k => params.decoding.tone.values[k].tone);
+    }
+    // Extrahiere Strukturen aus narrative_params.json (erweiterbar)
+    if (params.decoding.structure && params.decoding.structure.values) {
+      const structKeys = Object.keys(params.decoding.structure.values).sort((a, b) => Number(a) - Number(b));
+      structures = structKeys.map(k => params.decoding.structure.values[k].structure);
+    }
+  }
 
   return {
-    tone: TONES[j % 10],
-    structure: STRUCTURES[j % 5],
+    tone: tones[j % tones.length],
+    structure: structures[j % structures.length],
     callback: j > 50
   };
 }
 
-module.exports = { djb2, XorShift128, derive, decodeJ };
+module.exports = { djb2, XorShift128, derive, decodeJ, parseComposite, buildComposite, COMPOSITE_FORMAT };

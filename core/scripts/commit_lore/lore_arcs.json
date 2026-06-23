@@ -1,32 +1,42 @@
 {
-  "description": "Versionsbasierte Arcs. Jeder Arc repraesentiert eine Projekt-Phase. Alte Arcs sind archiviert.",
-  "active_arc": {
-    "id": "v0.22-stabilisierung",
-    "name": "v0.22 Stabilisierung",
-    "theme": "Cleanup, Konsolidierung und Stabilisierung des Systems nach dem massiven v0.21 Audit. Repo aufraeumen, Commit-Layer vereinfachen, Doku-Struktur schaffen.",
-    "version": "v0.22",
-    "span": "2026-06-22 -> heute"
-  },
-  "archive": {
-    "tower-of-babel": {
+  "description": "Arcs als abstrakte ID-Map (A1..AN). Jeder Arc repräsentiert eine Projekt-Phase. Der aktive Arc ist über 'active' referenziert.",
+  "active": "a5",
+  "arcs": {
+    "a1": {
+      "id": "a1",
       "name": "Der Turmbau zu Babel",
       "version": "v0.19-v0.20",
-      "theme": "Aus 'drei Schritte' wurde ein KI-Uebersetzungssystem mit 9 Providern, Web-Dashboard und Watermark-Defense."
+      "theme": "Aus 'drei Schritte' wurde ein KI-Übersetzungssystem mit 9 Providern, Web-Dashboard und Watermark-Defense.",
+      "status": "archived"
     },
-    "invisible-enemies": {
+    "a2": {
+      "id": "a2",
       "name": "Die unsichtbaren Feinde",
       "version": "v0.20-v0.21",
-      "theme": "Watermarks, stille Catches, Bugs die wochenlang unentdeckt blieben."
+      "theme": "Watermarks, stille Catches, Bugs die wochenlang unentdeckt blieben.",
+      "status": "archived"
     },
-    "great-cleanup": {
-      "name": "Die grosse Aufraeumaktion",
+    "a3": {
+      "id": "a3",
+      "name": "Die große Aufräumaktion",
       "version": "v0.21-v0.22",
-      "theme": "Doku-Konsolidierung, Dead-Code-Exorzismus, Architektur-Korrekturen."
+      "theme": "Doku-Konsolidierung, Dead-Code-Exorzismus, Architektur-Korrekturen.",
+      "status": "archived"
     },
-    "user-knows-best": {
-      "name": "Der User weiss es besser",
+    "a4": {
+      "id": "a4",
+      "name": "Der User weiß es besser",
       "version": "v0.20-heute",
-      "theme": "Vannons Architektur-Korrekturen die sich jedes Mal als richtig erwiesen."
+      "theme": "Vannons Architektur-Korrekturen die sich jedes Mal als richtig erwiesen.",
+      "status": "archived"
+    },
+    "a5": {
+      "id": "a5",
+      "name": "v0.22 Stabilisierung",
+      "version": "v0.22",
+      "theme": "Cleanup, Konsolidierung und Stabilisierung des Systems nach dem massiven v0.21 Audit. Repo aufräumen, Commit-Layer vereinfachen, Doku-Struktur schaffen.",
+      "span": "2026-06-22 → heute",
+      "status": "active"
     }
   }
 }

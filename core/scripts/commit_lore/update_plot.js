@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 /**
- * update_plot.js — Vereinfachter Plot-Chain Writer (v0.22a)
+ * update_plot.js — Plot-Chain Writer (v0.23a)
  * 
- * Fuegt EINEN minimalen Eintrag zur plotchain.json hinzu.
- * Format: { id, timestamp, summary, ref_to }
+ * Fuegt EINEN Eintrag zur plotchain.json hinzu.
+ * Format: { p_id, id, timestamp, summary, ref_to, [model_id] }
  * 
+ * p_id wird automatisch aus dem letzten Node abgeleitet (p{N+1}).
  * Optional: Haengt Dialog an PLOT_LORE.md an.
  * Optional: --ref=<id> fuer freiwaehlbaren Rueckbezug.
+ * Optional: --composite=<hash> fuer Composite-Hash (c5j3a2p8).
  * 
  * USAGE:
  *   node update_plot.js "Kurze Zusammenfassung was passiert ist"
  *   node update_plot.js "Zusammenfassung" --ref=plot-2026-06-22T20:00:00
  *   node update_plot.js "Zusammenfassung" --lore="Dialog-Text fuer PLOT_LORE.md"
  *   node update_plot.js "Zusammenfassung" --model=mimo-v2.5-pro
+ *   node update_plot.js "Zusammenfassung" --composite=c5j3a2p8
  */
 
 const fs = require('fs');
@@ -38,6 +41,7 @@ let summary = '';
 let refTo = null;
 let loreText = null;
 let modelId = null;
+let compositeId = null;
 
 for (const arg of args) {
   if (arg.startsWith('--ref=')) {
@@ -46,6 +50,8 @@ for (const arg of args) {
     loreText = arg.slice('--lore='.length);
   } else if (arg.startsWith('--model=')) {
     modelId = arg.slice('--model='.length);
+  } else if (arg.startsWith('--composite=')) {
+    compositeId = arg.slice('--composite='.length);
   } else if (!arg.startsWith('--')) {
     if (!summary) summary = arg;
   }
@@ -79,7 +85,15 @@ const parentId = lastNode ? lastNode.id : 'none';
 // ref_to: Frei waehlbar. Wenn nicht angegeben, automatisch letzter Node.
 const refToResolved = refTo || parentId;
 
+// p_id automatisch ableiten: letzter Node + 1
+let pId = 'p1';
+if (lastNode && lastNode.p_id) {
+  const lastNum = parseInt(lastNode.p_id.slice(1));
+  if (!isNaN(lastNum)) pId = `p${lastNum + 1}`;
+}
+
 const newNode = {
+  p_id: pId,
   id: nodeId,
   timestamp: isoTimestamp.replace('T', ' '),
   summary: summary,
@@ -91,11 +105,17 @@ if (modelId) {
   newNode.model_id = modelId;
 }
 
+// Optional: Composite-Hash im Node speichern
+if (compositeId) {
+  newNode.composite = compositeId;
+}
+
 plotchain.push(newNode);
 fs.writeFileSync(plotchainPath, JSON.stringify(plotchain, null, 2), 'utf8');
-console.log(`Plot-Knoten ${nodeId} gespeichert.`);
+console.log(`Plot-Knoten ${nodeId} (${pId}) gespeichert.`);
 console.log(`  Zusammenfassung: "${summary.substring(0, 80)}${summary.length > 80 ? '...' : ''}"`);
 console.log(`  Verweis auf: ${refToResolved}`);
+if (compositeId) console.log(`  Composite: ${compositeId}`);
 
 // ─── Optional: PLOT_LORE.md Dialog anhaengen ───────────────────────
 if (loreText) {

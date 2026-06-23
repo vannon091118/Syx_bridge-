@@ -1,77 +1,90 @@
 [
   {
+    "p_id": "p1",
     "id": "plot-2026-06-14T10:00:00",
     "timestamp": "2026-06-14 10:00:00",
     "summary": "Erster Prototyp — Mod-Scan und erste API-Integration.",
     "ref_to": "none"
   },
   {
+    "p_id": "p2",
     "id": "plot-2026-06-19T08:00:00",
     "timestamp": "2026-06-19 08:00:00",
     "summary": "Der grosse Audit — 20 systemische Befunde, 15 davon echt.",
     "ref_to": "plot-2026-06-14T10:00:00"
   },
   {
+    "p_id": "p3",
     "id": "plot-2026-06-20T12:00:00",
     "timestamp": "2026-06-20 12:00:00",
     "summary": "better-sqlite3 Migration, 15 systemische Fixes, Plugin-Architektur abgeschlossen.",
     "ref_to": "plot-2026-06-19T08:00:00"
   },
   {
+    "p_id": "p4",
     "id": "plot-2026-06-21T04:00:00",
     "timestamp": "2026-06-21 04:00:00",
     "summary": "Merge auf main, ESLint 0-Error, Livetest bestanden.",
     "ref_to": "plot-2026-06-20T12:00:00"
   },
   {
+    "p_id": "p5",
     "id": "plot-2026-06-21T08:00:00",
     "timestamp": "2026-06-21 08:00:00",
     "summary": "Runtime Score Dashboard, PLAN_MASTER Cleanup, README Update.",
     "ref_to": "plot-2026-06-21T04:00:00"
   },
   {
+    "p_id": "p6",
     "id": "plot-2026-06-21T12:00:00",
     "timestamp": "2026-06-21 12:00:00",
     "summary": "Live-Run 5 Mods — 440 Uebersetzungen, 0 Watermarks. Dann: Filter-Katastrophe entdeckt.",
     "ref_to": "plot-2026-06-21T08:00:00"
   },
   {
+    "p_id": "p7",
     "id": "plot-2026-06-22T11:00:00",
     "timestamp": "2026-06-22 11:00:00",
     "summary": "Item 4: Fuenf Thin-Wrapper entfernt. Item 2: Deep Polish Defense aktiviert. Item 3/9: String-Heuristik beerdigt.",
     "ref_to": "plot-2026-06-21T12:00:00"
   },
   {
+    "p_id": "p8",
     "id": "plot-2026-06-22T14:00:00",
     "timestamp": "2026-06-22 14:00:00",
     "summary": "Commit-Layer Rewrite, Lore-Overhaul, Arc-System, Cross-References.",
     "ref_to": "plot-2026-06-22T11:00:00"
   },
   {
+    "p_id": "p9",
     "id": "plot-2026-06-22T16:00:00",
     "timestamp": "2026-06-22 16:00:00",
     "summary": "v0.22 Bump, Watermark-Strip Helper zentralisiert, C-002 DEFAULT_GAME.",
     "ref_to": "plot-2026-06-22T14:00:00"
   },
   {
+    "p_id": "p10",
     "id": "plot-2026-06-22T20:00:00",
     "timestamp": "2026-06-22 20:00:00",
     "summary": "P0/P1/P2 Haertung aus Live-Run-Log. Ueberwrite-Critical-Fix. v0.22 Release.",
     "ref_to": "plot-2026-06-22T16:00:00"
   },
   {
+    "p_id": "p11",
     "id": "plot-2026-06-23T00:00:00",
     "timestamp": "2026-06-23 00:00:00",
     "summary": "Git-Reparatur, Doku-Abgleich, v0.22 von GitHub gezogen.",
     "ref_to": "plot-2026-06-22T20:00:00"
   },
   {
+    "p_id": "p12",
     "id": "plot-2026-06-23T14:00:00",
     "timestamp": "2026-06-23 14:00:00",
     "summary": "V0.22a Branch erstellt, Doku-Bereinigung, Commit-Layer vereinfacht.",
     "ref_to": "plot-2026-06-23T00:00:00"
   },
   {
+    "p_id": "p13",
     "id": "plot-2026-06-23T15:33:05",
     "timestamp": "2026-06-23 15:33:05",
     "summary": "Commit-Layer vereinfacht: writing_rules, lore_arcs, plotchain, verify_commit_msg, update_plot",
@@ -79,6 +92,7 @@
     "model_id": "mimo-v2.5-pro"
   },
   {
+    "p_id": "p14",
     "id": "plot-2026-06-23T17:43:12",
     "timestamp": "2026-06-23 17:43:12",
     "summary": "R-VAL und R-SHIELD implementiert: Plugin-Delegation fuer validateFileSyntax und shieldPlaceholders. RimWorldPlugin Stub erstellt. Vendor-utils extrahiert. MaskKey dedupliziert. SafeRecord konsolidiert. Text-prompts extrahiert. Translation-phases extrahiert. P0 komplett, P1 fast komplett -- nur R-DB offen. 73 Prozent Plan-Fortschritt.",
@@ -86,6 +100,7 @@
     "model_id": "mimo-v2.5-pro"
   },
   {
+    "p_id": "p15",
     "id": "plot-2026-06-23T18:22:47",
     "timestamp": "2026-06-23 18:22:47",
     "summary": "C-001 export_stage2 Deduplizierung, R-006 countMatches Konsolidierung, S-002 ESLint Verifikation, Session-Analyse 5 Chunks",
@@ -93,6 +108,7 @@
     "model_id": "mimo-v2.5-pro"
   },
   {
+    "p_id": "p16",
     "id": "plot-2026-06-23T18:39:48",
     "timestamp": "2026-06-23 18:39:48",
     "summary": "AGENTS.md v0.23 Restructurierung: User-Vorgaben getrennt von Agent-Regeln, CHANGELOG-Persistenz Pflicht, Commit+Push Pflicht, Sub-Agent Kausalitaets-Pruefung, VISION.md Multi-Game Scope, C-001 R-006 S-002 abgeschlossen",
@@ -100,10 +116,20 @@
     "model_id": "mimo-v2.5-pro"
   },
   {
+    "p_id": "p17",
     "id": "plot-2026-06-23T19:16:00",
     "timestamp": "2026-06-23 19:16:00",
     "summary": "CL-RNG: Deterministischer Commit-Layer RNG — XorShift128 + djb2 + derive() + Composite-Hash-System (c5j3a2p8). rng.js, composite_chain.json, narrative_params.json, PLAN_COMMIT_LAYER_RNG.md. Genesis c0j0a0p0. Standalone im commit_lore Folder. ID-System: C1..CN, P1..PN, A1..AN, J1..J99.",
     "ref_to": "plot-2026-06-23T18:39:48",
     "model_id": "deepseek-v4-pro"
+  },
+  {
+    "p_id": "p18",
+    "id": "plot-2026-06-23T19:24:57",
+    "timestamp": "2026-06-23 19:24:57",
+    "summary": "CL-RNG Phase 2: lore_arcs A1..A5 flache arcs-Map, plotchain.json p1..p17 p_id Annotation, update_plot.js p_id Auto-Assignment + --composite, rng.js COMPOSITE_FORMAT + parseComposite/buildComposite + limits-derive + params-decodeJ. Extensible Pattern fuer neue Narrative und Entitaetstypen.",
+    "ref_to": "plot-2026-06-23T19:16:00",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c1j94a5p12"
   }
 ]
