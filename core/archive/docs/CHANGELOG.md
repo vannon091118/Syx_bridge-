@@ -5,6 +5,181 @@
 
 ---
 
+## [COMMIT-LAYER-CAUSALITY] — 2026-06-23 — Devin PR #7: Commit-Layer Causality-System
+> **Composite:** `c31j12n3a3p4`
+
+> **Merge:** `b9a2f0c` (PR #7 `devin/1750716929-fix-commit-layer-causality`)
+> **Rebase:** `d33e184` (rebased auf v0.23a)
+> **Fusion:** `c0f86f1` (PR #8 v23a→main)
+
+### Causal-Context-System für Commit-Layer
+- **get_sidejoke.js:** Zeigt jetzt Causal Context — letzte 5 Commits (Hash + Subject) und Diff-Statistiken (Insertions/Deletions pro Datei) aus `plotchain.json`. Fallback auf `git log` wenn plotchain leer.
+- **update_plot.js:** Sammelt `git diff --numstat` (staged + unstaged) und Metadaten der letzten 5 Commits (hash, subject, date, author, touched files). Speichert `recent_commits`, `data_changes` und `causal_chain_summary` im neuen Plotchain-Node.
+- **verify_commit_msg.js:** **CHECK 6 (KAUSALITÄT)** — prüft ob Commit-Text auf letzte 5 Commits, deren Subjects oder betroffene Dateien referenziert. Gibt `KAUSALITÄTS-HINWEIS` bei fehlenden Referenzen aus (nicht blockierend, nur Warnung). Zusammenfassung am Ende: referenzierbare Commits + Gesamtzeilenänderungen.
+- **Architektur:** Commit-Text soll narrativ auf die Repo-Geschichte eingehen — jeder Commit referenziert was davor passiert ist. Deterministisch, kein externer Input, reine Git-History.
+- **Dateien:** `core/scripts/commit_lore/get_sidejoke.js`, `core/scripts/commit_lore/update_plot.js`, `core/scripts/verify_commit_msg.js`
+
+---
+
+## [v0.23a-SESSION] — 2026-06-23 — P4 Tasks + Tiefenanalyse + VISION + AGENTS Restructurierung
+
+### Repo-Cleanup: test_mods/, backups/, backup.json aus Git-Tracking entfernt
+> **Commit:** `<hash>` | **Composite:** `c1j57a3p17`
+
+- 14 Dateien via `git rm --cached` aus dem Tracking genommen (bleiben lokal erhalten)
+- `.gitignore` erweitert: `test_mods/`, `SyxBridge_*.zip`, `*.backup.json`, `core/.test_commit_bad.txt`
+- **Dateien:** `.gitignore`
+
+
+### CL-RNG PLOT_LORE Composite-Annotation: [pN] → [COMPOSITE:cXjXaXpX]
+> **Commit:** `<hash>` | **Composite:** `c1j53a3p5`
+
+- **annotate_plot_lore.js:** Neues CLI-Script — liest plotchain.json → baut p_id→composite Map, annotiert `###`-Header in PLOT_LORE.md mit `[COMPOSITE:cXjXaXpX]` wenn vorhanden. Nur Nodes mit Composite werden annotiert (kein [pre-composite]-Noise). Idempotent (überspringt bereits annotierte Header).
+- **update_plot.js:** `--lore` Modus schreibt jetzt `[p{N}][COMPOSITE:...]` in den PLOT_LORE-Header — konsistent mit dem Annotation-Format
+- **PLOT_LORE.md:** p18 und p19 Einträge erstellt + annotiert: `[p18][COMPOSITE:c1j94a5p12]` (Phase 2) und `[p19][COMPOSITE:c1j65a2p9]` (Phase 3)
+- **65 weitere Header** mit [p1]..[p20] bleiben unverändert (kein Composite vorhanden, kein Noise)
+- **Dateien:** `core/scripts/commit_lore/annotate_plot_lore.js` (NEU), `core/scripts/commit_lore/update_plot.js`, `core/archive/docs/PLOT_LORE.md`
+
+
+**Scope:** Letzte offene P4-Architektur-Tasks abgeschlossen, vollständige Codebase-Tiefenanalyse,
+VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturiert.
+
+### C-001: export_stage2.js Deduplizierung
+- `validateAndPrepareContent()` in exporter.js extrahiert (shared validation + plugin header)
+- ~40 Zeilen Duplikation zwischen export_stage2.js und exporter.js eliminiert
+- Bugfix: export_stage2.js übergab `null` statt `translations` an validateFileMarkers → `__shieldResults` wurde nie geprüft
+- `writeTranslatedFile()` nutzt jetzt die shared function, behält safeRecord-Calls
+- **Dateien:** `core/src/exporter.js`, `core/scripts/export_stage2.js`
+
+### R-006: countMatches Konsolidierung
+- `countMatches()` aus context-packets.js in validator.js importiert
+- 10 inline `(x.match(regex) || []).length` Patterns über 3 Funktionen ersetzt
+- Funktionen: classifyStructureIssues (2), validateFileSyntax (4), getQaScore (4)
+- Bonus: Null-Safety durch `String(text || '')` Wrapper
+- **Dateien:** `core/src/validator.js`
+
+### S-002: ESLint-Verifikation vendor-utils.js
+- vendor-utils.js: ESLint 0 Errors, 0 Warnings
+- Config liegt in `core/` (nicht Root) — war Ursache der früheren Fehlversuche
+- **Dateien:** `core/scripts/vendor-utils.js` (keine Änderung, nur Verifikation)
+
+### Tiefenanalyse (5 Chunks, 22 Dateien, 2 unabhängige Agents pro Chunk)
+- Falsifizierungs-Analyse über alle Session-Änderungen: 0 kritische Bugs, 4 medium/low Findings
+- Cross-Reference-Matrix: 33 Dateien, 243 Funktionen, vollständiger Dependency-Graph
+- 10 Anomalien identifiziert: 3 DEAD_CODE, 4 DRIFT, 2 OVERCOMPLEX, 2 ARCHITECTURE_ARTIFACT, 1 UNFINISHED
+- Quick-Fixes: A-01 (text-core redundanter Import), A-05 (runtime-ops safeRecord), A-10 (SongsOfSyxPlugin unused Import)
+- **Dateien:** Analyse-only, keine Code-Änderungen
+
+### VISION.md — Multi-Game Langzeit-Scope (READ-ONLY)
+- RimWorld, Kenshi, Stardew Valley als geplante Game-Supports
+- Mod-Loader (DAG-basierte Load-Order), Mod-Browser (SteamCMD, NexusMods, Mod.io)
+- Capability-Pattern statt Vererbung als Architektur-Empfehlung
+- 5 Phasen-Roadmap definiert
+- Ausgeschlossen vom Upload via .gitignore
+- **Dateien:** `VISION.md` (NEU), `.gitignore`
+
+### AGENTS.md Restructurierung (v0.23.0)
+- User-Vorgaben getrennt von Agent-Regeln (TEIL 1 vs TEIL 2+)
+- Neue Regeln: CHANGELOG-Persistenz (U-2), Commit+Push Pflicht (U-1), Code-Review Pflicht (U-3)
+- Sub-Agent Kausalitäts-Prüfung mit Unterbrechungsrecht (U-5)
+- Standalone Commit Layer: Tasks NAMENTLICH erwähnen (U-6)
+- 12 Teile statt lose Sektionen
+- **Dateien:** `AGENTS.md`
+
+### PLAN.md Aktualisierung
+- C-001 als erledigt markiert (86% → 88% Fortschritt)
+- S-002 ESLint-Verifikation nachgetragen
+- R-006 countMatches Konsolidierung nachgetragen
+- **Dateien:** `PLAN.md`
+
+### CL-RNG: Commit-Layer RNG — deterministisch, abstrakte IDs, Composite-Hash
+- **Plan:** `core/archive/docs/plans/PLAN_COMMIT_LAYER_RNG.md` — vollständige Architektur
+- **rng.js:** XorShift128 (32-bit) + djb2 + derive() + decodeJ() — kein Math.random(), kein crypto
+- **composite_chain.json:** Genesis-Composite `c0j0a0p0`, Chain als `[{seq, composite, commitHash}]`
+- **narrative_params.json:** j-Wert-Dekodierung (Ton, Struktur, Rückbezug) — kanonische Referenz
+- **ID-System:** C1..CN (Commits), P1..PN (Plots), A1..AN (Arcs), J1..J99 (narrative Anweisungen)
+- **Composite-Hash:** `c5j3a2p8` kodiert Commit-Seq + Joke-Anweisung + Arc + Plot-Referenz in EINER ID
+- **Determinismus:** composite[N] = derive(composite[N-1], commitHash), gesamte Chain reproduzierbar
+- **Standalone:** Gesamter Layer in `commit_lore/` außer verify_commit_msg.js — plug-and-play auf jedes Projekt
+- **Verifikation:** Syntax OK, djb2 deterministisch PASS, XorShift deterministisch PASS, derive deterministisch PASS
+- **Review:** deepseek approved (after: SplitMix-S1-Seeding, commitHash-Guard, decodeJ(0)-Genesis, korrekte JSDoc)
+- **Nächste Phasen:** CHANGELOG-Anker, verify_commit_msg.js Composite-Validierung, lore_arcs A1..A4, plotchain p_id
+- **Dateien:** `core/scripts/commit_lore/rng.js` (NEU), `core/scripts/commit_lore/composite_chain.json` (NEU), `core/scripts/commit_lore/narrative_params.json` (NEU), `core/archive/docs/plans/PLAN_COMMIT_LAYER_RNG.md` (NEU)
+
+### CL-RNG Phase 2: lore_arcs A1..A5 + plotchain p_id + update_plot Extensibility
+- **lore_arcs.json:** Von nested active_arc/archive → flache arcs-Map mit A1..A5 Keys. `active`-Pointer zeigt auf "a5"
+- **plotchain.json:** Alle 17 Nodes mit `p_id` Feld annotiert (p1..p17), `id` backward-kompatibel erhalten
+- **update_plot.js:** p_id Auto-Assignment (letzter Node + 1), `--composite` Parameter geparst + im Node gespeichert
+- **rng.js Extensibility:** `COMPOSITE_FORMAT` Array — neue Entitätstypen per Eintrag hinzufügbar. `parseComposite()` + `buildComposite()` generisch. `derive()` mit `limits`-Objekt + Backward-Compat für alte `(prev, hash, arcCount, plotCount)` Signatur. `decodeJ(j, params)` lädt Töne/Strukturen dynamisch aus narrative_params.json — neue Narrative ohne Code-Änderung
+- **Review:** deepseek approved (4 Issues gefunden + alle gefixt: --composite parsing, composite im Node, derive Backward-Compat, decodeJ numerischer Sort)
+- **Dateien:** `core/scripts/commit_lore/lore_arcs.json`, `core/scripts/commit_lore/plotchain.json`, `core/scripts/commit_lore/update_plot.js`, `core/scripts/commit_lore/rng.js`
+
+### CL-RNG Phase 3: verify_commit_msg.js Composite-Enforcement
+> **Composite:** `c1j65a2p9`
+
+- **COMPOSITE-Token Pflicht:** `[COMPOSITE:cXjXaXpX]` muss im Commit-Text vorhanden sein. Regex flexibel aus `buildCompositeRegex()` — akzeptiert auch erweiterte Formate
+- **Seed-Kette prüfen:** `derive(prevComposite, HEAD-Hash, {a, p})` muss mit dem Composite im Commit übereinstimmen. Greift nur wenn `composite_chain.json.chain.length > 0` (nicht bei Genesis-Start)
+- **CHANGELOG-Anker:** Composite muss in `CHANGELOG.md` referenziert sein. Commit-Hash wird nicht geprüft (existiert pre-Commit nicht)
+- **P-/A-Index-Validierung:** `p{N}` muss in `1..plotCount` liegen, `a{N}` in `1..arcCount`
+- **writing_rules.json:** `composite_token` (required), `seed_chain` (required), `changelog_anchor` (required). `plotchain_reference` entfernt (durch COMPOSITE abgelöst)
+- **Review:** deepseek approved (alle 4 vorherigen Issues gefixt: compositeRequired definiert, compositeRegex flexibel, seed-chain skip bei Genesis, CHANGELOG ohne Hash)
+- **Dateien:** `core/scripts/verify_commit_msg.js`, `core/scripts/commit_lore/writing_rules.json`
+
+### CL-RNG Phase 4: derive_composite.js — Deterministische Composite-Ableitung
+- **derive_composite.js:** Ersetzt get_sidejoke.js. Kein Math.random(), kein fixer Pool
+- Liest composite_chain.json → letzten Composite + HEAD-Hash → `derive()` → Composite + narrative Dekodierung
+- **Narrative Anweisung:** `decodeJ(j, params)` mit opener_hint + structurePattern aus narrative_params.json
+- **Kontext:** Letzter User-Impuls aus plotchain, letzter PLOT_LORE-Eintrag, Arc-Name + Plot-Summary aufgelöst
+- **Ausgabe:** Composite-Hash, Ton/Einstieg/Struktur/Rückbezug, [COMPOSITE:...] für Commit-Message, CHANGELOG-Anker-Vorlage
+- **Plot-Summary:** Wortgrenzen-Trunkierung (lastIndexOf statt blindem substring)
+- **Review:** deepseek approved (3 Issues + Edge-Case gefixt)
+- **Dateien:** `core/scripts/commit_lore/derive_composite.js` (NEU)
+
+### CL-RNG Mood-System: fester Mood-Pool, nie zweimal derselbe
+> **Composite:** `c1j8a5p13`
+
+- **narrative_params.json:** `mood_pool` (10 Stimmungen, nur Namen ohne Vorgaben). `opener_hint` aus tones entfernt
+- **rng.js:** `selectMood(j, prevMood, moodPool)` — deterministisch, garantiert `mood[N] != mood[N-1]`
+- **derive():** Akzeptiert `prevMood` + `moodPool` via `limits.moodPool`, gibt `mood` im Result zurück
+- **composite_chain.json:** `genesis_mood` + Chain-Einträge mit `mood`-Feld
+- **derive_composite.js:** Mood-Anzeige + Non-Repeat-Status, `moodPool` aus `narrative_params.json` an `derive()` durchgereicht
+- **Review:** deepseek approved (ReferenceError gefixt, dead openerHint entfernt, moodPool-Passing korrigiert)
+- **Dateien:** `core/scripts/commit_lore/rng.js`, `core/scripts/commit_lore/derive_composite.js`, `core/scripts/commit_lore/narrative_params.json`, `core/scripts/commit_lore/composite_chain.json`
+
+### ESLint-Fixes — Template-Literals → Single-Quotes (3 Dateien)
+> **Commit:** `<hash>` | **Composite:** `c31j36n2a4p18`
+
+- `annotate_plot_lore.js`: Template-Literal ohne Interpolation → Single-Quote
+- `derive_composite.js`: Zwei Template-Literals ([MODEL], [IMPULSE]) → Single-Quotes
+- `RimWorldPlugin.js`: `&apos;` Template-Literal → String-Concat (ESLint no-useless-escape)
+- **Dateien:** `core/scripts/commit_lore/annotate_plot_lore.js`, `core/scripts/commit_lore/derive_composite.js`, `core/src/plugins/RimWorldPlugin.js`
+
+
+### DOKU-UPDATE — Plugin-Architektur + RimWorld + GUI in AGENTS.md
+> **Commit:** `<hash>` | **Composite:** `c31j61n3a2p18`
+
+- **AGENTS.md:** TEIL 13 hinzugefügt — 13.1 Plugin-Schicht (GameAdapter 16 Methoden → GamePlugin 11 Methoden → SongsOfSyxPlugin/RimWorldPlugin), 13.2 RimWorld-Status (11 Format-Hooks fertig, 13 Adapter-Stubs), 13.3 GUI-Architektur (Server 650 LOC / 25 Endpoints, Client 1517 LOC / ~55 Funktionen)
+- **MASTER_DOC.md §4:** Von Fließtext auf referenzierbare Tabelle umgebaut. Plugin-Delegation (R-VAL/R-SHIELD) dokumentiert, RimWorldPlugin-Status aufgenommen, "Neues Spiel hinzufügen" 4-Schritte-Anleitung
+- **gui/INDEX.md:** Version v0.20.0 → v0.22.0. Neue Endpoints (runtime-score, preflight-status, db-repair, run-evaluation) und Client-Funktionen (fetchRuntimeScore, renderRuntimeScore, fetchRunEvaluation, toggleStreamView) dokumentiert
+- **Dateien:** `AGENTS.md`, `core/archive/docs/MASTER_DOC.md`, `core/src/gui/INDEX.md`
+
+
+### CL-RNG Phase 5: Charakterblatt-System — deterministische Erzähler-Auswahl
+> **Commit:** `<hash>` | **Composite:** `c31j41n2a3p1`
+
+- **character_sheets.json:** NEU. 4 Charaktere definiert — Buffy (Orchestrator, zynisch-präzise), Basher (Terminal Bot, CLI-fokussiert), Thinker (Analyse-Agent, methodisch), Vannon (Regisseur, direktiv). Jeder mit voice_traits, verifier_rules (min/max_words, must_contain_regex)
+- **rng.js:** `n`-Feld in COMPOSITE_FORMAT (poolSize:4). Composite jetzt `cXjXnXaXpX`. Narrator deterministisch via XorShift128
+- **narrative_params.json:** `narrator_mood_combination` — Mood legt sich als Overlay über die Charakterstimme. 8 Beispiel-Kombinationen (Buffy+triumphierend, Basher+sachlich, etc.)
+- **writing_rules.json:** `narrator_token` Pflichtregel. `[NARRATOR:<Name>]` muss im Commit stehen
+- **verify_commit_msg.js:** Komplett neugeschrieben. 5 kompakte Checks: Tokens → IMPULSE-Integration (Text im Körper) → Storytelling (>50% Bullets=BLOCKED, Kausalität via weil/deshalb/Grund) → Narrator (Wortzahl+Stimme) → Composite (Seed-Kette+P/A+CHANGELOG)
+- **derive_composite.js:** Narrator-Sektion in der Ausgabe: Name, Rolle, Stimme, Mood-Kombo, Wortzahl-Grenzen
+- **update_plot.js:** `--narrator` Parameter. PLOT_LORE-Einträge jetzt Monolog aus Charakter-Perspektive statt Dialog aller 4
+- **composite_chain.json:** Genesis `c0j0n0a0p0`. 30 Commits rückwirkend via backfill_chain.js eingepflegt
+- **Syntax:** 4/4 PASS. **Review:** deepseek "Ship it"
+- **Dateien:** `character_sheets.json` (NEU), `rng.js`, `narrative_params.json`, `writing_rules.json`, `verify_commit_msg.js`, `derive_composite.js`, `update_plot.js`, `composite_chain.json`, `backfill_chain.js` (NEU)
+
+---
+
 ## [v0.22.0-GUI-UPDATE] — 2026-06-23 — GUI v0.22.0 + README Global Rewrite
 
 **Scope:** GUI version-bump + Layout-Fix + README aktualisiert auf v0.22.0 Stand

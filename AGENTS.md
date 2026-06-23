@@ -13,7 +13,7 @@ SOBALD DU DIE REGEL GELESEN HAST BIST DU VERPFLICHTET MIT
 > Diese Regeln kommen vom User. Sie haben IMMER Vorrang vor Agent-Entscheidungen.
 
 ## U-1: COMMIT-PFLICHT
-Nach JEDER Code-Anpassung: Commit + Push auf den aktiven Branch (v23a).
+Nach JEDER Code-Anpassung: Commit + Push auf den aktiven Branch (main).
 Kein Code bleibt uncommitted. Kein Push ohne Review.
 
 ## U-2: CHANGELOG-PERSISTENZ
@@ -216,7 +216,7 @@ Schicht 3: FREEZE_INDEX.md
 
 ---
 
-# TEIL 13 — ARCHITEKTUR & STATUS (v0.23a)
+# TEIL 13 — ARCHITEKTUR & STATUS (v0.23.0)
 
 ## 13.1 Plugin-Schicht (3 Ebenen)
 

@@ -5,6 +5,49 @@
 
 ---
 
+## [README-REWRITE] — 2026-06-23 — Use-Case-First README + _Info.txt Update
+
+> **Task:** Repo-Startseite komplett überarbeitet — Use Cases statt Technik-Bla-Bla, persönlicher Ton, Mermaid-Diagramme
+> **Warum:** README war technisch korrekt aber kalt — kein User sieht sofort warum er das braucht
+
+### README.md — Komplette Neuschreibung
+
+- **Use-Case-First:** 3 konkrete Szenarien an den Anfang (Mitspieler, Mod-Publisher, Qualitätsanspruch)
+- **Mermaid-Pipeline:** Visueller Überblick Scan → Shield → AI → Cache → Write
+- **Mermaid-Provider-Graph:** 9 Provider in 3 Gruppen (Free / API / Local) mit Smart Router
+- **Mermaid-Qualitäts-Stack:** 3-Stufen-Pipeline mit Placeholder-Shielding visualisiert
+- **Mermaid-Roadmap-Timeline:** Phasen 1-4 als Timeline
+- **Persönlicher Ton:** Direkter Schreibstil, kein Feature-Listen-Bla-Bla
+- **Native vs. Patch Mode:** Tabelle mit klaren Use Cases
+- **Version auf v0.23.0 aktualisiert:** Alle Badges + Status-Referenzen
+- **Bilingual:** EN + DE, beide komplett überarbeitet
+- **Dateien:** `README.md`
+
+### _Info.txt — Version + DESC Update
+
+- Version: `0.20.0` → `0.23.0`
+- DESC: Alter technischer Text → klarer Call-to-Action
+- **Dateien:** `_Info.txt`
+
+---
+
+## [COMMIT-LAYER-CAUSALITY] — 2026-06-23 — Devin PR #7: Commit-Layer Causality-System
+
+> **Composite:** `c31j12n3a3p4`
+
+> **Merge:** `b9a2f0c` (PR #7 `devin/1750716929-fix-commit-layer-causality`)
+> **Rebase:** `d33e184` (rebased auf v0.23a)
+> **Fusion:** `c0f86f1` (PR #8 v23a→main)
+
+### Causal-Context-System für Commit-Layer
+- **get_sidejoke.js:** Zeigt jetzt Causal Context — letzte 5 Commits (Hash + Subject) und Diff-Statistiken (Insertions/Deletions pro Datei) aus `plotchain.json`. Fallback auf `git log` wenn plotchain leer.
+- **update_plot.js:** Sammelt `git diff --numstat` (staged + unstaged) und Metadaten der letzten 5 Commits (hash, subject, date, author, touched files). Speichert `recent_commits`, `data_changes` und `causal_chain_summary` im neuen Plotchain-Node.
+- **verify_commit_msg.js:** **CHECK 6 (KAUSALITÄT)** — prüft ob Commit-Text auf letzte 5 Commits, deren Subjects oder betroffene Dateien referenziert. Gibt `KAUSALITÄTS-HINWEIS` bei fehlenden Referenzen aus (nicht blockierend, nur Warnung). Zusammenfassung am Ende: referenzierbare Commits + Gesamtzeilenänderungen.
+- **Architektur:** Commit-Text soll narrativ auf die Repo-Geschichte eingehen — jeder Commit referenziert was davor passiert ist. Deterministisch, kein externer Input, reine Git-History.
+- **Dateien:** `core/scripts/commit_lore/get_sidejoke.js`, `core/scripts/commit_lore/update_plot.js`, `core/scripts/verify_commit_msg.js`
+
+---
+
 ## [v0.23a-SESSION] — 2026-06-23 — P4 Tasks + Tiefenanalyse + VISION + AGENTS Restructurierung
 
 ### Repo-Cleanup: test_mods/, backups/, backup.json aus Git-Tracking entfernt
