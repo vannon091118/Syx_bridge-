@@ -5,18 +5,37 @@
 
 ---
 
-## [OVERWRITE-CRASH-FIX] — 2026-06-24 — __OVERWRITE: true Game-Crash Fix
+## [OVERWRITE-CRASH-FIX] — 2026-06-24 — __OVERWRITE: true Game-Crash Fix (KORRIGIERT)
 
-> **Composite:** `c31j96n2a3p9`
+> **Composite:** `c33j91n2a1p14`
 > **Task:** Game-Crash behoben — Songs of Syx crashte nach SyxBridge-Sync.
-> **Warum:** 131 Dateien im SoS-Mod-Ordner enthielten `__OVERWRITE: true` (V71-Engine-Direktive). SoS ersetzte dadurch die komplette Vanilla-Datei durch den Mod-Inhalt — alle unübersetzten Keys fielen auf Englisch-Defaults zurück → Crash. Der vorherige Fix (SongsOfSyxPlugin.getFileHeader() → '') verhinderte nur NEUE __OVERWRITE-Header, entfernte aber nicht bestehende aus kopierten Originaldateien.
-> **Dateien:** `core/src/exporter.js`
+> **Status:** KORRIGIERT — der initiale Regex-Strip-Fix wurde REVERTIERT.
 
-### exporter.js — __OVERWRITE-Strip in writeTranslatedFile()
-- `applyTranslations()` ersetzt nur quoted Strings — `__OVERWRITE: true,` (unquoted) blieb erhalten
-- Runtime-ops.js kopiert ALLE Originaldateien nach staging → __OVERWRITE persistierte durch die gesamte Pipeline
-- **Fix:** Regex `^__OVERWRITE:\s*true,?\s*\n` entfernt die Zeile nach applyTranslations(), vor validateAndPrepareContent()
-- **Verifikation:** 100/100 plugin-boundary, 49/49 validator, 26/26 parser PASS. Code-Review: Ship it.
+### Initiale Diagnose (falsch)
+- 131 Dateien im SoS-Mod-Ordner enthielten `__OVERWRITE: true`
+- Annahme: SyxBridge erzeugte die Zeile → muss entfernt werden
+- **Falscher Fix:** Regex-Strip in exporter.js:writeTranslatedFile()
+
+### Korrigierte Diagnose (richtig)
+- `__OVERWRITE: true` ist eine **legitime Workshop-Direktive** der Mod-Autoren
+- Die Mods sind Workshop-Source — Autoren setzen `__OVERWRITE` absichtlich
+- Der **echte Crash-Grund:** `SongsOfSyxPlugin.getFileHeader()` gab `__OVERWRITE: true,` zurück → `validateAndPrepareContent()` injizierte es in JEDE Datei → ALLE Dateien wurden zu Overwrite-Dateien → Vanilla-Keys zerstört
+- **Korrekter Fix:** `getFileHeader()` → `''` (Patch-Modus) — das war bereits drin
+- **Revert:** exporter.js Regex-Strip entfernt (entfernte legitime Workshop-Direktiven)
+
+### Geänderte Dateien
+- `core/src/exporter.js` — __OVERWRITE-Strip REVERTIERT, Kommentar aktualisiert
+- `core/src/plugins/SongsOfSyxPlugin.js` — ZWSP-Injektion entfernt, applyPatchModifications minimal-invasiv (DESC unverändert), getOverrideHeader-Kommentar korrigiert
+- `core/src/runtime-ops.js` — _Info.txt Handling vereinheitlicht (applyPatchModifications für beide Modi), AUTHOR-Fallback vereinfacht
+- `core/src/preflight.js` — SQL-Doppelzählung behoben (lowScore schließt src=tgt aus)
+
+### Verifikation
+- 100/100 plugin-boundary PASS
+- 49/49 validator PASS
+- 26/26 parser PASS
+- 35/35 e2e_bug1_native_mode PASS
+- Syntax: 3/3 OK
+- Code-Review: Ship it
 
 ---
 

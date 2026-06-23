@@ -195,7 +195,7 @@ function createPreflight(dbManager) {
       SUM(CASE WHEN provider='native_runtime' AND source_text=translation AND flagged=0 THEN 1 ELSE 0 END) as nativeStale,
       SUM(CASE WHEN source_text=translation AND flagged=0 AND provider NOT IN ('native_runtime','native_proper_noun','native_non_translatable') THEN 1 ELSE 0 END) as unflaggedStale,
       SUM(CASE WHEN (translation LIKE '%__SHLD_%' OR translation LIKE '%[[%' OR translation LIKE '%]]%') AND flag_reason NOT LIKE '%shield_leak%' THEN 1 ELSE 0 END) as shieldLeaks,
-      SUM(CASE WHEN quality_score < 30 AND quality_score > 0 AND flagged=0 THEN 1 ELSE 0 END) as lowScore,
+      SUM(CASE WHEN quality_score < 30 AND quality_score > 0 AND flagged=0 AND source_text != translation THEN 1 ELSE 0 END) as lowScore,
       SUM(CASE WHEN (source_text LIKE '%view.sett%' OR source_text LIKE '%world.map%') AND flagged=0 THEN 1 ELSE 0 END) as javaNoise,
       SUM(CASE WHEN last_checked_at IS NULL THEN 1 ELSE 0 END) as neverChecked,
       SUM(CASE WHEN stress_tested_at IS NULL THEN 1 ELSE 0 END) as neverStressTested,

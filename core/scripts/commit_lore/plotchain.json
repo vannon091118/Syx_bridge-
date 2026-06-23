@@ -410,5 +410,87 @@
       "dce6e5f: fix: countMatches missing export kills export pipeline + smoke-test assertions"
     ],
     "model_id": "mimo-v2.5-pro"
+  },
+  {
+    "p_id": "p26",
+    "id": "plot-2026-06-23T23:12:38",
+    "timestamp": "2026-06-23 23:12:38",
+    "summary": "__OVERWRITE-Strip revertiert weil Workshop-Direktive legitim. ZWSP-Injektion aus formatMetadata entfernt. applyPatchModifications minimal-invasiv: DESC unveraendert, nur NAME-Label + INFO-Credit. runtime-ops.js _Info.txt vereinheitlicht. PREFLIGHT SQL-Doppelzaehlung behoben.",
+    "ref_to": "plot-2026-06-23T22:47:06",
+    "recent_commits": [
+      {
+        "hash": "d422fa6",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c32j44n4a3p18] [MODEL:mimo-v2.5-pro] [IMPULSE:GamePlugin getTranslationCredit fehlte in Bas",
+        "date": "2026-06-24 00:51:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/plugins/GamePlugin.js",
+          "core/tests/e2e_bug1_native_mode.js"
+        ]
+      },
+      {
+        "hash": "8800888",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c31j96n2a3p9] [MODEL:mimo-v2.5-pro] [IMPULSE:Game-Crash durch SyxBridge verursacht 131 __OV",
+        "date": "2026-06-24 00:45:25 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/exporter.js"
+        ]
+      },
+      {
+        "hash": "a9ecfce",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c31j90n2a4p15] [MODEL:mimo-v2.5-pro] [IMPULSE:Commit Layer Scripts sind verpflichtend, die ",
+        "date": "2026-06-24 00:28:56 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json"
+        ]
+      },
+      {
+        "hash": "581c677",
+        "subject": "chore: screenshots restructured + compressed + README references updated",
+        "date": "2026-06-24 00:21:28 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "README.md",
+          "screenshots/garthimi-mixed.jpg",
+          "screenshots/gui-idle.png",
+          "screenshots/gui-running.png",
+          "screenshots/onari-de.jpg",
+          "screenshots/vargen-de.jpg"
+        ]
+      },
+      {
+        "hash": "0ac334b",
+        "subject": "chore: SSOT-Sync archive/docs/CHANGELOG.md mit Root (EXPORT-PIPELINE-FIX + NATIVE-MODE-FIX)",
+        "date": "2026-06-24 00:14:15 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "core/archive/docs/CHANGELOG.md"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "d422fa6: [NARRATOR:Vannon] [COMPOSITE:c32j44n4a3p18] [MODEL:mimo-v2.5-pro] [IMPULSE:GamePlugin getTranslationCredit fehlte in Bas",
+      "8800888: [NARRATOR:Basher] [COMPOSITE:c31j96n2a3p9] [MODEL:mimo-v2.5-pro] [IMPULSE:Game-Crash durch SyxBridge verursacht 131 __OV",
+      "a9ecfce: [NARRATOR:Basher] [COMPOSITE:c31j90n2a4p15] [MODEL:mimo-v2.5-pro] [IMPULSE:Commit Layer Scripts sind verpflichtend, die ",
+      "581c677: chore: screenshots restructured + compressed + README references updated",
+      "0ac334b: chore: SSOT-Sync archive/docs/CHANGELOG.md mit Root (EXPORT-PIPELINE-FIX + NATIVE-MODE-FIX)"
+    ],
+    "model_id": "mimo-v2.5-pro"
   }
 ]

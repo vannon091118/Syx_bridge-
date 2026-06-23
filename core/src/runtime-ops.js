@@ -289,25 +289,18 @@ function createRuntimeOps(options) {
     // Patch Mode: add patch suffix and notice to the mod copy
     // Native Mode: also write _Info.txt to staging (will be copied to Workshop later)
     if (!dryRun) {
+      // ── _Info.txt: Original-Autor-Werte erhalten, nur Label anhängen ──
+      // applyPatchModifications() für BEIDE Modi: NAME += Sprach-Tag, INFO += Credit.
+      // DESC und alle anderen Felder bleiben vom Original-Autor unverändert.
+      // __OVERWRITE-Direktive wird NICHT angefasst.
       const updatedInfo = { ...info };
       if (!updatedInfo.NAME) updatedInfo.NAME = modName;
-      if (!config.NATIVE_MODE) {
-        gameAdapter.applyPatchModifications(updatedInfo, config.TARGET_LANG);
-      } else {
-        // Native Mode: applyPatchModifications wird übersprungen, aber Language-Tag
-        // und Translation-Credit sollen trotzdem gesetzt werden.
-        const langTag = config.TARGET_LANG.toUpperCase();
-        if (!updatedInfo.NAME.endsWith(langTag)) {
-          updatedInfo.NAME = `${updatedInfo.NAME} ${langTag}`;
-        }
-        if (!updatedInfo.INFO) {
-          updatedInfo.INFO = gameAdapter.getTranslationCredit();
-        }
-      }
-      updatedInfo.AUTHOR = info.AUTHOR || 'syx-bridge';
-      if (!updatedInfo.VERSION) updatedInfo.VERSION = '1.0.0';
-      if (!updatedInfo.GAME_VERSION_MAJOR) updatedInfo.GAME_VERSION_MAJOR = 70;
-      if (updatedInfo.GAME_VERSION_MINOR === undefined) updatedInfo.GAME_VERSION_MINOR = 0;
+      gameAdapter.applyPatchModifications(updatedInfo, config.TARGET_LANG);
+      // Nur fehlende Pflichtfelder ergänzen — bestehende Werte NICHT überschreiben.
+      // AUTHOR: spread oben hat bereits info.AUTHOR übernommen.
+      if (!updatedInfo.VERSION) updatedInfo.VERSION = info.VERSION || '1.0.0';
+      if (!updatedInfo.GAME_VERSION_MAJOR) updatedInfo.GAME_VERSION_MAJOR = info.GAME_VERSION_MAJOR || 71;
+      if (updatedInfo.GAME_VERSION_MINOR === undefined) updatedInfo.GAME_VERSION_MINOR = info.GAME_VERSION_MINOR !== undefined ? info.GAME_VERSION_MINOR : 0;
       await fsp.writeFile(path.join(stagingPath, gameAdapter.getMetadataFileName()), gameAdapter.formatMetadata(updatedInfo), 'utf-8');
     }
 

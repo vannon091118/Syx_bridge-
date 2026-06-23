@@ -64,13 +64,7 @@ class SongsOfSyxPlugin extends GamePlugin {
     if (info.DESC) lines.push(`DESC: "${info.DESC}",`);
     if (info.AUTHOR) lines.push(`AUTHOR: "${info.AUTHOR}",`);
     if (info.INFO) lines.push(`INFO: "${info.INFO}",`);
-    // ZWSP-Fallback: unsichtbarer Marker in DESC (ueberlebt sed -i '/__SYXBRIDGE/d')
-    if (info.DESC) {
-      const fallbackIndex = lines.findIndex(l => l.startsWith('DESC:'));
-      if (fallbackIndex !== -1) {
-        lines[fallbackIndex] = `DESC: "${info.DESC}‌",`;
-      }
-    }
+    // KEIN ZWSP-Marker in DESC — Original-Beschreibung des Autors respektieren.
     return lines.join('\n') + '\n';
   }
 
@@ -92,20 +86,20 @@ class SongsOfSyxPlugin extends GamePlugin {
   }
 
   applyPatchModifications(infoObj, targetLanguage) {
-    // LANGUAGE-TAG: Name bekommt Sprach-Tag (z.B. "DEUTSCH") statt " (Deutsch Patch)".
-    // SoS zeigt diesen Namen im Launcher an — der Tag macht auf Anhieb sichtbar
-    // welche Sprache diese Mod-Patch-Version enthält.
+    // ── Minimal-Invasiv: Original-Autor-Werte erhalten, nur Label anhängen ──
+    // NAME: Sprach-Tag anhängen (z.B. "DEUTSCH") — sichtbar im Launcher.
+    // DESC: UNVERÄNDERT lassen — Original-Beschreibung des Autors respektieren.
+    // INFO: Credit nur setzen wenn leer — bestehenden Text des Autors nicht überschreiben.
+    // __OVERWRITE: Wird NICHT angefasst — ist legitime Workshop-Direktive.
     const langTag = targetLanguage.toUpperCase();
-    const currentName = infoObj.NAME || 'BridgePatch';
-    if (!currentName.endsWith(langTag)) {
+    const currentName = infoObj.NAME || '';
+    if (currentName && !currentName.endsWith(langTag)) {
       infoObj.NAME = `${currentName} ${langTag}`;
     }
-    // Translation-Credit in INFO-Feld: erscheint im Spiel im Mod-Tooltip.
     if (!infoObj.INFO) {
       infoObj.INFO = this.getTranslationCredit();
     }
-    const notice = this.formatPatchNotice(targetLanguage);
-    infoObj.DESC = (infoObj.DESC ? infoObj.DESC + String.fromCharCode(10) + String.fromCharCode(10) : '') + notice;
+    // DESC wird NICHT modifiziert — Original-Beschreibung des Mod-Autors bleibt.
     return infoObj;
   }
 
@@ -122,8 +116,10 @@ class SongsOfSyxPlugin extends GamePlugin {
   }
 
   getOverrideHeader(versionDir) {
-    // ── KEIN __OVERWRITE — Patch-Modus ist korrekt für Übersetzungs-Mods ──
-    // __OVERWRITE: true zerstört Vanilla-Texte (siehe BU-OVERWRITE-2026-06-22).
+    // ── PATCH-Modus: SyxBridge erzeugt KEINE eigenen __OVERWRITE-Header ──
+    // __OVERWRITE: true ist eine legitime Workshop-Direktive der Mod-Autoren.
+    // SyxBridge übersetzt nur Strings — bestehende __OVERWRITE-Zeilen bleiben
+    // unverändert. Neue Dateien (z.B. BridgeCore) brauchen keinen Overwrite-Header.
     return '';
   }
 
