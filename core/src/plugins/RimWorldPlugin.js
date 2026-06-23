@@ -48,7 +48,7 @@ class RimWorldPlugin extends GamePlugin {
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/&quot;/g, '"')
-      .replace(/&apos;/g, "'")
+      .replace(/&apos;/g, '\'')
       .trim();
   }
 

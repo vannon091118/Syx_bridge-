@@ -130,6 +130,15 @@ VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturier
 - **Review:** deepseek approved (ReferenceError gefixt, dead openerHint entfernt, moodPool-Passing korrigiert)
 - **Dateien:** `core/scripts/commit_lore/rng.js`, `core/scripts/commit_lore/derive_composite.js`, `core/scripts/commit_lore/narrative_params.json`, `core/scripts/commit_lore/composite_chain.json`
 
+### ESLint-Fixes — Template-Literals → Single-Quotes (3 Dateien)
+> **Commit:** `<hash>` | **Composite:** `c31j36n2a4p18`
+
+- `annotate_plot_lore.js`: Template-Literal ohne Interpolation → Single-Quote
+- `derive_composite.js`: Zwei Template-Literals ([MODEL], [IMPULSE]) → Single-Quotes
+- `RimWorldPlugin.js`: `&apos;` Template-Literal → String-Concat (ESLint no-useless-escape)
+- **Dateien:** `core/scripts/commit_lore/annotate_plot_lore.js`, `core/scripts/commit_lore/derive_composite.js`, `core/src/plugins/RimWorldPlugin.js`
+
+
 ### DOKU-UPDATE — Plugin-Architektur + RimWorld + GUI in AGENTS.md
 > **Commit:** `<hash>` | **Composite:** `c31j61n3a2p18`
 

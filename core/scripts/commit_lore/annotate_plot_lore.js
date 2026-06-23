@@ -126,6 +126,6 @@ if (dryRun) {
 
 // ─── 5. Statistik ──────────────────────────────────────────────────
 const compositeCount = (result.match(/\[COMPOSITE:c\d+j\d+a\d+p\d+\]/g) || []).length;
-console.log(`\nStatistik:`);
+console.log('\nStatistik:');
 console.log(`  [COMPOSITE:...] : ${compositeCount}`);
 console.log(`  Ohne Composite   : ${noComposite} (nur p18/p19 haben Composites)`);
