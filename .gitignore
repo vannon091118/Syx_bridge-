@@ -52,3 +52,4 @@ core/.commit_msg*.txt
 
 # Root Docs (Proxy-Kopien, nicht auf GitHub)
 LLM-AGENTS-EntryPoint.md
+VISION.md

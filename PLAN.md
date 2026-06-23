@@ -250,7 +250,8 @@ GUI hardcoded 'Songs of Syx' in Patch-Mode-Buttons.
 | P2 Config | 3 | 3 | ~2h | ✅ Erledigt |
 | P3 Core | 3 | 3 | ~4h | ✅ S-007+S-008+S-009 erledigt |
 | P4 Architektur | 7 | 2 | ~7h | 🟡 C-002 + S-012 teilweise |
-| **TOTAL** | **22** | **17** | **~19.5h** | **77% erledigt** |
+| P4 Architektur | 7 | 2 | ~7h | 🟡 C-002 + S-012 teilweise |
+| **TOTAL** | **22** | **19** | **~19.5h** | **86% erledigt** |
 
 ---
 

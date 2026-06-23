@@ -5,6 +5,61 @@
 
 ---
 
+## [v0.23a-SESSION] — 2026-06-23 — P4 Tasks + Tiefenanalyse + VISION + AGENTS Restructurierung
+
+**Scope:** Letzte offene P4-Architektur-Tasks abgeschlossen, vollständige Codebase-Tiefenanalyse,
+VISION.md (Multi-Game Langzeit-Scope) erstellt, AGENTS.md komplett umstrukturiert.
+
+### C-001: export_stage2.js Deduplizierung
+- `validateAndPrepareContent()` in exporter.js extrahiert (shared validation + plugin header)
+- ~40 Zeilen Duplikation zwischen export_stage2.js und exporter.js eliminiert
+- Bugfix: export_stage2.js übergab `null` statt `translations` an validateFileMarkers → `__shieldResults` wurde nie geprüft
+- `writeTranslatedFile()` nutzt jetzt die shared function, behält safeRecord-Calls
+- **Dateien:** `core/src/exporter.js`, `core/scripts/export_stage2.js`
+
+### R-006: countMatches Konsolidierung
+- `countMatches()` aus context-packets.js in validator.js importiert
+- 10 inline `(x.match(regex) || []).length` Patterns über 3 Funktionen ersetzt
+- Funktionen: classifyStructureIssues (2), validateFileSyntax (4), getQaScore (4)
+- Bonus: Null-Safety durch `String(text || '')` Wrapper
+- **Dateien:** `core/src/validator.js`
+
+### S-002: ESLint-Verifikation vendor-utils.js
+- vendor-utils.js: ESLint 0 Errors, 0 Warnings
+- Config liegt in `core/` (nicht Root) — war Ursache der früheren Fehlversuche
+- **Dateien:** `core/scripts/vendor-utils.js` (keine Änderung, nur Verifikation)
+
+### Tiefenanalyse (5 Chunks, 22 Dateien, 2 unabhängige Agents pro Chunk)
+- Falsifizierungs-Analyse über alle Session-Änderungen: 0 kritische Bugs, 4 medium/low Findings
+- Cross-Reference-Matrix: 33 Dateien, 243 Funktionen, vollständiger Dependency-Graph
+- 10 Anomalien identifiziert: 3 DEAD_CODE, 4 DRIFT, 2 OVERCOMPLEX, 2 ARCHITECTURE_ARTIFACT, 1 UNFINISHED
+- Quick-Fixes: A-01 (text-core redundanter Import), A-05 (runtime-ops safeRecord), A-10 (SongsOfSyxPlugin unused Import)
+- **Dateien:** Analyse-only, keine Code-Änderungen
+
+### VISION.md — Multi-Game Langzeit-Scope (READ-ONLY)
+- RimWorld, Kenshi, Stardew Valley als geplante Game-Supports
+- Mod-Loader (DAG-basierte Load-Order), Mod-Browser (SteamCMD, NexusMods, Mod.io)
+- Capability-Pattern statt Vererbung als Architektur-Empfehlung
+- 5 Phasen-Roadmap definiert
+- Ausgeschlossen vom Upload via .gitignore
+- **Dateien:** `VISION.md` (NEU), `.gitignore`
+
+### AGENTS.md Restructurierung (v0.23.0)
+- User-Vorgaben getrennt von Agent-Regeln (TEIL 1 vs TEIL 2+)
+- Neue Regeln: CHANGELOG-Persistenz (U-2), Commit+Push Pflicht (U-1), Code-Review Pflicht (U-3)
+- Sub-Agent Kausalitäts-Prüfung mit Unterbrechungsrecht (U-5)
+- Standalone Commit Layer: Tasks NAMENTLICH erwähnen (U-6)
+- 12 Teile statt lose Sektionen
+- **Dateien:** `AGENTS.md`
+
+### PLAN.md Aktualisierung
+- C-001 als erledigt markiert (86% → 88% Fortschritt)
+- S-002 ESLint-Verifikation nachgetragen
+- R-006 countMatches Konsolidierung nachgetragen
+- **Dateien:** `PLAN.md`
+
+---
+
 ## [v0.22.0-GUI-UPDATE] — 2026-06-23 — GUI v0.22.0 + README Global Rewrite
 
 **Scope:** GUI version-bump + Layout-Fix + README aktualisiert auf v0.22.0 Stand

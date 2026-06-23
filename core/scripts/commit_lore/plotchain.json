@@ -91,5 +91,12 @@
     "summary": "C-001 export_stage2 Deduplizierung, R-006 countMatches Konsolidierung, S-002 ESLint Verifikation, Session-Analyse 5 Chunks",
     "ref_to": "plot-2026-06-23T17:43:12",
     "model_id": "mimo-v2.5-pro"
+  },
+  {
+    "id": "plot-2026-06-23T18:39:48",
+    "timestamp": "2026-06-23 18:39:48",
+    "summary": "AGENTS.md v0.23 Restructurierung: User-Vorgaben getrennt von Agent-Regeln, CHANGELOG-Persistenz Pflicht, Commit+Push Pflicht, Sub-Agent Kausalitaets-Pruefung, VISION.md Multi-Game Scope, C-001 R-006 S-002 abgeschlossen",
+    "ref_to": "plot-2026-06-23T18:22:47",
+    "model_id": "mimo-v2.5-pro"
   }
 ]
