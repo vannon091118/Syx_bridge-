@@ -1,4 +1,3 @@
-const WATERMARK_CONFIG = require('./watermark-config');
 const {
   shieldPlaceholders,
   restorePlaceholders,
@@ -356,18 +355,10 @@ function applyTranslations(content, replacements, translations, plugin) {
   // Sort replacements backwards to avoid index shifting during modification
   const sorted = [...replacements].sort((a, b) => b.index - a.index);
   let result = content;
-  let watermarkCount = 0;  // D2-Fix: Track watermark injections for audit visibility
 
   for (const r of sorted) {
     let translated = translations.get(r.value);
     if (translated !== undefined) {
-      if (typeof translated === 'string' && translated.length > 0) {
-        const marker = WATERMARK_CONFIG.randomZWMarker();
-        const words = translated.split(' ');
-        words[0] = words[0] + marker;
-        translated = words.join(' ');
-        watermarkCount++;
-      }
       // Plugin-delegated serialization: each game format has its own escaping.
       // Fallback: SoS-style quoted value with backslash escaping (backward compat).
       const serialized = plugin
@@ -375,9 +366,6 @@ function applyTranslations(content, replacements, translations, plugin) {
         : `"${escapeTextValue(translated)}"`;
       result = result.slice(0, r.index) + serialized + result.slice(r.index + r.full.length);
     }
-  }
-  if (watermarkCount > 0) {
-    console.log(`[WATERMARK] ${watermarkCount} ZWSP-Marker in Ausgabedatei injiziert.`);
   }
   return result;
 }

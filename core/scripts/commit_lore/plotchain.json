@@ -705,5 +705,120 @@
       "a9ecfce: [NARRATOR:Basher] [COMPOSITE:c31j90n2a4p15] [MODEL:mimo-v2.5-pro] [IMPULSE:Commit Layer Scripts sind verpflichtend, die "
     ],
     "model_id": "mimo-v2.5-pro"
+  },
+  {
+    "p_id": "p29",
+    "id": "plot-2026-06-23T23:35:16",
+    "timestamp": "2026-06-23 23:35:16",
+    "summary": "ZWSP-Watermark-Injektion entfernt. applyTranslations injizierte unsichtbare Unicode ZWSP ZWNJ in jede uebersetzte String. SoS BitmapFont hat keine Glyphs dafuer. Crash-Risiko. Injektion war nach allen stripWatermarks Verteidigungslagen.",
+    "ref_to": "plot-2026-06-23T23:25:58",
+    "recent_commits": [
+      {
+        "hash": "5cb9878",
+        "subject": "[NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+        "date": "2026-06-24 01:29:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          ".gitignore",
+          "CHANGELOG.md",
+          "core/archive/dbold/DB_TREND_REPORT.md",
+          "core/archive/dbold/calibration_T2_2026-06-21.json",
+          "core/archive/dbold/translations_2026-06-19_before_v020_liverun.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_cleanup.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_v0.20-pre.tar.gz",
+          "core/archive/docs/CHANGELOG.md",
+          "core/archive/docs/PREFLIGHT_LATEST.md",
+          "core/data/current_score.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "screenshots/garthimi-mixed.jpg",
+          "screenshots/onari-de.jpg",
+          "screenshots/vargen-de.jpg"
+        ]
+      },
+      {
+        "hash": "15d83c1",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c34j21n2a3p25] [MODEL:mimo-v2.5-pro] [IMPULSE:Self-Evaluation zeigt 55.7% nach jedem Sync —",
+        "date": "2026-06-24 01:20:53 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/gui-handlers.js"
+        ]
+      },
+      {
+        "hash": "3b1ee8b",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c33j91n2a1p14] [MODEL:mimo-v2.5-pro] [IMPULSE:__OVERWRITE-Strip war falsch, Workshop-Direkt",
+        "date": "2026-06-24 01:14:18 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/exporter.js",
+          "core/src/plugins/SongsOfSyxPlugin.js",
+          "core/src/preflight.js",
+          "core/src/runtime-ops.js"
+        ]
+      },
+      {
+        "hash": "d422fa6",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c32j44n4a3p18] [MODEL:mimo-v2.5-pro] [IMPULSE:GamePlugin getTranslationCredit fehlte in Bas",
+        "date": "2026-06-24 00:51:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/plugins/GamePlugin.js",
+          "core/tests/e2e_bug1_native_mode.js"
+        ]
+      },
+      {
+        "hash": "8800888",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c31j96n2a3p9] [MODEL:mimo-v2.5-pro] [IMPULSE:Game-Crash durch SyxBridge verursacht 131 __OV",
+        "date": "2026-06-24 00:45:25 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/exporter.js"
+        ]
+      }
+    ],
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md",
+        "insertions": 14,
+        "deletions": 0
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md",
+        "insertions": 14,
+        "deletions": 0
+      },
+      {
+        "file": "core/src/text-core.js",
+        "insertions": 0,
+        "deletions": 12
+      }
+    ],
+    "causal_chain_summary": [
+      "5cb9878: [NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+      "15d83c1: [NARRATOR:Basher] [COMPOSITE:c34j21n2a3p25] [MODEL:mimo-v2.5-pro] [IMPULSE:Self-Evaluation zeigt 55.7% nach jedem Sync —",
+      "3b1ee8b: [NARRATOR:Basher] [COMPOSITE:c33j91n2a1p14] [MODEL:mimo-v2.5-pro] [IMPULSE:__OVERWRITE-Strip war falsch, Workshop-Direkt",
+      "d422fa6: [NARRATOR:Vannon] [COMPOSITE:c32j44n4a3p18] [MODEL:mimo-v2.5-pro] [IMPULSE:GamePlugin getTranslationCredit fehlte in Bas",
+      "8800888: [NARRATOR:Basher] [COMPOSITE:c31j96n2a3p9] [MODEL:mimo-v2.5-pro] [IMPULSE:Game-Crash durch SyxBridge verursacht 131 __OV"
+    ],
+    "model_id": "mimo-v2.5-pro"
   }
 ]

@@ -5,6 +5,21 @@
 
 ---
 
+## [ZWSP-REMOVAL] — 2026-06-24 — ZWSP-Watermark-Injektion entfernt
+
+> **Composite:** `c36j58n4a4p22`
+> **Warum:** `applyTranslations()` in text-core.js injizierte unsichtbare Unicode-Zeichen (ZWSP \u200B / ZWNJ \u200C) in JEDE übersetzte String. SoS nutzt eine eigene BitmapFont-Engine (libGDX) die diese Zeichen nicht im Glyph-Atlas hat → Crash-Risiko. Die Injektion passierte NACH allen Verteidigungslagen (stripWatermarks), daher waren sie wirkungslos gegen den Output.
+> **Dateien:** `core/src/text-core.js`
+
+- WATERMARK_CONFIG Import entfernt (jetzt dead code in text-core.js)
+- watermarkCount Tracking entfernt
+- randomZWMarker() + words[0] injection entfernt
+- [WATERMARK] console.log entfernt
+- watermark-config.js bleibt bestehen (wird noch von SongsOfSyxPlugin.js importiert)
+- Verifikation: 100/100 plugin-boundary, 49/49 validator, 26/26 parser, 35/35 e2e PASS
+
+---
+
 ## [DB-FRESH-RESET] — 2026-06-24 — DB Hard-Reset + Repo Cleanup
 
 > **Composite:** `c35j3n1a5p21`
