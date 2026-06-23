@@ -174,8 +174,68 @@ if (fs.existsSync(plotchainPath)) {
       console.log('   Nutze --arc=<name> um passende Sidejokes zu filtern.');
       console.log('');
     }
+
+    // ─── Kausalitaets-Kontext: Letzte Commits + Datenaenderungen ─────
+    if (lastNode && lastNode.recent_commits && lastNode.recent_commits.length > 0) {
+      console.log('🔗 KAUSALITAETS-KONTEXT — Letzte Commits:');
+      for (const rc of lastNode.recent_commits) {
+        const filesInfo = rc.files_touched && rc.files_touched.length > 0
+          ? ` (${rc.files_touched.length} Dateien)`
+          : '';
+        console.log(`   ${rc.hash} ${rc.subject}${filesInfo}`);
+      }
+      console.log('');
+      console.log('   Stelle Kausalitaet her: Referenziere mindestens EINEN dieser');
+      console.log('   Commits oder deren Inhalte in deiner Commit-Message.');
+      console.log('');
+    }
+
+    // Datenaenderungen der letzten Session anzeigen
+    if (lastNode && lastNode.data_changes && lastNode.data_changes.length > 0) {
+      const totalIns = lastNode.data_changes.reduce((sum, dc) => sum + dc.insertions, 0);
+      const totalDel = lastNode.data_changes.reduce((sum, dc) => sum + dc.deletions, 0);
+      console.log(`📊 Letzte Datenaenderungen: +${totalIns} / -${totalDel} Zeilen in ${lastNode.data_changes.length} Dateien`);
+      const sorted = [...lastNode.data_changes].sort((a, b) =>
+        (b.insertions + b.deletions) - (a.insertions + a.deletions)
+      );
+      for (const dc of sorted.slice(0, 5)) {
+        console.log(`   +${dc.insertions}/-${dc.deletions}  ${dc.file}`);
+      }
+      if (sorted.length > 5) {
+        console.log(`   ... +${sorted.length - 5} weitere Dateien`);
+      }
+      console.log('');
+    }
   } catch (e) {
     // Kein Fehler wenn plotchain nicht lesbar — optionaler Kontext
+  }
+}
+
+// ─── Fallback: Letzte Commits direkt aus Git laden ──────────────────
+if (!fs.existsSync(plotchainPath) || (() => {
+  try {
+    const pc = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+    const ln = pc[pc.length - 1];
+    return !ln || !ln.recent_commits || ln.recent_commits.length === 0;
+  } catch (_) { return true; }
+})()) {
+  try {
+    const logOutput = execSync(
+      'git log -5 --format="%h %s" --no-merges',
+      { encoding: 'utf8' }
+    ).trim();
+    if (logOutput) {
+      console.log('🔗 KAUSALITAETS-KONTEXT (direkt aus Git):');
+      for (const line of logOutput.split('\n').filter(Boolean)) {
+        console.log(`   ${line}`);
+      }
+      console.log('');
+      console.log('   Stelle Kausalitaet her: Referenziere mindestens EINEN dieser');
+      console.log('   Commits oder deren Inhalte in deiner Commit-Message.');
+      console.log('');
+    }
+  } catch (_) {
+    // Git nicht verfuegbar — kein Fehler
   }
 }
 

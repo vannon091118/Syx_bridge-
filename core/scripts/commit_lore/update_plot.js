@@ -77,6 +77,76 @@ if (fs.existsSync(plotchainPath)) {
   }
 }
 
+// ─── Collect Data Changes (per-file diff stats) ────────────────────
+const dataChanges = [];
+try {
+  const diffStat = execSync('git diff --cached --numstat', { encoding: 'utf8' }).trim();
+  if (diffStat) {
+    for (const line of diffStat.split('\n').filter(Boolean)) {
+      const [ins, del, file] = line.split('\t');
+      if (file) {
+        dataChanges.push({
+          file: file,
+          insertions: ins === '-' ? 0 : parseInt(ins, 10) || 0,
+          deletions: del === '-' ? 0 : parseInt(del, 10) || 0
+        });
+      }
+    }
+  }
+} catch (e) {
+  try {
+    const diffStat = execSync('git diff --numstat', { encoding: 'utf8' }).trim();
+    if (diffStat) {
+      for (const line of diffStat.split('\n').filter(Boolean)) {
+        const [ins, del, file] = line.split('\t');
+        if (file) {
+          dataChanges.push({
+            file: file,
+            insertions: ins === '-' ? 0 : parseInt(ins, 10) || 0,
+            deletions: del === '-' ? 0 : parseInt(del, 10) || 0
+          });
+        }
+      }
+    }
+  } catch (_) {
+    console.warn('Hinweis: Konnte Datenaenderungen nicht via Git ermitteln.');
+  }
+}
+
+// ─── Collect Recent Commits (last N) for Causal Chain ──────────────
+const RECENT_COMMIT_COUNT = 5;
+const recentCommits = [];
+try {
+  const logOutput = execSync(
+    `git log -${RECENT_COMMIT_COUNT} --format="%h|||%s|||%ai|||%an" --no-merges`,
+    { encoding: 'utf8' }
+  ).trim();
+  if (logOutput) {
+    for (const line of logOutput.split('\n').filter(Boolean)) {
+      const [hash, subject, date, author] = line.split('|||');
+      if (hash && subject) {
+        let filesInCommit = [];
+        try {
+          filesInCommit = execSync(`git diff-tree --no-commit-id --name-only -r ${hash}`, { encoding: 'utf8' })
+            .trim().split('\n').filter(Boolean);
+        } catch (_) { /* ignore */ }
+        recentCommits.push({
+          hash: hash.trim(),
+          subject: subject.trim().substring(0, 120),
+          date: (date || '').trim(),
+          author: (author || '').trim(),
+          files_touched: filesInCommit.slice(0, 15)
+        });
+      }
+    }
+  }
+  if (recentCommits.length > 0) {
+    console.log(`Kausalitaets-Kontext: ${recentCommits.length} letzte Commits geladen.`);
+  }
+} catch (e) {
+  console.warn('Hinweis: Konnte letzte Commits nicht laden.');
+}
+
 // ─── Neuen Node erstellen ──────────────────────────────────────────
 const now = new Date();
 const isoTimestamp = now.toISOString().substring(0, 19);
@@ -96,12 +166,18 @@ if (lastNode && lastNode.p_id) {
   if (!isNaN(lastNum)) pId = `p${lastNum + 1}`;
 }
 
+// ─── Build Causal Summary ──────────────────────────────────────────
+const causalSummary = recentCommits.map(rc => `${rc.hash}: ${rc.subject}`);
+
 const newNode = {
   p_id: pId,
   id: nodeId,
   timestamp: isoTimestamp.replace('T', ' '),
   summary: summary,
-  ref_to: refToResolved
+  ref_to: refToResolved,
+  recent_commits: recentCommits,
+  data_changes: dataChanges,
+  causal_chain_summary: causalSummary
 };
 
 // Optional: model_id

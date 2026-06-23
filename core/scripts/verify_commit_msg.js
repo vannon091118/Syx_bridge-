@@ -207,6 +207,65 @@ if (compositeMatch && fs.existsSync(changelogPath)) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// CHECK 6: KAUSALITAET — Commit referenziert Vorgaenger-Commits/Dateien
+// ═══════════════════════════════════════════════════════════════════
+{
+  const causalityRefs = [];
+
+  // Letzte 5 Commit-Hashes aus Git laden
+  try {
+    const recentLog = execSync('git log -5 --format="%h" --no-merges', { encoding: 'utf8' }).trim();
+    if (recentLog) {
+      for (const h of recentLog.split('\n').filter(Boolean)) {
+        causalityRefs.push(h.trim());
+      }
+    }
+  } catch (_) { /* Git nicht verfuegbar */ }
+
+  // Aus plotchain recent_commits und data_changes extrahieren
+  let plotchain = [];
+  if (fs.existsSync(plotchainPath)) {
+    try { plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8')); } catch (_) {}
+  }
+  if (plotchain.length > 0) {
+    const lastPcNode = plotchain[plotchain.length - 1];
+    if (lastPcNode.recent_commits && Array.isArray(lastPcNode.recent_commits)) {
+      for (const rc of lastPcNode.recent_commits) {
+        if (rc.hash) causalityRefs.push(rc.hash);
+        if (rc.subject) {
+          const subjectWords = rc.subject.split(/\s+/).filter(w => w.length > 5);
+          for (const w of subjectWords.slice(0, 5)) {
+            causalityRefs.push(w);
+          }
+        }
+        if (rc.files_touched) {
+          for (const f of rc.files_touched) {
+            const base = path.basename(f, path.extname(f));
+            if (base.length > 3) causalityRefs.push(base);
+          }
+        }
+      }
+    }
+    if (lastPcNode.data_changes && Array.isArray(lastPcNode.data_changes)) {
+      for (const dc of lastPcNode.data_changes) {
+        const base = path.basename(dc.file, path.extname(dc.file));
+        if (base.length > 3) causalityRefs.push(base);
+      }
+    }
+  }
+
+  const uniqueRefs = [...new Set(causalityRefs)].filter(r => r.length > 3);
+  const commitMsgLower = commitMsg.toLowerCase();
+  const hasCausalRef = uniqueRefs.some(ref => commitMsgLower.includes(ref.toLowerCase()));
+
+  if (!hasCausalRef && uniqueRefs.length > 0) {
+    console.warn('KAUSALITAETS-HINWEIS: Commit referenziert keinen der letzten');
+    console.warn('   5 Commits oder deren Datenaenderungen. Erwaege einen Rueckbezug');
+    console.warn('   fuer narrative Kontinuitaet.');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Datei-Referenzen + Placeholder (Pflicht, aber kompakt)
 // ═══════════════════════════════════════════════════════════════════
 
@@ -252,5 +311,23 @@ console.log('══════════════════════�
 stagedFiles.forEach(f => console.log(`  + ${f}`));
 console.log(`\n  ${stagedFiles.length} Datei(en) — ${wordCount} Wörter${narratorInfo}`);
 if (compositeMatch) console.log(`  Composite: ${compositeMatch[1]}`);
+
+// Kausalitaets-Zusammenfassung im PASS-Output
+{
+  let plotchain = [];
+  if (fs.existsSync(plotchainPath)) {
+    try { plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8')); } catch (_) {}
+  }
+  if (plotchain.length > 0) {
+    const lastPcNode = plotchain[plotchain.length - 1];
+    if (lastPcNode.recent_commits && lastPcNode.recent_commits.length > 0) {
+      console.log(`  Kausalitaets-Chain: ${lastPcNode.recent_commits.length} Vorgaenger-Commits referenzierbar`);
+    }
+    if (lastPcNode.data_changes && lastPcNode.data_changes.length > 0) {
+      const totalChanges = lastPcNode.data_changes.reduce((s, dc) => s + dc.insertions + dc.deletions, 0);
+      console.log(`  Daten-Kontext: ${lastPcNode.data_changes.length} Dateien, ${totalChanges} Zeilen Aenderungen`);
+    }
+  }
+}
 console.log('');
 process.exit(0);
