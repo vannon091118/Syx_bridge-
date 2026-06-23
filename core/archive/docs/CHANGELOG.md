@@ -5,6 +5,19 @@
 
 ---
 
+## [DB-FRESH-RESET] — 2026-06-24 — DB Hard-Reset + Repo Cleanup
+
+> **Composite:** `c35j3n1a5p21`
+> **Warum:** Dev-DB und Snapshots sollten nicht im Repo landen. Fresh Onboarding State für neue Nutzer.
+> **Dateien:** `.gitignore`, `core/archive/dbold/*`, `core/archive/docs/PREFLIGHT_LATEST.md`, `core/data/current_score.json`
+
+- translations.db lokal gelöscht — beim nächsten Start wird sie frisch initialisiert
+- 5 Dateien aus core/archive/dbold/ entfernt (DB_TREND_REPORT.md, calibration_T2_2026-06-21.json, 3× tar.gz)
+- PREFLIGHT_LATEST.md und current_score.json aus Git-Tracking entfernt (generierte Dateien)
+- .gitignore aufgeräumt: Whitelist-Exceptions für dbold entfernt, core/logs/ und .native_confirmed als ignored markiert
+
+---
+
 ## [EVAL-SCORE-FIX] — 2026-06-24 — Self-Evaluation Score 55.7% → 85.1% Bug
 
 > **Composite:** `c34j21n2a3p25`

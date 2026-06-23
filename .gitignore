@@ -32,8 +32,6 @@ core/archive/backups/
 # Calibration-Tooling Artefakte (Phase-2 Foreign-Machine-Score Calibration)
 !core/scripts/
 !core/scripts/calibrate_*.js
-!core/archive/dbold/
-!core/archive/dbold/calibration_*.json
 # Runtime-Score-Tooling Tests (Phase-2 Global-Score Aggregator)
 !core/tests/
 !core/tests/runtime_score*.test.js
@@ -46,6 +44,13 @@ V71/assets/**/*.txt
 
 # Windows reserved device name
 nul
+
+# Generated/Runtime files (never commit)
+core/logs/
+core/.native_confirmed
+core/archive/docs/PREFLIGHT_LATEST.md
+core/archive/docs/preflight_history.log
+core/data/current_score.json
 
 # Commit-Message Temporary (RULE 3)
 core/.commit_msg*.txt
