@@ -140,7 +140,7 @@ check('getCoreModMetadata() non-empty', coreMd.length > 0);
 const patchInfo = { NAME: 'OriginalMod' };
 const patched = plugin.applyPatchModifications(patchInfo, 'German');
 checkType('applyPatchModifications() → object', patched, 'object');
-check('applyPatchModifications() has NAME', patched.NAME && patched.NAME.includes('Patch'));
+check('applyPatchModifications() has NAME with language tag', patched.NAME && patched.NAME.includes('GERMAN'));
 
 // 7. getBackupDirectoryName(originalName)
 const backupName = plugin.getBackupDirectoryName('TestMod');
@@ -160,7 +160,7 @@ checkEqual('isVersionDirectory("assets") false', plugin.isVersionDirectory('asse
 // 10. getOverrideHeader(versionDir)
 const header = plugin.getOverrideHeader('V71');
 checkType('getOverrideHeader() → string', header, 'string');
-check('getOverrideHeader("V71") includes __OVERWRITE', header.includes('__OVERWRITE'));
+check('getOverrideHeader("V71") empty (Patch-Mode, no __OVERWRITE)', header === '');
 checkEqual('getOverrideHeader("V50") empty', plugin.getOverrideHeader('V50'), '');
 
 // 11. formatPatchNotice(targetLanguage)
@@ -177,7 +177,7 @@ checkEqual('getParserFormat(null) raw', plugin.getParserFormat(null), 'raw');
 // 13. classifyFile(relativePath)
 const fileType = plugin.classifyFile('V71/assets/text/tech/example.txt');
 checkType('classifyFile() → string', fileType, 'string');
-checkEqual('classifyFile _Info.txt', plugin.classifyFile('_Info.txt'), 'INFO_FILE');
+checkEqual('classifyFile _Info.txt', plugin.classifyFile('_Info.txt'), 'TEXT_FILE');
 check('classifyFile non-empty result', fileType.length > 0);
 
 // 14. isTranslatableFile(relativePath, fileType)
@@ -251,7 +251,7 @@ checkEqual('isTranslatableFile ASSET → false', plugin.isTranslatableFile('x.pn
   // 23. getFileHeader(filePath, version)
   const fileHeader = plugin.getFileHeader('V71/test.txt', 'V71');
   checkType('getFileHeader() → string', fileHeader, 'string');
-  check('getFileHeader("V71") includes __OVERWRITE', fileHeader.includes('__OVERWRITE'));
+  check('getFileHeader("V71") empty (Patch-Mode, no __OVERWRITE)', fileHeader === '');
   checkEqual('getFileHeader("V50") empty', plugin.getFileHeader('V50/test.txt', 'V50'), '');
 
   // ── Inheritance: GamePlugin base class still throws for non-overridden methods ─

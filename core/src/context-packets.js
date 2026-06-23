@@ -193,6 +193,7 @@ function buildContextPacket(entry, glossaryTerms = []) {
 module.exports = {
   normalizeTranslationEntry,
   mergeEntryContexts,
+  countMatches,
   scoreTranslationRisk,
   scoreDynamicRisk,
   buildContextPacket
