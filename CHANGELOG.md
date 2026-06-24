@@ -5,6 +5,37 @@
 
 ---
 
+## [BUGFIX-SESSION-2] — 2026-06-24 — LLM-Safety-Label-Filter + _Info.txt Credit-Fix + Debug-Logging
+
+> **Composite:** `c39j38n14a2p11`
+> **Warum:** Output-Analyse fand 3 weitere Bugs: LLM-Safety-Labels im Output, fehlender Translation-Credit in 5/7 Mods, unsichtbare Missing-Strings in der Pipeline.
+> **Dateien:** `text-core.js`, `translation-db.js`, `runtime-ops.js`, `translation-phases.js`
+
+### Bug B: LLM-Safety-Label-Leak
+- "User Safety: safe" erschien als Array-Eintrag in `Aruan_Race_German/.../bio/specific/Aruan.txt`
+- **Fix 1:** `cleanTranslationArtifact()` in text-core.js filtert Safety-Labels (`User Safety: safe/unsafe`, `Content Safety:`, `Harm categories:`) → `''` → von `.filter(Boolean)` entfernt
+- **Fix 2:** `saveTranslation()` in translation-db.js: Defense-in-Depth-Safety-Label-Check an DB-Grenze + Empty-Translation-Guard
+- **Dateien:** `core/src/text-core.js`, `core/src/translation-db.js`
+
+### Credit-Fix: Translation-Credit IMMER in _Info.txt
+- Nur 2/7 Mods hatten "Translation by Vannon with SyxBridge" im INFO-Feld (nur wenn Original-INFO leer war)
+- **Fix:** Credit wird jetzt IMMER gesetzt — bei nicht-leerem INFO als `"Info | Credit"` angehängt
+- **Dedup-Guard:** `includes(credit)` verhindert doppelten Credit bei Re-Runs
+- **Dateien:** `core/src/runtime-ops.js`
+
+### Debug-Logging in translatePhase
+- `[DEBUG-MISSING]`: Alle Missing-Strings (path, type, source) vor LLM-Call
+- `[DEBUG-SAVE]`: Save-Status pro String (OK/FALLBACK, provider, quality)
+- `[DEBUG-FAIL]`: Batch-Fail-Info
+- Guard: Nur aktiv wenn `missing ≤ 50`
+- **Dateien:** `core/src/translation-phases.js`
+
+### Verifikation
+- Syntax: 4/4 OK
+- 100/100 plugin-boundary PASS
+
+---
+
 ## [OUTPUT-FIRST-SESSION] — 2026-06-24 — _Info.txt Übersetzung + Dead Code + Reset-Fix + REGEL 0.5
 
 > **Composite:** `c39j31n4a5p22`

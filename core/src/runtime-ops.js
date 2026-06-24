@@ -381,15 +381,22 @@ function createRuntimeOps(options) {
               );
             }
           }
-          // INFO: Credit setzen wenn Feld existiert aber leer ist
+          // INFO: Translation-Credit IMMER setzen.
+          // Wenn Original-INFO nicht-leer war: Credit anhängen (Info | Credit).
+          // Wenn Original-INFO leer war: Credit als INFO-Inhalt setzen.
+          // Dedup-Guard: verhindert doppelten Credit bei Re-Runs.
           const infoMatch = translatedInfoContent.match(/^(\s*INFO:\s*)"(.*?)",?\s*$/m);
-          if (infoMatch && !infoMatch[2].trim()) {
+          if (infoMatch) {
             const credit = gameAdapter.getTranslationCredit
               ? gameAdapter.getTranslationCredit()
               : 'Translation by Vannon with SyxBridge';
+            const existingInfo = infoMatch[2].trim();
+            const newInfo = existingInfo
+              ? (existingInfo.includes(credit) ? existingInfo : `${existingInfo} | ${credit}`)
+              : credit;
             translatedInfoContent = translatedInfoContent.replace(
               /^(\s*INFO:\s*)".*?",?\s*$/m,
-              `$1"${credit}",`
+              `$1"${newInfo}",`
             );
           }
           await fsp.writeFile(translatedInfoPath, translatedInfoContent, 'utf-8');

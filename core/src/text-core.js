@@ -200,6 +200,18 @@ function cleanTranslationArtifact(raw) {
   //   KEY: "value,",  ← DOUBLE COMMA! This breaks game file syntax.
   // Strip trailing commas from the translated value to prevent this.
   result = result.replace(/,+$/, '');
+  // LLM-SAFETY-LABEL-STRIP: LLMs sometimes output safety classifier labels
+  // ("User Safety: safe", "Content Safety: ...", "Harm categories: ...")
+  // as standalone translation entries. Strip them so they're filtered out as
+  // empty by the caller's .filter(Boolean). Verified in Output-Analyse 2026-06-24:
+  // Aruan_Race_German/.../bio/specific/Aruan.txt TRAIT.PROUD enthielt
+  // "User Safety: safe" als Array-Eintrag.
+  // Tightened regex: only match known safety label values (safe/unsafe for
+  // User Safety, any content for broad categories), avoiding false positives
+  // on legitimate game text that might start with similar words.
+  if (/^(User Safety:\s*(safe|unsafe)|Content Safety:|Harm categories:)/i.test(result)) {
+    result = '';
+  }
   return result;
 }
 

@@ -223,6 +223,24 @@ function createTranslationDb(options) {
       }
     }
 
+    // LLM-SAFETY-LABEL-STRIP (Defense-in-Depth): Falls cleanTranslationArtifact()
+    // einen Safety-Label-Eintrag nicht erwischt hat, fange ihn hier an der DB-Grenze ab.
+    // "User Safety: safe", "Content Safety: ...", "Harm categories: ..." sind
+    // LLM-Safety-Classifier-Labels, keine Übersetzungen.
+    if (typeof translation === 'string' && /^(User Safety:\s*(safe|unsafe)|Content Safety:|Harm categories:)/i.test(translation.trim())) {
+      console.warn(`[DB-SAFETY-LABEL] Safety-Label im Translation-Output erkannt: "${translation.substring(0, 40)}" — verwerfe.`);
+      return;
+    }
+
+    // EMPTY-TRANSLATION-GUARD: Empty strings should never reach saveTranslation()
+    // because shouldTranslate() blocks them upstream. If one arrives here, it's
+    // a bug (e.g. cleanTranslationArtifact() stripped a safety label to '').
+    // Skip silently — saving empty translations would create cache entries that
+    // prevent legitimate re-translation.
+    if (typeof translation === 'string' && !translation.trim()) {
+      return;
+    }
+
     // DEFENSIVE: Reject shield tokens at the DB boundary.
     // This is the last line of defense — if [[0]] wasn't restored upstream,
     // prevent game file corruption by not saving corrupted data.

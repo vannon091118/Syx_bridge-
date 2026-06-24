@@ -1018,5 +1018,335 @@
       "3b1ee8b: [NARRATOR:Basher] [COMPOSITE:c33j91n2a1p14] [MODEL:mimo-v2.5-pro] [IMPULSE:__OVERWRITE-Strip war falsch, Workshop-Direkt"
     ],
     "model_id": "mimo-v2.5-pro"
+  },
+  {
+    "p_id": "p32",
+    "id": "plot-2026-06-24T13:02:15",
+    "timestamp": "2026-06-24 13:02:15",
+    "summary": "OUTPUT-FIRST: Systematische Output-Analyse mit REGEL 0.5. _Info.txt DESC/INFO waren 100%% English im Output -- jetzt in Uebersetzungspipeline. AUTHOR-Schutz per Regex. WATERMARK_CONFIG dead import weg. Doppeltes require('./extractor') entfernt. Reset restored jetzt auch Native-Mode AppData-Kopien. Tests gruen.",
+    "ref_to": "p20",
+    "recent_commits": [
+      {
+        "hash": "c799852",
+        "subject": "[NARRATOR:Thinker] [COMPOSITE:c38j4n3a1p9] [IMPULSE:Sync scheiterte konsistent mit SQLITE_BUSY: database is locked beim ",
+        "date": "2026-06-24 02:06:40 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/translation-phases.js"
+        ]
+      },
+      {
+        "hash": "4e60fb4",
+        "subject": "[NARRATOR:Ghost] [COMPOSITE:c37j100n8a3p5] [MODEL:mimo-v2.5-pro] [IMPULSE:5 neue Narrative fuer Commit-Layer mit eigenen",
+        "date": "2026-06-24 01:47:09 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/narrative_params.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/scripts/commit_lore/rng.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "2c315a4",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c36j58n4a4p22] [MODEL:mimo-v2.5-pro] [IMPULSE:ZWSP-Watermark entfernen weil SoS BitmapFont ",
+        "date": "2026-06-24 01:36:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/text-core.js"
+        ]
+      },
+      {
+        "hash": "5cb9878",
+        "subject": "[NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+        "date": "2026-06-24 01:29:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          ".gitignore",
+          "CHANGELOG.md",
+          "core/archive/dbold/DB_TREND_REPORT.md",
+          "core/archive/dbold/calibration_T2_2026-06-21.json",
+          "core/archive/dbold/translations_2026-06-19_before_v020_liverun.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_cleanup.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_v0.20-pre.tar.gz",
+          "core/archive/docs/CHANGELOG.md",
+          "core/archive/docs/PREFLIGHT_LATEST.md",
+          "core/data/current_score.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "screenshots/garthimi-mixed.jpg",
+          "screenshots/onari-de.jpg",
+          "screenshots/vargen-de.jpg"
+        ]
+      },
+      {
+        "hash": "15d83c1",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c34j21n2a3p25] [MODEL:mimo-v2.5-pro] [IMPULSE:Self-Evaluation zeigt 55.7% nach jedem Sync —",
+        "date": "2026-06-24 01:20:53 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/gui-handlers.js"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "c799852: [NARRATOR:Thinker] [COMPOSITE:c38j4n3a1p9] [IMPULSE:Sync scheiterte konsistent mit SQLITE_BUSY: database is locked beim ",
+      "4e60fb4: [NARRATOR:Ghost] [COMPOSITE:c37j100n8a3p5] [MODEL:mimo-v2.5-pro] [IMPULSE:5 neue Narrative fuer Commit-Layer mit eigenen",
+      "2c315a4: [NARRATOR:Vannon] [COMPOSITE:c36j58n4a4p22] [MODEL:mimo-v2.5-pro] [IMPULSE:ZWSP-Watermark entfernen weil SoS BitmapFont ",
+      "5cb9878: [NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+      "15d83c1: [NARRATOR:Basher] [COMPOSITE:c34j21n2a3p25] [MODEL:mimo-v2.5-pro] [IMPULSE:Self-Evaluation zeigt 55.7% nach jedem Sync —"
+    ],
+    "model_id": "deepseek-v4-pro",
+    "composite": "c39j31n4a5p20",
+    "narrator": "Vannon"
+  },
+  {
+    "p_id": "p33",
+    "id": "plot-2026-06-24T13:10:08",
+    "timestamp": "2026-06-24 13:10:08",
+    "summary": "OUTPUT-FIRST: _Info.txt in Pipeline, DESC/INFO Deutsch. AUTHOR-Schutz per Regex. Dead Code raus. Reset restored AppData. REGEL 0.5.",
+    "ref_to": "p32",
+    "recent_commits": [
+      {
+        "hash": "c799852",
+        "subject": "[NARRATOR:Thinker] [COMPOSITE:c38j4n3a1p9] [IMPULSE:Sync scheiterte konsistent mit SQLITE_BUSY: database is locked beim ",
+        "date": "2026-06-24 02:06:40 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/translation-phases.js"
+        ]
+      },
+      {
+        "hash": "4e60fb4",
+        "subject": "[NARRATOR:Ghost] [COMPOSITE:c37j100n8a3p5] [MODEL:mimo-v2.5-pro] [IMPULSE:5 neue Narrative fuer Commit-Layer mit eigenen",
+        "date": "2026-06-24 01:47:09 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/narrative_params.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/scripts/commit_lore/rng.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "2c315a4",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c36j58n4a4p22] [MODEL:mimo-v2.5-pro] [IMPULSE:ZWSP-Watermark entfernen weil SoS BitmapFont ",
+        "date": "2026-06-24 01:36:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/text-core.js"
+        ]
+      },
+      {
+        "hash": "5cb9878",
+        "subject": "[NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+        "date": "2026-06-24 01:29:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          ".gitignore",
+          "CHANGELOG.md",
+          "core/archive/dbold/DB_TREND_REPORT.md",
+          "core/archive/dbold/calibration_T2_2026-06-21.json",
+          "core/archive/dbold/translations_2026-06-19_before_v020_liverun.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_cleanup.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_v0.20-pre.tar.gz",
+          "core/archive/docs/CHANGELOG.md",
+          "core/archive/docs/PREFLIGHT_LATEST.md",
+          "core/data/current_score.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "screenshots/garthimi-mixed.jpg",
+          "screenshots/onari-de.jpg",
+          "screenshots/vargen-de.jpg"
+        ]
+      },
+      {
+        "hash": "15d83c1",
+        "subject": "[NARRATOR:Basher] [COMPOSITE:c34j21n2a3p25] [MODEL:mimo-v2.5-pro] [IMPULSE:Self-Evaluation zeigt 55.7% nach jedem Sync —",
+        "date": "2026-06-24 01:20:53 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/gui-handlers.js"
+        ]
+      }
+    ],
+    "data_changes": [
+      {
+        "file": "AGENTS.md",
+        "insertions": 28,
+        "deletions": 1
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md",
+        "insertions": 37,
+        "deletions": 0
+      },
+      {
+        "file": "core/scripts/reset_now.js",
+        "insertions": 12,
+        "deletions": 0
+      },
+      {
+        "file": "core/src/plugins/SongsOfSyxPlugin.js",
+        "insertions": 6,
+        "deletions": 7
+      },
+      {
+        "file": "core/src/runtime-ops.js",
+        "insertions": 55,
+        "deletions": 21
+      },
+      {
+        "file": "core/src/text-core.js",
+        "insertions": 0,
+        "deletions": 1
+      }
+    ],
+    "causal_chain_summary": [
+      "c799852: [NARRATOR:Thinker] [COMPOSITE:c38j4n3a1p9] [IMPULSE:Sync scheiterte konsistent mit SQLITE_BUSY: database is locked beim ",
+      "4e60fb4: [NARRATOR:Ghost] [COMPOSITE:c37j100n8a3p5] [MODEL:mimo-v2.5-pro] [IMPULSE:5 neue Narrative fuer Commit-Layer mit eigenen",
+      "2c315a4: [NARRATOR:Vannon] [COMPOSITE:c36j58n4a4p22] [MODEL:mimo-v2.5-pro] [IMPULSE:ZWSP-Watermark entfernen weil SoS BitmapFont ",
+      "5cb9878: [NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+      "15d83c1: [NARRATOR:Basher] [COMPOSITE:c34j21n2a3p25] [MODEL:mimo-v2.5-pro] [IMPULSE:Self-Evaluation zeigt 55.7% nach jedem Sync —"
+    ],
+    "model_id": "deepseek-v4-pro",
+    "composite": "c39j31n4a5p21",
+    "narrator": "Vannon"
+  },
+  {
+    "p_id": "p34",
+    "id": "plot-2026-06-24T14:06:08",
+    "timestamp": "2026-06-24 14:06:08",
+    "summary": "Stell dir vor, jede Zeile Code ist eine Lektion. Unsichtbare Feinde: LLM-Safety-Label 'User Safety: safe' gefiltert. Credit jetzt in jeder _Info.txt. Debug-Logs zeigen Missing-Strings.",
+    "ref_to": "p33",
+    "recent_commits": [
+      {
+        "hash": "d1bb87f",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c39j31n4a5p22] [MODEL:deepseek-v4-pro] [IMPULSE:Output pruefen, Texte nicht ingame, Dead Co",
+        "date": "2026-06-24 15:15:34 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "AGENTS.md",
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/reset_now.js",
+          "core/src/plugins/SongsOfSyxPlugin.js",
+          "core/src/runtime-ops.js",
+          "core/src/text-core.js"
+        ]
+      },
+      {
+        "hash": "c799852",
+        "subject": "[NARRATOR:Thinker] [COMPOSITE:c38j4n3a1p9] [IMPULSE:Sync scheiterte konsistent mit SQLITE_BUSY: database is locked beim ",
+        "date": "2026-06-24 02:06:40 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/translation-phases.js"
+        ]
+      },
+      {
+        "hash": "4e60fb4",
+        "subject": "[NARRATOR:Ghost] [COMPOSITE:c37j100n8a3p5] [MODEL:mimo-v2.5-pro] [IMPULSE:5 neue Narrative fuer Commit-Layer mit eigenen",
+        "date": "2026-06-24 01:47:09 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/narrative_params.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/scripts/commit_lore/rng.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "2c315a4",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c36j58n4a4p22] [MODEL:mimo-v2.5-pro] [IMPULSE:ZWSP-Watermark entfernen weil SoS BitmapFont ",
+        "date": "2026-06-24 01:36:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/text-core.js"
+        ]
+      },
+      {
+        "hash": "5cb9878",
+        "subject": "[NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev ",
+        "date": "2026-06-24 01:29:46 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          ".gitignore",
+          "CHANGELOG.md",
+          "core/archive/dbold/DB_TREND_REPORT.md",
+          "core/archive/dbold/calibration_T2_2026-06-21.json",
+          "core/archive/dbold/translations_2026-06-19_before_v020_liverun.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_cleanup.tar.gz",
+          "core/archive/dbold/translations_2026-06-19_session_v0.20-pre.tar.gz",
+          "core/archive/docs/CHANGELOG.md",
+          "core/archive/docs/PREFLIGHT_LATEST.md",
+          "core/data/current_score.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "screenshots/garthimi-mixed.jpg",
+          "screenshots/onari-de.jpg",
+          "screenshots/vargen-de.jpg"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "d1bb87f: [NARRATOR:Vannon] [COMPOSITE:c39j31n4a5p22] [MODEL:deepseek-v4-pro] [IMPULSE:Output pruefen, Texte nicht ingame, Dead Co",
+      "c799852: [NARRATOR:Thinker] [COMPOSITE:c38j4n3a1p9] [IMPULSE:Sync scheiterte konsistent mit SQLITE_BUSY: database is locked beim ",
+      "4e60fb4: [NARRATOR:Ghost] [COMPOSITE:c37j100n8a3p5] [MODEL:mimo-v2.5-pro] [IMPULSE:5 neue Narrative fuer Commit-Layer mit eigenen",
+      "2c315a4: [NARRATOR:Vannon] [COMPOSITE:c36j58n4a4p22] [MODEL:mimo-v2.5-pro] [IMPULSE:ZWSP-Watermark entfernen weil SoS BitmapFont ",
+      "5cb9878: [NARRATOR:Buffy] [COMPOSITE:c35j3n1a5p21] [MODEL:mimo-v2.5-pro] [IMPULSE:DB files und backups aus GitHub entfernen, Dev "
+    ],
+    "model_id": "deepseek-v4-pro",
+    "composite": "c39j38n14a2p11",
+    "narrator": "Sage"
   }
 ]

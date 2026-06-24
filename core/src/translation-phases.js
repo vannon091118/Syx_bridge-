@@ -158,6 +158,13 @@ function createTranslationPhases(deps) {
     ctx.missing = ctx.uniqueTexts.filter(text => !ctx.translations.has(text));
     console.log(`\n[STATUS] Texte gefunden: ${ctx.entries.length} (${ctx.uniqueTexts.length} eindeutig)`);
     console.log(`[STATUS] Cache-Hits: ${ctx.translations.size} | Fehlend: ${ctx.missing.length}`);
+    if (ctx.missing.length > 0 && ctx.missing.length <= 50) {
+      console.log(`[DEBUG-MISSING] Die ${ctx.missing.length} fehlenden Strings (gehen an LLM):`);
+      ctx.missing.forEach((t, i) => {
+        const entry = ctx.contextBySource.get(t) || {};
+        console.log(`  [${i+1}] path=${entry.relativePath || '?'} type=${entry.type || '?'} source="${t.substring(0, 80)}"`);
+      });
+    }
     if (ctx.stats.nativeReuseCount > 0) {
       console.log(`[STATUS] Native Uebernahmen: ${ctx.stats.nativeReuseCount}`);
     }
@@ -250,6 +257,10 @@ function createTranslationPhases(deps) {
           // das den Eintrag als terminal, sodass Deep-Polish-SELECT ihn ueberspringt.
           // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all (better-sqlite3 ist synchron).
           await saveTranslation(entry, translated, properNounOverride ? 2 : 0, saveMeta);
+          if (ctx.missing.length <= 50) {
+            const isFallback = translated === source && saveProvider !== 'native_runtime';
+            console.log(`[DEBUG-SAVE] ${isFallback ? 'FALLBACK' : 'OK'} source="${source.substring(0, 50)}" → "${(translated||'').substring(0, 50)}" provider=${saveProvider} q=${saveMeta.qualityScore}`);
+          }
           ctx.cachedData.set(source, {
             translation: translated,
             polishLevel: properNounOverride ? 2 : 0,
@@ -273,6 +284,7 @@ function createTranslationPhases(deps) {
         try { await rollbackTransaction(); } catch (e) { console.warn('[TRANSACTION] Rollback fehlgeschlagen:', e.message); }
         if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
         console.error(`[!] Batch fehlgeschlagen: ${extractErrorMessage(e)}`);
+        console.log(`[DEBUG-FAIL] Batch #${batchNumber} mit ${currentBatch.length} Strings fehlgeschlagen. Fallback-Pfad wird genutzt.`);
 
         // P0-FIX: Vor Fail-Save prüfen ob bereits gültige Übersetzungen in der DB existieren.
         const existingFallbackMap = new Map();
@@ -321,6 +333,9 @@ function createTranslationPhases(deps) {
               overwriteFallbackUsed: !hasExistingTranslation,
               skipReviewIncrement: true
             });
+            if (ctx.missing.length <= 50) {
+              console.log(`[DEBUG-SAVE] FALLBACK source="${(item.source||'').substring(0, 50)}" → "${(fallbackTranslation||'').substring(0, 50)}" provider=${failProvider} reason=${failReason}`);
+            }
             ctx.cachedData.set(item.source, {
               translation: fallbackTranslation,
               polishLevel: isPN ? 2 : 0,
