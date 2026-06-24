@@ -5,6 +5,27 @@
 
 ---
 
+## [SOS-FORMAT-SPEC] — 2026-06-25 — Komplette SoS-Format-Spezifikation als normatives Referenzdokument
+
+> **Composite:** `c39j50n12a4p36`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Echo (Archivar)
+> **Warum:** Es fehlte eine normative Referenz für das SoS KEY:"value"-Format. Tests, Code-Reviews und zukünftige Entwickler brauchten eine verbindliche Spezifikation mit allen Eigenheiten (Escaping, Kommas, INFO-Block, bare strings).
+> **Dateien:** `core/archive/docs/SOS_FORMAT_SPEC.md` (NEU)
+
+### SOS_FORMAT_SPEC.md (~520 Zeilen, 14 Kapitel)
+- **Kapitel 1-4:** Übersicht, Grundstruktur, Keys (`[A-Za-z0-9_]+`), Values (String/Number/Boolean/Block)
+- **Kapitel 5:** Escaping-Regeln — `\"`, `\\`, `\n` mit KRITISCHER Reihenfolge (Watermark→\n→\"→\\)
+- **Kapitel 6:** Kommas als strukturelle Delimiter — außerhalb der Quotes, Double-Comma-Schutz
+- **Kapitel 7-9:** Blöcke `{ }`, INFO-Block (Metadaten NICHT übersetzen), Arrays `[ ]`
+- **Kapitel 10-11:** Whitespace, Zeilenumbrüche, Sonderfälle (__OVERWRITE, Java-Packages, URLs, IDs)
+- **Kapitel 12:** Test-Schema T-01 bis T-13 mit ortsgenauen Fehlermeldungen
+- **Kapitel 13:** Vergleich SoS vs. RimWorld XML (Format, Escaping, Parser, Validation)
+- **Kapitel 14:** Referenz-Implementierung mit Code-Schnipseln aus extractor.js, validator.js, SongsOfSyxPlugin.js
+- **Anhang A:** Komplettes Übersetzungsbeispiel (Englisch→Deutsch) mit INFO-Block-Schutz
+- **Code Review:** 4 Fixes angewendet — Escaping-Tabelle, Double-Comma-Flow, T-07 Quote-Parity, T-13 Structural-Key-Leak
+
+---
+
 ## [SYSTEM-ARCHITECTURE-DOC] — 2026-06-25 — Komplette Architekturerklärung als Referenzdokument
 
 > **Composite:** `c39j26n3a5p27`
