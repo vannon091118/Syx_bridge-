@@ -801,7 +801,7 @@
 > **Regel:** HANDSHAKEs sind Session-Übergaben. Nach Abschluss der Session haben sie keinen LIVE-Wert — der aktuelle Stand ist in MASTER_DOC + CHANGELOG.
 > **Datum der Archivierung:** 2026-06-21
 >
-> **Hinweis:** HANDSHAKE_2026-06-19.md und HANDSHAKE_2026-06-20.md wurden bereits in FREEZE_INDEX.md §14/§15 partiell archiviert. Die hier archivierten 8 Dateien sind die restlichen Session-Übergaben.
+> **Hinweis:** HANDSHAKE_2026-06-19.md und HANDSHAKE_2026-06-20.md wurden bereits in FREEZE_INDEX.md §14/§15 vollständig archiviert (Dateien auf Stub reduziert 2026-06-24). Die hier archivierten 8 Dateien sind die restlichen Session-Übergaben.
 
 ---
 

@@ -101,7 +101,7 @@
 | 6 | `core/archive/docs/SQUIZZLE_REPORT.md` | v0.22 Audit-Ergebnisse (6 Schritte) | Einmal-Audit. Ergebnisse in PLAN.md und MASTER_DOC überführt. | Nein |
 | 7 | `core/archive/docs/TRIPLE_AUDIT_2026-06-19.md` | 3-Rollen-Audit (Routing, Repo, Doku) | Einmal-Audit. 10 Widersprüche behoben. Ergebnisse in LIVE_INDEX. | Nein |
 | 8 | `core/archive/docs/plans/PHASE2_MARKER_INTEGRATION_2026-06-19.md` | Phase 2 Marker-Validierung | ✅ ABGESCHLOSSEN + nach PLAN_MASTER migriert. | Nein |
-| 9 | `core/archive/docs/HANDSHAKE_2026-06-19.md` | Session-Handshake v0.20.0-pre-release | Historischer Handshake. Durch neue Sessions abgelöst. | Nein |
+| 9 | `core/archive/docs/FREEZE/HANDSHAKE_2026-06-19.md` | Session-Handshake v0.20.0-pre-release | Historischer Handshake. Durch neue Sessions abgelöst. Auf Stub reduziert 2026-06-24. | Nein |
 | 10 | `core/archive/dbold/DB_STATISTICS.md` | DB-Metriken-Statistiken | Konsolidiert. Daten in DB_TREND_REPORT. | Als Referenz |
 
 ---

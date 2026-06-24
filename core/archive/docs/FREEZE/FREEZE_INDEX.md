@@ -26,7 +26,7 @@
 11. [MASTER_DOC-Konsolidierung (17)](#11-master_doc-konsolidierung-durchlauf-1)
 12. [Doku-Divergenz-Fixes (2)](#12-doku-divergenz-fixes-2026-06-20)
 13. [Doku-Clean v0.20.0 (18)](#13-doku-clean-v0200)
-14. [HANDSHAKE_2026-06-19 — Partielle Archivierung (12)](#14-handshake_2026-06-19--partielle-archivierung)
+14. [HANDSHAKE_2026-06-19 — Vollarchivierung (12 Sektionen ins Buch überführt, Datei auf Stub reduziert 2026-06-24)](#14-handshake_2026-06-19--vollarchivierung)
 15. [HANDSHAKE_2026-06-20 — Partielle Archivierung (11)](#15-handshake_2026-06-20--partielle-archivierung)
 16. [DOKU_KONSOLIDIERUNG_2026-06-20 — Vollarchivierung (8)](#16-doku_konsolidierung_2026-06-20--vollarchivierung)
 17. [FORENSIC_FULLSCAN_v0.20_2026-06-19_V2 — Vollarchivierung (5)](#17-forensic_fullscan_v020_2026-06-19_v2--vollarchivierung)
@@ -643,12 +643,13 @@
 
 ---
 
-## 14. HANDSHAKE_2026-06-19 — Partielle Archivierung
+## 14. HANDSHAKE_2026-06-19 — Vollarchivierung
 
 > **Aktion:** 12 OBSOLETE Sektionen aus HANDSHAKE_2026-06-19.md ins Buch überführt.
-> **Quelle:** `core/archive/docs/HANDSHAKE_2026-06-19.md` (12 Sektionen, ~60 % OBSOLETE)
+> **Quelle:** `core/archive/docs/FREEZE/HANDSHAKE_2026-06-19.md` (12 Sektionen, ~100 % OBSOLETE — Datei auf Stub reduziert 2026-06-24)
 > **Regel:** HANDSHAKE = historisches Übergabe-Dokument. Aktueller Stand jetzt in MASTER_DOC + CHANGELOG. Was erledigt/veraltet ist, gehört ins Buch.
 > **Datum der Archivierung:** 2026-06-20
+> **Update 2026-06-24:** Datei selbst von ~500 Zeilen auf ~4 Zeilen (Stub) gekürzt. Inhalt vollständig in FREEZE_INDEX §14 (HH-001–HH-012) archiviert.
 
 ---
 

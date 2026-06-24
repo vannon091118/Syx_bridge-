@@ -5,6 +5,25 @@
 
 ---
 
+## [FREEZE-INDEX-HANDSHAKE-SYNC] — 2026-06-24 — FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Referenzen konsistent gemacht
+
+> **Composite:** `c39j99n2a5p10`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Basher (Terminal Bot)
+> **Warum:** HANDSHAKE_2026-06-19.md wurde auf ~4 Zeilen gekürzt (B2). FREEZE_INDEX.md §14 und FREEZE_INDEX_2.md §18 verwiesen noch auf "Partielle Archivierung" und veraltete Pfade (docs/ statt FREEZE/). Konsistenz-Fix.
+> **Dateien:** `core/archive/docs/FREEZE/FREEZE_INDEX.md`, `core/archive/docs/FREEZE/FREEZE_INDEX_2.md`, `core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md`, `core/archive/docs/FREEZE/DOCU_AUDIT_INDEX_2026-06-23.md`
+
+### Konsistenz-Fixes
+- **FREEZE_INDEX.md §14:** Titel "Partielle Archivierung" → "Vollarchivierung" (Datei ist Stub, Inhalt archiviert in §14 selbst). Pfad korrigiert (docs/ → FREEZE/). Status "~60% OBSOLETE" → "~100% OBSOLETE — Datei auf Stub reduziert 2026-06-24"
+- **FREEZE_INDEX_2.md §18:** "partiell archiviert" → "vollständig archiviert (Dateien auf Stub reduziert 2026-06-24)"
+- **DOCU_AUDIT_ABBAU_2026-06-23.md B2:** Pfad korrigiert (docs/ → FREEZE/)
+- **DOCU_AUDIT_INDEX_2026-06-23.md #9:** Pfad korrigiert (docs/ → FREEZE/)
+
+### Verifikation
+- Syntax: N/A (nur .md Änderungen)
+- Konsistenz: Alle 4 Dokumente referenzieren jetzt denselben FREEZE/-Pfad ✅
+
+---
+
 ## [SUB-PLAN-FREEZE-SYNC] — 2026-06-24 — 8 Sub-Pläne mit FREEZE_INDEX_2 abgeglichen
 
 > **Composite:** `c39j93n10a3p12`
