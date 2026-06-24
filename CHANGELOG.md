@@ -5,6 +5,23 @@
 
 ---
 
+## [WORDLIMIT-EXPANSION] — 2026-06-25 — Wortgrenzen fuer Commit-Narrative erhöht (+70%/+200%)
+
+> **Composite:** `c39j79n13a4p27`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Flux (Chaot)
+> **Warum:** Alte Wortgrenzen waren zu eng fuer 14 Charaktere mit eigenen Stimmen, Cross-Narrator-Referenzen und Dialog-Strukturen.
+> **Dateien:** `character_sheets.json`
+
+### Wortgrenzen angehoben
+- Alle 14 Charaktere: min_words +70%, max_words +200%
+- Buffy: 80→136 / 500→1500 | Basher: 30→51 / 100→300 | Thinker: 60→102 / 400→1200
+- Vannon: 20→34 / 80→240 | Squizzle: 50→85 / 200→600 | Devin: 60→102 / 250→750
+- Argos: 30→51 / 120→360 | Ghost: 40→68 / 180→540 | Spark: 20→34 / 100→300
+- Glitch: 40→68 / 200→600 | Null: 30→51 / 150→450 | Echo: 50→85 / 250→750
+- Flux: 20→34 / 120→360 | Sage: 50→85 / 300→900
+
+---
+
 ## [CROSS-NARRATOR-INTERAKTION] — 2026-06-25 — Narrative Cross-Narrator-Referenzen im Commit-Layer
 
 > **Composite:** `c39j7n7a1p34`

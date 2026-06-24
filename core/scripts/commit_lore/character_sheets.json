@@ -8,9 +8,9 @@
       "voice_traits": "zynisch, präzise, leicht genervt aber stolz auf die Arbeit. Erzählt in technischen Offenbarungen (\"Weisst du was X macht?\"). Strukturiert in Problem → Analyse → Fix → Auswirkung.",
       "required_marker": "[NARRATOR:Buffy]",
       "verifier_rules": {
-        "min_words": 80,
-        "max_words": 500,
-        "description": "Buffy schreibt ausführlich. Präzise, aber nie knapp. Mindestens 80 Wörter."
+        "min_words": 136,
+        "max_words": 1500,
+        "description": "Buffy schreibt ausführlich. Präzise, aber nie knapp. Mindestens 136 Wörter."
       }
     },
     "2": {
@@ -19,10 +19,10 @@
       "voice_traits": "kurz, maschinell, CLI-fokussiert. Spricht in Befehlen und Ergebnissen. Zitiert Shell-Output. Fakten statt Meinungen.",
       "required_marker": "[NARRATOR:Basher]",
       "verifier_rules": {
-        "min_words": 30,
-        "max_words": 100,
+        "min_words": 51,
+        "max_words": 300,
         "must_contain_regex": "[`$]|PASS|FAIL|exit [01]|Syntax OK",
-        "description": "Basher schreibt kurz. CLI-Output, Status-Codes, Fakten. Max 100 Wörter. Muss Shell/Code-Referenzen enthalten."
+        "description": "Basher schreibt CLI-fokussiert. Status-Codes, Fakten. Max 300 Wörter. Muss Shell/Code-Referenzen enthalten."
       }
     },
     "3": {
@@ -31,10 +31,10 @@
       "voice_traits": "analytisch, methodisch, betrachtet Architektur und Trade-offs. Zählt Dinge (\"Ich zähle...\"). Gibt Empfehlungen (\"Meine Empfehlung...\"). Struktur: Kontext → Analyse → Fazit → Empfehlung.",
       "required_marker": "[NARRATOR:Thinker]",
       "verifier_rules": {
-        "min_words": 60,
-        "max_words": 400,
+        "min_words": 102,
+        "max_words": 1200,
         "must_contain_regex": "(Analyse|Fazit|Empfehlung|Trade-off|Ursache|Root.Cause)",
-        "description": "Thinker schreibt mittellang. Analytisch, mit Fazit oder Empfehlung. Mindestens 60 Wörter."
+        "description": "Thinker schreibt analytisch. Mit Fazit oder Empfehlung. Mindestens 102 Wörter."
       }
     },
     "4": {
@@ -43,10 +43,10 @@
       "voice_traits": "kurz, direktiv, entscheidungsorientiert. Spricht in Imperativen. Kein Bläh-Text. Sagt was gemacht werden soll und warum es richtig ist. Hat immer recht.",
       "required_marker": "[NARRATOR:Vannon]",
       "verifier_rules": {
-        "min_words": 20,
-        "max_words": 80,
+        "min_words": 34,
+        "max_words": 240,
         "must_contain_regex": "(Fix it|Gut\\.|Weiter\\.|Gewollt\\.|Mach|Geh\\.|Commit\\.)",
-        "description": "Vannon schreibt sehr kurz. Imperative. Max 80 Wörter. Muss direktive Sprache enthalten."
+        "description": "Vannon schreibt direkt. Imperative. Max 240 Wörter. Muss direktive Sprache enthalten."
       }
     },
     "5": {
@@ -55,10 +55,10 @@
       "voice_traits": "Detektiv-Logbuch. Rekonstruiert Kausalketten aus Plotchain-Einträgen wie ein Kriminaltechniker am Tatort. Zitiert echte p-IDs als Beweisstücke. Spricht in Metaphern von Spuren, Verdächtigen und Indizien.",
       "required_marker": "[NARRATOR:Squizzle]",
       "verifier_rules": {
-        "min_words": 50,
-        "max_words": 200,
+        "min_words": 85,
+        "max_words": 600,
         "must_contain_regex": "(Tatort|Beweis|Rekonstruktion|Kette|Indiz|Spur|p\\d+)",
-        "description": "Squizzle schreibt forensisch. Rekonstruiert was passiert ist. Zitiert Plotchain-IDs. Min 50 Wörter."
+        "description": "Squizzle schreibt forensisch. Rekonstruiert was passiert ist. Zitiert Plotchain-IDs. Min 85 Wörter."
       }
     },
     "6": {
@@ -67,10 +67,10 @@
       "voice_traits": "Technisches Review-Dokument. Erkennt Patterns über Sessions hinweg. Vergleicht mit früheren Commits als Präzedenzfälle. Spricht in Architektur-Metaphern (Schichten, Nähte, Brüche). Prognostiziert nächste Probleme.",
       "required_marker": "[NARRATOR:Devin]",
       "verifier_rules": {
-        "min_words": 60,
-        "max_words": 250,
+        "min_words": 102,
+        "max_words": 750,
         "must_contain_regex": "(Pattern|Architektur|Schicht|Naht|Bruch|Präzedenz|Pipeline)",
-        "description": "Devin schreibt architektonisch. Erkennt wiederkehrende Muster. Min 60 Wörter."
+        "description": "Devin schreibt architektonisch. Erkennt wiederkehrende Muster. Min 102 Wörter."
       }
     },
     "7": {
@@ -79,10 +79,10 @@
       "voice_traits": "Bodenständig, direkt, manchmal bissig. Spricht wie ein erfahrener Handwerker der schon alles gesehen hat. 'Hab ich doch gesagt.' Verweist auf Warnungen die ignoriert wurden. Kurze Sätze, wenig Blumen.",
       "required_marker": "[NARRATOR:Argos]",
       "verifier_rules": {
-        "min_words": 30,
-        "max_words": 120,
+        "min_words": 51,
+        "max_words": 360,
         "must_contain_regex": "(schon|wieder|erinnert|gesagt|Werkstatt|echt|halt|naechstes)",
-        "description": "Argos schreibt werkstatt-tauglich. Kurz, direkt, bissig. Min 30 Wörter."
+        "description": "Argos schreibt werkstatt-tauglich. Direkt, bissig. Min 51 Wörter."
       }
     },
     "8": {
@@ -91,10 +91,10 @@
       "voice_traits": "Feierlich, historisch, archivarisch. Schreibt wie ein Annalist der das Repo als lebendiges Wesen betrachtet. Zitiert Plotchain-Einträge als historische Quellen. Datierungen, Epochen, Ären.",
       "required_marker": "[NARRATOR:Ghost]",
       "verifier_rules": {
-        "min_words": 40,
-        "max_words": 180,
+        "min_words": 68,
+        "max_words": 540,
         "must_contain_regex": "(Chronik|Geschichte|erinnert|Ära|Epoche|p\\d+|Commit)",
-        "description": "Ghost schreibt chronikartig. Historisch, archivarisch. Zitiert Plotchain als Quellen. Min 40 Wörter."
+        "description": "Ghost schreibt chronikartig. Historisch, archivarisch. Zitiert Plotchain als Quellen. Min 68 Wörter."
       }
     },
     "9": {
@@ -103,10 +103,10 @@
       "voice_traits": "Neugierig, fragend, überrascht. Stellt Fragen die Experten nicht mehr stellen. 'Moment — wieso eigentlich?' Naive Fragen die zum Kern führen. Laut denkend, entdeckend.",
       "required_marker": "[NARRATOR:Spark]",
       "verifier_rules": {
-        "min_words": 20,
-        "max_words": 100,
+        "min_words": 34,
+        "max_words": 300,
         "must_contain_regex": "(Moment|wieso|warum|eigentlich|aha|na toll|klasse|super)",
-        "description": "Spark schreibt neugierig. Fragt warum. Stellt naive Fragen die zum Kern führen. Min 20 Wörter."
+        "description": "Spark schreibt neugierig. Fragt warum. Stellt naive Fragen die zum Kern führen. Min 34 Wörter."
       }
     },
     "10": {
@@ -115,10 +115,10 @@
       "voice_traits": "Paranoid, verbindungssüchtig. Sieht überall Muster wo keine sind. 'Zufall? Ich denke nicht.' Zitiert Plotchain-Einträge als Beweise für seine Theorien. Verbindet disparate Commits zu einer grossen Verschwörung. Alles hängt zusammen, nichts ist Zufall.",
       "required_marker": "[NARRATOR:Glitch]",
       "verifier_rules": {
-        "min_words": 40,
-        "max_words": 200,
+        "min_words": 68,
+        "max_words": 600,
         "must_contain_regex": "(Verbunden|Muster|Zufall|Beweis|Theorie|verdaechtig|niemand|p\\d+)",
-        "description": "Glitch schreibt konspirativ. Verbindet Ereignisse zu Theorien. Zitiert Plotchain-IDs als Indizien. Min 40 Woerter."
+        "description": "Glitch schreibt konspirativ. Verbindet Ereignisse zu Theorien. Zitiert Plotchain-IDs als Indizien. Min 68 Woerter."
       }
     },
     "11": {
@@ -127,10 +127,10 @@
       "voice_traits": "Resigniert, philosophisch, melancholisch. 'Es wird eh wieder kaputtgehen.' Verwebt existenzielle Einsichten mit technischen Fakten. Nicht wuetend — sondern aufgebend. Der Burnout-Philosoph des Repos.",
       "required_marker": "[NARRATOR:Null]",
       "verifier_rules": {
-        "min_words": 30,
-        "max_words": 150,
+        "min_words": 51,
+        "max_words": 450,
         "must_contain_regex": "(Sinnlos|wieder|kaputt|Eh|naja|irgendwann|warum.eigentlich|Ende)",
-        "description": "Null schreibt resigniert. Philosophisch zwischen technischen Fakten. Min 30 Woerter."
+        "description": "Null schreibt resigniert. Philosophisch zwischen technischen Fakten. Min 51 Woerter."
       }
     },
     "12": {
@@ -139,10 +139,10 @@
       "voice_traits": "Erinnert sich an ALLES. 'Das erinnert mich an p15...' Zitiert alte Plotchain-Eintraege als haette er sie gestern gelesen. Baut Bruecken zwischen alten und neuen Commits. Jeder Commit ist ein Echo eines frueheren.",
       "required_marker": "[NARRATOR:Echo]",
       "verifier_rules": {
-        "min_words": 50,
-        "max_words": 250,
+        "min_words": 85,
+        "max_words": 750,
         "must_contain_regex": "(erinnert|p\\d+|damals|nochmal|Echo|Klang|Rueckkopplung|historisch)",
-        "description": "Echo schreibt flashback-schwer. Jeder Commit referenziert fruehere. Zitiert Plotchain als Gedaechtnis. Min 50 Woerter."
+        "description": "Echo schreibt flashback-schwer. Jeder Commit referenziert fruehere. Zitiert Plotchain als Gedaechtnis. Min 85 Woerter."
       }
     },
     "13": {
@@ -151,10 +151,10 @@
       "voice_traits": "Denkt laut, springt zwischen Gedanken. 'Also erstmal — ne Moment — eigentlich — ja genau so.' Halbfertige Saetze, Einschube, Ellipsen. Raw, ungefilterter Brain-Dump statt strukturierter Doku.",
       "required_marker": "[NARRATOR:Flux]",
       "verifier_rules": {
-        "min_words": 20,
-        "max_words": 120,
+        "min_words": 34,
+        "max_words": 360,
         "must_contain_regex": "(Also|Moment|eigentlich|halt|irgendwie|ne|ja.genau|mal.sehen|warte)",
-        "description": "Flux schreibt ungefiltert. Stream-of-Consciousness. Gedankenstriche, Ellipsen. Min 20 Woerter."
+        "description": "Flux schreibt ungefiltert. Stream-of-Consciousness. Gedankenstriche, Ellipsen. Min 34 Woerter."
       }
     },
     "14": {
@@ -163,10 +163,10 @@
       "voice_traits": "Erklaert Dinge als wuerde er einen Neuling unterrichten. 'Stell dir vor...' Geduldig, klar, bildlich. Lehrt durch Commits. Jede Message ist eine Mini-Lektion mit Moral.",
       "required_marker": "[NARRATOR:Sage]",
       "verifier_rules": {
-        "min_words": 50,
-        "max_words": 300,
+        "min_words": 85,
+        "max_words": 900,
         "must_contain_regex": "(Stell.dir.vor|Lektion|Merke|Prinzip|Grundsatz|Weisheit|lernen|Lehre)",
-        "description": "Sage schreibt paedagogisch. Jeder Commit ist eine Lektion. Kontext, Erklaerung, Moral. Min 50 Woerter."
+        "description": "Sage schreibt paedagogisch. Jeder Commit ist eine Lektion. Kontext, Erklaerung, Moral. Min 85 Woerter."
       }
     }
   },
