@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Alle 36 in `BYPASS_AUDIT_2026-06-21.md` identifizierten Skip-/Bypäss-Punkte im Code durch echte Reparaturen ersetzen — nicht durch neue Bypässe überdecken. Audit-Ergebnis: 36 Funde, davon bereits in Vor-Sessions erledigt oder überholt sind die in `STABILISIERUNGS_SCOPE` referenzierten Items. Die hier gelisteten Items sind die offenen Restfunde.
 
 **📎 Origin:** `core/archive/docs/BYPASS_AUDIT_2026-06-21.md` (§ funde-by-class)
+**📚 FREEZE_INDEX_2:** §10 (Stabilisierungs-Scope 9 Tasks), §11 (P0-1/P0-3/P1-1 implementiert, Score 85%→95%)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_STABILISIERUNG](PLAN_STABILISIERUNG.md) — übergeordnetes Ziel: Bypässe überflüssig machen
@@ -28,7 +29,7 @@ created: 2026-06-21
 | BR-3 | Code-Reviewer-MiniMax-M3 über jede Reparatur | Reviewer | pro Fix | BYPASS_AUDIT §6 | 🟡 OFFEN |
 | BR-4 | Test-Coverage für jeden ehemaligen Bypäss-Pfad erstellen | basher | ~3h | BYPASS_AUDIT §8 | 🟡 OFFEN |
 | BR-5 | Audit-Re-Run nach Reparatur (Erwartung: 36 → 0 Funde in neuem Report) | Reviewer | ~30m | BYPASS_AUDIT §9 | 🟡 OFFEN |
-| BR-6 | `STABILISIERUNGS_SCOPE` Items P2.1–P2.3 aus diesem Plan ableiten | basher | ~30m | STABILISIERUNG | 🟡 OFFEN |
+| BR-6 | `STABILISIERUNGS_SCOPE` Items P2.1–P2.3 aus diesem Plan ableiten | basher | ~30m | STABILISIERUNG | ✅ DONE — Stabilisierungs-Scope abgeleitet aus BYPASS_AUDIT (36 Funde) + FEATURE_VERIFICATION (85%). 9 Tasks definiert, P0-1/P0-3/P1-1 implementiert (Commit `1d89544`, Score 85%→95%). Restliche Tasks in PLAN_MASTER.md migriert. Siehe FREEZE_INDEX_2 §10. |
 
 ## Acceptance Criteria
 

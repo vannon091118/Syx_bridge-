@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Use-Case-Kategorien mit niedriger Erfolgswahrscheinlichkeit (Schwache HW 70-78%, Power-API 72-82%, Offline 55-65%) durch gezielte Code-Härtungen auf ≥ 85% bringen, ohne Casual-Tier (96-99%) zu beschädigen.
 
 **📎 Origin:** `core/archive/docs/FOREIGN_MACHINE_PROBABILITY_2026-06-21.md` (§3 P-Matrix, §5 Risiko-Konzentrationen)
+**📚 FREEZE_INDEX_2:** §20 (Item 0b isFreeModel Provider-bewusst), §23 (Item 3/9 rankModel DB-gestützt)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_GLOBAL_SCORE](PLAN_GLOBAL_SCORE.md) — Score-Aggregation zur Erfolgsmessung

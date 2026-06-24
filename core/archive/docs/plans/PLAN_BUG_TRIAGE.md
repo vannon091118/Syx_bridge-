@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Alle im `KNOWN_BUGS_REPORT.md` aktuell gelisteten Bugs (BU-IDs) innerhalb V0.21.x in Status OFFEN → IN ARBEIT → ABGESCHLOSSEN bringen. Doppelpflege verhindern (Bug-Report = Primary, Plan-Journal = Working-View).
 
 **📎 Origin:** `core/archive/docs/KNOWN_BUGS_REPORT.md` (Tabelle mit BU-IDs, Status, Prio)
+**📚 FREEZE_INDEX_2:** §16 (27 behobene Bugs archiviert), §29–§30 (MASTER_DOC §3/§6 Bereinigung)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_PRIORISIERUNG](PLAN_PRIORISIERUNG.md) — Prio-Reihenfolge

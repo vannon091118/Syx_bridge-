@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Alle in `CONTROL_TOWER_AUDIT_2026-06-19.md` als "latent" markierten Risiken (Orchestrator-Edge-Cases, Race-Conditions, Memory-Leaks, Stale-State-Bugs) präventiv entschärfen BEVOR sie sich in Produktion als Bugs manifestieren.
 
 **📎 Origin:** `core/archive/docs/CONTROL_TOWER_AUDIT_2026-06-19.md` (Latent-Risk-Liste)
+**📚 FREEZE_INDEX_2:** §1–§5 (15 systemische Fixes), §7 (P0-4 Defense-in-Depth)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_BUG_TRIAGE](PLAN_BUG_TRIAGE.md) — Latent-Risk das sich manifestiert hat = Bug

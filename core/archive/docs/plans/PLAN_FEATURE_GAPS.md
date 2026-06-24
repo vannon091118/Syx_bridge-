@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Alle im `FEATURE_VERIFICATION_2026-06-21.md` als nicht-erfüllt oder teil-erfüllt markierten Features auf Score 100% bringen. Aktueller Stand: 85% (12/14 vollständig erfüllt, 2 mit Lücken).
 
 **📎 Origin:** `core/archive/docs/FEATURE_VERIFICATION_2026-06-21.md` (Feature-Matrix 14/14)
+**📚 FREEZE_INDEX_2:** §8 (Patch Mode), §9 (GRAMMAR_CHECK False-Alarm), §11 (db_repair Fix), §17 AD-002 (FEATURE_VERIFICATION archiviert)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_STABILISIERUNG](PLAN_STABILISIERUNG.md) — System-Stabilität
@@ -23,7 +24,7 @@ created: 2026-06-21
 
 | ID | Aufgabe | Owner | Aufwand | Quelle | Status |
 |---|---|---|---|---|---|
-| FG-1 | Aus `FEATURE_VERIFICATION` die 2–3 nicht-erfüllten Features identifizieren (z.B. Grammar-Check-False-Alarm, mögliche Lücken) | Reviewer | ~15m | FEAT_VER §3 | 🟡 OFFEN |
+| FG-1 | Aus `FEATURE_VERIFICATION` die 2–3 nicht-erfüllten Features identifizieren (z.B. Grammar-Check-False-Alarm, mögliche Lücken) | Reviewer | ~15m | FEAT_VER §3 | ✅ DONE — Identifiziert in FREEZE_INDEX_2 §8 (Patch Mode Hard-Coded), §9 (GRAMMAR_CHECK FALSE ALARM), §11 (db_repair CLI defekt). Score 85%→95% erreicht. |
 | FG-2 | Pro Lücke: Code-Reviewer-MiniMax-M3 über betroffene Funktion | Reviewer | pro Lücke ~30m | FEAT_VER | 🟡 OFFEN |
 | FG-3 | Pro Lücke: Fix-Plan (entweder Code-Reparatur oder Doku-Korrektur) | Reviewer | pro Lücke ~1h | FEAT_VER | 🟡 OFFEN |
 | FG-4 | Re-Run `FEATURE_VERIFICATION_<datum>` mit Score 100% | Reviewer | ~30m | FEAT_VER §4 | 🟡 OFFEN |

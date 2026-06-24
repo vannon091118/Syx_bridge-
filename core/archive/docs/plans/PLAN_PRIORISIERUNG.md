@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Backlog nach den 5 Prioritäts-Stufen aus `PRIORISIERUNG_2026-06-19.md` sequenziell durcharbeiten: Stufe 1 (Sofort/P0) → Stufe 2 (Dringend/P1) → Stufe 3 (Wichtig/P2) → Stufe 4 (Optional/P3) → Stufe 5 (Backlog). Verworfene Items werden in `KNOWN_BUGS_REPORT.md` als VERWORFEN markiert.
 
 **📎 Origin:** `core/archive/docs/PRIORISIERUNG_2026-06-19.md` (Stufen-Matrix)
+**📚 FREEZE_INDEX_2:** §10 (Stabilisierungs-Scope 9 Tasks), §11 (P0-1/P0-3/P1-1 implementiert)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_BUG_TRIAGE](PLAN_BUG_TRIAGE.md) — Stufe 1 enthält aktive Bugs

@@ -5,6 +5,25 @@
 
 ---
 
+## [SUB-PLAN-FREEZE-SYNC] — 2026-06-24 — 8 Sub-Pläne mit FREEZE_INDEX_2 abgeglichen
+
+> **Composite:** `c39j93n10a3p12`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Squizzle (Forensiker)
+> **Warum:** DOCU_AUDIT_ABBAU C2 empfahl Sub-Plan-Status-Prüfung. FREEZE_INDEX_2 dokumentiert historische Erledigungen (§8–§30) die in den aktiven Plänen noch nicht als DONE markiert waren.
+> **Dateien:** `PLAN_FEATURE_GAPS.md`, `PLAN_BYPASS_REMOVAL.md`, `PLAN_BUG_TRIAGE.md`, `PLAN_DEAD_FLAGS.md`, `PLAN_LATENT_RISKS.md`, `PLAN_PRIORISIERUNG.md`, `PLAN_RUNTIME_PROBABILITY.md`
+
+### Abgleich-Ergebnisse
+- **PLAN_FEATURE_GAPS.md FG-1:** ✅ DONE — Die 3 nicht-erfüllten Features wurden in FREEZE_INDEX_2 identifiziert: Patch Mode Hard-Coded (§8), GRAMMAR_CHECK FALSE ALARM (§9), db_repair CLI Fix (§11). Score 85%→95% erreicht.
+- **PLAN_BYPASS_REMOVAL.md BR-6:** ✅ DONE — Stabilisierungs-Scope mit 9 Tasks wurde aus BYPASS_AUDIT + FEATURE_VERIFICATION abgeleitet (FREEZE_INDEX_2 §10). P0-1/P0-3/P1-1 implementiert (Commit `1d89544`).
+- **7 Pläne:** FREEZE_INDEX_2-Cross-References hinzugefügt (§10, §11, §16, §19–§23, §29–§30)
+- **Keine Änderung:** PLAN_GLOBAL_SCORE.md (bereits GS-1..GS-6 ✅ DONE), PLAN_STABILISIERUNG.md (bereits ST-5/ST-6 ✅ DONE)
+
+### Verifikation
+- Syntax: N/A (nur .md Änderungen)
+- Konsistenz: Alle 8 Pläne referenzieren FREEZE_INDEX_2 an mindestens einer Stelle ✅
+
+---
+
 ## [HANDSHAKE-KUERZUNG] — 2026-06-24 — HANDSHAKE_2026-06-19.md auf Minimalinhalt gekürzt (B2 aus DOCU_AUDIT_ABBAU)
 
 > **Composite:** `c39j3n5a3p2`

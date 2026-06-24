@@ -11,6 +11,7 @@ created: 2026-06-21
 **Ziel:** Alle in `DEAD_FLAG_REPORT_2026-06-19.md` identifizierten Flags ohne Code-Wirkung entfernen oder dokumentieren. Risiko: Flags die wie Runtime-Flag-Settings aussehen aber nur Doku-Existenz haben — Beispiel-BU-036 (GOOGLE_FREE_ENABLED).
 
 **📎 Origin:** `core/archive/docs/DEAD_FLAG_REPORT_2026-06-19.md` (Liste mit DOKU-vs-RUNTIME-Klassifikation)
+**📚 FREEZE_INDEX_2:** §16 KB-S12 (BU-036 GOOGLE_FREE_ENABLED behoben)
 
 **🔗 Verwandte Pläne:**
 - [PLAN_BYPASS_REMOVAL](PLAN_BYPASS_REMOVAL.md) — manche "dead" flags wirken als Bypässe
