@@ -65,7 +65,7 @@ const errors = [];
 // ═══════════════════════════════════════════════════════════════════
 
 const impulseMatch = commitMsg.match(/\[IMPULSE:(.{5,}?)\]/i);
-const narratorMatch = commitMsg.match(/\[NARRATOR:(Buffy|Basher|Thinker|Vannon|Squizzle|Devin|Argos|Ghost|Spark)\]/i);
+const narratorMatch = commitMsg.match(/\[NARRATOR:(Buffy|Basher|Thinker|Vannon|Squizzle|Devin|Argos|Ghost|Spark|Glitch|Null|Echo|Flux|Sage)\]/i);
 const modelMatch    = commitMsg.match(/\[MODEL:([a-z0-9._-]+)\]/i);
 const compositeMatch = commitMsg.match(/\[COMPOSITE:((?:[a-z]+\d+)+)\]/i);
 

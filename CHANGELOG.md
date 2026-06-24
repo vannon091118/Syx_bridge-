@@ -5,6 +5,23 @@
 
 ---
 
+## [NARRATIVE-EXPANSION-2] — 2026-06-24 — 5 neue Narrative (10-14) für Commit-Layer
+
+> **Composite:** `c39j39n8a1p34`
+> **Warum:** 9 Charaktere waren nicht genug für das narrative Spektrum. 5 neue mit radikal anderen Schreibstilen — vom Verschwörungstheoretiker bis zum resignierten Philosophen.
+> **Dateien:** `character_sheets.json`, `rng.js`, `verify_commit_msg.js`, `writing_rules.json`, `narrative_params.json`, `composite_chain.json`
+
+- **Glitch** (Verschwörungstheoretiker, n=10): Paranoid, verbindungssüchtig. "Zufall? Ich denke nicht." Zitiert Plotchain-IDs als Indizien für seine Theorien. Min 40 Wörter
+- **Null** (Nihilist, n=11): Resigniert, philosophisch. "Es wird eh wieder kaputtgehen." Der Burnout-Philosoph des Repos. Min 30 Wörter
+- **Echo** (Archivar, n=12): Flashback-schwer. "Das erinnert mich an p15…" Baut Brücken zwischen alten und neuen Commits. Min 50 Wörter
+- **Flux** (Chaot, n=13): Stream-of-Consciousness. "Also erstmal — ne Moment — eigentlich — ja genau so." Ungefilterter Brain-Dump. Min 20 Wörter
+- **Sage** (Lehrer, n=14): Pädagogisch. "Stell dir vor…" Jeder Commit eine Mini-Lektion mit Moral. Min 50 Wörter
+- rng.js poolSize 9→14, verify_commit_msg.js Regex erweitert, writing_rules.json erweitert
+- Mood-Kombinationen für alle 5 neuen Charaktere in narrative_params.json hinzugefügt
+- composite_chain.json: seq 32-38 mit Narrator-Zuordnungen hinzugefügt
+
+---
+
 ## [BUGFIX-SESSION-2] — 2026-06-24 — LLM-Safety-Label-Filter + _Info.txt Credit-Fix + Debug-Logging
 
 > **Composite:** `c39j38n14a2p11`

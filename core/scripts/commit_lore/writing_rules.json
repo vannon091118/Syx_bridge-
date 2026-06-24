@@ -29,10 +29,10 @@
       "min_length": 5
     },
     "narrator_token": {
-      "description": "[NARRATOR:<Name>] Pflicht-Token. Der Erzähler wird deterministisch aus dem Composite-Hash n-Feld abgeleitet (1=Buffy, 2=Basher, 3=Thinker, 4=Vannon, 5=Squizzle, 6=Devin, 7=Argos, 8=Ghost, 9=Spark). Die Commit-Message MUSS aus der Perspektive dieses Charakters geschrieben sein — mit dessen Stimme, Wortwahl und Denkmustern.",
+      "description": "[NARRATOR:<Name>] Pflicht-Token. Der Erzähler wird deterministisch aus dem Composite-Hash n-Feld abgeleitet (1=Buffy, 2=Basher, 3=Thinker, 4=Vannon, 5=Squizzle, 6=Devin, 7=Argos, 8=Ghost, 9=Spark, 10=Glitch, 11=Null, 12=Echo, 13=Flux, 14=Sage). Die Commit-Message MUSS aus der Perspektive dieses Charakters geschrieben sein — mit dessen Stimme, Wortwahl und Denkmustern.",
       "required": true,
       "token_format": "[NARRATOR:<Buffy|Basher|Thinker|Vannon|Squizzle|Devin|Argos|Ghost|Spark>]",
-      "regex": "\\[NARRATOR:(Buffy|Basher|Thinker|Vannon|Squizzle|Devin|Argos|Ghost|Spark)\\]",
+      "regex": "\\[NARRATOR:(Buffy|Basher|Thinker|Vannon|Squizzle|Devin|Argos|Ghost|Spark|Glitch|Null|Echo|Flux|Sage)\\]",
       "source": "character_sheets.json → characters[n].name",
       "enforcement": "verify_commit_msg.js prüft: Token existiert, Name matcht Composite n-Feld, charakterspezifische Wortzahl + Sprachmuster"
     },

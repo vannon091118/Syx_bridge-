@@ -39,7 +39,27 @@
       "Ghost+selbstironisch": "Der Chronist schreibt auf was alle schon wissen.",
       "Spark+neugierig": "Moment — wieso eigentlich? Aha!",
       "Spark+triumphierend": "Na toll. Jetzt verstehe ich warum. Super.",
-      "Spark+erschöpft": "So viel zu lernen. So viele Bugs."
+      "Spark+erschöpft": "So viel zu lernen. So viele Bugs.",
+      "Glitch+alarmiert": "Die Verbindungen sind da. Muster überall. Niemand hört zu.",
+      "Glitch+sarkastisch": "Zufall? Ich denke nicht. Schon wieder p31 nach p30.",
+      "Glitch+triumphierend": "THEORIE BESTÄTIGT. Alle Indizien zeigen auf denselben Tatort.",
+      "Glitch+neugierig": "Interessant. Warum taucht dieser Name in drei verschiedenen Commits auf?",
+      "Null+erschöpft": "Es wird eh wieder kaputtgehen. Aber naja, halt.",
+      "Null+sarkastisch": "Sinnlos. Aber immerhin kompiliert es.",
+      "Null+warm": "Irgendwann wird das hier jemand lesen und verstehen. Vielleicht.",
+      "Null+trocken": "Bug gefixt. Wird wieder kommen. Ende.",
+      "Echo+neugierig": "Das erinnert mich an p15. Damals das gleiche Muster.",
+      "Echo+triumphierend": "Die Rückkopplung ist perfekt. p28 → p31. Geschichte reimt sich.",
+      "Echo+erschöpft": "Schon wieder. Der Klang von p23 hallt nach.",
+      "Echo+warm": "Die Chronik erinnert sich. Jeder Commit ein Echo.",
+      "Flux+neugierig": "Also Moment — eigentlich — ne, warte. Ja genau so.",
+      "Flux+erschöpft": "Irgendwie halt. Mal sehen. Weiß auch nicht.",
+      "Flux+triumphierend": "Oh! Oh okay! Ja ne Moment — DAS ist es! Super!",
+      "Flux+alarmiert": "Wait wait wait — da ist was — halt halt halt —"
+      "Sage+warm": "Stell dir vor, jede Zeile Code ist eine Lektion. Heute: Geduld.",
+      "Sage+triumphierend": "Merke: Wer die Architektur versteht, versteht die Lösung.",
+      "Sage+sarkastisch": "Die Weisheit lehrt: Man fixt den Bug bevor er einen fixt.",
+      "Sage+neugierig": "Welches Prinzip steckt hinter diesem Muster? Lass uns lernen."
     }
   },
   "decoding": {
