@@ -68,7 +68,7 @@
 
 | Pfad | Aktuell | Empfehlung | Grund |
 |------|---------|------------|-------|
-| `TUTORIAL.txt` | ~400 Zeilen, DE/EN gespiegelt | Auf ~200 Zeilen kürzen, nur EN behalten | Doppelung DE/EN. README ist bereits zweisprachig. Tutorial kann auf EN reduziert werden. |
+| `TUTORIAL.txt` | ~400 Zeilen → ~120 Zeilen | ✅ Gekürzt | DE-Sektion entfernt, nur EN behalten. README ist bereits zweisprachig. Aufgeräumt 2026-06-25. |
 
 ### B2. HANDSHAKE_2026-06-19.md
 

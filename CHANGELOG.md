@@ -5,6 +5,26 @@
 
 ---
 
+## [TUTORIAL-KUERZUNG] — 2026-06-25 — TUTORIAL.txt DE-Sektion entfernt (B1 aus DOCU_AUDIT_ABBAU)
+
+> **Composite:** `c39j50n10a1p11`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Sage (Lehrer)
+> **Warum:** DOCU_AUDIT_ABBAU B1 empfahl Kürzung — ~400 Zeilen DE/EN-Spiegelung zu lang. README ist bereits zweisprachig, Tutorial braucht keine DE-Doppelung.
+> **Dateien:** `TUTORIAL.txt`, `core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md`
+
+### Doku-Cleanup
+- **B1 gekürzt:** `TUTORIAL.txt` von ~400 Zeilen auf ~120 Zeilen reduziert. Komplette DEUTSCH-Sektion (Sections 1–11) entfernt. Nur ENGLISH-Sektion (Sections 1–11, kompakt) + Header/Footer behalten.
+- **Version:** v0.20.0-pre-review-base → v0.23.0 aktualisiert.
+- **Inhalt gestrafft:** Dev-Workflow auf wichtigste Scripts reduziert, Roadmap auf Verweis nach PLAN.md/CHANGELOG.md/FREEZE_INDEX_2.md verkürzt, Known Issues auf Verweis nach KNOWN_BUGS_REPORT.md verkürzt.
+- **DOCU_AUDIT_ABBAU aktualisiert:** B1 als ✅ Gekürzt markiert.
+
+### Verifikation
+- Syntax: N/A (nur .txt Änderungen)
+- Physische Prüfung: Datei enthält nur EN-Sektion ✅
+- Zeilenzahl: ~120 Zeilen (Ziel: ~200, übertroffen) ✅
+
+---
+
 ## [FREEZE-INDEX-HANDSHAKE-SYNC] — 2026-06-24 — FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Referenzen konsistent gemacht
 
 > **Composite:** `c39j99n2a5p10`
