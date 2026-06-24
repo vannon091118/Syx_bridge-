@@ -5,6 +5,41 @@
 
 ---
 
+## [PROPER-NOUN-FIX] — 2026-06-24 — isProperNoun() False-Positive Fix
+
+> **Composite:** `c39j84n14a4p14`
+> **Warum:** Output-Analyse (REGEL 0.5) zeigte dass NAME-Felder in Mods nicht übersetzt wurden. Root Cause: isProperNoun() klassifizierte einzelne englische Wörter wie 'Construct', 'Fences', 'Calm', 'Genius' als Eigennamen → nativePhase setzte reuse=true → Strings blieben English.
+> **Dateien:** `core/src/text-core.js`
+
+### Bug: isProperNoun() zu aggressiv
+- Jedes einzelne Wort mit Großbuchstaben, <40 Zeichen, ohne Leerzeichen → als Eigenname klassifiziert
+- PROPER_NOUN_DENY_COMMON_ENGLISH hatte nur ~80 Einträge → fehlte: Construct, Fences, Roads, Structures, Fortifications, Jobs, Planning, Delete, Calm, Careful, Genius, Geologist, Animal
+- Radial Menu hatte 8 Strings die nie zum LLM gingen
+- Traits Expanded hatte NAME-Felder (Calm, Genius) die nie übersetzt wurden
+
+### Fix 1: Denylist erweitert (~80 → ~200+ Einträge)
+- Actions: construct, delete, move, copy, save, build, demolish, repair, ...
+- States: calm, happy, sad, angry, hungry, tired, sick, healthy, ...
+- UI Labels: fences, roads, structures, fortifications, jobs, planning, ...
+- Animals: animal, beast, creature, wolf, bear, deer, ...
+- Professions: geologist, miner, farmer, hunter, blacksmith, ...
+- Traits: aggressive, loyal, lazy, brave, careful, genius, ...
+
+### Fix 2: isProperNoun() Suffix-Heuristik
+- Englische Wort-Endungen (tion, ment, ness, able, ful, less, ous, ive, ical, ize, ity, ence, ance, ent, ant, ish, ory, ery, ary, ing, ble, ted, ded, sed, red, led) → NICHT als Eigenname
+- Bindestriche/Zahlen → KÖNNTE Eigenname (z.B. 'X-42')
+- Restliche einzelne ASCII-Wörter → WEITER als Eigenname (konservativ: 'Aruan', 'Garthimi' bleiben geschützt)
+
+### Verifikation
+- Syntax: OK
+- 17/17 isProperNoun Unit-Tests PASS
+- 100/100 plugin-boundary PASS
+- 49/49 validator PASS
+- 26/26 parser PASS
+- Code-Review: Ship it
+
+---
+
 ## [DOKU-CLEAN-V023] — 2026-06-24 — Doku-Bereinigung v0.23.0
 
 > **Composite:** `c39j95n10a4p3`

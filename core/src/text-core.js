@@ -38,13 +38,14 @@ function protectPlaceholders(text) {
 // da dies eine modulweite Konfigurationskonstante ist, die von aussen sichtbar
 // sein soll (exportierbar in v0.20). Siehe Reviewer-Hinweis zur Konvention.
 const PROPER_NOUN_DENY_COMMON_ENGLISH = new Set([
-  // Common nouns that are capitalized in-game but should be translated
+  // ── Religion & Culture ──
   'religion', 'temple', 'temples', 'priest', 'priests', 'worshippers',
   'worshipping', 'carpet', 'grandeur', 'space', 'altar', 'torch', 'relief',
   'pathway', 'shrine', 'shrines', 'decoration', 'decorations', 'capacity',
-  'pathways', 'cluster', 'clusters', 'torches', 'altars', 'faction', 
-  'factions', 'kingdom', 'kingdoms', 'empire', 'empires', 'province',
-  'provinces', 'region', 'regions', 'territory', 'territories',
+  'pathways', 'cluster', 'clusters', 'torches', 'altars',
+  // ── Governance & Society ──
+  'faction', 'factions', 'kingdom', 'kingdoms', 'empire', 'empires',
+  'province', 'provinces', 'region', 'regions', 'territory', 'territories',
   'occupation', 'profession', 'professions', 'title', 'titles',
   'population', 'settlement', 'settlements', 'building', 'buildings',
   'workshop', 'workshops', 'storage', 'warehouse', 'warehouses',
@@ -54,26 +55,104 @@ const PROPER_NOUN_DENY_COMMON_ENGLISH = new Set([
   'weapon', 'weapons', 'armor', 'armour', 'furniture',
   'noble', 'nobles', 'commoner', 'commoners', 'citizen', 'citizens',
   'subject', 'subjects', 'slave', 'slaves', 'worker', 'workers',
-  'soldier', 'soldiers', 'officer', 'officers'
+  'soldier', 'soldiers', 'officer', 'officers',
+  // ── Actions (game UI verbs) ──
+  'construct', 'delete', 'move', 'copy', 'save', 'load', 'trade',
+  'attack', 'defend', 'scout', 'hunt', 'gather', 'mine', 'farm',
+  'fish', 'cook', 'smith', 'weave', 'tan', 'build', 'demolish',
+  'repair', 'upgrade', 'research', 'recruit', 'train', 'assign',
+  'dismiss', 'promote', 'banish', 'execute', 'pardon', 'enslave',
+  'free', 'equip', 'unequip', 'craft', 'smelt', 'forge', 'brew',
+  'plant', 'harvest', 'butcher', 'slaughter', 'tame', 'breed',
+  // ── States & Adjectives ──
+  'calm', 'happy', 'sad', 'angry', 'hungry', 'thirsty', 'tired',
+  'sick', 'healthy', 'busy', 'idle', 'careful', 'brave', 'strong',
+  'weak', 'fast', 'slow', 'smart', 'genius', 'fool', 'loyal',
+  'hostile', 'neutral', 'friendly', 'aggressive', 'passive',
+  'fertile', 'barren', 'frozen', 'scorched', 'flooded', 'arid',
+  'wet', 'dry', 'rich', 'poor', 'safe', 'dangerous', 'ancient',
+  'modern', 'sacred', 'cursed', 'blessed', 'haunted', 'abandoned',
+  // ── Categories & UI Labels ──
+  'construct', 'fences', 'roads', 'structures', 'fortifications',
+  'jobs', 'planning', 'tasks', 'orders', 'settings', 'options',
+  'menu', 'close', 'open', 'cancel', 'confirm', 'accept', 'reject',
+  'inventory', 'equipment', 'skills', 'stats', 'status', 'overview',
+  'summary', 'details', 'general', 'advanced', 'basic', 'custom',
+  'default', 'enabled', 'disabled', 'active', 'inactive',
+  // ── Nature & Geography ──
+  'forest', 'mountain', 'river', 'lake', 'ocean', 'desert',
+  'plains', 'hills', 'swamp', 'marsh', 'tundra', 'volcano',
+  'cave', 'cavern', 'dungeon', 'fortress', 'castle', 'tower',
+  'bridge', 'gate', 'wall', 'walls', 'moat', 'trench',
+  // ── Animals & Creatures ──
+  'animal', 'beast', 'creature', 'monster', 'dragon', 'wolf',
+  'bear', 'deer', 'boar', 'horse', 'cow', 'sheep', 'pig',
+  'chicken', 'fish', 'bird', 'snake', 'rat', 'spider',
+  // ── Professions & Roles ──
+  'geologist', 'miner', 'farmer', 'hunter', 'fisherman', 'lumberjack',
+  'blacksmith', 'carpenter', 'mason', 'tailor', 'tanner', 'baker',
+  'brewer', 'cook', 'healer', 'scholar', 'scribe', 'merchant',
+  'guard', 'archer', 'knight', 'cavalry', 'infantry', 'siege',
+  // ── Common Adjectives (Traits) ──
+  'aggressive', 'altruistic', 'ambitious', 'arrogant', 'ascetic',
+  'beautiful', 'bitter', 'bold', 'cautious', 'charming', 'clever',
+  'clumsy', 'compassionate', 'competitive', 'confident', 'cowardly',
+  'creative', 'cruel', 'cunning', 'daring', 'deceitful', 'diligent',
+  'diplomatic', 'disciplined', 'elegant', 'energetic', 'envious',
+  'faithful', 'fearless', 'flexible', 'generous', 'gentle',
+  'greedy', 'grumpy', 'honest', 'honorable', 'humble',
+  'imaginative', 'industrious', 'innocent', 'just', 'kind',
+  'lazy', 'logical', 'loyal', 'lustful', 'merciful', 'modest',
+  'naive', 'nervous', 'noble', 'optimistic', 'paranoid',
+  'patient', 'patriotic', 'peaceful', 'pessimistic', 'pious',
+  'polite', 'proud', 'rational', 'reckless', 'reliable',
+  'resentful', 'resourceful', 'romantic', 'rude', 'selfish',
+  'sensible', 'serious', 'shy', 'slothful', 'stoic', 'stubborn',
+  'superstitious', 'suspicious', 'temperate', 'tolerant',
+  'treacherous', 'trusting', 'vengeful', 'versatile', 'vicious',
+  'violent', 'wise', 'zealous'
 ]);
 
 function isProperNoun(text) {
   const value = stripWatermarks(text).trim();  // P0-1: Watermarks strippen vor Check
-  // QUAL-OFFENSIVE Fix #3: Denylist für englische Gemeinwörter
-  // Vorher: Jedes Wort das mit Großbuchstaben beginnt, <40 Zeichen lang ist
-  // und keine Satzzeichen enthält, wurde als ProperNoun klassifiziert → nie übersetzt.
-  // Folge: 160+ Einträge mit translation=source_text, q=94, flagged=0.
-  // Jetzt: Wenn das Wort in PROPER_NOUN_DENY_COMMON_ENGLISH steht, wird es
-  // NICHT als ProperNoun behandelt → geht durch den normalen Übersetzungs-Pfad.
   if (!value) return false;
   const lower = value.toLowerCase();
+  // QUAL-OFFENSIVE Fix #3: Denylist für englische Gemeinwörter
+  // Wenn das Wort in PROPER_NOUN_DENY_COMMON_ENGLISH steht, wird es
+  // NICHT als ProperNoun behandelt → geht durch den normalen Übersetzungs-Pfad.
   if (PROPER_NOUN_DENY_COMMON_ENGLISH.has(lower)) return false;
   
-  // Kurz + beginnt mit Großbuchstabe + keine Leerzeichen + keine Satzzeichen
-  // \p{Lu} = Unicode uppercase, \p{Lt} = titlecase — deckt alle Sprachen ab
-  return value.length > 0 && value.length < 40 
-        && /^[\p{Lu}\p{Lt}]/u.test(value)
-        && !/[\s.,!?;:]/.test(value);
+  // Mehrwort-Strings sind KEINE Eigennamen (haben Leerzeichen)
+  if (/\s/.test(value)) return false;
+  
+  // Einzelnes Wort: Prüfe ob es wie ein Eigenname aussieht.
+  // Echte Eigennamen in Spielen: "Aruan", "Garthimi", "Cretonian", "Kirtash"
+  // → Enthalten oft ungewöhnliche Buchstabenkombinationen, Zahlen, Bindestriche
+  // Englische Gemeinwörter: "Construct", "Fences", "Calm", "Genius"
+  // → Rein ASCII, kein Bindestrich, keine Zahlen
+  
+  // Muss mit Großbuchstabe beginnen
+  if (!/^[\p{Lu}\p{Lt}]/u.test(value)) return false;
+  
+  // Längen-Gate: nur kurze Wörter (>1, <40)
+  if (value.length <= 1 || value.length >= 40) return false;
+  
+  // Enthält Satzzeichen? → kein Eigenname
+  if (/[.,!?;:()\[\]{}]/.test(value)) return false;
+  
+  // Suffix-Heuristik: Englische Wort-Endungen → KEIN Eigenname
+  // Echte Eigennamen enden selten auf diese Suffixe
+  if (/(?:tion|ment|ness|able|ful|less|ous|ive|ical|ally|ize|ise|ity|ence|ance|ent|ant|ish|ory|ery|ary|ing|ble|ted|ded|sed|red|led)$/i.test(lower)) return false;
+  
+  // Enthält Bindestrich oder Zahlen? → könnte Eigenname sein (z.B. "X-42", "Half-Life")
+  if (/[-\d]/.test(value)) return true;
+  
+  // Übrige einzelne Wörter: konservativ als Eigenname behandeln.
+  // Echte Spiel-Eigennamen ("Aruan", "Garthimi", "Cretonian") sind einzelne
+  // ASCII-Wörter ohne besondere Merkmale. Die Denylist + Suffix-Heuristik
+  // oben fängt die meisten False Positives ("Construct", "Calm") ab.
+  // Der Pfad-Check (classifyPath → proper_noun) ist eine separate Schicht.
+  return true;
 }
 
 /**
