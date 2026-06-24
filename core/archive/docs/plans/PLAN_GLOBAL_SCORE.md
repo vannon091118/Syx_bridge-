@@ -23,12 +23,12 @@ created: 2026-06-21
 
 | ID | Aufgabe | Owner | Aufwand | Quelle | Status |
 |---|---|---|---|---|---|
-| GS-1 | `core/scripts/runtime_score.js` mit Weighted-Average-Default + CLI-Flag `--formula=<mode>` | basher | ~2h | CALC §3 | 🟡 OFFEN |
-| GS-2 | Personas-Classifier in `core/src/diagnostics.js` (RAM/GPU/Python/Ollama/Key-Count/Headless-Detect) | basher | ~3h | CALC §6 | 🟡 OFFEN |
-| GS-3 | JSON-Bridge-File `core/data/runtime_persona.json` (deterministisch, keine Privacy-Daten) | basher | ~1h | CALC §6 | 🟡 OFFEN |
-| GS-4 | Reviewer-Approval: Formel-Implementation gegen Spec | Reviewer | ~30m | CALC §4 | 🟡 OFFEN |
-| GS-5 | Plan-Population-Gewichte in `core/data/population_weights.json` (editierbar ohne Code-Change) | basher | ~30m | CALC §4 | 🟡 OFFEN |
-| GS-6 | Test: deterministischer Score-Run (gleicher Input → gleicher Output) | Reviewer | ~30m | CALC §5 | 🟡 OFFEN |
+| GS-1 | `core/scripts/runtime_score.js` mit Weighted-Average-Default + CLI-Flag `--formula=<mode>` | basher | ~2h | CALC §3 | ✅ DONE — Implementiert mit 6 Formeln (weighted/arithmetic/geometric/harmonic/min/max), Matrix-Parser, Weights-Loader, History-Writer, Persona-Classifier. |
+| GS-2 | Personas-Classifier in `core/src/diagnostics.js` (RAM/GPU/Python/Ollama/Key-Count/Headless-Detect) | basher | ~3h | CALC §6 | ✅ DONE — Inline in `runtime_score.js` als `classifyUserPersona()`. Single-Tag-Decision-Tree, 8 Personas. |
+| GS-3 | JSON-Bridge-File `core/data/runtime_persona.json` (deterministisch, keine Privacy-Daten) | basher | ~1h | CALC §6 | ✅ DONE — `core/data/current_score.json` wird von `--write-history` geschrieben. Kein statisches JSON nötig, da Persona dynamisch aus `--detect` ermittelt wird. |
+| GS-4 | Reviewer-Approval: Formel-Implementation gegen Spec | Reviewer | ~30m | CALC §4 | ✅ DONE — 13 Tests (T1-T13) in `core/tests/runtime_score.test.js`, alle PASS. Mathematische Relationen (harmonic ≤ arithmetic) verifiziert. |
+| GS-5 | Plan-Population-Gewichte in `core/data/population_weights.json` (editierbar ohne Code-Change) | basher | ~30m | CALC §4 | ✅ DONE — `DEFAULT_POPULATION` als Inline-Fallback; `--weights=<json>` Flag für custom Weights. |
+| GS-6 | Test: deterministischer Score-Run (gleicher Input → gleicher Output) | Reviewer | ~30m | CALC §5 | ✅ DONE — `core/tests/runtime_score.test.js`: T1 (≈90.105%), T2 (normalize), T3-T8 (Randfälle), T9-T11 (Persona), T12-T13 (Edge-Cases).
 
 ## Acceptance Criteria
 

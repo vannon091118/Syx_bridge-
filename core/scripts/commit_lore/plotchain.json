@@ -1442,5 +1442,104 @@
     "model_id": "deepseek-v4-pro",
     "composite": "c39j39n8a1p33",
     "narrator": "Ghost"
+  },
+  {
+    "p_id": "p36",
+    "id": "plot-2026-06-24T21:42:51",
+    "timestamp": "2026-06-24 21:42:51",
+    "summary": "mimo-v2.5-pro",
+    "ref_to": "plot-2026-06-24T14:21:05",
+    "recent_commits": [
+      {
+        "hash": "e2bccfc",
+        "subject": "[NARRATOR:Sage] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j84n14a4p14] [IMPULSE:isProperNoun False-Positive Fix weil NAME-Feld",
+        "date": "2026-06-24 18:17:36 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/src/text-core.js"
+        ]
+      },
+      {
+        "hash": "e36d235",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j95n10a4p3] [IMPULSE:Doku-Bereinigung v0.23.0 veraltete Referenzen",
+        "date": "2026-06-24 17:22:01 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/archive/docs/DOCU_AUDIT_ABBAU_2026-06-23.md",
+          "core/archive/docs/DOCU_AUDIT_FREEZE_2026-06-23.md",
+          "core/archive/docs/DOCU_AUDIT_INDEX_2026-06-23.md",
+          "core/archive/docs/DOCU_AUDIT_PFLICHT_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_FREEZE_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_INDEX_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_PFLICHT_2026-06-23.md",
+          "core/archive/docs/KNOWN_BUGS_REPORT.md",
+          "core/archive/docs/LIVE_INDEX.md",
+          "core/archive/docs/MASTER_DOC.md"
+        ]
+      },
+      {
+        "hash": "8bb6f56",
+        "subject": "[NARRATOR:Ghost] [COMPOSITE:c39j39n8a1p34] [MODEL:deepseek-v4-pro] [IMPULSE:5 neue Narrative (10-14) Glitch/Null/Echo/Fl",
+        "date": "2026-06-24 16:25:58 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/package-lock.json",
+          "core/scripts/commit_lore/character_sheets.json",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/narrative_params.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/scripts/commit_lore/rng.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "fde1bed",
+        "subject": "[NARRATOR:Sage] [COMPOSITE:c39j38n14a2p11] [MODEL:deepseek-v4-pro] [IMPULSE:Bug B und Credit-Fix mit Debug-Logging]",
+        "date": "2026-06-24 16:10:30 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/commit_lore/cross_references.json",
+          "core/scripts/commit_lore/plotchain.json",
+          "core/src/runtime-ops.js",
+          "core/src/text-core.js",
+          "core/src/translation-db.js",
+          "core/src/translation-phases.js"
+        ]
+      },
+      {
+        "hash": "d1bb87f",
+        "subject": "[NARRATOR:Vannon] [COMPOSITE:c39j31n4a5p22] [MODEL:deepseek-v4-pro] [IMPULSE:Output pruefen, Texte nicht ingame, Dead Co",
+        "date": "2026-06-24 15:15:34 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "AGENTS.md",
+          "CHANGELOG.md",
+          "core/archive/docs/CHANGELOG.md",
+          "core/scripts/reset_now.js",
+          "core/src/plugins/SongsOfSyxPlugin.js",
+          "core/src/runtime-ops.js",
+          "core/src/text-core.js"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "e2bccfc: [NARRATOR:Sage] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j84n14a4p14] [IMPULSE:isProperNoun False-Positive Fix weil NAME-Feld",
+      "e36d235: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j95n10a4p3] [IMPULSE:Doku-Bereinigung v0.23.0 veraltete Referenzen",
+      "8bb6f56: [NARRATOR:Ghost] [COMPOSITE:c39j39n8a1p34] [MODEL:deepseek-v4-pro] [IMPULSE:5 neue Narrative (10-14) Glitch/Null/Echo/Fl",
+      "fde1bed: [NARRATOR:Sage] [COMPOSITE:c39j38n14a2p11] [MODEL:deepseek-v4-pro] [IMPULSE:Bug B und Credit-Fix mit Debug-Logging]",
+      "d1bb87f: [NARRATOR:Vannon] [COMPOSITE:c39j31n4a5p22] [MODEL:deepseek-v4-pro] [IMPULSE:Output pruefen, Texte nicht ingame, Dead Co"
+    ]
   }
 ]

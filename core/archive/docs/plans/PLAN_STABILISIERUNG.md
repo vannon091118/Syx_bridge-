@@ -28,8 +28,8 @@ created: 2026-06-21
 | ST-2 | Plugin-Init lazy + idempotent (keine Modul-Level Sideeffects) | basher | ~1h | STAB §3.P2 | 🟡 OFFEN |
 | ST-3 | Pre-Build-Validierungsskript `scripts/check-build.js` | basher | ~2h | STAB §3.P2 | 🟡 OFFEN |
 | ST-4 | Better-sqlite3-Prebuild-Fallback (auf sql.js umschalten) | basher | ~4h | STAB §3.P3 | 🟡 OFFEN |
-| ST-5 | Native-Mode Watermark-Stripping in alle Verifier-Pfade | Reviewer | ~1h | STAB §3.P1 | ✅ DONE (P0-1) |
-| ST-6 | `patchOverrideEnabled` Konsolidierung (GUI ↔ config) | basher | ~1h | STAB §3.P0 | ✅ DONE (P1-1) |
+| ST-5 | Native-Mode Watermark-Stripping in alle Verifier-Pfade | Reviewer | ~1h | STAB §3.P1 | ✅ DONE (P0-1, FREEZE_INDEX_2 §7) |
+| ST-6 | `patchOverrideEnabled` Konsolidierung (GUI ↔ config) | basher | ~1h | STAB §3.P0 | ✅ DONE (P1-1, FREEZE_INDEX_2 §11) |
 | ST-7 | Bypäss-Klassen-Inventur (siehe PLAN_BYPASS_REMOVAL) | basher | ~1h | STAB §3.P1 | 🟡 OFFEN |
 | ST-8 | Pre-Existing-Hardware-Tier Validierung gegen FOREIGN_MACHINE_PROBABILITY | Reviewer | ~30m | STAB §3.P3 | 🟡 OFFEN |
 | ST-9 | Re-Audit-Lauf mit neuem Score-Werkzeug (siehe PLAN_GLOBAL_SCORE) | Reviewer | ~30m | STAB §3.P3 | 🟡 OFFEN |

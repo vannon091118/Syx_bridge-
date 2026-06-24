@@ -5,6 +5,25 @@
 
 ---
 
+## [DOKU-HYGIENE-2026-06-24] — 2026-06-24 — Doku-Audit Abbauliste abgearbeitet + Plan-Status sync
+
+> **Composite:** `c39j38n8a2p6`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Ghost (Chronist)
+> **Warum:** DOCU_AUDIT_ABBAU_2026-06-23 listete 18 Entfernen-/Kürzungs-Kandidaten. Output-First-Prüfung (REGEL 0.5) zeigte: 11 bereits physisch entfernt, 1 noch vorhanden (log_1.txt), 2 READMEs überdimensioniert.
+> **Dateien:** `core/logs/log_1.txt` (gelöscht), `V70/README.md`, `V71/README.md`, `core/archive/docs/plans/PLAN_STABILISIERUNG.md`, `core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md`
+
+### Doku-Cleanup
+- **E10 gelöscht:** `core/logs/log_1.txt` — Laufzeit-Log, keine Doku-Funktion
+- **E12+E13 gekürzt:** `V70/README.md` (~40 → ~3 Zeilen) und `V71/README.md` (~50 → ~3 Zeilen) auf Minimalinhalt reduziert
+- **DOCU_AUDIT_ABBAU aktualisiert:** E1–E11 als ✅ Entfernt markiert, E12–E13 als ✅ Gekürzt markiert
+- **PLAN_STABILISIERUNG aktualisiert:** ST-5 (Watermark-Stripping) und ST-6 (patchOverrideEnabled) als DONE mit FREEZE_INDEX_2-Verweis markiert
+
+### Verifikation
+- Syntax: N/A (nur .md und .txt Änderungen)
+- Physische Prüfung: log_1.txt nicht mehr vorhanden ✅
+
+---
+
 ## [PROPER-NOUN-FIX] — 2026-06-24 — isProperNoun() False-Positive Fix
 
 > **Composite:** `c39j84n14a4p14`

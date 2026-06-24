@@ -12,14 +12,14 @@
 
 | # | Pfad | Grund | Begründung |
 |---|------|-------|------------|
-| E1 | `core/archive/dbold/DB_BACKUP_ANALYSIS_2026-06-19.md` | Redundant | Einmal-Analyse. Daten in DB_TREND_REPORT.md konsolidiert. Keine eigenen Erkenntnisse die nicht schon im Trend-Report stehen. |
-| E2 | `core/archive/dbold/DB_INTEGRITY_AUDIT_2026-06-19.md` | Redundant | Integritäts-Check. Ergebnisse sind in PREFLIGHT (auto-gen) und DB_TREND_REPORT überführt. |
-| E3 | `core/archive/dbold/DB_POSTRUN_ANALYSIS_2026-06-19.md` | Redundant | Post-Run-Analyse. Ergebnisse in KNOWN_BUGS_REPORT und CHANGELOG dokumentiert. |
-| E4 | `core/archive/dbold/DB_SNAPSHOT_18_2026-06-19.md` | Redundant | Punktuelle Momentaufnahme. Daten in DB_TREND_REPORT §18 vorhanden. |
-| E5 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18.md` | Redundant | Dito. §16 im Trend-Report. |
-| E6 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18_post-chain-hardening.md` | Redundant | Dito. §14 im Trend-Report. |
-| E7 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18_post-routing-v2.md` | Redundant | Dito. §15 im Trend-Report. |
-| E8 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18_post-routing.md` | Redundant | Dito. §13 im Trend-Report. |
+| E1 | `core/archive/dbold/DB_BACKUP_ANALYSIS_2026-06-19.md` | ✅ Entfernt | Einmal-Analyse. Daten in DB_TREND_REPORT.md konsolidiert. |
+| E2 | `core/archive/dbold/DB_INTEGRITY_AUDIT_2026-06-19.md` | ✅ Entfernt | Integritäts-Check. Ergebnisse in PREFLIGHT und DB_TREND_REPORT überführt. |
+| E3 | `core/archive/dbold/DB_POSTRUN_ANALYSIS_2026-06-19.md` | ✅ Entfernt | Post-Run-Analyse. Ergebnisse in KNOWN_BUGS_REPORT und CHANGELOG dokumentiert. |
+| E4 | `core/archive/dbold/DB_SNAPSHOT_18_2026-06-19.md` | ✅ Entfernt | Punktuelle Momentaufnahme. Daten in DB_TREND_REPORT §18 vorhanden. |
+| E5 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18.md` | ✅ Entfernt | Dito. §16 im Trend-Report. |
+| E6 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18_post-chain-hardening.md` | ✅ Entfernt | Dito. §14 im Trend-Report. |
+| E7 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18_post-routing-v2.md` | ✅ Entfernt | Dito. §15 im Trend-Report. |
+| E8 | `core/archive/dbold/DB_SNAPSHOT_2026-06-18_post-routing.md` | ✅ Entfernt | Dito. §13 im Trend-Report. |
 
 **Ersetzt durch:** `core/archive/dbold/DB_TREND_REPORT.md` (enthält alle Daten aus den Snapshots)
 
@@ -27,36 +27,36 @@
 
 | # | Pfad | Grund | Begründung |
 |---|------|-------|------------|
-| E9 | `core/archive/docs/FREEZE/COMMIT_MSG_2026-06-18.txt` | Entfernen | Roher Commit-Text. Im Git-Log vorhanden. Keine Doku-Funktion. |
+| E9 | `core/archive/docs/FREEZE/COMMIT_MSG_2026-06-18.txt` | ✅ Entfernt | Roher Commit-Text. Im Git-Log vorhanden. Keine Doku-Funktion. |
 
 ### A3. Laufzeit-Logs (2 Dateien)
 
 | # | Pfad | Grund | Begründung |
 |---|------|-------|------------|
-| E10 | `core/logs/log_1.txt` | Entfernen | Laufzeit-Log. Keine Doku-Funktion. Wird bei jedem Run neu geschrieben. |
-| E11 | `core/logs/log_2.txt` | Entfernen | Dito. |
+| E10 | `core/logs/log_1.txt` | ✅ Entfernt | Laufzeit-Log. Keine Doku-Funktion. Gelöscht 2026-06-24. |
+| E11 | `core/logs/log_2.txt` | ✅ Entfernt | Dito. Bereits zuvor gelöscht. |
 
 ### A4. Dummy-Platzhalter (2 Dateien)
 
 | # | Pfad | Grund | Begründung |
 |---|------|-------|------------|
-| E12 | `V70/README.md` | Kürzen | Dummy-Platzhalter. Braucht minimalen Inhalt aber kein aktives Doku-Management. |
-| E13 | `V71/README.md` | Kürzen | Dito. |
+| E12 | `V70/README.md` | ✅ Gekürzt | Dummy-Platzhalter. Auf Minimalinhalt reduziert 2026-06-24. |
+| E13 | `V71/README.md` | ✅ Gekürzt | Dito. Auf Minimalinhalt reduziert 2026-06-24. |
 
 ### A5. Redundante Archivkopie (1 Datei)
 
 | # | Pfad | Grund | Begründung |
 |---|------|-------|------------|
-| E14 | `core/archive/docs/FREEZE/FREEZE_INDEX_v0.20.0_archived.md` | Entfernen | Redundant zu MASTER_FREEZE_v0.20.0_2026-06-19.md. Gleicher Inhalt, doppelt archiviert. |
+| E14 | `core/archive/docs/FREEZE/FREEZE_INDEX_v0.20.0_archived.md` | ✅ Entfernt | Redundant zu MASTER_FREEZE_v0.20.0_2026-06-19.md. Gleicher Inhalt, doppelt archiviert. |
 
 ### A6. Test-Assets (4 Dateien — KEINE Doku)
 
 | # | Pfad | Grund | Begründung |
 |---|------|-------|------------|
-| E15 | `test_mods/error1_watermark_mask/_Info.txt` | Nicht Doku | Test-Asset. Wird von Tests verwendet. Kein Doku-Management nötig. |
-| E16 | `test_mods/error2_false_positive/_Info.txt` | Nicht Doku | Dito. |
-| E17 | `test_mods/error5_english_text/_Info.txt` | Nicht Doku | Dito. |
-| E18 | `test_mods/error6_english_complex/_Info.txt` | Nicht Doku | Dito. |
+| E15 | `test_mods/error1_watermark_mask/_Info.txt` | ✅ Ausgeschlossen | Test-Asset. Wird von Tests verwendet. Kein Doku-Management nötig. |
+| E16 | `test_mods/error2_false_positive/_Info.txt` | ✅ Ausgeschlossen | Dito. |
+| E17 | `test_mods/error5_english_text/_Info.txt` | ✅ Ausgeschlossen | Dito. |
+| E18 | `test_mods/error6_english_complex/_Info.txt` | ✅ Ausgeschlossen | Dito. |
 
 **Hinweis:** Diese Dateien werden NICHT gelöscht — sie sind Test-Assets und werden von den Test-Suiten verwendet. Sie werden nur aus dem Doku-Management ausgeschlossen.
 
