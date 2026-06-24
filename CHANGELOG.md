@@ -5,6 +5,23 @@
 
 ---
 
+## [HANDSHAKE-KUERZUNG] — 2026-06-24 — HANDSHAKE_2026-06-19.md auf Minimalinhalt gekürzt (B2 aus DOCU_AUDIT_ABBAU)
+
+> **Composite:** `c39j3n5a3p2`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Vannon
+> **Warum:** DOCU_AUDIT_ABBAU B2 empfahl Kürzung — ~500 Zeilen zu lang für historischen Handshake. Kern-Erkenntnisse bereits in FREEZE_INDEX §14 archiviert.
+> **Dateien:** `core/archive/docs/FREEZE/HANDSHAKE_2026-06-19.md`, `core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md`
+
+### Doku-Cleanup
+- **B2 gekürzt:** `HANDSHAKE_2026-06-19.md` von ~500 Zeilen auf ~4 Zeilen reduziert (Titel, Datum, Status, Verweis auf FREEZE_INDEX §14)
+- **DOCU_AUDIT_ABBAU aktualisiert:** B2 als ✅ Gekürzt markiert
+
+### Verifikation
+- Syntax: N/A (nur .md Änderungen)
+- Physische Prüfung: Datei enthält nur Header + Statuszeile ✅
+
+---
+
 ## [PLAN-MASTER-FREEZE] — 2026-06-24 — PLAN_MASTER.md nach FREEZE/ verschoben (C2 aus DOCU_AUDIT_ABBAU)
 
 > **Composite:** `c39j66n4a5p28`

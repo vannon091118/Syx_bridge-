@@ -74,7 +74,7 @@
 
 | Pfad | Aktuell | Empfehlung | Grund |
 |------|---------|------------|-------|
-| `core/archive/docs/HANDSHAKE_2026-06-19.md` | ~500 Zeilen | → Freeze (bereits in Freeze-Liste F9) | Zu lang für einen historischen Handshake. Kern-Erkenntnisse in FREEZE_INDEX überführen. |
+| `core/archive/docs/HANDSHAKE_2026-06-19.md` | ~500 Zeilen → ~4 Zeilen | ✅ Gekürzt | Zu lang für einen historischen Handshake. Auf Minimalinhalt reduziert 2026-06-24. Kern-Erkenntnisse in FREEZE_INDEX §14. |
 
 ---
 
