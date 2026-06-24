@@ -207,7 +207,45 @@ if (compositeMatch && fs.existsSync(changelogPath)) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// CHECK 6: KAUSALITAET — Commit referenziert Vorgaenger-Commits/Dateien
+// CHECK 6: CROSS-NARRATOR-REFERENZ — PREV_NARRATOR muß im Text vorkommen
+// ═══════════════════════════════════════════════════════════════════
+
+if (parsedComposite && fs.existsSync(plotchainPath)) {
+  try {
+    const plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+    let prevNarrator = null;
+    // Rueckwaerts: letzter Node MIT narrator der NICHT der aktuelle Narrator ist
+    const currentNarrator = narratorMatch ? narratorMatch[1] : null;
+    for (let i = plotchain.length - 1; i >= 0; i--) {
+      const node = plotchain[i];
+      if (node.narrator && (!currentNarrator || node.narrator.toLowerCase() !== currentNarrator.toLowerCase())) {
+        prevNarrator = node.narrator;
+        break;
+      }
+    }
+
+    if (prevNarrator) {
+      const prevNarratorLower = prevNarrator.toLowerCase();
+      const commitMsgLower = commitMsg.toLowerCase();
+      const hasPrevNarratorRef = commitMsgLower.includes(prevNarratorLower);
+
+      // Dialog-Struktur (j % 5 == 3): STRIKT — 2+ Charaktere muessen interagieren
+      if (parsedComposite.j && parsedComposite.j % 5 === 3) {
+        if (!hasPrevNarratorRef) {
+          errors.push(`[CROSS-NARRATOR] DIALOG-Struktur (j=${parsedComposite.j}%5==3): ${prevNarrator} muss namentlich im Text vorkommen. Mind. 2 Charaktere muessen interagieren.`);
+        }
+      } else {
+        // Keine Dialog-Struktur: MINDESTENS 1 Erwaehnung (Pflicht laut writing_rules)
+        if (!hasPrevNarratorRef) {
+          errors.push(`[CROSS-NARRATOR] ${prevNarrator} (vorheriger Narrator) muss mindestens einmal im Commit-Text erwaehnt werden.`);
+        }
+      }
+    }
+  } catch (_) {}
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 7: KAUSALITAET — Commit referenziert Vorgaenger-Commits/Dateien
 // ═══════════════════════════════════════════════════════════════════
 {
   const causalityRefs = [];

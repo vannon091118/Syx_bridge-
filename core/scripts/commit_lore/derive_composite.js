@@ -268,6 +268,55 @@ console.log(`  [COMPOSITE:${result.composite}]`);
 console.log(`  [NARRATOR:${narratorName}]`);
 console.log('  [MODEL:<model-name>]');
 console.log('  [IMPULSE:<user-input>]');
+
+// ─── Cross-Narrator-Referenz: PREV_NARRATOR + PREV_MODEL ─────────
+let prevNarratorName = null;
+let prevNarratorRole = null;
+let prevModelName = null;
+
+if (fs.existsSync(plotchainPath)) {
+  try {
+    const plotchain = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+    // Rueckwaerts suchen: letzter Node MIT narrator (nicht der aktuelle)
+    for (let i = plotchain.length - 1; i >= 0; i--) {
+      const node = plotchain[i];
+      if (node.narrator && node.narrator !== narratorName) {
+        prevNarratorName = node.narrator;
+        prevModelName = node.model_id || null;
+        // Rolle aus character_sheets aufloesen
+        if (characterSheets && characterSheets.characters) {
+          for (const [key, char] of Object.entries(characterSheets.characters)) {
+            if (char.name === prevNarratorName) {
+              prevNarratorRole = char.role;
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+  } catch (_) {}
+}
+
+if (prevNarratorName) {
+  console.log('');
+  console.log('  ── Cross-Narrator-Referenz ──');
+  console.log(`  PREV_NARRATOR: ${prevNarratorName}${prevNarratorRole ? ' (' + prevNarratorRole + ')' : ''}`);
+  if (prevModelName) console.log(`  PREV_MODEL:    ${prevModelName}`);
+  console.log(`  Token:  [PREV_NARRATOR:${prevNarratorName}]${prevModelName ? ' [PREV_MODEL:' + prevModelName + ']' : ''}`);
+
+  // Dialog-Hinweis: Wenn j%5==3, MUSS der Text den PREV_NARRATOR erwaehnen
+  if (narrative.structure === 'dialog') {
+    console.log(`  ⚠️  DIALOG-STRUKTUR: Diese Commit-Message MUSS ${prevNarratorName} namentlich erwaehnen!`);
+    console.log(`      Mindestens 2 Charaktere muessen interagieren (Buffy: ... ${prevNarratorName}: ...).`);
+  } else {
+    console.log(`  Hinweis: Erwaehne ${prevNarratorName} mindestens einmal im narrativen Text.`);
+  }
+} else {
+  console.log('');
+  console.log('  ── Cross-Narrator-Referenz ──');
+  console.log('  Kein vorheriger Narrator gefunden (erster Commit oder fehlende Daten).');
+}
 console.log('');
 console.log('  ── Für CHANGELOG.md ──');
 console.log(`  > **Commit:** \`<hash>\` | **Composite:** \`${result.composite}\``);

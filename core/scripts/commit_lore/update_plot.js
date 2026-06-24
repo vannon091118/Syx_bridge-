@@ -195,6 +195,18 @@ if (narratorId) {
   newNode.narrator = narratorId;
 }
 
+// ─── Cross-Narrator-Referenz: prev_narrator + prev_model ──────────
+// Jeder neue Plot-Node referenziert den Narrator und das Model des Vorgaenger-Nodes.
+// Damit kann derive_composite.js den PREV_NARRATOR fuer die naechste Commit-Message bereitstellen.
+if (lastNode) {
+  if (lastNode.narrator) {
+    newNode.prev_narrator = lastNode.narrator;
+  }
+  if (lastNode.model_id) {
+    newNode.prev_model = lastNode.model_id;
+  }
+}
+
 plotchain.push(newNode);
 fs.writeFileSync(plotchainPath, JSON.stringify(plotchain, null, 2), 'utf8');
 console.log(`Plot-Knoten ${nodeId} (${pId}) gespeichert.`);

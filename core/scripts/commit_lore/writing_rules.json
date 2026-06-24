@@ -62,6 +62,14 @@
       "arc_reference": {
         "description": "Freiwaehlbar: Verweis auf den aktuellen Arc oder einen archivierten Arc. Wird jetzt ueber den Composite-Hash referenziert.",
         "required": false
+      },
+      "cross_narrator_reference": {
+        "description": "Jeder Commit MUSS mindestens einmal den vorherigen Narrator oder dessen Model namentlich erwaehnen. Bei Dialog-Struktur (j%5==3) muessen mindestens 2 Charaktere interagieren. Der PREV_NARRATOR-Name wird automatisch von derive_composite.js bereitgestellt.",
+        "required": true,
+        "min_mentions": 1,
+        "dialog_min_mentions": 2,
+        "token_format": "[PREV_NARRATOR:<Name>] und [PREV_MODEL:<model-name>] werden von derive_composite.js ausgegeben und muessen im narrativen Text referenziert werden.",
+        "enforcement": "verify_commit_msg.js prueft: Mind. 1 Erwaehnung des PREV_NARRATOR-Namens im Commit-Text. Bei Dialog-Struktur (j%5==3) muessen 2+ Charaktere namentlich interagieren."
       }
     }
   }

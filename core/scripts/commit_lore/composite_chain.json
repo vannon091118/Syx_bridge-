@@ -2,7 +2,7 @@
   "genesis_composite": "c0j0n0a0p0",
   "genesis_mood": "genesis",
   "created": "2026-06-23",
-  "description": "Deterministische Composite-Chain. Jeder Commit schreibt Composite + Mood + Narrator fort. Mood[N] != Mood[N-1] garantiert. Narrator deterministisch via n-Feld (1=Buffy, 2=Basher, 3=Thinker, 4=Vannon).",
+  "description": "Deterministische Composite-Chain. Jeder Commit schreibt Composite + Mood + Narrator fort. Mood[N] != Mood[N-1] garantiert. Narrator deterministisch via n-Feld (1=Buffy, 2=Basher, 3=Thinker, 4=Vannon, 5=Squizzle, 6=Devin, 7=Argos, 8=Ghost, 9=Spark, 10=Glitch, 11=Null, 12=Echo, 13=Flux, 14=Sage). NEU: model_id + prev_narrator fuer Cross-Narrator-Referenzen in Commit-Dialogen.",
   "chain": [
     {
       "seq": 1,
@@ -298,7 +298,9 @@
       "composite": "c38j48n9a2p1",
       "commitHash": "c799852",
       "mood": "trocken",
-      "seed": 4256654374
+      "seed": 4256654374,
+      "model_id": "mimo-v2.5-pro",
+      "prev_narrator": "Sage"
     }
   ]
 }

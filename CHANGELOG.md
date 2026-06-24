@@ -5,6 +5,29 @@
 
 ---
 
+## [CROSS-NARRATOR-INTERAKTION] — 2026-06-25 — Narrative Cross-Narrator-Referenzen im Commit-Layer
+
+> **Composite:** `c39j7n7a1p34`
+> **Commit:** `<hash>` | **Model:** mimo-v2.5-pro | **Narrator:** Argos (Lokaler Techniker)
+> **Warum:** Commit-Narrative operierten isoliert — kein Narrator erwähnte den vorherigen. Dialog-Struktur (j%5==3) existierte aber wurde nie enforced. Jetzt muss jeder Commit den PREV_NARRATOR referenzieren.
+> **Dateien:** `writing_rules.json`, `update_plot.js`, `derive_composite.js`, `verify_commit_msg.js`, `composite_chain.json`
+
+### Cross-Narrator-Referenz System
+- **writing_rules.json:** Neue Pflicht-Regel `cross_narrator_reference` — min. 1 Erwähnung des vorherigen Narrators pro Commit, 2 bei Dialog-Struktur. Enforcement via verify_commit_msg.js.
+- **update_plot.js:** Jeder neue Plot-Node speichert `prev_narrator` + `prev_model` vom Vorgänger-Node. Datenfluss für derive_composite.js.
+- **derive_composite.js:** Gibt `[PREV_NARRATOR:Name]` + `[PREV_MODEL:name]` aus. Warnt bei Dialog-Struktur dass 2+ Charaktere interagieren müssen.
+- **verify_commit_msg.js:** Neuer CHECK 6 — prüft ob PREV_NARRATOR namentlich im Text vorkommt. Bei j%5==3 (Dialog) → strikt 2+ Charaktere. Fallback: letzter anderer Narrator aus plotchain.json.
+- **composite_chain.json:** Beschreibung auf 14 Narratoren erweitert. Letzter Eintrag (seq 38) mit `model_id` + `prev_narrator` Feldern.
+
+### Datenfluss
+`update_plot.js` schreibt prev_narrator → `derive_composite.js` liest+gibt PREV_NARRATOR aus → `verify_commit_msg.js` prüft hart ob Erwähnung im Text
+
+### Verifikation
+- Syntax: 5/5 OK
+- Kette vollständig: Schreiben → Lesen → Prüfen
+
+---
+
 ## [TUTORIAL-KUERZUNG] — 2026-06-25 — TUTORIAL.txt DE-Sektion entfernt (B1 aus DOCU_AUDIT_ABBAU)
 
 > **Composite:** `c39j50n10a1p11`
