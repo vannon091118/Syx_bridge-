@@ -320,6 +320,19 @@ class ConfigRuntime {
     }
   }
 
+  // M-4: Konsolidierter OpenAI-kompatibler Test-Call (Groq, OpenRouter, NVIDIA)
+  async _testOpenAiChat(url, key, model, extraHeaders = {}, timeout = 10000) {
+    return axios.post(url, {
+      model,
+      messages: [{ role: 'user', content: 'Return OK.' }],
+      max_tokens: 8,
+      temperature: 0
+    }, {
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extraHeaders },
+      timeout
+    });
+  }
+
   async checkCloudKey(provider, key, index) {
     const startedAt = Date.now();
     try {
@@ -337,46 +350,18 @@ class ConfigRuntime {
       if (provider === 'groq') {
         const models = await this.fetchGroqModels();
         const testModel = models.find(m => m.includes('8b') || m.includes('instant')) || models[0] || GROQ_FALLBACK_MODELS[0];
-        response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
-          model: testModel,
-          messages: [{ role: 'user', content: 'Return OK.' }],
-          max_tokens: 8,
-          temperature: 0
-        }, {
-          headers: { Authorization: `Bearer ${key}` },
-          timeout: 10000
-        });
+        response = await this._testOpenAiChat('https://api.groq.com/openai/v1/chat/completions', key, testModel, {}, 10000);
         const text = response.data.choices?.[0]?.message?.content || '';
         return { provider, index, key: maskSecret(key), ok: /ok/i.test(text), detail: `chat ok (${testModel})`, ms: `${Date.now() - startedAt}ms` };
       }
       if (provider === 'openrouter') {
-        response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-          model: OPENROUTER_FREE_MODEL,
-          messages: [{ role: 'user', content: 'Return OK.' }],
-          max_tokens: 8,
-          temperature: 0
-        }, {
-          headers: {
-            Authorization: `Bearer ${key}`,
-            'HTTP-Referer': 'https://github.com/vannon/syx-bridge',
-            'Content-Type': 'application/json'
-          },
-          timeout: 12000
-        });
+        response = await this._testOpenAiChat('https://openrouter.ai/api/v1/chat/completions', key, OPENROUTER_FREE_MODEL, { 'HTTP-Referer': 'https://github.com/vannon/syx-bridge' }, 12000);
         const text = response.data.choices?.[0]?.message?.content || '';
         return { provider, index, key: maskSecret(key), ok: /ok/i.test(text), detail: `chat ok (${OPENROUTER_FREE_MODEL})`, ms: `${Date.now() - startedAt}ms` };
       }
       if (provider === 'nvidia') {
         const testModel = NVIDIA_FALLBACK_MODELS.find(m => m.includes('8b')) || NVIDIA_FALLBACK_MODELS[2];
-        response = await axios.post('https://integrate.api.nvidia.com/v1/chat/completions', {
-          model: testModel,
-          messages: [{ role: 'user', content: 'Return OK.' }],
-          max_tokens: 8,
-          temperature: 0
-        }, {
-          headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-          timeout: 15000
-        });
+        response = await this._testOpenAiChat('https://integrate.api.nvidia.com/v1/chat/completions', key, testModel, {}, 15000);
         const text = response.data.choices?.[0]?.message?.content || '';
         return { provider, index, key: maskSecret(key), ok: /ok/i.test(text) || response.status === 200, detail: `chat ok (${testModel})`, ms: `${Date.now() - startedAt}ms` };
       }

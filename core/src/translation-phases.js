@@ -55,6 +55,23 @@ function createTranslationPhases(deps) {
     _recoveryDoneRef
   } = deps;
 
+  // ── M-1: withTransaction — Konsolidiertes Transaction-Handling ────────
+  // Begin → Block → Commit. Bei Fehler: Rollback + Re-Throw (Caller kann fangen).
+  async function withTransaction(block) {
+    try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] Begin fehlgeschlagen: ${e.message}`); }
+    try {
+      const result = await block();
+      try { await commitTransaction(); } catch (e) {
+        console.warn(`[TRANSACTION] Commit fehlgeschlagen: ${e.message}`);
+        try { await rollbackTransaction(); } catch (re) { console.warn('[TRANSACTION] Rollback nach Commit-Fehler fehlgeschlagen:', re.message); }
+      }
+      return result;
+    } catch (e) {
+      try { await rollbackTransaction(); } catch (re) { console.warn('[TRANSACTION] Rollback fehlgeschlagen:', re.message); }
+      throw e;
+    }
+  }
+
   // ── PHASE 1: Cache ──────────────────────────────────────────────────
 
   async function cachePhase(ctx) {
@@ -222,66 +239,60 @@ function createTranslationPhases(deps) {
           }
         }
 
-        // Begin transaction BEFORE the save-loop for this batch (HDD optimization)
-        // Alle saveTranslation-Aufrufe in diesem Batch werden in EINER
-        // Transaktion ausgeführt → 1 fsync() statt N× auf HDD.
-        try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] Begin fehlgeschlagen: ${e.message}`); }
+        // M-1: Save-Loop in EINER Transaktion (HDD optimization: 1 fsync statt N×)
+        await withTransaction(async () => {
+          for (let j = 0; j < currentBatch.length; j++) {
+            const entry = currentBatch[j];
+            const source = entry.source;
+            const translated = result.translations[j];
+            const itemMeta = batchMeta[j] || { softWarnings: [], fallbackUsed: false, criticalReject: false, shieldResult: null, wasProperNounOverride: false };
+            const qualityScore = scoreTranslationQuality(source, translated);
+            // QUAL-OFFENSIVE Fix #1: Proper-Noun-Override → persistieren mit
+            // provider='native_runtime' (nicht argos), korrekter Quality-Score 94.
+            const properNounOverride = !!itemMeta.wasProperNounOverride;
+            const saveProvider = properNounOverride ? 'native_runtime' : result.provider;
+            let flagReason = inferFlagReason(source, translated, saveProvider, { qualityScore });
+            // P2 Fix: Critical Rejects explizit als 'critical_reject' markieren.
+            if (itemMeta.criticalReject) flagReason = 'critical_reject';
+            ctx.translations.set(source, translated);
 
-        for (let j = 0; j < currentBatch.length; j++) {
-          const entry = currentBatch[j];
-          const source = entry.source;
-          const translated = result.translations[j];
-          const itemMeta = batchMeta[j] || { softWarnings: [], fallbackUsed: false, criticalReject: false, shieldResult: null, wasProperNounOverride: false };
-          const qualityScore = scoreTranslationQuality(source, translated);
-          // QUAL-OFFENSIVE Fix #1: Proper-Noun-Override → persistieren mit
-          // provider='native_runtime' (nicht argos), korrekter Quality-Score 94.
-          const properNounOverride = !!itemMeta.wasProperNounOverride;
-          const saveProvider = properNounOverride ? 'native_runtime' : result.provider;
-          let flagReason = inferFlagReason(source, translated, saveProvider, { qualityScore });
-          // P2 Fix: Critical Rejects explizit als 'critical_reject' markieren.
-          if (itemMeta.criticalReject) flagReason = 'critical_reject';
-          ctx.translations.set(source, translated);
+            const saveMeta = {
+              provider: saveProvider,
+              model: result.model,
+              taskType: 'translate',
+              flagReason,
+              qualityScore: properNounOverride ? NATIVE_RUNTIME_DEFAULT_QUALITY : qualityScore,
+              polishStatus: properNounOverride ? 'completed' : ((itemMeta.softWarnings.length > 0 || itemMeta.fallbackUsed) ? 'pending' : 'completed'),
+              requiresDeepPolish: !properNounOverride && (itemMeta.softWarnings.length > 0 || itemMeta.fallbackUsed || qualityScore < 60),
+              overwriteFallbackUsed: properNounOverride || itemMeta.fallbackUsed
+            };
 
-          const saveMeta = {
-            provider: saveProvider,
-            model: result.model,
-            taskType: 'translate',
-            flagReason,
-            qualityScore: properNounOverride ? NATIVE_RUNTIME_DEFAULT_QUALITY : qualityScore,
-            polishStatus: properNounOverride ? 'completed' : ((itemMeta.softWarnings.length > 0 || itemMeta.fallbackUsed) ? 'pending' : 'completed'),
-            requiresDeepPolish: !properNounOverride && (itemMeta.softWarnings.length > 0 || itemMeta.fallbackUsed || qualityScore < 60),
-            overwriteFallbackUsed: properNounOverride || itemMeta.fallbackUsed
-          };
-
-          // polishLevel 2 = final (deep-polished / proper-noun). Für Override markiert
-          // das den Eintrag als terminal, sodass Deep-Polish-SELECT ihn ueberspringt.
-          // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all (better-sqlite3 ist synchron).
-          await saveTranslation(entry, translated, properNounOverride ? 2 : 0, saveMeta);
-          if (ctx.missing.length <= 50) {
-            const isFallback = translated === source && saveProvider !== 'native_runtime';
-            console.log(`[DEBUG-SAVE] ${isFallback ? 'FALLBACK' : 'OK'} source="${source.substring(0, 50)}" → "${(translated||'').substring(0, 50)}" provider=${saveProvider} q=${saveMeta.qualityScore}`);
+            // polishLevel 2 = final (deep-polished / proper-noun). Für Override markiert
+            // das den Eintrag als terminal, sodass Deep-Polish-SELECT ihn ueberspringt.
+            // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all (better-sqlite3 ist synchron).
+            await saveTranslation(entry, translated, properNounOverride ? 2 : 0, saveMeta);
+            if (ctx.missing.length <= 50) {
+              const isFallback = translated === source && saveProvider !== 'native_runtime';
+              console.log(`[DEBUG-SAVE] ${isFallback ? 'FALLBACK' : 'OK'} source="${source.substring(0, 50)}" → "${(translated||'').substring(0, 50)}" provider=${saveProvider} q=${saveMeta.qualityScore}`);
+            }
+            ctx.cachedData.set(source, {
+              translation: translated,
+              polishLevel: properNounOverride ? 2 : 0,
+              flagged: !!flagReason,
+              flagReason,
+              provider: saveProvider,
+              qualityScore: saveMeta.qualityScore,
+              sourceHash: getEntryHash(entry)
+            });
+            await learnGlossary(source, translated, entry);
           }
-          ctx.cachedData.set(source, {
-            translation: translated,
-            polishLevel: properNounOverride ? 2 : 0,
-            flagged: !!flagReason,
-            flagReason,
-            provider: saveProvider,
-            qualityScore: saveMeta.qualityScore,
-            sourceHash: getEntryHash(entry)
-          });
-          await learnGlossary(source, translated, entry);
-        }
-        
-        // Commit all saveTranslation calls in ONE transaction (HDD optimization)
-        try { await commitTransaction(); } catch (e) { console.warn(`[TRANSACTION] Commit fehlgeschlagen: ${e.message}`); try { await rollbackTransaction(); } catch (re) { console.warn('[TRANSACTION] Rollback nach Commit-Fehler fehlgeschlagen:', re.message); } }
+        });
         if (cli.isActive()) {
           cli.updateBatch(batchNumber, totalBatches, result.provider, result.model);
           cli.tick(ctx.translations.size, ctx.uniqueTexts.length);
         }
       } catch (e) {
-        // Rollback any open transaction from the failed save-loop (HDD optimization)
-        try { await rollbackTransaction(); } catch (e) { console.warn('[TRANSACTION] Rollback fehlgeschlagen:', e.message); }
+        // withTransaction rolled back automatically
         if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
         console.error(`[!] Batch fehlgeschlagen: ${extractErrorMessage(e)}`);
         console.log(`[DEBUG-FAIL] Batch #${batchNumber} mit ${currentBatch.length} Strings fehlgeschlagen. Fallback-Pfad wird genutzt.`);
@@ -309,46 +320,45 @@ function createTranslationPhases(deps) {
           // Non-critical — fall through to source fallback
         }
 
-        // Begin transaction BEFORE fail-path save-loop (HDD optimization)
-        try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] Fail Begin fehlgeschlagen: ${e.message}`); }
+        // M-1: Fail-Path Save-Loop in EINER Transaktion
         try {
-          for (const item of currentBatch) {
-            const isPN = isProperNoun(item.source) || classifyPath(item.relativePath) === 'proper_noun';
-            const existingFallback = existingFallbackMap.get(item.source);
-            const fallbackTranslation = existingFallback ? existingFallback.translation : item.source;
-            const fallbackScore = existingFallback ? existingFallback.qualityScore : (isPN ? NATIVE_RUNTIME_DEFAULT_QUALITY : 20);
-            ctx.translations.set(item.source, fallbackTranslation);
-            const hasExistingTranslation = !!existingFallback;
-            const failProvider = isPN ? 'native_runtime' : (hasExistingTranslation ? 'db_fallback' : 'native_fallback');
-            const failReason = isPN ? 'proper_noun' : (hasExistingTranslation ? 'db_fallback_used' : 'all_routes_failed');
-            // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all.
-            await saveTranslation(item, fallbackTranslation, isPN ? 2 : 0, {
-              provider: failProvider,
-              model: 'native_fallback',
-              taskType: 'translate',
-              flagReason: failReason,
-              qualityScore: fallbackScore,
-              polishStatus: isPN ? 'completed' : (hasExistingTranslation ? 'completed' : 'pending'),
-              requiresDeepPolish: !isPN && !hasExistingTranslation,
-              overwriteFallbackUsed: !hasExistingTranslation,
-              skipReviewIncrement: true
-            });
-            if (ctx.missing.length <= 50) {
-              console.log(`[DEBUG-SAVE] FALLBACK source="${(item.source||'').substring(0, 50)}" → "${(fallbackTranslation||'').substring(0, 50)}" provider=${failProvider} reason=${failReason}`);
+          await withTransaction(async () => {
+            for (const item of currentBatch) {
+              const isPN = isProperNoun(item.source) || classifyPath(item.relativePath) === 'proper_noun';
+              const existingFallback = existingFallbackMap.get(item.source);
+              const fallbackTranslation = existingFallback ? existingFallback.translation : item.source;
+              const fallbackScore = existingFallback ? existingFallback.qualityScore : (isPN ? NATIVE_RUNTIME_DEFAULT_QUALITY : 20);
+              ctx.translations.set(item.source, fallbackTranslation);
+              const hasExistingTranslation = !!existingFallback;
+              const failProvider = isPN ? 'native_runtime' : (hasExistingTranslation ? 'db_fallback' : 'native_fallback');
+              const failReason = isPN ? 'proper_noun' : (hasExistingTranslation ? 'db_fallback_used' : 'all_routes_failed');
+              // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all.
+              await saveTranslation(item, fallbackTranslation, isPN ? 2 : 0, {
+                provider: failProvider,
+                model: 'native_fallback',
+                taskType: 'translate',
+                flagReason: failReason,
+                qualityScore: fallbackScore,
+                polishStatus: isPN ? 'completed' : (hasExistingTranslation ? 'completed' : 'pending'),
+                requiresDeepPolish: !isPN && !hasExistingTranslation,
+                overwriteFallbackUsed: !hasExistingTranslation,
+                skipReviewIncrement: true
+              });
+              if (ctx.missing.length <= 50) {
+                console.log(`[DEBUG-SAVE] FALLBACK source="${(item.source||'').substring(0, 50)}" → "${(fallbackTranslation||'').substring(0, 50)}" provider=${failProvider} reason=${failReason}`);
+              }
+              ctx.cachedData.set(item.source, {
+                translation: fallbackTranslation,
+                polishLevel: isPN ? 2 : 0,
+                flagged: !isPN && !hasExistingTranslation,
+                flagReason: failReason,
+                provider: failProvider,
+                qualityScore: fallbackScore,
+                sourceHash: getEntryHash(item)
+              });
             }
-            ctx.cachedData.set(item.source, {
-              translation: fallbackTranslation,
-              polishLevel: isPN ? 2 : 0,
-              flagged: !isPN && !hasExistingTranslation,
-              flagReason: failReason,
-              provider: failProvider,
-              qualityScore: fallbackScore,
-              sourceHash: getEntryHash(item)
-            });
-          }
-          try { await commitTransaction(); } catch (e) { console.warn(`[TRANSACTION] Fail Commit fehlgeschlagen: ${e.message}`); try { await rollbackTransaction(); } catch (re) { console.warn('[TRANSACTION] Rollback nach Fail-Commit fehlgeschlagen:', re.message); } }
+          });
         } catch (saveErr) {
-          try { await rollbackTransaction(); } catch (e) { console.warn('[TRANSACTION] Rollback fehlgeschlagen:', e.message); }
           console.error(`[!] Fail-Path Save fatal: ${saveErr.message}. Transaction rolled back.`);
         }
         if (cli.isActive()) cli.addErr(currentBatch.length);
@@ -388,130 +398,128 @@ function createTranslationPhases(deps) {
 
       const flags = await flagPotentialErrors(batchValues);
       const problematicIdx = [];
-      // Begin transaction BEFORE the polish save-loop (HDD optimization)
-      try { await beginTransaction(); } catch (e) { console.warn(`[TRANSACTION] QA Begin fehlgeschlagen: ${e.message}`); }
 
-      for (let j = 0; j < batchKeys.length; j++) {
-        const key = batchKeys[j];
-        const entry = batchEntries[j];
-        const needsPolish = flags[j] === true || entry.riskScore >= 4;
+      // M-1: Audit + Polish in EINER Transaktion (HDD optimization)
+      try {
+        await withTransaction(async () => {
+          for (let j = 0; j < batchKeys.length; j++) {
+            const key = batchKeys[j];
+            const entry = batchEntries[j];
+            const needsPolish = flags[j] === true || entry.riskScore >= 4;
 
-        if (needsPolish) problematicIdx.push(j);
+            if (needsPolish) problematicIdx.push(j);
 
-        const cached = ctx.cachedData.get(key) || {};
-        if (cached.polishLevel < 1) {
-          // SQLITE_BUSY-Fix: Sequenzielle Writes statt batchUpdatePromises.push().
-          await saveTranslation(entry, ctx.translations.get(key), 1, {
-            provider: cached.provider || 'native_review',
-            model: 'native_review',
-            taskType: 'audit',
-            flagReason: (flags[j] === true) ? 'needs_polish' : '',
-            qualityScore: scoreTranslationQuality(key, ctx.translations.get(key))
-          });
-        }
-      }
-
-      if (problematicIdx.length > 0) {
-        try {
-          const problematicEntries = problematicIdx.map(idx => ({
-            ...batchEntries[idx],
-            source: ctx.translations.get(batchKeys[idx]),
-            originalSource: batchKeys[idx],
-            contextPacket: buildContextPacket(batchEntries[idx], batchEntries[idx].hints || [])
-          }));
-
-          let corrected;
-          let polishShieldResults = null;
-          const abResult = await polishArbiter.runAbPolishing(problematicEntries, config.TARGET_LANG);
-          if (abResult) {
-            corrected = abResult;
-          } else {
-            corrected = await fixGrammarBatch(problematicEntries, 'polish');
-            if (corrected && corrected.__shieldResults) {
-              polishShieldResults = corrected.__shieldResults;
+            const cached = ctx.cachedData.get(key) || {};
+            if (cached.polishLevel < 1) {
+              // SQLITE_BUSY-Fix: Sequenzielle Writes statt batchUpdatePromises.push().
+              await saveTranslation(entry, ctx.translations.get(key), 1, {
+                provider: cached.provider || 'native_review',
+                model: 'native_review',
+                taskType: 'audit',
+                flagReason: (flags[j] === true) ? 'needs_polish' : '',
+                qualityScore: scoreTranslationQuality(key, ctx.translations.get(key))
+              });
             }
           }
 
-          const finalStrictTerms = await getGuardedTerminology(problematicEntries);
+          if (problematicIdx.length > 0) {
+            const problematicEntries = problematicIdx.map(idx => ({
+              ...batchEntries[idx],
+              source: ctx.translations.get(batchKeys[idx]),
+              originalSource: batchKeys[idx],
+              contextPacket: buildContextPacket(batchEntries[idx], batchEntries[idx].hints || [])
+            }));
 
-          for (let j = 0; j < problematicIdx.length; j++) {
-            const idx = problematicIdx[j];
-            const key = batchKeys[idx];
-            const entry = batchEntries[idx];
-            const improved = corrected[j];
-
-            // Capture shield restoration results from polish
-            if (polishShieldResults && polishShieldResults[j]) {
-              if (!ctx.translations.__shieldResults) ctx.translations.__shieldResults = new Map();
-              ctx.translations.__shieldResults.set(key, polishShieldResults[j]);
+            let corrected;
+            let polishShieldResults = null;
+            const abResult = await polishArbiter.runAbPolishing(problematicEntries, config.TARGET_LANG);
+            if (abResult) {
+              corrected = abResult;
+            } else {
+              corrected = await fixGrammarBatch(problematicEntries, 'polish');
+              if (corrected && corrected.__shieldResults) {
+                polishShieldResults = corrected.__shieldResults;
+              }
             }
 
-            const persistentViolation = checkTerminologyViolations(key, improved, finalStrictTerms);
-            if (persistentViolation) {
-              console.error(`[GUARD] Kritischer Terminologie-Verstoss bleibt bestehen fuer: "${key.substring(0, 30)}..."`);
+            const finalStrictTerms = await getGuardedTerminology(problematicEntries);
+
+            for (let j = 0; j < problematicIdx.length; j++) {
+              const idx = problematicIdx[j];
+              const key = batchKeys[idx];
+              const entry = batchEntries[idx];
+              const improved = corrected[j];
+
+              // Capture shield restoration results from polish
+              if (polishShieldResults && polishShieldResults[j]) {
+                if (!ctx.translations.__shieldResults) ctx.translations.__shieldResults = new Map();
+                ctx.translations.__shieldResults.set(key, polishShieldResults[j]);
+              }
+
+              const persistentViolation = checkTerminologyViolations(key, improved, finalStrictTerms);
+              if (persistentViolation) {
+                console.error(`[GUARD] Kritischer Terminologie-Verstoss bleibt bestehen fuer: "${key.substring(0, 30)}..."`);
+              }
+
+              // P1-1: no-change Erkennung fuer polish_single + ab_polish.
+              const oldTranslation = ctx.translations.get(key);
+              ctx.translations.set(key, improved);
+              const clean = (s) => normalizeWhitespace(s || '').trim();
+              const isNoChange =
+                !clean(improved) ||
+                clean(improved) === clean(key) ||
+                clean(improved) === clean(oldTranslation);
+
+              if (ctx.cachedData.has(key)) {
+                const existing = ctx.cachedData.get(key);
+                ctx.cachedData.set(key, { ...existing, polishedInQA: true });
+              }
+
+              // Item 2 Phase 2: Echte Polish-Route (polishRoute.provider/model) statt
+              // SyxBridge-interner Labels ('ab_polish'/'polish_single').
+              // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all.
+              await saveTranslation(entry, improved, 2, {
+                provider: polishRoute.provider,
+                model: polishRoute.model,
+                taskType: 'polish',
+                flagReason: persistentViolation ? 'terminology_violation_persistent' : '',
+                qualityScore: scoreTranslationQuality(key, improved),
+                skipReviewIncrement: isNoChange,
+                polishStatus: 'completed',
+                requiresDeepPolish: false
+              });
+              await learnGlossary(key, improved, entry);
             }
-
-            // P1-1: no-change Erkennung fuer polish_single + ab_polish.
-            const oldTranslation = ctx.translations.get(key);
-            ctx.translations.set(key, improved);
-            const clean = (s) => normalizeWhitespace(s || '').trim();
-            const isNoChange =
-              !clean(improved) ||
-              clean(improved) === clean(key) ||
-              clean(improved) === clean(oldTranslation);
-
-            if (ctx.cachedData.has(key)) {
-              const existing = ctx.cachedData.get(key);
-              ctx.cachedData.set(key, { ...existing, polishedInQA: true });
-            }
-
-            // Item 2 Phase 2: Echte Polish-Route (polishRoute.provider/model) statt
-            // SyxBridge-interner Labels ('ab_polish'/'polish_single').
-            // SQLITE_BUSY-Fix: Sequenzielle Writes statt Promise.all.
-            await saveTranslation(entry, improved, 2, {
-              provider: polishRoute.provider,
-              model: polishRoute.model,
-              taskType: 'polish',
-              flagReason: persistentViolation ? 'terminology_violation_persistent' : '',
-              qualityScore: scoreTranslationQuality(key, improved),
-              skipReviewIncrement: isNoChange,
-              polishStatus: 'completed',
-              requiresDeepPolish: false
-            });
-            await learnGlossary(key, improved, entry);
           }
-        } catch (e) {
-          // Rollback any open transaction from failed polish (HDD optimization)
-          try { await rollbackTransaction(); } catch (e) { console.warn('[TRANSACTION] Rollback fehlgeschlagen:', e.message); }
-          if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
-          console.warn(`[!] QA-Korrektur Batch fehlgeschlagen: ${e.message}`);
-          // G1-Fix: Mark entries as polish_status='failed' to prevent infinite retry loop.
-          for (const idx of problematicIdx) {
-            const key = batchKeys[idx];
-            let updateSucceeded = false;
-            for (let attempt = 0; attempt < 2 && !updateSucceeded; attempt++) {
-              try {
-                await dbRun(
-                  'UPDATE translations SET polish_status = \'failed\' WHERE source_text = ? AND target_lang = ?',
-                  [key, config.TARGET_LANG]
-                );
-                updateSucceeded = true;
-              } catch (updateErr) {
-                if (attempt < 1) {
-                  console.warn(`[QA-FAIL] polish_status='failed' UPDATE fehlgeschlagen (Versuch ${attempt + 1}/2) fuer "${(key || '').substring(0, 40)}": ${updateErr.message} — retry in 500ms...`);
-                  await sleep(500);
-                } else {
-                  console.error(`[QA-FAIL] KRITISCH: polish_status='failed' UPDATE endgueltig fehlgeschlagen fuer "${(key || '').substring(0, 40)}" — Eintrag bleibt pending.`);
-                }
+        });
+      } catch (e) {
+        // withTransaction rolled back automatically
+        if (e.message === 'ABORTED' || axios.isCancel(e) || e.code === 'ERR_CANCELED' || e.name === 'CanceledError') break;
+        console.warn(`[!] QA-Korrektur Batch fehlgeschlagen: ${e.message}`);
+        // G1-Fix: Mark entries as polish_status='failed' to prevent infinite retry loop.
+        for (const idx of problematicIdx) {
+          const key = batchKeys[idx];
+          let updateSucceeded = false;
+          for (let attempt = 0; attempt < 2 && !updateSucceeded; attempt++) {
+            try {
+              await dbRun(
+                'UPDATE translations SET polish_status = \'failed\' WHERE source_text = ? AND target_lang = ?',
+                [key, config.TARGET_LANG]
+              );
+              updateSucceeded = true;
+            } catch (updateErr) {
+              if (attempt < 1) {
+                console.warn(`[QA-FAIL] polish_status='failed' UPDATE fehlgeschlagen (Versuch ${attempt + 1}/2) fuer "${(key || '').substring(0, 40)}": ${updateErr.message} — retry in 500ms...`);
+                await sleep(500);
+              } else {
+                console.error(`[QA-FAIL] KRITISCH: polish_status='failed' UPDATE endgueltig fehlgeschlagen fuer "${(key || '').substring(0, 40)}" — Eintrag bleibt pending.`);
               }
             }
           }
-          // J1-Fix: Skip to next batch iteration.
-          continue;
         }
+        // J1-Fix: Skip to next batch iteration.
+        continue;
       }
-      // Commit all polish saveTranslation calls in ONE transaction (HDD optimization)
-      try { await commitTransaction(); } catch (e) { console.warn(`[TRANSACTION] QA Commit fehlgeschlagen: ${e.message}`); try { await rollbackTransaction(); } catch (e) { console.warn('[TRANSACTION] Fail-Rollback fehlgeschlagen:', e.message); } }
     }
   }
 

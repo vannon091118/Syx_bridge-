@@ -3,6 +3,21 @@ const fs = require('fs');
 const path = require('path');
 const { EventEmitter } = require('events');
 
+/**
+ * parseJsonBody — M-2: Konsolidiertes JSON-Body-Parsing für POST-Handler.
+ * Liest den Request-Body und parsed ihn als JSON. Bei Fehler: gibt {} zurück.
+ */
+function parseJsonBody(req) {
+  return new Promise((resolve) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try { resolve(JSON.parse(body || '{}')); }
+      catch (e) { console.warn('[GUI] JSON parse error:', e.message); resolve({}); }
+    });
+  });
+}
+
 class GuiServer extends EventEmitter {
   constructor(options = {}) {
     super();
@@ -47,13 +62,8 @@ class GuiServer extends EventEmitter {
       }
 
       if (url.pathname === '/api/session' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => body += chunk);
-        req.on('end', () => {
-          let sessionId = '';
-          try {
-            sessionId = JSON.parse(body || '{}').sessionId || '';
-          } catch (e) {}
+        parseJsonBody(req).then(data => {
+          const sessionId = data.sessionId || '';
           if (sessionId) this.touchSession(sessionId);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ ok: true, sessions: this.sessions.size }));
@@ -62,13 +72,8 @@ class GuiServer extends EventEmitter {
       }
 
       if (url.pathname === '/api/session/close' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => body += chunk);
-        req.on('end', () => {
-          let sessionId = '';
-          try {
-            sessionId = JSON.parse(body || '{}').sessionId || '';
-          } catch (e) {}
+        parseJsonBody(req).then(data => {
+          const sessionId = data.sessionId || '';
           if (sessionId) this.closeSession(sessionId);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ ok: true }));
@@ -157,11 +162,7 @@ class GuiServer extends EventEmitter {
 
       // API: Install model/language (P4)
       if (url.pathname === '/api/models/install' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-          let data = {};
-          try { data = JSON.parse(body || '{}'); } catch (e) {}
+        parseJsonBody(req).then(data => {
           this.emit('install-model', data, (result) => {
             res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(result));
@@ -172,11 +173,7 @@ class GuiServer extends EventEmitter {
 
       // API: Start Ollama pull (P4)
       if (url.pathname === '/api/models/ollama/pull' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-          let data = {};
-          try { data = JSON.parse(body || '{}'); } catch (e) {}
+        parseJsonBody(req).then(data => {
           this.emit('pull-ollama-model', data, (result) => {
             res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(result));
@@ -397,11 +394,7 @@ class GuiServer extends EventEmitter {
 
       // API: Automated API Key Check
       if (url.pathname === '/api/key-check' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-          let data = {};
-          try { data = JSON.parse(body || '{}'); } catch (e) {}
+        parseJsonBody(req).then(data => {
           this.emit('check-api-key', data, (result) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(result));
@@ -412,11 +405,7 @@ class GuiServer extends EventEmitter {
 
       // API: Revision History
       if (url.pathname === '/api/revisions' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-          let data = {};
-          try { data = JSON.parse(body || '{}'); } catch (e) {}
+        parseJsonBody(req).then(data => {
           this.emit('get-revisions', data, (results) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(results));
@@ -427,11 +416,7 @@ class GuiServer extends EventEmitter {
 
       // API: Restore Revision
       if (url.pathname === '/api/revisions/restore' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-          let data = {};
-          try { data = JSON.parse(body || '{}'); } catch (e) {}
+        parseJsonBody(req).then(data => {
           this.emit('restore-revision', data, (result) => {
             res.writeHead(result.success ? 200 : 500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(result));

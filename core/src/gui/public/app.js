@@ -497,7 +497,8 @@ function updateBatchRecommendation() {
   // Provider 'groq': all models free-tier accessible (rate limits only).
   const isFree  = (provider === 'ollama' || provider === 'player2' || provider === 'argos' || provider === 'google_free' || provider === 'fcm' || provider === 'groq')
     || modelVal.includes('/free') || modelVal.endsWith(':free') || modelVal === 'openrouter/free';
-  const isLarge = modelVal.includes('70b') || modelVal.includes('pro') || modelVal.includes('sonnet') || modelVal.includes('405b');
+  // M-3: Synced with client-factory.js getBatchProfile() isLarge terms
+  const isLarge = modelVal.includes('70b') || modelVal.includes('pro') || modelVal.includes('sonnet') || modelVal.includes('opus') || modelVal.includes('405b') || modelVal.includes('nemotron');
 
   let rec;
   if (provider === 'google_free') rec = 8;

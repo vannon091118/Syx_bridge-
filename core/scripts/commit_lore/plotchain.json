@@ -1541,5 +1541,407 @@
       "fde1bed: [NARRATOR:Sage] [COMPOSITE:c39j38n14a2p11] [MODEL:deepseek-v4-pro] [IMPULSE:Bug B und Credit-Fix mit Debug-Logging]",
       "d1bb87f: [NARRATOR:Vannon] [COMPOSITE:c39j31n4a5p22] [MODEL:deepseek-v4-pro] [IMPULSE:Output pruefen, Texte nicht ingame, Dead Co"
     ]
+  },
+  {
+    "p_id": "p37",
+    "id": "plot-2026-06-24T23:22:11",
+    "timestamp": "2026-06-24 23:22:11",
+    "summary": "Cross-Narrator-Referenz System: 5 Dateien fuer narrative Interaktion im Commit-Layer. prev_narrator + prev_model Tracking, PREV_NARRATOR Ausgabe, Dialog-Enforcement in verify_commit_msg.js.",
+    "ref_to": "plot-2026-06-24T21:42:51",
+    "recent_commits": [
+      {
+        "hash": "e4a6e65",
+        "subject": "[NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+        "date": "2026-06-25 01:21:41 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/derive_composite.js",
+          "core/scripts/commit_lore/update_plot.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "9c6cd59",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+        "date": "2026-06-25 00:59:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "TUTORIAL.txt",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md"
+        ]
+      },
+      {
+        "hash": "c74c3fe",
+        "subject": "[NARRATOR:Basher] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j99n2a5p10] [IMPULSE:FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Refer",
+        "date": "2026-06-25 00:52:15 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_INDEX_2026-06-23.md",
+          "core/archive/docs/FREEZE/FREEZE_INDEX.md",
+          "core/archive/docs/FREEZE/FREEZE_INDEX_2.md"
+        ]
+      },
+      {
+        "hash": "b3110e7",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j93n10a3p12] [IMPULSE:8 Sub-Pläne mit FREEZE_INDEX_2 abgleichen we",
+        "date": "2026-06-25 00:43:42 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/plans/PLAN_BUG_TRIAGE.md",
+          "core/archive/docs/plans/PLAN_BYPASS_REMOVAL.md",
+          "core/archive/docs/plans/PLAN_DEAD_FLAGS.md",
+          "core/archive/docs/plans/PLAN_FEATURE_GAPS.md",
+          "core/archive/docs/plans/PLAN_LATENT_RISKS.md",
+          "core/archive/docs/plans/PLAN_PRIORISIERUNG.md",
+          "core/archive/docs/plans/PLAN_RUNTIME_PROBABILITY.md"
+        ]
+      },
+      {
+        "hash": "7f6ee73",
+        "subject": "[NARRATOR:Squizzle] [COMPOSITE:c39j3n5a3p2] [MODEL:mimo-v2.5-pro] [IMPULSE:HANDSHAKE_2026-06-19.md in FREEZE überführen ",
+        "date": "2026-06-25 00:25:31 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md",
+          "core/archive/docs/FREEZE/HANDSHAKE_2026-06-19.md"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "e4a6e65: [NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+      "9c6cd59: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+      "c74c3fe: [NARRATOR:Basher] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j99n2a5p10] [IMPULSE:FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Refer",
+      "b3110e7: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j93n10a3p12] [IMPULSE:8 Sub-Pläne mit FREEZE_INDEX_2 abgleichen we",
+      "7f6ee73: [NARRATOR:Squizzle] [COMPOSITE:c39j3n5a3p2] [MODEL:mimo-v2.5-pro] [IMPULSE:HANDSHAKE_2026-06-19.md in FREEZE überführen "
+    ],
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c39j7n7a1p34",
+    "narrator": "Argos"
+  },
+  {
+    "p_id": "p38",
+    "id": "plot-2026-06-24T23:31:43",
+    "timestamp": "2026-06-24 23:31:43",
+    "summary": "Wortgrenzen fuer Commit-Narrative erhoeht: Alle 14 Charaktere min_words +70%, max_words x3. character_sheets.json Single-Source-of-Truth fuer verify_commit_msg.js.",
+    "ref_to": "plot-2026-06-24T23:22:11",
+    "recent_commits": [
+      {
+        "hash": "92eaf3f",
+        "subject": "[NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+        "date": "2026-06-25 01:31:19 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json"
+        ]
+      },
+      {
+        "hash": "e4a6e65",
+        "subject": "[NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+        "date": "2026-06-25 01:21:41 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/derive_composite.js",
+          "core/scripts/commit_lore/update_plot.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "9c6cd59",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+        "date": "2026-06-25 00:59:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "TUTORIAL.txt",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md"
+        ]
+      },
+      {
+        "hash": "c74c3fe",
+        "subject": "[NARRATOR:Basher] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j99n2a5p10] [IMPULSE:FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Refer",
+        "date": "2026-06-25 00:52:15 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_INDEX_2026-06-23.md",
+          "core/archive/docs/FREEZE/FREEZE_INDEX.md",
+          "core/archive/docs/FREEZE/FREEZE_INDEX_2.md"
+        ]
+      },
+      {
+        "hash": "b3110e7",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j93n10a3p12] [IMPULSE:8 Sub-Pläne mit FREEZE_INDEX_2 abgleichen we",
+        "date": "2026-06-25 00:43:42 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/plans/PLAN_BUG_TRIAGE.md",
+          "core/archive/docs/plans/PLAN_BYPASS_REMOVAL.md",
+          "core/archive/docs/plans/PLAN_DEAD_FLAGS.md",
+          "core/archive/docs/plans/PLAN_FEATURE_GAPS.md",
+          "core/archive/docs/plans/PLAN_LATENT_RISKS.md",
+          "core/archive/docs/plans/PLAN_PRIORISIERUNG.md",
+          "core/archive/docs/plans/PLAN_RUNTIME_PROBABILITY.md"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "92eaf3f: [NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+      "e4a6e65: [NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+      "9c6cd59: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+      "c74c3fe: [NARRATOR:Basher] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j99n2a5p10] [IMPULSE:FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Refer",
+      "b3110e7: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j93n10a3p12] [IMPULSE:8 Sub-Pläne mit FREEZE_INDEX_2 abgleichen we"
+    ],
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c39j79n13a4p27",
+    "narrator": "Flux",
+    "prev_narrator": "Argos",
+    "prev_model": "mimo-v2.5-pro"
+  },
+  {
+    "p_id": "p39",
+    "id": "plot-2026-06-24T23:42:57",
+    "timestamp": "2026-06-24 23:42:57",
+    "summary": "SYSTEM_ARCHITECTURE.md: Komplette Architekturerklärung mit 7 Schichten, Dependencies, 12 Entscheidungsbegründungen, Dependency-Graph ohne zirkulaere Abhaengigkeiten.",
+    "ref_to": "plot-2026-06-24T23:31:43",
+    "recent_commits": [
+      {
+        "hash": "0d82b27",
+        "subject": "[NARRATOR:Thinker] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j26n3a5p27] [IMPULSE:System-Überblick schreiben — Komplette Archi",
+        "date": "2026-06-25 01:42:31 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/SYSTEM_ARCHITECTURE.md"
+        ]
+      },
+      {
+        "hash": "92eaf3f",
+        "subject": "[NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+        "date": "2026-06-25 01:31:19 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json"
+        ]
+      },
+      {
+        "hash": "e4a6e65",
+        "subject": "[NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+        "date": "2026-06-25 01:21:41 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/derive_composite.js",
+          "core/scripts/commit_lore/update_plot.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "9c6cd59",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+        "date": "2026-06-25 00:59:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "TUTORIAL.txt",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md"
+        ]
+      },
+      {
+        "hash": "c74c3fe",
+        "subject": "[NARRATOR:Basher] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j99n2a5p10] [IMPULSE:FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Refer",
+        "date": "2026-06-25 00:52:15 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_INDEX_2026-06-23.md",
+          "core/archive/docs/FREEZE/FREEZE_INDEX.md",
+          "core/archive/docs/FREEZE/FREEZE_INDEX_2.md"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "0d82b27: [NARRATOR:Thinker] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j26n3a5p27] [IMPULSE:System-Überblick schreiben — Komplette Archi",
+      "92eaf3f: [NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+      "e4a6e65: [NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+      "9c6cd59: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+      "c74c3fe: [NARRATOR:Basher] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j99n2a5p10] [IMPULSE:FREEZE_INDEX + FREEZE_INDEX_2 HANDSHAKE-Refer"
+    ],
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c39j26n3a5p27",
+    "narrator": "Thinker",
+    "prev_narrator": "Flux",
+    "prev_model": "mimo-v2.5-pro"
+  },
+  {
+    "p_id": "p40",
+    "id": "plot-2026-06-24T23:52:12",
+    "timestamp": "2026-06-24 23:52:12",
+    "summary": "SOS_FORMAT_SPEC.md: Komplette SoS-Format-Spezifikation als normatives Referenzdokument. 14 Kapitel, Test-Schema T-01 bis T-13, Escaping-Reihenfolge, Komma-Delimiter, INFO-Block-Schutz.",
+    "ref_to": "plot-2026-06-24T23:42:57",
+    "recent_commits": [
+      {
+        "hash": "25d1e14",
+        "subject": "[NARRATOR:Echo] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n12a4p36] [IMPULSE:SoS-Format-Spezifikation als normatives Refere",
+        "date": "2026-06-25 01:51:50 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/SOS_FORMAT_SPEC.md"
+        ]
+      },
+      {
+        "hash": "0d82b27",
+        "subject": "[NARRATOR:Thinker] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j26n3a5p27] [IMPULSE:System-Überblick schreiben — Komplette Archi",
+        "date": "2026-06-25 01:42:31 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/SYSTEM_ARCHITECTURE.md"
+        ]
+      },
+      {
+        "hash": "92eaf3f",
+        "subject": "[NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+        "date": "2026-06-25 01:31:19 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json"
+        ]
+      },
+      {
+        "hash": "e4a6e65",
+        "subject": "[NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+        "date": "2026-06-25 01:21:41 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/derive_composite.js",
+          "core/scripts/commit_lore/update_plot.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "9c6cd59",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+        "date": "2026-06-25 00:59:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "TUTORIAL.txt",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "25d1e14: [NARRATOR:Echo] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n12a4p36] [IMPULSE:SoS-Format-Spezifikation als normatives Refere",
+      "0d82b27: [NARRATOR:Thinker] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j26n3a5p27] [IMPULSE:System-Überblick schreiben — Komplette Archi",
+      "92eaf3f: [NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+      "e4a6e65: [NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+      "9c6cd59: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di"
+    ],
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c39j50n12a4p36",
+    "narrator": "Echo",
+    "prev_narrator": "Thinker",
+    "prev_model": "mimo-v2.5-pro"
+  },
+  {
+    "p_id": "p41",
+    "id": "plot-2026-06-25T14:11:14",
+    "timestamp": "2026-06-25 14:11:14",
+    "summary": "deepseek-v4-pro",
+    "ref_to": "plot-2026-06-24T23:52:12",
+    "recent_commits": [
+      {
+        "hash": "25d1e14",
+        "subject": "[NARRATOR:Echo] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n12a4p36] [IMPULSE:SoS-Format-Spezifikation als normatives Refere",
+        "date": "2026-06-25 01:51:50 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/SOS_FORMAT_SPEC.md"
+        ]
+      },
+      {
+        "hash": "0d82b27",
+        "subject": "[NARRATOR:Thinker] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j26n3a5p27] [IMPULSE:System-Überblick schreiben — Komplette Archi",
+        "date": "2026-06-25 01:42:31 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/archive/docs/SYSTEM_ARCHITECTURE.md"
+        ]
+      },
+      {
+        "hash": "92eaf3f",
+        "subject": "[NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+        "date": "2026-06-25 01:31:19 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/character_sheets.json"
+        ]
+      },
+      {
+        "hash": "e4a6e65",
+        "subject": "[NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+        "date": "2026-06-25 01:21:41 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "core/scripts/commit_lore/composite_chain.json",
+          "core/scripts/commit_lore/derive_composite.js",
+          "core/scripts/commit_lore/update_plot.js",
+          "core/scripts/commit_lore/writing_rules.json",
+          "core/scripts/verify_commit_msg.js"
+        ]
+      },
+      {
+        "hash": "9c6cd59",
+        "subject": "[NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di",
+        "date": "2026-06-25 00:59:02 +0200",
+        "author": "Felix Schneider",
+        "files_touched": [
+          "CHANGELOG.md",
+          "TUTORIAL.txt",
+          "core/archive/docs/FREEZE/DOCU_AUDIT_ABBAU_2026-06-23.md"
+        ]
+      }
+    ],
+    "data_changes": [],
+    "causal_chain_summary": [
+      "25d1e14: [NARRATOR:Echo] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n12a4p36] [IMPULSE:SoS-Format-Spezifikation als normatives Refere",
+      "0d82b27: [NARRATOR:Thinker] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j26n3a5p27] [IMPULSE:System-Überblick schreiben — Komplette Archi",
+      "92eaf3f: [NARRATOR:Flux] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j79n13a4p27] [IMPULSE:Wortgrenzen fuer Commit-Narrative erhöhen — mi",
+      "e4a6e65: [NARRATOR:Argos] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j7n7a1p34] [IMPULSE:Commit Layer Narrative Interaktion — PREV_NARRA",
+      "9c6cd59: [NARRATOR:Glitch] [MODEL:mimo-v2.5-pro] [COMPOSITE:c39j50n10a1p11] [IMPULSE:TUTORIAL.txt DE-Sektion entfernt weil p11 di"
+    ],
+    "prev_narrator": "Echo",
+    "prev_model": "mimo-v2.5-pro"
   }
 ]

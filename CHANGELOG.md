@@ -1,6 +1,38 @@
 # 📋 SyxBridge — Changelog
 
 > **Aktuelle Entwicklung seit v0.22.0 (2026-06-22)**
+
+## [M-REFACTOR] — 2026-06-25 — Refactoring M-1 bis M-4: Transaction, JSON-Parsing, OpenAI-Test, Exports, isLarge
+
+> **Composite:** `c39j20n5a4p6`
+> **Commit:** `<hash>` | **Model:** deepseek-v4-pro | **Narrator:** Squizzle (Forensiker)
+> **Warum:** Fünf Code-Duplizierungen die über Wochen gewachsen waren. withTransaction() in translation-phases.js war dreimal kopiert, parseJsonBody in server.js achtmal, _testOpenAiChat in config-runtime.js dreimal. Export-Block in router.js war Race-Condition-anfällig, isLarge-Mirror in app.js war nicht synchron mit client-factory.js.
+> **Dateien:** `translation-phases.js`, `gui/server.js`, `config-runtime.js`, `router.js`, `gui/public/app.js`
+
+### M-1: withTransaction() — Konsolidiertes Transaction-Handling
+- translation-phases.js: Neue `withTransaction(block)` Helper — Begin → Block → Commit, mit Rollback und Re-Throw
+- Ersetzt drei separate try/catch-Blöcke in translatePhase und qaPhase
+- **Dateien:** `core/src/translation-phases.js`
+
+### M-2: parseJsonBody() — Extrahiert aus server.js
+- gui/server.js: `parseJsonBody(req)` als standalone Promise-basierte Helper-Funktion
+- Ersetzt 8 identische JSON-Parse-Blöcke (jeder mit req.on(data)/req.on(end)/JSON.parse)
+- **Dateien:** `core/src/gui/server.js`
+
+### M-3: _testOpenAiChat() — OpenAI-kompatibler Test-Call dedupliziert
+- config-runtime.js: Private Methode `_testOpenAiChat(url, key, model, extraHeaders, timeout)`
+- Groq, OpenRouter und NVIDIA nutzen jetzt dieselbe Methode (statt 3× axios.post Kopien)
+- **Dateien:** `core/src/config-runtime.js`
+
+### M-4: Export-Block + isLarge Mirror
+- router.js: `module.exports = Router` + `module.exports.X = Y` → `Object.assign(Router, {...})`
+- app.js: isLarge-Mirror mit client-factory.js getBatchProfile() synchronisiert (opus/nemotron)
+- **Dateien:** `core/src/router.js`, `core/src/gui/public/app.js`
+
+### Verifikation
+- Syntax: 5/5 OK
+- verify_commit_msg.js PASS
+
 > **Historische Entwicklung v0.19.0 bis v0.21.0:** [`CHANGELOG_1.md`](CHANGELOG_1.md)
 
 ---

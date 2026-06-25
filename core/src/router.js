@@ -545,12 +545,13 @@ class Router {
   }
 }
 
-module.exports = Router;
-
-module.exports.translateHttpError = translateHttpError;
-module.exports.isFreeModel = isFreeModel;
-module.exports.getDynamicScore = getDynamicScore;
-module.exports.setOpenRouterFreeModels = setOpenRouterFreeModels;
-module.exports.setNvidiaFreeModels = setNvidiaFreeModels;
-module.exports.setGeminiFreeModels = setGeminiFreeModels;
-module.exports.PROVIDER_REGISTRY = PROVIDER_REGISTRY;
+// L-3: Konsolidierter Export-Block
+module.exports = Object.assign(Router, {
+  translateHttpError,
+  isFreeModel,
+  getDynamicScore,
+  setOpenRouterFreeModels,
+  setNvidiaFreeModels,
+  setGeminiFreeModels,
+  PROVIDER_REGISTRY,
+});
