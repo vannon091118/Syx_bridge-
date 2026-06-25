@@ -2176,5 +2176,27 @@
         "file": "core/scripts/migrate_pools.js"
       }
     ]
+  },
+  {
+    "p_id": "p45",
+    "id": "plot-2026-06-25T21:56:32",
+    "timestamp": "2026-06-25 21:56:32",
+    "summary": "Files narrativ einweben, Richtungswechsel-Detection und deferred Chain-Integrity-Check",
+    "narrator": "Glitch",
+    "model_id": "Claude Sonnet 4.6",
+    "composite": "c40j43n10a3p23",
+    "ref_to": "plot-2026-06-25T21:50:40",
+    "prev_narrator": "Buffy",
+    "data_changes": [
+      {
+        "file": "core/archive/docs/CHANGELOG.md"
+      },
+      {
+        "file": "core/commit-layer/author_system.js"
+      },
+      {
+        "file": "core/commit-layer/verify_commit_msg.js"
+      }
+    ]
   }
 ]

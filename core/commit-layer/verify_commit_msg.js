@@ -72,6 +72,29 @@ const bulletRatio = lines.length > 0 ? bulletLines.length / lines.length : 0;
 
 const errors = [];
 
+// ═══════════════════════════════════════════════════════════════════
+// CHECK 0: CHAIN-INTEGRITY — Vorgänger-Commit valide? (deferred, P2)
+// Prüft ob der letzte Plotchain-Node denselben Composite hat wie
+// composite_chain.json[last]. Gibt WARN aus, blockiert NICHT.
+// Sichert die Kausalkette über Commit-Grenzen hinweg.
+// ═══════════════════════════════════════════════════════════════════
+{
+  try {
+    if (fs.existsSync(plotchainPath) && fs.existsSync(compositeChainPath)) {
+      const pc    = JSON.parse(fs.readFileSync(plotchainPath, 'utf8'));
+      const chain = JSON.parse(fs.readFileSync(compositeChainPath, 'utf8'));
+      const lastPc    = Array.isArray(pc) && pc.length > 0 ? pc[pc.length - 1] : null;
+      const lastChain = (chain.chain || []).length > 0 ? chain.chain[chain.chain.length - 1] : null;
+      if (lastPc && lastChain && lastPc.composite && lastChain.composite) {
+        if (lastPc.composite !== lastChain.composite) {
+          console.warn(`⚠️  [CHAIN-INTEGRITY] Plotchain[last].composite=${lastPc.composite} ≠ composite_chain[last].composite=${lastChain.composite}`);
+          console.warn('   Die narrative Kette hat eine Lücke. Commit wird NICHT blockiert, aber prüfe ob ein amend-Sync fehlt.');
+        }
+      }
+    }
+  } catch (_) { /* Nicht-blockierender Check — Fehler ignorieren */ }
+}
+
 // ─── Kategorie-Detection ─────────────────────────────────────────
 // [CATEGORY:RESTRUCTURE|HOTFIX|TRIVIAL|STANDARD] Token oder Auto-Detect
 const categoryTokenMatch = commitMsg.match(/\[CATEGORY:(RESTRUCTURE|HOTFIX|TRIVIAL|STANDARD|TEST-ASSET|LORE-ONLY)\]/i);
@@ -364,8 +387,11 @@ if (parsedComposite && fs.existsSync(plotchainPath)) {
 // ═══════════════════════════════════════════════════════════════════
 
 // Datei-Referenzen — [FILES:SKIP] bei >20 Dateien erlaubt
+// Automatisch verwaltete Narrative-Metadaten werden ausgeschlossen:
+const AUTO_MANAGED_FILES = new Set(['CHANGELOG.md', 'plotchain.json', 'composite_chain.json']);
 const missingFiles = stagedFiles.filter(f => {
   const name = f.replace(/\\/g, '/').split('/').pop();
+  if (AUTO_MANAGED_FILES.has(name)) return false; // author_system auto-fügt diese hinzu
   const stem = name.replace(/\.[^.]+$/, '');
   return !commitMsg.includes(name) && !commitMsg.includes(stem);
 });

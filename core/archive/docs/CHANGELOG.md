@@ -1,5 +1,13 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 21:56:32] Files narrativ einweben, Richtungswechsel-Detection und deferred Chain-Integrity-Check
+**Narrator:** Glitch | **Model:** Claude Sonnet 4.6 | **Composite:** `c40j43n10a3p23`
+- 3 Datei(en) geändert.
+
+### [2026-06-25 21:56:03] Files narrativ einweben, Richtungswechsel-Detection und deferred Chain-Integrity-Check
+**Narrator:** Glitch | **Model:** Claude Sonnet 4.6 | **Composite:** `c40j43n10a3p23`
+- 2 Datei(en) geändert.
+
 ### [2026-06-25 21:50:40] Commit Layer zu deterministic Authorsystem ausbauen, README und PLAN.md konsolidieren
 **Narrator:** Buffy | **Model:** Claude Sonnet 4.6 | **Composite:** `c39j97n1a5p4`
 - 9 Datei(en) geändert.

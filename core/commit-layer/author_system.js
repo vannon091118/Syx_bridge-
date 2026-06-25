@@ -142,6 +142,21 @@ for (let i = plotchain.length - 1; i >= 0; i--) {
 }
 if (prevNarratorName) console.log(`🔗 Cross-Narrator: ${prevNarratorName} → ${selectedNarrator.name}`);
 
+// ─── 5b. Richtungswechsel-Detection ──────────────────────────────────────────
+// Vergleicht den Impulse des neuen Commits mit dem letzten Plotchain-Node.
+// Erkennt thematische Schwenks (Code↔Doku, Fix↔Refactor, etc.).
+const lastPlotNode_prev = plotchain.length > 0 ? plotchain[plotchain.length - 1] : null;
+const prevSummary = lastPlotNode_prev?.summary || '';
+const isDocu     = t => /\b(doku|archiv|changelog|readme|plan|comment|docs)\b/i.test(t);
+const isFix      = t => /\b(fix|bug|hotfix|patch|repair|fehler|korr)\b/i.test(t);
+const isRefactor = t => /\b(restruktur|refactor|cleanup|aufr|modular|extract|dedupli)\b/i.test(t);
+const isBuild    = t => /\b(build|commit.layer|author.system|hook|verifier|pipeline)\b/i.test(t);
+const classifyImpulse = t => isDocu(t) ? 'DOKU' : isFix(t) ? 'FIX' : isRefactor(t) ? 'REFACTOR' : isBuild(t) ? 'BUILD' : 'CODE';
+const prevClass = classifyImpulse(prevSummary);
+const currClass = classifyImpulse(impulse);
+const isDirectionChange = prevSummary && prevClass !== currClass;
+if (isDirectionChange) console.log(`↩️  Richtungswechsel: ${prevClass} → ${currClass} (${prevNarratorName || 'kein Vorgänger'} → ${selectedNarrator.name})`);
+
 // ─── 6. Sidejoke auswählen ────────────────────────────────────────────────
 const jokeKey  = selectedNarrator.name.toLowerCase();
 const jokeList = (sidejokePool[jokeKey] && sidejokePool[jokeKey].length > 0)
@@ -176,10 +191,22 @@ commitBody += customBody;
 commitBody += `\n\nDer Grund für dieses Update liegt direkt im Impuls: "${impulse}". `;
 commitBody += `Daher wurden die betroffenen Dateien angepasst.\n\n`;
 
-// Files-Liste einweben
+// Richtungswechsel narrativ einweben (P3)
+if (isDirectionChange) {
+  const prevShort = prevSummary.length > 60 ? prevSummary.substring(0, 60) + '…' : prevSummary;
+  commitBody += `\n\nRichtungswechsel: ${prevNarratorName || 'der Vorgänger'} hat zuletzt "${prevShort}" gesetzt — Kategorie ${prevClass}. Dieser Commit dreht das Steuer auf ${currClass}.`;
+}
+
+// Files als Prosa einweben (P1) — keine Bullet-Liste
 const filesToMention = stagedFiles.slice(0, 15);
-commitBody += `Files:\n${filesToMention.map(f => '- ' + path.basename(f)).join('\n')}`;
-if (stagedFiles.length > 15) commitBody += `\n...und ${stagedFiles.length - 15} weitere.`;
+const fileNames = filesToMention.map(f => path.basename(f));
+const fileStr = fileNames.length === 1
+  ? fileNames[0]
+  : fileNames.length <= 4
+    ? fileNames.slice(0, -1).join(', ') + ' und ' + fileNames.at(-1)
+    : fileNames.slice(0, 3).join(', ') + ` und ${fileNames.length - 3} weitere`;
+commitBody += `\n\nBetroffen: ${fileStr}.`;
+if (stagedFiles.length > 15) commitBody += ` (+ ${stagedFiles.length - 15} nicht gelistet)`;
 
 // ─── 8. Tokens ────────────────────────────────────────────────────────────
 const skipToken = stagedFiles.length > 20 ? '\n[FILES:SKIP]' : '';
@@ -188,22 +215,45 @@ const headerLine = `[NARRATOR:${selectedNarrator.name}] [MODEL:${model}] [IMPULS
 
 const fullCommitMessage = `${headerLine}\n\n${commitBody}`;
 
-// ─── 9. CHANGELOG SSoT schreiben ──────────────────────────────────────────
+// ─── Timestamp für CHANGELOG + Plotchain ───────────────────────────────────
 const isoTimestamp = new Date().toISOString().substring(0, 19).replace('T', ' ');
+
+// ─── 9. CHANGELOG SSoT schreiben (VOR dem Commit) ──────────────────────
+// Der CHANGELOG enthält KEINE arc/plot-Counts — beeinflusst den Composite-Check nicht.
+// Er muss VOR dem Commit gestaged sein, damit verify_commit_msg.js den Composite-Anker prüfen kann.
+// plotchain.json und composite_chain.json bleiben post-commit (sie bestimmen den nächsten Composite).
 const changelogEntry = `### [${isoTimestamp}] ${impulse}\n**Narrator:** ${selectedNarrator.name} | **Model:** ${model} | **Composite:** \`${compositeHash}\`\n- ${stagedFiles.length} Datei(en) geändert.\n\n`;
 
 let changelog = '';
 if (fs.existsSync(PATHS.changelog)) {
   changelog = fs.readFileSync(PATHS.changelog, 'utf8');
-  // Nach erstem H1-Block einfügen
   changelog = changelog.replace(/^(# .+?\n\n)/s, `$1${changelogEntry}`);
 } else {
   changelog = `# CHANGELOG\n\n${changelogEntry}`;
 }
 fs.writeFileSync(PATHS.changelog, changelog, 'utf8');
-console.log(`📋 CHANGELOG aktualisiert (SSoT: ${path.relative(REPO_ROOT, PATHS.changelog)})`);
+execSync(`git add "${PATHS.changelog}"`, { stdio: 'inherit' });
+console.log(`📋 CHANGELOG aktualisiert + gestaged (SSoT: ${path.relative(REPO_ROOT, PATHS.changelog)})`);
 
-// ─── 10. Plotchain Node schreiben ─────────────────────────────────────────
+// ─── 10. Commit Message schreiben ─────────────────────────────────────────
+fs.writeFileSync(PATHS.commitMsg, fullCommitMessage, 'utf8');
+console.log(`📝 Commit-Message: ${PATHS.commitMsg}`);
+
+console.log('\n═══════════════════════════════════════════');
+console.log('  COMMITTING...');
+console.log('═══════════════════════════════════════════\n');
+
+// ─── 11. Commit durchführen (Verifier sieht alte Chain-Daten, neuen CHANGELOG) ───
+// plotchain.json + composite_chain.json sind noch NICHT gestaged — der Verifier
+// berechnet damit denselben Composite wie author_system.js. Kette ist geschlossen.
+try {
+  execSync(`git commit -F "${PATHS.commitMsg}"`, { stdio: 'inherit' });
+} catch (e) {
+  console.error('\n❌ AUTHOR SYSTEM: Commit blockiert. Prüfe verify_commit_msg Errors oben.');
+  process.exit(1);
+}
+
+// ─── 12. Plotchain Node schreiben (NACH erfolgreichem Commit) ─────────────
 const lastPlotNode = plotchain.length > 0 ? plotchain[plotchain.length - 1] : null;
 const pId = lastPlotNode && lastPlotNode.p_id
   ? `p${parseInt(lastPlotNode.p_id.slice(1)) + 1}`
@@ -225,7 +275,7 @@ plotchain.push(newPlotNode);
 fs.writeFileSync(PATHS.plotchain, JSON.stringify(plotchain, null, 2), 'utf8');
 console.log(`📖 Plotchain: ${pId} hinzugefügt.`);
 
-// ─── 11. Composite Chain fortschreiben ────────────────────────────────────
+// ─── 13. Composite Chain fortschreiben (NACH erfolgreichem Commit) ─────────
 compositeChain.chain.push({
   seq:       chainEntries.length + 1,
   hash:      commitHash,
@@ -238,21 +288,13 @@ compositeChain.chain.push({
 fs.writeFileSync(PATHS.compositeChain, JSON.stringify(compositeChain, null, 2), 'utf8');
 console.log(`🔗 Composite Chain: seq ${chainEntries.length + 1} gespeichert.`);
 
-// ─── 12. Commit Message schreiben ─────────────────────────────────────────
-fs.writeFileSync(PATHS.commitMsg, fullCommitMessage, 'utf8');
-console.log(`📝 Commit-Message: ${PATHS.commitMsg}`);
-
-// ─── 13. Auto-Files stagen + Commit ───────────────────────────────────────
-execSync(`git add "${PATHS.changelog}" "${PATHS.plotchain}" "${PATHS.compositeChain}"`, { stdio: 'inherit' });
-
-console.log('\n═══════════════════════════════════════════');
-console.log('  COMMITTING...');
-console.log('═══════════════════════════════════════════\n');
-
+// ─── 14. Chain-Dateien per Amend in denselben Commit aufnehmen ────────────
+// --no-verify: Narrative Metadaten — kein Verifier-Lauf benötigt.
 try {
-  execSync(`git commit -F "${PATHS.commitMsg}"`, { stdio: 'inherit' });
+  execSync(`git add "${PATHS.plotchain}" "${PATHS.compositeChain}"`, { stdio: 'inherit' });
+  execSync(`git commit --amend --no-edit --no-verify`, { stdio: 'inherit' });
   console.log('\n✅ AUTHOR SYSTEM: Commit erfolgreich. Narrative aktualisiert.');
 } catch (e) {
-  console.error('\n❌ AUTHOR SYSTEM: Commit blockiert. Prüfe verify_commit_msg Errors oben.');
-  process.exit(1);
+  console.warn('⚠️  AUTHOR SYSTEM: Amend für Chain-Dateien fehlgeschlagen — Haupt-Commit ist aber korrekt committed.');
+  console.warn('   Manuell: git add core/commit-layer/commit_lore/plotchain.json core/commit-layer/commit_lore/composite_chain.json && git commit -m "chore: chain sync" --no-verify');
 }
