@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:28:35] config-runtime.js: ensureGroqModel + ensureNvidiaModel zu generischem _ensureProviderModel() dedupliziert. 2x 32 LOC copy-paste entfernt, durch 28 LOC generische Methode + 2 thin wrappers ersetzt.
+**Narrator:** Thinker | **Model:** deepseek-v4-pro | **Composite:** `c53j79n3a4p37`
+- 2 Datei(en) geändert.
+
 ### [2026-06-25 23:26:20] config-runtime.js (831 to 721 LOC): CLI-Wizard configure() nach config-wizard.js extrahiert als configureWizard(cr, persistConfigToEnv). ConfigRuntime.configure() bleibt thin delegation. Toter prompts-Import entfernt.
 **Narrator:** Echo | **Model:** deepseek-v4-pro | **Composite:** `c52j41n12a3p35`
 - 3 Datei(en) geändert.

@@ -2570,5 +2570,27 @@
         "file": "core/Translation/config/config-wizard.js"
       }
     ]
+  },
+  {
+    "p_id": "p58",
+    "id": "plot-2026-06-25T23:29:00",
+    "timestamp": "2026-06-25 23:29:00",
+    "summary": "config-runtime.js: ensureGroqModel + ensureNvidiaModel zu generischem _ensureProviderModel() dedupliziert. 2x 32 LOC copy-paste entfernt, durch 28 LOC generische Methode + 2 thin wrappers ersetzt.",
+    "narrator": "Thinker",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c53j79n3a4p37",
+    "ref_to": "plot-2026-06-25T23:26:20",
+    "prev_narrator": "Echo",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/Translation/config/config-runtime.js"
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md"
+      }
+    ]
   }
 ]

@@ -1,7 +1,7 @@
-Extrahiere den CLI-Wizard configure() (110 LOC) aus ConfigRuntime-Klasse nach config-wizard.js.
+ANALYSE: ensureGroqModel() und ensureNvidiaModel() sind strukturell identische Kopien derselben Logik (Root Cause: Copy-Paste-Entscheidung bei der NVIDIA-Integration, ohne Refactoring auf gemeinsames Pattern). Beide Methoden folgen demselben Ablauf: Early-Return wenn Provider nicht als PRIMARY/AUDITOR/POLISHER aktiv, Models fetchen, NeedsReplacement-Check pro Rolle, Fallback aus statischer Liste.
 
-configureWizard(cr, persistConfigToEnv) — standalone async function, alle this.-Referenzen auf cr. umgestellt.
-ConfigRuntime.configure() bleibt als thin Delegation: async configure() { return configureWizard(this, persistConfigToEnv); }
-checkConfig() ruft weiter this.configure() — keine Breakage.
+TRADE-OFF: _ensureProviderModel(providerName, displayName, fetchModelsFn, fallbackModels) abstrahiert das gemeinsame Pattern. Der Trade-off ist minimal -- ensureOllamaModel() bleibt unangetastet (hat abweichende findBestModel/ Fuzzy-Matching-Logik, die sich nicht generisch abbilden lässt ohne Over-Engineering).
 
-Nebenbefund: toter prompts-Import in config-runtime.js entfernt (nur configure() hatte prompts benutzt).
+FAZIT: 2 Thin-Wrapper (je 2 LOC) delegieren an die generische Methode. ~60 LOC copy-paste eliminiert, 0 Verhaltensänderung. Die Arrow-Functions in den Delegationsaufrufen capturen this korrekt aus dem Wrapper-Scope.
+
+EMPFEHLUNG: Das Pattern ist auf weitere Provider übertragbar, falls zukünftige Integrationen denselben ensure/auto-select-Flow benötigen.

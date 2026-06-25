@@ -489,31 +489,35 @@ class ConfigRuntime {
     throw lastError;
   }
 
-  async ensureGroqModel() {
-    if (this.config.PRIMARY_PROVIDER !== 'groq' && this.config.AUDITOR_PROVIDER !== 'groq' && this.config.POLISHER_PROVIDER !== 'groq') return;
+  async _ensureProviderModel(providerName, displayName, fetchModelsFn, fallbackModels) {
+    if (this.config.PRIMARY_PROVIDER !== providerName && this.config.AUDITOR_PROVIDER !== providerName && this.config.POLISHER_PROVIDER !== providerName) return;
     try {
-      const models = await this.fetchGroqModels();
+      const models = await fetchModelsFn();
       if (models.length === 0) {
-        this.markProviderDegraded('groq', 'Keine Modelle verfuegbar');
+        this.markProviderDegraded(providerName, 'Keine Modelle verfuegbar');
         return;
       }
       const needsReplacement = (m) => !m || m === 'auto' || !models.includes(m);
-      if (this.config.PRIMARY_PROVIDER === 'groq' && needsReplacement(this.config.PRIMARY_MODEL)) {
-        const replacement = GROQ_FALLBACK_MODELS.find(m => models.includes(m)) || models[0];
-        console.log(`[INFO] Groq Modell auto-select: ${replacement}`);
+      if (this.config.PRIMARY_PROVIDER === providerName && needsReplacement(this.config.PRIMARY_MODEL)) {
+        const replacement = fallbackModels.find(m => models.includes(m)) || models[0];
+        console.log(`[INFO] ${displayName} Modell auto-select: ${replacement}`);
         this.config.EFFECTIVE_PRIMARY_MODEL = replacement;
       }
-      if (this.config.AUDITOR_PROVIDER === 'groq' && needsReplacement(this.config.AUDITOR_MODEL)) {
-        const replacement = GROQ_FALLBACK_MODELS.find(m => models.includes(m)) || models[0];
+      if (this.config.AUDITOR_PROVIDER === providerName && needsReplacement(this.config.AUDITOR_MODEL)) {
+        const replacement = fallbackModels.find(m => models.includes(m)) || models[0];
         this.config.EFFECTIVE_AUDITOR_MODEL = replacement;
       }
-      if (this.config.POLISHER_PROVIDER === 'groq' && needsReplacement(this.config.POLISHER_MODEL)) {
-        const replacement = GROQ_FALLBACK_MODELS.find(m => models.includes(m)) || models[0];
+      if (this.config.POLISHER_PROVIDER === providerName && needsReplacement(this.config.POLISHER_MODEL)) {
+        const replacement = fallbackModels.find(m => models.includes(m)) || models[0];
         this.config.EFFECTIVE_POLISHER_MODEL = replacement;
       }
     } catch (e) {
-      this.markProviderDegraded('groq', e.message);
+      this.markProviderDegraded(providerName, e.message);
     }
+  }
+
+  async ensureGroqModel() {
+    return this._ensureProviderModel('groq', 'Groq', () => this.fetchGroqModels(), GROQ_FALLBACK_MODELS);
   }
 
   async ensureOllamaModel() {
@@ -568,30 +572,7 @@ class ConfigRuntime {
   }
 
   async ensureNvidiaModel() {
-    if (this.config.PRIMARY_PROVIDER !== 'nvidia' && this.config.AUDITOR_PROVIDER !== 'nvidia' && this.config.POLISHER_PROVIDER !== 'nvidia') return;
-    try {
-      const models = await this.fetchNvidiaModels();
-      if (models.length === 0) {
-        this.markProviderDegraded('nvidia', 'Keine Modelle verfuegbar');
-        return;
-      }
-      const needsReplacement = (m) => !m || m === 'auto' || !models.includes(m);
-      if (this.config.PRIMARY_PROVIDER === 'nvidia' && needsReplacement(this.config.PRIMARY_MODEL)) {
-        const replacement = NVIDIA_FALLBACK_MODELS.find(m => models.includes(m)) || models[0];
-        console.log(`[INFO] NVIDIA Modell auto-select: ${replacement}`);
-        this.config.EFFECTIVE_PRIMARY_MODEL = replacement;
-      }
-      if (this.config.AUDITOR_PROVIDER === 'nvidia' && needsReplacement(this.config.AUDITOR_MODEL)) {
-        const replacement = NVIDIA_FALLBACK_MODELS.find(m => models.includes(m)) || models[0];
-        this.config.EFFECTIVE_AUDITOR_MODEL = replacement;
-      }
-      if (this.config.POLISHER_PROVIDER === 'nvidia' && needsReplacement(this.config.POLISHER_MODEL)) {
-        const replacement = NVIDIA_FALLBACK_MODELS.find(m => models.includes(m)) || models[0];
-        this.config.EFFECTIVE_POLISHER_MODEL = replacement;
-      }
-    } catch (e) {
-      this.markProviderDegraded('nvidia', e.message);
-    }
+    return this._ensureProviderModel('nvidia', 'NVIDIA', () => this.fetchNvidiaModels(), NVIDIA_FALLBACK_MODELS);
   }
 
   async fetchModelsFor(provider, freeOnly = false) {
