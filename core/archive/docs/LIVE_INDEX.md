@@ -1,9 +1,9 @@
 # 📖 LIVE INDEX — SyxBridge Dokumentation
 
-> **Stand:** 2026-06-24 | **Version:** v0.23.0
-> **Status:** 5 LIVE + 20 FREEZE + 12 PLAN + 7 Root + 8 INDEX
+> **Stand:** 2026-06-25 | **Version:** v0.23.0
+> **Status:** 5 LIVE + 20 FREEZE + 13 PLAN + 7 Root + 8 INDEX
 > **Regel:** Nur Pflicht-Dokus bleiben. Alle Einmal-Audits, HANDSHAKEs und Specs vollarchiviert.
-> **Letzter Doku-Audit:** 2026-06-24 — 4 DOCU_AUDIT gefreezed, Versionen aktualisiert.
+> **Letzter Doku-Audit:** 2026-06-25 — PLAN_RIMWORLD.md erstellt, PLAN.md aktualisiert, AGENTS.md Regel 4.
 
 ## LIVE-Dokumente (5)
 
@@ -47,24 +47,25 @@
 | 19 | `FREEZE/DOCU_AUDIT_INDEX_2026-06-23.md` | **[NEU]** Doku-Audit Gesamtindex (73 Dokumente). |
 | 20 | `FREEZE/DOCU_AUDIT_PFLICHT_2026-06-23.md` | **[NEU]** Doku-Audit Pflichtdokumentenliste. |
 
-## Plan-Dokumente (12)
+## Plan-Dokumente (13)
 
 > **Pläne zählen als Einzeldokumente. Fertig → Freeze → Index. Offen/Teilweise → LIVE behalten.**
 
 | # | Dokument | Status | Quelle |
 |---|----------|--------|--------|
-| 1 | `plans/PLAN_MASTER.md` | ✅ ARCHIVIERT → `FREEZE/PLAN_MASTER_2026-06-20.md` | v0.21 Roadmap (historisch). Durch PLAN.md v0.22.0 ersetzt. |
+| 1 | `plans/PLAN_MASTER.md` | ✅ ARCHIVIERT → `FREEZE/PLAN_MASTER_2026-06-20.md` | v0.21 Roadmap (historisch). Durch PLAN.md v0.23.0 ersetzt. |
 | 2 | `plans/PLAN_BUG_TRIAGE.md` | 🟡 OFFEN (0/6) | KNOWN_BUGS_REPORT.md |
 | 3 | `plans/PLAN_BYPASS_REMOVAL.md` | 🟡 OFFEN (0/6) | BYPASS_AUDIT_2026-06-21.md (archiviert) |
 | 4 | `plans/PLAN_DEAD_FLAGS.md` | 🟡 OFFEN (0/5) | DEAD_FLAG_REPORT_2026-06-19.md (archiviert) |
 | 5 | `plans/PLAN_FEATURE_GAPS.md` | 🟡 OFFEN (0/5) | FEATURE_VERIFICATION_2026-06-21.md (archiviert) |
-| 6 | `plans/PLAN_GLOBAL_SCORE.md` | 🟡 OFFEN (0/6) | CALCULATION_AND_INTEGRATION_2026-06-21.md (archiviert) |
+| 6 | `plans/PLAN_GLOBAL_SCORE.md` | ✅ DONE (6/6) | CALCULATION_AND_INTEGRATION_2026-06-21.md (archiviert) |
 | 7 | `plans/PLAN_LATENT_RISKS.md` | 🟡 OFFEN (0/5) | CONTROL_TOWER_AUDIT_2026-06-19.md |
-| 8 | `plans/PLAN_PLAN_AUDIT.md` | 🟡 OFFEN (0/6) | PLAN_PLAN_AUDIT.md |
+| 8 | `plans/PLAN_PLAN_AUDIT.md` | ⚠️ TEILWEISE (~250 Funktionen) | PLAN_PLAN_AUDIT.md |
 | 9 | `plans/PLAN_PRIORISIERUNG.md` | 🟡 OFFEN (0/6) | PRIORISIERUNG_2026-06-19.md |
 | 10 | `plans/PLAN_RUNTIME_PROBABILITY.md` | 🟡 OFFEN (0/5) | FOREIGN_MACHINE_PROBABILITY_2026-06-21.md (archiviert) |
-| 11 | `plans/PLAN_STABILISIERUNG.md` | 🟡 TEILWEISE (2/9) | STABILISIERUNGS_SCOPE_2026-06-21.md (archiviert) |
+| 11 | `plans/PLAN_STABILISIERUNG.md` | 🟡 TEILWEISE (5/9) | STABILISIERUNGS_SCOPE_2026-06-21.md (archiviert) |
 | 12 | `plans/PLAN_COMMIT_LAYER_RNG.md` | ✅ ABGESCHLOSSEN | Commit-Layer RNG System (5 Phasen) |
+| 13 | `plans/PLAN_RIMWORLD.md` | 🟡 PLANUNG (0/19) | **[NEU]** researcher-web + researcher-docs (2026-06-25) |
 
 **Legende:** Fertig → Freeze → Index → löschen. Offen/Teilweise → LIVE behalten.
 
@@ -151,4 +152,4 @@
 
 ---
 
-*LIVE INDEX aktualisiert 2026-06-23 — Nach Doku-Audit Durchlauf 7.*
+*LIVE INDEX aktualisiert 2026-06-25 — PLAN_RIMWORLD.md erstellt, Pläne-Audit, AGENTS.md Regel 4.*

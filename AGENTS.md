@@ -1,5 +1,5 @@
 # AGENTS.md — SyxBridge Agenten-Regelwerk
-> **Version:** v0.23.0 | **Stand:** 2026-06-24
+> **Version:** v0.23.0 | **Stand:** 2026-06-25
 > **LIES DIE DOKUMENTATION:** core/archive/docs/ — IMMER zuerst lesen.
 > **Regel:** Keine Dependencies die wir selbst mit Code lösen können.
 
@@ -215,15 +215,16 @@ Alle 4 Lösch-Kriterien müssen erfüllt sein.
 1. Maximale Parallelität bei Unabhängigkeit
 2. Sequenziell bei Abhängigkeiten
 3. _Info.txt nur auf User-Aufforderung
-4. Keine destruktiven Befehle ohne User-Request
-5. gravity_index vor Service-Empfehlung
-6. PREFLIGHT vor jedem Sync
-7. Dual-Path-Copy (Native Mode)
-8. DB sichern vor grossem Fix
-9. SSOT: Root + core/archive/docs/ identisch
-10. CHANGELOG nie archivieren
-11. Sub-Agent Kausalitäts-Prüfung (U-5)
-12. Unterbrechungsrecht bei Kontraproduktivität (U-5)
+4. **ROOT-DATEN-PRIORITÄT:** Root-Dateien (AGENTS.md, CHANGELOG.md, PLAN.md, README.md, TUTORIAL.txt, _Info.txt) haben IMMER Vorrang vor Kopien in core/archive/docs/. Root ist die Single Source of Truth. Bei Widerspruch: Root gewinnt.
+5. Keine destruktiven Befehle ohne User-Request
+6. gravity_index vor Service-Empfehlung
+7. PREFLIGHT vor jedem Sync
+8. Dual-Path-Copy (Native Mode)
+9. DB sichern vor grossem Fix
+10. SSOT: Root + core/archive/docs/ identisch
+11. CHANGELOG nie archivieren
+12. Sub-Agent Kausalitäts-Prüfung (U-5)
+13. Unterbrechungsrecht bei Kontraproduktivität (U-5)
 
 ---
 

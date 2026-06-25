@@ -1,7 +1,7 @@
-# 📋 SyxBridge — Master-Plan (v0.22.0)
+# 📋 SyxBridge — Master-Plan (v0.23.0)
 
-> **Stand:** 2026-06-23 | **Konsolidiert aus:** MODULARISIERUNGS_PLAN, DEAD_CODE_REPORT, SCOPE_REPORT
-> **Letzte Prüfung:** 2026-06-23 — Alle LOC-Werte und Item-Status gegen Live-Code verifiziert.
+> **Stand:** 2026-06-25 | **Konsolidiert aus:** MODULARISIERUNGS_PLAN, DEAD_CODE_REPORT, SCOPE_REPORT, 11 Sub-Plänen, RimWorld-Recherche
+> **Letzte Prüfung:** 2026-06-25 — Pläne-Audit: 11 Pläne geprüft (3 DONE, 8 OFFEN). RimWorld-Plan erstellt.
 > **Regel:** Max 4 Dateien pro Schritt. Alle Smoke-Tests müssen nach jedem Schritt bestehen.
 > **Smoke-Test-Suite:** `node scripts/check_syntax.js` + `npm run test` (78 Dateien OK, 2 ESLint-Errors, 81 Warnings)
 
@@ -220,6 +220,16 @@ Duplizierte validateFileSyntax + __OVERWRITE-Header + BridgeCore-Logik.
 - **Betroffen:** index.js:93,113 | config-runtime.js:28 | sos-runtime.js:10 | export_stage2.js:47
 - **Status:** ✅ ERLEDIGT — `DEFAULT_GAME` lebt in plugin-registry.js:12, alle Consumer importieren korrekt
 
+### [x] M-REFACTOR: M-1 bis M-4 Deduplizierung ⏱️ 1.5h 🟢
+
+Fünf Code-Duplizierungen konsolidiert (2026-06-25).
+
+- **M-1:** `withTransaction()` in translation-phases.js (3× try/catch → 1 Helper)
+- **M-2:** `parseJsonBody()` in server.js (8× JSON-Parse → 1 Funktion)
+- **M-3:** `_testOpenAiChat()` in config-runtime.js (3× axios.post → 1 Methode)
+- **M-4:** Export-Block konsolidiert (router.js Object.assign) + isLarge Mirror Sync (app.js)
+- **Status:** ✅ ERLEDIGT (2026-06-25) — Commit `8fb4250`, 8 Dateien, verify_commit_msg.js PASS
+
 ### [ ] GUI-HARDCODE: 6 Songs-of-Syx-Referenzen in GUI dynamisieren ⏱️ 1h 🟢
 
 GUI hardcoded 'Songs of Syx' in Patch-Mode-Buttons.
@@ -241,17 +251,57 @@ GUI hardcoded 'Songs of Syx' in Patch-Mode-Buttons.
 
 ---
 
+## P5 — RIMWORLD-IMPLEMENTIERUNG (~16h) 🆕
+
+> **Plan:** [`core/archive/docs/plans/PLAN_RIMWORLD.md`](core/archive/docs/plans/PLAN_RIMWORLD.md)
+> **Forschung:** researcher-web + researcher-docs (2026-06-25) — RimWorld Wiki, Community Docs
+> **Status:** 🟡 PLANUNG — 19 Tasks, 0/19 erledigt
+
+### Phase 1: Adapter-Hooks (13 Methoden) ⏱️ ~8h
+
+13 Methoden in RimWorldPlugin.js von STUB → implementiert:
+`scanMod`, `parseMetadata`, `formatMetadata`, `getCoreModFolderName`, `getCoreModMetadata`,
+`applyPatchModifications`, `getBackupDirectoryName`, `isBackupDirectory`, `isVersionDirectory`,
+`getOverrideHeader`, `formatPatchNotice`, `getLauncherSettingsPath`.
+
+### Phase 2: Scanner/Parser (3 Tasks) ⏱️ ~4h
+
+XML-Parser für Def-Dateien, Scanner für `Mods/`-Struktur, Exporter für XML-Output.
+
+### Phase 3: Integration & Tests (3 Tasks) ⏱️ ~4h
+
+plugin-boundary-contract erweitern (76→89 Checks), RimWorld E2E-Test, Dokumentation.
+
+---
+
 ## 📊 Fortschritts-Tracker
 
 | Phase | Aufgaben | Erledigt | Aufwand | Status |
 |-------|----------|----------|---------|--------|
 | P0 Quick Wins | 5 | 5 | ~1.5h | ✅ Alle erledigt |
-| P1 RimWorld | 4 | 4 | ~5h | ✅ Alle erledigt (R-DB via Plugin obsolet) |
+| P1 RimWorld-Blocker | 4 | 4 | ~5h | ✅ Alle erledigt |
 | P2 Config | 3 | 3 | ~2h | ✅ Erledigt |
-| P3 Core | 3 | 3 | ~4h | ✅ S-007+S-008+S-009 erledigt |
-| P4 Architektur | 7 | 2 | ~7h | 🟡 C-002 + S-012 teilweise |
-| P4 Architektur | 7 | 2 | ~7h | 🟡 C-002 + S-012 teilweise |
-| **TOTAL** | **22** | **19** | **~19.5h** | **86% erledigt** |
+| P3 Core | 3 | 3 | ~4h | ✅ Erledigt |
+| P4 Architektur | 8 | 4 | ~9h | 🟡 4/8 erledigt + M-REFACTOR |
+| P5 RimWorld-Impl | 19 | 0 | ~16h | 🟡 PLANUNG (PLAN_RIMWORLD.md) |
+| **TOTAL** | **42** | **19** | **~37.5h** | **45% erledigt** |
+
+### Sub-Plan-Status (Audit 2026-06-25)
+
+| Plan | Status | Items | FREEZE_INDEX_2 |
+|------|--------|-------|----------------|
+| `PLAN_COMMIT_LAYER_RNG.md` | ✅ DONE | 5 Phasen | — |
+| `PLAN_GLOBAL_SCORE.md` | ✅ DONE | 6/6 | — |
+| `PLAN_STABILISIERUNG.md` | 🟡 TEILWEISE | 5/9 DONE | §10, §11 |
+| `PLAN_BYPASS_REMOVAL.md` | 🟡 TEILWEISE | 1/6 DONE | §10 |
+| `PLAN_FEATURE_GAPS.md` | 🟡 TEILWEISE | 1/5 DONE | §8, §9, §11 |
+| `PLAN_BUG_TRIAGE.md` | 🟡 OFFEN | 0/6 | — |
+| `PLAN_DEAD_FLAGS.md` | 🟡 OFFEN | 0/5 | — |
+| `PLAN_LATENT_RISKS.md` | 🟡 OFFEN | 0/5 | — |
+| `PLAN_PRIORISIERUNG.md` | 🟡 OFFEN | 0/6 | §10, §11 |
+| `PLAN_RUNTIME_PROBABILITY.md` | 🟡 OFFEN | 0/5 | — |
+| `PLAN_PLAN_AUDIT.md` | ⚠️ TEILWEISE | ~250 Funktionen | — |
+| `PLAN_RIMWORLD.md` | 🟡 PLANUNG | 0/19 | §19–§23 |
 
 ---
 
@@ -311,6 +361,7 @@ S-001 bis S-003: UNABHÄNGIG — sofort parallel startbar
 
 ---
 
-*Plan erstellt 2026-06-23 — Konsolidiert aus 15 Sub-Agent-Scans.*
+*Plan erstellt 2026-06-23 — Aktualisiert 2026-06-25 mit RimWorld-Plan, Sub-Plan-Audit, M-REFACTOR.*
 *Quelldokumente (archiviert): MODULARISIERUNGS_PLAN_2026-06-23.md, DEAD_CODE_REPORT_2026-06-23.md, SCOPE_REPORT.md*
+*Sub-Pläne: 12 Dateien in core/archive/docs/plans/ (3 DONE, 8 OFFEN/TEILWEISE, 1 PLANUNG)*
 *CODE IST DIE EINZIGE WAHRHEIT.*

@@ -1,6 +1,44 @@
 # 📋 SyxBridge — Changelog
 
 > **Aktuelle Entwicklung seit v0.22.0 (2026-06-22)**
+> **Root-Daten-Priorität:** AGENTS.md Regel 4 (2026-06-25) — Root ist SSOT.
+
+## [DOKU-SESSION] — 2026-06-25 — RimWorld-Recherche, PLAN_RIMWORLD, Pläne-Audit, AGENTS.md Regel 4, PLAN.md Merge
+
+> **Composite:** `c39j3n1a3p21`
+> **Commit:** `<hash>` | **Model:** deepseek-v4-pro | **Narrator:** Buffy
+> **Warum:** User-Auftrag: RimWorld-Implementierungsplan erstellen, alle 11 Sub-Pläne prüfen und in PLAN.md konsolidieren, Root-Daten-Priorität als Regel 4 in AGENTS.md einführen, Doku-Daten aus LIVE in FREEZE überführen.
+> **Dateien:** `PLAN_RIMWORLD.md` (NEU), `PLAN.md`, `AGENTS.md`, `LIVE_INDEX.md`, `CHANGELOG.md`
+
+### RimWorld-Recherche + PLAN_RIMWORLD.md
+- **Forschung:** researcher-web + researcher-docs parallel (2026-06-25). RimWorld-Mod-Struktur (`Mods/`, `About/About.xml`, `Languages/German/`, `DefInjected/`, `Keyed/`). XML-Format (`<LanguageData>`, `<tag>value</tag>`). Vergleich SoS vs. RimWorld (Format, Metadaten, Workshop).
+- **PLAN_RIMWORLD.md:** 19 Tasks in 3 Phasen. Phase 1: 13 Adapter-Hooks (~8h). Phase 2: Scanner/Parser (~4h). Phase 3: Integration & Tests (~4h). Detailierte Methoden-Beschreibungen pro Adapter-Hook mit IST/SOLL.
+- **Dateien:** `core/archive/docs/plans/PLAN_RIMWORLD.md` (NEU, ~250 Zeilen)
+
+### Pläne-Audit (11 Sub-Pläne)
+- **Geprüft:** PLAN_BUG_TRIAGE (0/6 OFFEN), PLAN_BYPASS_REMOVAL (1/6, BR-6 DONE via FREEZE_INDEX_2 §10), PLAN_DEAD_FLAGS (0/5 OFFEN), PLAN_FEATURE_GAPS (1/5, FG-1 DONE via FREEZE_INDEX_2 §8/§9/§11), PLAN_GLOBAL_SCORE (6/6 DONE), PLAN_LATENT_RISKS (0/5 OFFEN), PLAN_PLAN_AUDIT (~250 Funktionen TEILWEISE), PLAN_PRIORISIERUNG (0/6 OFFEN), PLAN_RUNTIME_PROBABILITY (0/5 OFFEN), PLAN_STABILISIERUNG (5/9, ST-5+ST-6 DONE via FREEZE_INDEX_2 §7/§11), PLAN_COMMIT_LAYER_RNG (DONE).
+- **Ergebnis:** 3 DONE, 8 OFFEN/TEILWEISE. In PLAN.md als Sub-Plan-Status-Tabelle konsolidiert.
+
+### PLAN.md Merge (v0.22.0 → v0.23.0)
+- Version + Stand aktualisiert. Neue P5-Phase: RimWorld-Implementierung (19 Tasks, ~16h, PLAN_RIMWORLD.md). M-REFACTOR als erledigt markiert. Fortschritts-Tracker: 22→42 Tasks, 86%→45% (durch neue P5-RimWorld-Tasks). Sub-Plan-Status-Tabelle hinzugefügt.
+- **Dateien:** `PLAN.md`
+
+### AGENTS.md Regel 4: Root-Daten-Priorität
+- TEIL 11 GLOBALE REGELN: Neue Regel 4 — Root-Dateien (AGENTS.md, CHANGELOG.md, PLAN.md, README.md, TUTORIAL.txt, _Info.txt) haben IMMER Vorrang vor Kopien in core/archive/docs/. Bei Widerspruch: Root gewinnt.
+- Bestehende Regeln 4-12 → 5-13 neu nummeriert.
+- Version: 2026-06-24 → 2026-06-25
+- **Dateien:** `AGENTS.md`
+
+### Doku-Daten: LIVE → FREEZE
+- LIVE_INDEX.md aktualisiert: PLAN_RIMWORLD.md als 13. Plan-Dokument. PLAN_GLOBAL_SCORE.md Status OFFEN→DONE (6/6). PLAN_STABILISIERUNG TEILWEISE (2/9→5/9). PLAN_PLAN_AUDIT Status aktualisiert. Status-Zähler: 5 LIVE + 20 FREEZE + 13 PLAN + 7 Root + 8 INDEX.
+- **Dateien:** `core/archive/docs/LIVE_INDEX.md`
+
+### Verifikation
+- Syntax: N/A (nur .md Änderungen)
+- Pläne-Audit: 11/11 Dateien geprüft
+- RimWorld-Recherche: 2 Quellen (researcher-web + researcher-docs)
+
+---
 
 ## [M-REFACTOR] — 2026-06-25 — Refactoring M-1 bis M-4: Transaction, JSON-Parsing, OpenAI-Test, Exports, isLarge
 
