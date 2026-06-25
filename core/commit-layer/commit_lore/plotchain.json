@@ -2440,5 +2440,54 @@
         "file": "core/scripts/sync-version.js"
       }
     ]
+  },
+  {
+    "p_id": "p54",
+    "id": "plot-2026-06-25T23:08:38",
+    "timestamp": "2026-06-25 23:08:38",
+    "summary": "app.js (1854→70 LOC) + server.js (667→120 LOC) modularisiert: 5 Domain-Module unter public/modules/, server-routes.js extrahiert, Bootstrap reduziert",
+    "narrator": "Spark",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c49j90n9a2p19",
+    "ref_to": "plot-2026-06-25T23:03:50",
+    "prev_narrator": "Devin",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/GUI/INDEX.md"
+      },
+      {
+        "file": "core/GUI/public/app.js"
+      },
+      {
+        "file": "core/GUI/public/index.html"
+      },
+      {
+        "file": "core/GUI/public/modules/state.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-core.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-data.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-settings.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-sse.js"
+      },
+      {
+        "file": "core/GUI/server-routes.js"
+      },
+      {
+        "file": "core/GUI/server.js"
+      },
+      {
+        "file": "core/commit-layer/commit_lore/build_pool.js"
+      }
+    ]
   }
 ]

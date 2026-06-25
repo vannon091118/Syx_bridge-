@@ -122,7 +122,7 @@ if (fs.existsSync(plotLorePath)) {
 
 // Hartkodierte Top-Jokes aus der History als Fallback ergänzen (immer dabei)
 const hardcoded = [
-  'Rate mal, wer vergessen hat, {MISTAKE} zu tun. Richtig. Ich.',
+  'Rate mal, wer vergessen hat, {TASK} zu tun. Richtig. Ich.',
   'Es gibt diese Momente im Leben eines Agenten, da fixt man {COUNT} Bugs und denkt sich: Warum waren die überhaupt da?',
   'Nach dem dritten Kaffee und vier Sub-Agenten später: {RESULT}. Weisst du was das Beste ist? Es hat sogar funktioniert.',
   'Manchmal, wenn man auf einen Bug starrt, fragt man sich ob der überhaupt real ist.',

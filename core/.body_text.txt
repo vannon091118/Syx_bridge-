@@ -1,11 +1,28 @@
-Die Architektur der Außendarstellung war eine offene Wunde — keine Naht, kein klares Muster, nur Fragmente.
+## server.js (667 → 120 LOC)
+Alle 25+ Route-Handler nach `server-routes.js` extrahiert.
+GuiServer-Klasse bleibt als dünne Schale — importiert `registerRoutes`,
+delegiert sämtliches URL-Parsing und Event-Emitting an die externe Funktion.
+Datei ist jetzt lesbar: Konstruktor + start() + stop() — das war's.
 
-Nachdem Glitch die Pipeline-Schicht gesetzt hat, war der nächste logische Schritt klar: Die Präsentation musste der Pipeline würdig werden. README.md wird in eine bilinguale Dokumentationsschicht überführt — DE/EN, Navigation-Badges, Banner eingebunden (screenshots/banner.jpg), GitHub-Features maximal ausgereizt. Visual Sections, Feature-Detail-Dropdowns und Gamer-Tone definieren jetzt die Präzedenz für alle künftigen Doku-Schichten.
+## app.js (1854 → 70 LOC)
+Fünf Domain-Module unter `public/modules/`:
 
-Dieser Bruch mit der alten Flat-README-Struktur ist kein Zufall — er folgt dem Muster: Pipeline zuerst verstehen, dann die Schnittstelle zur Welt neu zeichnen. Jede Schicht der Dokumentation muss die Architektur widerspiegeln, die sie beschreibt. Eine Naht zwischen Code-Realität und Aussen-Wahrnehmung — das ist die Pflicht dieser Revision.
+| Modul | LOC | Zuständigkeit |
+|-------|-----|---------------|
+| `state.js` | 80 | Alle shared-state `var`-Deklarationen, DOM-Refs, Konstanten |
+| `ui-core.js` | 250 | tick(), Pipeline, Provider-Stats, Health, Actions, Background-States |
+| `ui-settings.js` | 320 | Config, Mode, Provider-Change, Batch, Local Models, Ollama Cloud, Polling |
+| `ui-data.js` | 680 | DB-Browser, Revisions, Repair, Keys, FCM, Runtime-Score, Backups, Model-Status |
+| `ui-sse.js` | 80 | SSE-Verbindung + Log-Handling |
 
-Der Grund für dieses Update liegt direkt im Impuls: Die Pipeline ist v0.23.0-reif. Das README war es nicht. Diese Asymmetrie ist ein Systemfehler, der behoben werden musste — nicht als Kosmetik, sondern als strukturelle Korrektur der Außen-Schicht.
+`app.js` ist jetzt nur noch Bootstrap: Lifecycle-Init, Interval-Registrierung, Window-Exports.
 
-GitHub-Features: Badges für Version, License, Status. Dropdowns für jeden Feature-Block. Bilinguale Navigation — DE als Primärsprache, EN als Präzedenz-Schicht für internationale Reichweite. Banner als visueller Anker der Identität. Jedes dieser Elemente folgt demselben Pipeline-Muster: Input defnieren, Schicht erzeugen, Output validieren.
+## Kompatibilität
+- Kein Bundler nötig — `index.html` lädt alle 6 Scripts in Abhängigkeitsreihenfolge
+- Alle `onclick`-Handler aus dem HTML funktionieren weiter (Function Declarations sind global)
+- `window.xxx`-Exports für dynamische Handler bleiben erhalten
+- ES5-kompatibel: `function(){}`, `var`, `Object.assign`, String-Concat, `.then()/.catch()`
 
-Richtungswechsel: Glitch hat zuletzt CODE gesetzt — dieser Commit dreht das Steuer auf DOKU. Die Schicht ist vollständig. Betroffen: README.md, screenshots/banner.jpg.
+## Nebenfunde
+- `checkAllKeys` in ui-data.js: kaputtes `setInterval`-Polling durch sequentielle Promise-Chain ersetzt
+- Unresolved-Placeholder in `sidejoke_pool.json` gefixt

@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:08:38] app.js (1854→70 LOC) + server.js (667→120 LOC) modularisiert: 5 Domain-Module unter public/modules/, server-routes.js extrahiert, Bootstrap reduziert
+**Narrator:** Spark | **Model:** deepseek-v4-pro | **Composite:** `c49j90n9a2p19`
+- 12 Datei(en) geändert.
+
 ### [2026-06-25 23:03:26] sync-version.js: veraltete Pfade gefixt (core/docs/ → core/archive/docs/), tote Targets entfernt (README.md + TODO.md), cli-progress.js Pfad korrigiert
 **Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c48j19n6a5p27`
 - 1 Datei(en) geändert.

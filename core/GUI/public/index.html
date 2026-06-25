@@ -951,34 +951,12 @@
         </div>
     </div>
 
+    <!-- Modules loaded in dependency order: state → core → settings → data → sse → bootstrap -->
+    <script src="/public/modules/state.js"></script>
+    <script src="/public/modules/ui-core.js"></script>
+    <script src="/public/modules/ui-settings.js"></script>
+    <script src="/public/modules/ui-data.js"></script>
+    <script src="/public/modules/ui-sse.js"></script>
     <script src="/public/app.js"></script>
-    <script>
-        function openVersionHighlights() {
-            document.getElementById('version-modal').classList.add('open');
-        }
-        function closeVersionHighlights() {
-            document.getElementById('version-modal').classList.remove('open');
-        }
-        // ESC-Taste zum Schließen
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeVersionHighlights();
-                closeKeyModal();
-                closeRevisionModal();
-            }
-        });
-        function toggleSettings() {
-            if (window.liveStats && window.liveStats.isRunning) {
-                alert("Einstellungen können während eines aktiven Laufs nicht geändert werden!");
-                return;
-            }
-            const dropdown = document.getElementById('settings-dropdown');
-            const isOpen = dropdown.style.display !== 'none';
-            dropdown.style.display = isOpen ? 'none' : 'block';
-            // Lazy-load: only poll model-status + provider-stats while dropdown is open
-            if (!isOpen && window.startSettingsPolling) window.startSettingsPolling();
-            if (isOpen && window.stopSettingsPolling) window.stopSettingsPolling();
-        }
-    </script>
 </body>
 </html>
