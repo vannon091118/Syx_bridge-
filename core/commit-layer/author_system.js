@@ -233,10 +233,14 @@ const isDirectionChange = prevSummary && prevClass !== currClass;
 if (isDirectionChange) console.log(`↩️  Richtungswechsel: ${prevClass} → ${currClass} (${prevNarratorName || 'kein Vorgänger'} → ${selectedNarrator.name})`);
 
 // ─── 6. Sidejoke auswählen ────────────────────────────────────────────────
+// Filter: Keine Einträge mit unaufgelösten {PLACEHOLDER}-Templates —
+// verify_commit_msg.js blockiert sonst den Commit (CHECK: PLACEHOLDER).
+const HAS_PLACEHOLDER = /\{[A-Z][A-Z0-9_]+\}/;
 const jokeKey  = selectedNarrator.name.toLowerCase();
-const jokeList = (sidejokePool[jokeKey] && sidejokePool[jokeKey].length > 0)
+const rawList = (sidejokePool[jokeKey] && sidejokePool[jokeKey].length > 0)
   ? sidejokePool[jokeKey]
   : (sidejokePool.general || []);
+const jokeList = rawList.filter(j => !HAS_PLACEHOLDER.test(j));
 const joke = jokeList.length > 0
   ? jokeList[Math.floor(Math.random() * jokeList.length)]
   : '';

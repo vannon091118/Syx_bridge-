@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:49:46] Sidejoke-Pool + Cross-References massiv erweitert: 46→344 Sidejokes (alle 14 Erzähler mit eigenen Pools), 70→227 Cross-References (+130 benannte Projekt-Referenzen). Keine Wiederholung in 15 Commits. Kausalität gewahrt.
+**Narrator:** Thinker | **Model:** deepseek-v4-pro | **Composite:** `c57j71n3a2p52`
+- 3 Datei(en) geändert.
+
 ### [2026-06-25 23:42:50] Doku nachgezogen: GUI/INDEX.md (+run-evaluation.js +backup-utils.js), Translation/INDEX.md (+config-wizard.js, config-runtime.js aktualisiert mit _fetchModels + _ensureProviderModel)
 **Narrator:** Flux | **Model:** deepseek-v4-pro | **Composite:** `c56j60n13a5p47`
 - 3 Datei(en) geändert.

@@ -1,11 +1,5 @@
-Dokumentation nachgezogen für alle Extraktionen und Deduplizierungen dieser Session.
+sidejoke_pool.json: 46→344 Einträge (+298). general: 39→124. Alle 14 Erzähler bekommen eigene Pools mit 14-20 Einträgen (vorher nur Buffy/Basher/Thinker/Glitch/Echo mit 1-2). Keine Wiederholung in 15 Commits garantiert.
 
-GUI/INDEX.md (v0.23→v0.24, 8→10 Dateien):
-- run-evaluation.js (~110 LOC): computeRunEvaluation() + RUN_CATEGORY_DESCRIPTIONS — extrahiert aus gui-handlers.js
-- backup-utils.js (~95 LOC): readDisplayName() + restoreBackup() + collectAllFiles() — extrahiert aus gui-handlers.js
-- Struktur-Diagramm aktualisiert, Import-Pfade dokumentiert
+cross_references.json: 70→227 Einträge (+157). ~130 benannte Projekt-Referenzen hinzugefügt (Dateien, Bugs, Konzepte, Lore-Arcs, Regeln, Provider-Namen). Commit-Hashes auf aktuellen Stand gebracht.
 
-Translation/INDEX.md (v0.22→v0.24, 33→34 Dateien):
-- config-wizard.js (~113 LOC): configureWizard() — extrahiert aus config-runtime.js
-- config-runtime.js: 763→~560 LOC. Funktionstabelle aktualisiert mit _fetchModels() (generischer Fetcher), _ensureProviderModel() (generisches Ensure), Thin-Wrapper für alle fetch/ensure-Methoden
-- Inhaltsverzeichnis aktualisiert mit neuer Datei + korrigierten LOC-Angaben
+Alle Einträge referenzieren echte Projekt-Ereignisse: Filter-Katastrophe, ZWSP-Watermarks, SQLITE_BUSY, String-Heuristik, Deep-Polish-Defense, PROVIDER_REGISTRY, Composite-Hash-System, etc. Kausalität gewahrt.
