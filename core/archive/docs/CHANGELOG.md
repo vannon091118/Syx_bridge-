@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:26:20] config-runtime.js (831 to 721 LOC): CLI-Wizard configure() nach config-wizard.js extrahiert als configureWizard(cr, persistConfigToEnv). ConfigRuntime.configure() bleibt thin delegation. Toter prompts-Import entfernt.
+**Narrator:** Echo | **Model:** deepseek-v4-pro | **Composite:** `c52j41n12a3p35`
+- 3 Datei(en) geändert.
+
 ### [2026-06-25 23:21:45] gui-handlers.js (794→540 LOC): computeRunEvaluation + RUN_CATEGORY_DESCRIPTIONS nach run-evaluation.js extrahiert, readDisplayName + restoreBackup + collectAllFiles nach backup-utils.js extrahiert. Import-Pfade in index.js und reset_now.js aktualisiert
 **Narrator:** Basher | **Model:** deepseek-v4-pro | **Composite:** `c51j32n2a1p40`
 - 6 Datei(en) geändert.

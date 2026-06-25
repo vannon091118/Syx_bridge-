@@ -2548,5 +2548,27 @@
         "file": "core/index.js"
       }
     ]
+  },
+  {
+    "p_id": "p57",
+    "id": "plot-2026-06-25T23:26:20",
+    "timestamp": "2026-06-25 23:26:20",
+    "summary": "config-runtime.js (831 to 721 LOC): CLI-Wizard configure() nach config-wizard.js extrahiert als configureWizard(cr, persistConfigToEnv). ConfigRuntime.configure() bleibt thin delegation. Toter prompts-Import entfernt.",
+    "narrator": "Echo",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c52j41n12a3p35",
+    "ref_to": "plot-2026-06-25T23:21:45",
+    "prev_narrator": "Basher",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/Translation/config/config-runtime.js"
+      },
+      {
+        "file": "core/Translation/config/config-wizard.js"
+      }
+    ]
   }
 ]

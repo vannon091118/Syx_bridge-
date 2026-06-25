@@ -1,17 +1,7 @@
-## gui-handlers.js (794 → ~540 LOC, -254)
-Zwei Extraktionen, Null Architektur-Risiko:
+Extrahiere den CLI-Wizard configure() (110 LOC) aus ConfigRuntime-Klasse nach config-wizard.js.
 
-### run-evaluation.js (NEU, ~105 LOC)
-computeRunEvaluation() + RUN_CATEGORY_DESCRIPTIONS extrahiert.
-Reine Berechnungslogik, keine externen Abhängigkeiten.
-8 Kategorien, weighted scoring (0-100%).
+configureWizard(cr, persistConfigToEnv) — standalone async function, alle this.-Referenzen auf cr. umgestellt.
+ConfigRuntime.configure() bleibt als thin Delegation: async configure() { return configureWizard(this, persistConfigToEnv); }
+checkConfig() ruft weiter this.configure() — keine Breakage.
 
-### backup-utils.js (NEU, ~95 LOC)
-readDisplayName(), restoreBackup(), collectAllFiles() extrahiert.
-Reine Utility-Funktionen für Backup-Restore und Mod-Metadaten.
-Abhängigkeiten: nur fs, fsp, path (Node-Standard).
-
-### Import-Updates
-index.js: readDisplayName/restoreBackup jetzt aus ./GUI/backup-utils
-reset_now.js: restoreBackup jetzt aus ./backup-utils
-gui-handlers.js: require von beiden neuen Dateien
+Nebenbefund: toter prompts-Import in config-runtime.js entfernt (nur configure() hatte prompts benutzt).
