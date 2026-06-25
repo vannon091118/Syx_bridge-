@@ -200,6 +200,10 @@ start.bat
 ```mermaid
 timeline
     title SyxBridge — Entwicklungs-Roadmap
+    section 🧪 Historie · Origins
+        v0.10 : Proof of Concept
+        v0.15 : Erster Release
+              : (Alles davor war ein reiner Prototyp)
     section ✅ Phase 1 · Songs of Syx
         v0.19 : Plugin-Architektur (GameAdapter → GamePlugin)
               : SQLite-Cache + Revisionshistorie
@@ -230,13 +234,13 @@ timeline
 
 <div align="center">
 
-| Checkpoint | Version | Status | Was wurde erreicht |
+| Checkpoint | Version | Status | Was passiert ist |
 |:---:|:---:|:---:|:---|
-| 🏁 **CP-1** | v0.20 | ✅ Done | Plugin-Architektur, SQLite-Cache, Erster vollständiger Sync |
-| 🏁 **CP-2** | v0.22 | ✅ Done | 11 Provider, Crash-frei, Garbage-Detection, Dashboard vollständig |
-| 🏁 **CP-3** | v0.23 | ✅ Done | Code-Hardening, RimWorld Foundation, Bilinguales Release |
-| 🔄 **CP-4** | v0.24 | 🚧 In Progress | RimWorld vollständig spielbar (~16h Arbeit) |
-| 🔮 **CP-5** | v0.25+ | 📋 Geplant | Mod-Loader, Multi-Game Community |
+| 🏁 **CP-1** | v0.20 | ✅ Done | "Laeuft" -- Plugin-Architektur, SQLite-Cache, erster Sync ohne Crash |
+| 🏁 **CP-2** | v0.22 | ✅ Done | "Laeuft meistens" -- 11 Provider, Vanilla-DE-Texte nicht mehr zerstoert |
+| 🏁 **CP-3** | v0.23 | ✅ Done | "Sieht gut aus" -- Code aufgeraeumt, RimWorld Foundation, README nicht mehr peinlich |
+| 🔄 **CP-4** | v0.24 | 🚧 In Progress | RimWorld existiert auf dem Papier. ~16h Arbeit, Rust macht Spass. |
+| 🔮 **CP-5** | v0.25+ | 📋 Vielleicht | Kenshi, Stardew, Community-Glossare. Oder ich schlafe erst mal. |
 
 </div>
 
@@ -245,10 +249,12 @@ timeline
 ## 📋 Release Notes
 
 <details>
-<summary><b>🟣 v0.23.0 — 2026-06-25</b> · Code-Hardening + RimWorld Foundation + Bilinguales Release</summary>
+<summary><b>🟣 v0.23.0 -- 2026-06-25</b> · "Ich hab die README aufgeraeumt und dabei festgestellt dass ich 30.000 Zeilen Code geschrieben habe"</summary>
 <br/>
 
-**Highlights:**
+*Der Plan war: RimWorld fertig machen. Stattdessen hab ich vier Wochen lang den Commit-Layer zu einem Autoren-System mit 14 fiktiven Charakteren ausgebaut. Priorities.*
+
+**Was trotzdem fertig wurde:**
 - **OpenAI + Custom API** vollständig integriert (11 Provider total)
 - **Ollama Cloud-Mode** mit Remote-URL + `_OLLAMA_URL_RAW` Bugfix
 - **Code-Refactoring M-1..M-4:** `withTransaction()`, `parseJsonBody()`, `_testOpenAiChat()`, Export-Block — 4 Duplizierungs-Patterns beseitigt
@@ -268,51 +274,54 @@ timeline
 </details>
 
 <details>
-<summary><b>🔵 v0.22.0 — 2026-06-22</b> · P0/P1/P2 Härtung · Crash-frei · 11 Provider</summary>
+<summary><b>🔵 v0.22.0 -- 2026-06-22</b> · "Das Spiel hat gecrasht. Ich hab das behoben. Zweimal."</summary>
 <br/>
 
-**Highlights:**
-- **P0 — `__OVERWRITE`-Crash-Fix:** `SongsOfSyxPlugin.getFileHeader()` gab `__OVERWRITE: true` für alle V71-Dateien zurück → Vanilla-DE-Texte wurden zerstört. Fix: `''` statt Header.
-- **P0 — Basis-Fallback:** Wenn alle Provider fehlschlagen, wird existierende Übersetzung aus DB genutzt statt leerer Export
-- **P1 — Groq Garbage-Detection:** `consecutiveGarbageBatches`-Counter — bei ≥2 Müll-Batches wird Provider aus Route-Plan ausgeschlossen
-- **P1 — SHIELD-Preservation:** Placeholder-Token bleiben nach LLM-Pass korrekt erhalten
-- **P2 — Path-Validation:** `modsOverride`-Pfade werden via `existsSync` geprüft
-- **Language-Tag:** Übersetzte Mods bekommen `DEUTSCH`-Suffix im Namen
-- **Translation-Credit:** `_Info.txt` enthält jetzt immer „Translation by Vannon with SyxBridge"
-- **isFreeModel():** Provider-bewusste Free-Erkennung (NVIDIA statisch, Groq alle, Gemini statisch, OpenRouter dynamisch)
-- **rankModel():** DB-gestützt statt String-Heuristik — aggregiert `avg_quality` aus Metriken
-- **deepPolishBatch:** Metriken fließen jetzt für jeden Deep-Polish-Durchlauf
-- **5 Thin-Wrapper** aus `client-factory.js` entfernt
+*`__OVERWRITE: true` hat alle Vanilla-Texte gekillt. Groq hat Zahlen statt Übersetzungen geliefert. Der Export war komplett leer. Alles gleichzeitig. Das war eine gute Woche.*
+
+**Was danach nicht mehr kaputt war:**
+- **P0 -- `__OVERWRITE`-Crash:** `getFileHeader()` hat `__OVERWRITE: true` in JEDE Datei geschrieben → alle Vanilla-DE-Texte weg. Fix: Zeile leer lassen. Dauer der Diagnose: zu lang.
+- **P0 -- Basis-Fallback:** Wenn alle 11 Provider gleichzeitig versagen, wird die letzte bekannte Übersetzung genutzt statt gar nix
+- **P1 -- Groq Garbage-Detection:** Groq hat nach Key-Rotation `[1, 2, 3, ...]` zurückgegeben. HTTP 200. Als ob alles gut wäre. Counter zählt jetzt mit.
+- **P1 -- SHIELD-Preservation:** Placeholder haben die LLM-Reise nicht immer überlebt. Jetzt schon.
+- **P2 -- Path-Validation:** Jemand hat einen Pfad eingegeben der nicht existiert. Das Programm hat das geglaubt.
+- **Language-Tag + Credit:** Übersetzte Mods sagen jetzt wer sie übersetzt hat. Minimalanstand.
+- **isFreeModel() / rankModel():** Beide von "Namensraten" auf echte Daten umgestellt
+- **5 Thin-Wrapper entfernt:** Funktionen die nur eine andere Funktion aufgerufen haben. Weg.
 
 </details>
 
 <details>
-<summary><b>🟢 v0.21.0 — 2026-06-22</b> · Commit-Layer · Dashboard-Features · Bugfix-Welle</summary>
+<summary><b>🟢 v0.21.0 -- 2026-06-22</b> · "Das SQL-Lock-Drama und unsichtbare Unicode-Geister"</summary>
 <br/>
 
+*Ich wollte nur schnell ein paar Mods syncen, aber SQLite meinte 'database is locked'. Und dann stürzte das Spiel wegen unsichtbarer Null-Width-Spaces ab. Danke für nichts, libGDX-Glyph-Atlas. Aber hey, wir haben jetzt Charakterblätter für die Commits.*
+
 **Highlights:**
-- **Commit-Layer RNG Phase 5:** Charakterblatt-System — 4 Erzähler (Buffy, Basher, Thinker, Vannon), deterministisch via XorShift128
+- **Commit-Layer RNG Phase 5:** Charakterblatt-System -- 4 Erzähler (Buffy, Basher, Thinker, Vannon), deterministisch via XorShift128
 - **Narrative Expansion:** 5 weitere Charaktere (Squizzle, Devin, Argos, Ghost, Spark)
 - **GUI v0.22.0:** Version-Highlights-Modal, Preflight-Status, Runtime Score Panel (minimiert by default), Backup-Panel komprimiert
-- **SQLITE-BUSY-Fix:** `Promise.all` auf `saveTranslation()` → sequenzielle Writes — `SQLITE_BUSY: database is locked` beim 3. Mod behoben
-- **ZWSP-Removal:** Unsichtbare Unicode-Zeichen injiziert in JEDE String → SoS-Crash (libGDX Glyph-Atlas) → komplett entfernt
+- **SQLITE-BUSY-Fix:** `Promise.all` auf `saveTranslation()` -> sequenzielle Writes -- `SQLITE_BUSY: database is locked` beim 3. Mod behoben
+- **ZWSP-Removal:** Unsichtbare Unicode-Zeichen injiziert in JEDE String -> SoS-Crash (libGDX Glyph-Atlas) -> komplett entfernt
 - **DB Fresh Reset:** Dev-DB aus Repo entfernt, Fresh-State für Onboarding
-- **Eval-Score-Fix:** `computeRunEvaluation()` Score 55.7% → 85.1% (zwei Formel-Bugs)
-- **isProperNoun()-Fix:** Denylist ~80 → ~200+ Einträge — NAME-Felder wie `Calm`, `Genius` wurden nicht übersetzt
-- **LLM-Safety-Label-Filter:** „User Safety: safe" erschien im Mod-Output → `cleanTranslationArtifact()` filtert es
-- **_Info.txt Pipeline:** `_Info.txt` war aus Übersetzung gefiltert → DESC/INFO blieben English → Fix
-- **Output-First REGEL 0.5:** Neue Entwicklungsregel — erst Output prüfen, dann Code ändern
+- **Eval-Score-Fix:** `computeRunEvaluation()` Score 55.7% -> 85.1% (zwei Formel-Bugs)
+- **isProperNoun()-Fix:** Denylist ~80 -> ~200+ Einträge -- NAME-Felder wie `Calm`, `Genius` wurden nicht übersetzt
+- **LLM-Safety-Label-Filter:** „User Safety: safe" erschien im Mod-Output -> `cleanTranslationArtifact()` filtert es
+- **_Info.txt Pipeline:** `_Info.txt` war aus Übersetzung gefiltert -> DESC/INFO blieben English -> Fix
+- **Output-First REGEL 0.5:** Neue Entwicklungsregel -- erst Output prüfen, dann Code ändern
 
 </details>
 
 <details>
-<summary><b>🟡 v0.20.0 — 2026-06-21</b> · Plugin-Architektur · Commit-Layer RNG · GUI MVP</summary>
+<summary><b>🟡 v0.20.0 -- 2026-06-21</b> · "Das Plugin-Overengineering und die Geburtsstunde des Commit-Rollenspiels"</summary>
 <br/>
 
+*Aus einer einfachen Mod-Übersetzung wurde plötzlich ein dreistufiges Plugin-System. Und weil normale Commits zu langweilig sind, würfeln jetzt XorShift128-Algorithmen, welcher fiktive Charakter den Commit verfasst.*
+
 **Highlights:**
-- **Plugin-Architektur (3 Ebenen):** `GameAdapter` → `GamePlugin` → `SongsOfSyxPlugin` — erweiterbar auf jedes Spiel
-- **`plugin-registry.js`:** `createPlugin(gameName)` Factory — neues Spiel in 4 Schritten
-- **Commit-Layer RNG Phase 1–4:** `rng.js` (XorShift128 + djb2), `composite_chain.json`, `verify_commit_msg.js` mit 5 Checks, `derive_composite.js` — deterministisch reproduzierbar
+- **Plugin-Architektur (3 Ebenen):** `GameAdapter` -> `GamePlugin` -> `SongsOfSyxPlugin` -- erweiterbar auf jedes Spiel
+- **`plugin-registry.js`:** `createPlugin(gameName)` Factory -- neues Spiel in 4 Schritten
+- **Commit-Layer RNG Phase 1–4:** `rng.js` (XorShift128 + djb2), `composite_chain.json`, `verify_commit_msg.js` mit 5 Checks, `derive_composite.js` -- deterministisch reproduzierbar
 - **Causality-System:** Commit-Narrative referenzieren letzte 5 Commits + Diff-Statistiken
 - **FCM Live-Rankings:** Modell-Tiers, Ping, Stabilität im Dashboard
 - **API-Key-Manager:** Keys verwalten und testen direkt aus dem UI
@@ -320,24 +329,26 @@ timeline
 - **DB-Repair:** Automatische Integritätsprüfung mit visuellen Warnstufen
 - **export_stage2.js Deduplizierung:** `validateAndPrepareContent()` aus exporter.js extrahiert
 - **countMatches-Konsolidierung:** 10 inline Patterns ersetzt
-- **Plugin-Boundary-Contract:** 84 dynamische Interface-Checks
+- **Plugin-Boundary-Contract:** 84 dynamic Interface-Checks
 
 </details>
 
 <details>
-<summary><b>⚪ v0.19.0 — 2026-06-19</b> · Erster vollständiger Sync · SQLite-Cache · 7 Provider</summary>
+<summary><b>⚪ v0.19.0 -- 2026-06-19</b> · "Es lebt! Und es hat mein Bankkonto noch nicht leergeräumt"</summary>
 <br/>
 
+*Der allererste vollständige Sync lief durch. Der SQLite-Cache verhindert, dass uns die LLM-Provider in den Ruin treiben. Die Geburtsstunde von SyxBridge.*
+
 **Highlights:**
-- **Erster vollständiger Übersetzungslauf:** Songs of Syx Mod komplett auf Deutsch — Pipeline Ende-zu-Ende
-- **SQLite-Cache** (`better-sqlite3`, WAL-Mode, 12 Tabellen) — zweiter Run nutzt Cache, API-Kosten gegen Null
+- **Erster vollständiger Übersetzungslauf:** Songs of Syx Mod komplett auf Deutsch -- Pipeline Ende-zu-Ende
+- **SQLite-Cache** (`better-sqlite3`, WAL-Mode, 12 Tabellen) -- zweiter Run nutzt Cache, API-Kosten gegen Null
 - **Placeholder-Shield System:** `{NAME}`, `{VAR}` werden vor LLM ausgeblendet, nach Übersetzung wiederhergestellt
 - **7 Provider:** Groq, OpenRouter, Gemini, NVIDIA NIM, FCM, Argos, Google Translate
 - **Smart Routing:** Capability-Matrix + automatische Key-Rotation
 - **Native Mode:** Direkt in Mod-Dateien schreiben + Backup automatisch
 - **Patch Mode:** Separater Übersetzungsmod-Ordner (Workshop-kompatibel)
-- **SCAN → SHIELD → TRANSLATE → QA → SAVE** Pipeline vollständig
-- **`start.bat`:** Ein Klick → Dependencies installiert, Server startet, Browser öffnet sich
+- **SCAN -> SHIELD -> TRANSLATE -> QA -> SAVE** Pipeline vollständig
+- **`start.bat`:** Ein Klick -> Dependencies installiert, Server startet, Browser öffnet sich
 
 </details>
 
@@ -471,6 +482,10 @@ start.bat
 ```mermaid
 timeline
     title SyxBridge — Development Roadmap
+    section 🧪 History · Origins
+        v0.10 : Proof of Concept
+        v0.15 : First Release
+              : (Everything before was pure prototype)
     section ✅ Phase 1 · Songs of Syx
         v0.19 : Plugin Architecture (GameAdapter → GamePlugin)
               : SQLite Cache + Revision History
@@ -501,13 +516,13 @@ timeline
 
 <div align="center">
 
-| Checkpoint | Version | Status | What was achieved |
+| Checkpoint | Version | Status | What actually happened |
 |:---:|:---:|:---:|:---|
-| 🏁 **CP-1** | v0.20 | ✅ Done | Plugin architecture, SQLite cache, first complete sync |
-| 🏁 **CP-2** | v0.22 | ✅ Done | 11 providers, crash-free, garbage detection, full dashboard |
-| 🏁 **CP-3** | v0.23 | ✅ Done | Code hardening, RimWorld foundation, bilingual release |
-| 🔄 **CP-4** | v0.24 | 🚧 In Progress | RimWorld fully playable (~16h of work) |
-| 🔮 **CP-5** | v0.25+ | 📋 Planned | Mod Loader, multi-game community |
+| 🏁 **CP-1** | v0.20 | ✅ Done | "It works" -- Plugin architecture, SQLite cache, first sync that didn't crash |
+| 🏁 **CP-2** | v0.22 | ✅ Done | "It mostly works" -- 11 providers, vanilla files are no longer destroyed by mistake |
+| 🏁 **CP-3** | v0.23 | ✅ Done | "Looking decent" -- Code cleanup, RimWorld foundation, README is finally readable |
+| 🔄 **CP-4** | v0.24 | 🚧 In Progress | RimWorld exists on paper. ~16h of work, Rust is looking tempting. |
+| 🔮 **CP-5** | v0.25+ | 📋 Maybe | Kenshi, Stardew, community glossaries. Or I might just sleep. |
 
 </div>
 
@@ -516,8 +531,10 @@ timeline
 ## 📋 Release Notes
 
 <details>
-<summary><b>🟣 v0.23.0 — 2026-06-25</b> · Code Hardening + RimWorld Foundation + Bilingual Release</summary>
+<summary><b>🟣 v0.23.0 -- 2026-06-25</b> · "Cleaned up the README and realized I wrote 30,000 lines of code"</summary>
 <br/>
+
+*The plan was: finish RimWorld. Instead, I spent four weeks upgrading the commit layer into a narrative roleplay system with 14 fictional characters. Priorities.*
 
 **Highlights:**
 - **OpenAI + Custom API** fully integrated (11 providers total)
@@ -539,8 +556,10 @@ timeline
 </details>
 
 <details>
-<summary><b>🔵 v0.22.0 — 2026-06-22</b> · P0/P1/P2 Hardening · Crash-Free · 11 Providers</summary>
+<summary><b>🔵 v0.22.0 -- 2026-06-22</b> · "The game crashed. I fixed it. Twice."</summary>
 <br/>
+
+*`__OVERWRITE: true` wiped all vanilla texts. Groq returned arrays of numbers instead of actual translations. The export directory was completely empty. All at the same time. Good times.*
 
 **Highlights:**
 - **P0 — `__OVERWRITE` Crash Fix:** `SongsOfSyxPlugin.getFileHeader()` returned `__OVERWRITE: true` for all V71 files → vanilla DE texts were destroyed. Fix: `''` instead of header.
@@ -558,8 +577,10 @@ timeline
 </details>
 
 <details>
-<summary><b>🟢 v0.21.0 — 2026-06-22</b> · Commit Layer · Dashboard Features · Bug Wave</summary>
+<summary><b>🟢 v0.21.0 -- 2026-06-22</b> · "SQLite lock drama and invisible Unicode ghosts"</summary>
 <br/>
+
+*I just wanted to sync a few mods, but SQLite hit me with 'database is locked'. Then the game crashed because of invisible zero-width space characters. Thanks for nothing, libGDX glyph atlas. At least we now have character sheets for our commits.*
 
 **Highlights:**
 - **Commit Layer RNG Phase 5:** Character sheet system — 4 narrators (Buffy, Basher, Thinker, Vannon), deterministic via XorShift128
@@ -577,8 +598,10 @@ timeline
 </details>
 
 <details>
-<summary><b>🟡 v0.20.0 — 2026-06-21</b> · Plugin Architecture · Commit Layer RNG · GUI MVP</summary>
+<summary><b>🟡 v0.20.0 -- 2026-06-21</b> · "Plugin over-engineering and the birth of commit roleplay"</summary>
 <br/>
+
+*What started as a simple mod translator suddenly turned into a three-layer plugin architecture. And since standard git commits are boring, we now use XorShift128 algorithms to determine which fictional narrator writes the commit message.*
 
 **Highlights:**
 - **Plugin Architecture (3 layers):** `GameAdapter` → `GamePlugin` → `SongsOfSyxPlugin` — extensible to any game
@@ -596,8 +619,10 @@ timeline
 </details>
 
 <details>
-<summary><b>⚪ v0.19.0 — 2026-06-19</b> · First Complete Sync · SQLite Cache · 7 Providers</summary>
+<summary><b>⚪ v0.19.0 -- 2026-06-19</b> · "It's alive! And it hasn't drained my bank account yet"</summary>
 <br/>
+
+*The first full translation run actually completed. The SQLite cache is successfully preventing the LLM providers from sending me into bankruptcy. The birth of SyxBridge.*
 
 **Highlights:**
 - **First complete translation run:** Songs of Syx mod fully translated to German — pipeline end-to-end

@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 22:35:06] README tone pass and history: self-ironic roadmap/release notes + added v0.10 PoC / v0.15 first release
+**Narrator:** Vannon | **Model:** Gemini 3.5 Flash | **Composite:** `c44j30n4a4p32`
+- 1 Datei(en) geändert.
+
 ### [2026-06-25 22:29:53] DD-004 Fix: ESLint no-unused-vars in author_system.js behoben, README Test-Badge 111→119 (Live-Zahl aus npm test), update-badges.js Script erstellt als strukturellen Fix gegen Stale-Badges
 **Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c43j75n6a3p11`
 - 4 Datei(en) geändert.

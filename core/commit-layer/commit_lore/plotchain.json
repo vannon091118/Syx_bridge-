@@ -2342,5 +2342,21 @@
         "file": "core/scripts/update-badges.js"
       }
     ]
+  },
+  {
+    "p_id": "p49",
+    "id": "plot-2026-06-25T22:35:06",
+    "timestamp": "2026-06-25 22:35:06",
+    "summary": "README tone pass and history: self-ironic roadmap/release notes + added v0.10 PoC / v0.15 first release",
+    "narrator": "Vannon",
+    "model_id": "Gemini 3.5 Flash",
+    "composite": "c44j30n4a4p32",
+    "ref_to": "plot-2026-06-25T22:29:53",
+    "prev_narrator": "Devin",
+    "data_changes": [
+      {
+        "file": "README.md"
+      }
+    ]
   }
 ]
