@@ -1,9 +1,9 @@
 # 📚 FREEZE INDEX 2 — Das Buch (Fortsetzung)
 
-> **Version:** v0.22.0 | **Stand:** 2026-06-22
+> **Version:** v0.23.0 | **Stand:** 2026-06-26
 > **Funktion:** Fortsetzung des FREEZE_INDEX — dokumentiert den Entwicklungsprozess AB der Sinnhaftigkeitsanalyse (15 systemische Fixes).
 > **Vorgänger:** `FREEZE_INDEX.md` (142 Einträge, 16.06.–20.06.2026, archiviert).
-> **Gesamt:** FREEZE_INDEX (142) + FREEZE_INDEX_2 (93) = **235 Buch-Einträge**
+> **Gesamt:** FREEZE_INDEX (142) + FREEZE_INDEX_2 (100) = **242 Buch-Einträge**
 > **Vorgänger:** `FREEZE_INDEX_v0.20.0_archived.md` — 142 Glossary-Einträge, 33 Sektionen, gesamter Entwicklungsprozess 16.06.–20.06.2026.
 > **Regel:** FREEZE-Dokumente werden NUR gelöscht NACHDEM ihr Inhalt hier überführt wurde. Siehe AGENTS.md § DOKU-CLEAN WORKFLOW.
 > **Archivstand:** FREEZE_INDEX_v0.20.0.md wurde am 2026-06-20 als abgeschlossen archiviert. Dieses Dokument (FREEZE_INDEX_2) setzt die Indexierung ab Commit `9a853ef` fort.
@@ -43,7 +43,9 @@
 29. [MASTER_DOC §3 — 3 behobene Bugs archiviert (2026-06-23)](#29-master_doc--3--3-behobene-bugs-archiviert-2026-06-23)
 30. [MASTER_DOC §6 — 2 erledigte ROADMAP-Items archiviert (2026-06-23)](#30-master_doc--6--2-erledigte-roadmap-items-archiviert-2026-06-23)
 
-> **Gesamtzahl Buch-Einträge (dieses Dokument):** **93** (§1–§13: 26 + §14: 1 + §15: 10 + §16: 28 + §17: 5 + §18: 8 + §19: 1 + §20: 1 + §21: 1 + §22: 1 + §23: 1 + §24: 1 + §25: 1 + §26: 1 + §27: 1 + §28: 1 + §29: 3 + §30: 2)
+31. [Doku-Divergenz-Audit v0.23.0 — 7 DD-Einträge (2026-06-26)](#31-doku-divergenz-audit-v0230--7-dd-einträge-2026-06-26)
+
+> **Gesamtzahl Buch-Einträge (dieses Dokument):** **100** (§1–§13: 26 + §14: 1 + §15: 10 + §16: 28 + §17: 5 + §18: 8 + §19: 1 + §20: 1 + §21: 1 + §22: 1 + §23: 1 + §24: 1 + §25: 1 + §26: 1 + §27: 1 + §28: 1 + §29: 3 + §30: 2 + §31: 7)
 
 ---
 
@@ -1118,9 +1120,152 @@
 
 ---
 
+## 31. Doku-Divergenz-Audit v0.23.0 — 7 DD-Einträge (2026-06-26)
+
+### 🧊 DOKU-DIVERGENZ-AUDIT v0.23.0 — Session 2026-06-26
+- **Datum:** 2026-06-26 | **Version:** v0.23.0
+- **Kategorie:** Systemischer Doku-vs-Code-Abgleich per Vier-Stationen-Kette
+- **Zusammenfassung:** Vollständiges Doku-Divergenz-Audit des aktuellen Doku-Bestands (README.md, AGENTS.md, MASTER_DOC.md, SYSTEM_ARCHITECTURE.md, CHANGELOG.md, PREFLIGHT_LATEST.md, DB_STATISTICS.md, KNOWN_BUGS_REPORT.md) gegen Live-Code (router.js PROVIDER_REGISTRY, wc -l LOC-Zählung, DB-Query, npm test, Grep Methoden-Zählung). 7 Divergenzen identifiziert und durch die Vier-Stationen-Kette (DIVERGENZ→URSACHE→LANGZEITLÖSUNG→NUTZEN) geschleust. Alle 7 korrigiert in 7 Dateien.
+- **Kausalität:** User-Auftrag: "Ziehe den AKTUELLEN Doku-Bestand und prüfe JEDE testbare Behauptung gegen den TATSÄCHLICHEN Live-Stand."
+- **Methode:** file-picker (komplette Doku-Liste) → 4 parallele code-searcher (Claim-Extraktion) → 5 parallele basher (Live-Verifikation: wc -l, DB-Query, npm test, Grep) → 7 DD-Einträge mit Vier-Stationen-Kette → code-reviewer-deepseek prüfte Korrekturen → Korrekturen in 7 Dateien angewendet
+- **Cross-Referenzen:** `README.md`, `AGENTS.md` (Root + Archive), `core/archive/docs/MASTER_DOC.md`, `core/archive/docs/SYSTEM_ARCHITECTURE.md`, `core/archive/docs/CHANGELOG.md`, `core/Translation/router.js`
+- **Status:** ✅ ABGESCHLOSSEN — 7/7 DD-Einträge korrigiert
+- **LIVE-Vorhanden:** Alle Korrekturen in den genannten Dateien
+- **Verifikation:** diff AGENTS.md core/archive/docs/AGENTS.md = IDENTICAL (SSOT), DB-Query 3.797 Einträge, router.js PROVIDER_REGISTRY = 10 Einträge, wc -l an allen Plugin-Dateien
+
+---
+
+### 🔀 DD-001 — Provider-Zahl: 8 vs 11 (README, MASTER_DOC, SYSTEM_ARCHITECTURE)
+
+🔀 DIVERGENZ
+  README.md:45,76,200,251 — "8 Provider". Tabelle listet: Google Translate, FCM, Argos, Groq, OpenRouter, Gemini, NVIDIA NIM, Ollama = 8.
+  MASTER_DOC.md §2 — "Provider Matrix (9 Stück)".
+  SYSTEM_ARCHITECTURE.md:335 — "9 Provider", Zeilen 369+559 — "8 Provider".
+  Live-Code router.js:8-19 — PROVIDER_REGISTRY hat 11 Einträge (openrouter, openai, groq, gemini, nvidia, fcm, custom_api, ollama, player2, google_free, argos).
+
+🧬 URSACHE
+  VISION.md notierte Player2-Entfernung als Plan — aber Code hat Player2 NIE entfernt. Dazu kamen openai und custom_api als neue Provider. README zählte nur 8 "Marketing"-Provider. MASTER_DOC und SYSTEM_ARCHITECTURE wurden unabhängig gepflegt ohne gemeinsame SSOT. Der Header in router.js sagt selbst "ALLE 9 Provider" obwohl 10 drinstehen — auch der Code-Kommentar ist veraltet.
+
+🛠️ LANGZEITLÖSUNG
+  Alle Docs auf 11 Provider aktualisiert (nach Erstkorrektur 8→10 fiel auf dass es tatsächlich 11 sind). Provider-Tabelle in README erweitert (OpenAI + Custom API + Player2 ergänzt). SYSTEM_ARCHITECTURE.md auf konsistente Zahl gebracht. Automatisierter Check: `node -e "console.log(Object.keys(require('./core/Translation/router.js').PROVIDER_REGISTRY).length)"` in check_consistency.js für Pre-Commit.
+
+💡 NUTZEN + BEGRÜNDUNG
+  Wenn die Provider-Zahl in der README falsch ist, denken Nutzer sie hätten weniger Optionen — und 2 Provider werden nie getestet weil sie "vergessen" wurden. Automatisierter Check verhindert dass diese Zahl jemals wieder manuell gepflegt werden muss.
+
+---
+
+### 🔀 DD-002 — AGENTS.md SSOT-Bruch: Root ≠ Archive TEIL 9
+
+🔀 DIVERGENZ
+  Root AGENTS.md TEIL 9 — Detailiertes Narrative Commit Layer: Force-Push-Verbot, author_system.js, Composite-Hash, Character-Selektion, Joke-Gen, CHANGELOG-Sync.
+  core/archive/docs/AGENTS.md TEIL 9 — Vereinfachter Workflow: Sidejoke → plotchain → update_plot → Commit-Text → .commit_msg.txt → basher.
+  AGENTS.md TEIL 11 Regel 10: "SSOT: Root + core/archive/docs/ identisch". Regel 4: "Root hat IMMER Vorrang".
+
+🧬 URSACHE
+  Root wurde mit dem Author-System-Layer aktualisiert (Commit "Commit Layer zu deterministic Authorsystem ausbauen"), aber der Sync nach core/archive/docs/AGENTS.md wurde nicht durchgeführt. Kein automatisierter Sync-Mechanismus zwischen Root und Archive.
+
+🛠️ LANGZEITLÖSUNG
+  core/archive/docs/AGENTS.md mit Root synchronisiert (Root gewinnt per Regel 11.4). Zusätzlich: check_consistency.js um Byte-für-Byte-Vergleich AGENTS.md ↔ core/archive/docs/AGENTS.md erweitern. Bei Divergenz: BLOCK im Pre-Commit.
+
+💡 NUTZEN + BEGRÜNDUNG
+  Wenn Agenten die falsche AGENTS.md lesen, befolgen sie veraltete Commit-Regeln — inkonsistente Commits und kaputte Narrative-Chains. Automatisierter Check kostet 0.1s pro Commit und verhindert diese Fehlerklasse permanent.
+
+---
+
+### 🔀 DD-003 — MASTER_DOC DB-Status: "0 Einträge" vs 3.797
+
+🔀 DIVERGENZ
+  MASTER_DOC.md:107-110 — "Live-DB Stand 2026-06-24: 0 Einträge — DB wurde am 24.06.2026 hart resettet".
+  Live-DB: SELECT COUNT(*) FROM translations → 3.797 Einträge (2026-06-26).
+  PREFLIGHT_LATEST.md vom 25.06. bestätigt 3.239 NEVER_STRESS_TESTED Einträge.
+
+🧬 URSACHE
+  Der Reset am 24.06. war real, aber seitdem liefen Übersetzungs-Runs. MASTER_DOC wurde nach dem Reset nicht aktualisiert — es ist eine statische Momentaufnahme, die DB ist live.
+
+🛠️ LANGZEITLÖSUNG
+  MASTER_DOC §5 auf 3.797 Einträge (Stand 26.06.) aktualisiert. Zusätzlich: MASTER_DOC §5 nicht von Hand pflegen, sondern durch Verweis auf PREFLIGHT_LATEST.md ersetzen. Oder db_query.js --report als Pre-Commit-Hook für automatisches Update.
+
+💡 NUTZEN + BEGRÜNDUNG
+  "0 Einträge" in der Doku → Entwickler macht unnötigen Full-Run → API-Kosten für 3.797 bereits übersetzte Strings. Die Wahrheit liegt in der DB, nicht in einer 2 Tage alten Doku.
+
+---
+
+### 🔀 DD-004 — Test-Ergebnis: "0 FAIL" vs 1 Error in npm test
+
+🔀 DIVERGENZ
+  README.md Badge + Zeile 188: "111 PASS · 0 FAIL".
+  npm test: "112 problems (1 error, 111 warnings)" — 1 ESLint-Error existiert.
+
+🧬 URSACHE
+  Die Badge-Zahl stammt aus einem früheren Testlauf. Seitdem wurde Code hinzugefügt der einen ESLint-Error erzeugt. Der README-Badge ist ein statischer Image-Link, keine dynamisch generierte Zahl.
+
+🛠️ LANGZEITLÖSUNG
+  Dreifacher Fix:
+  1. **ESLint-Error behoben:** In `author_system.js:222` war `let changelog = ''` eine ungenutzte Initialisierung → `let changelog;` (Commit `c43j75n6a3p11`). npm test clean: 0 errors, 0 failures.
+  2. **Badge aktualisiert:** README-Badge von hartcodierten 111 auf Live-Zahl 119 (84 Contract + 35 E2E). Alle 3 Stellen: shields.io URL, DE Inline-Tabelle, EN Inline-Tabelle.
+  3. **Struktureller Fix:** `core/scripts/update-badges.js` erstellt — liest tatsächlichen npm test Output, extrahiert PASS/FAIL/ERROR und schreibt Badges automatisch. `--cached` Mode für schnelle Updates ohne npm test. Exit-Code 1 mit lautem Boxed-Error wenn keine Zahlen gefunden werden.
+
+💡 NUTZEN + BEGRÜNDUNG
+  Ein Badge der "0 FAIL" behauptet während ein Error existiert, untergräbt Vertrauen in ALLE Badges. update-badges.js verhindert dass Badges jemals wieder manuell veralten — ein Aufruf vor jedem Release und die Zahlen sind garantiert ehrlich.
+
+**Status:** ✅ ABGESCHLOSSEN — Commit `c43j75n6a3p11` | 3 Dateien: author_system.js, README.md, update-badges.js (NEU)
+
+---
+
+### 🔀 DD-005 — LOC-Zahlen massiv daneben (8.500 vs 30.000)
+
+🔀 DIVERGENZ
+  SYSTEM_ARCHITECTURE §13: "~8.500 LOC, ~90 JS-Dateien". AGENTS.md TEIL 13: SongsOfSyxPlugin ~290 LOC, RimWorldPlugin ~155 LOC, index.js ~600 LOC, app.js 1517 LOC.
+  Live wc -l: core/ = 108 JS-Dateien, 30.072 LOC. SongsOfSyxPlugin 377, RimWorldPlugin 221, index.js 962, app.js 1854, GameAdapter 124 (nicht ~150), GamePlugin 199 (nicht ~165).
+
+🧬 URSACHE
+  LOC-Zahlen wurden einmalig geschätzt und nie aktualisiert. Seit der Schätzung: Plugin-System, Commit-Layer, Provider (openai, custom_api), Ollama Cloud Toggle, PREFLIGHT-System. Die 8.500-LOC-Zahl ist weniger als ein DRITTEL der tatsächlichen 30.072.
+
+🛠️ LANGZEITLÖSUNG
+  SYSTEM_ARCHITECTURE §13 auf ~30.000 LOC / ~108 Dateien korrigiert. AGENTS.md TEIL 13 alle LOC-Zahlen aktualisiert. `npm run stats` scripten (find + wc -l) und bei jedem Release automatisch in Docs einsetzen.
+
+💡 NUTZEN + BEGRÜNDUNG
+  Neuer Entwickler liest "8.500 LOC" und plant 2-3 Tage Refactoring — in Wirklichkeit 30.000 LOC, Faktor 3.5 falsch. Führt zu unterschätzten Aufwänden und Frust.
+
+---
+
+### 🔀 DD-006 — Methoden-Zahlen falsch (GamePlugin 11→12, SoS 23→35, RW 24→28)
+
+🔀 DIVERGENZ
+  AGENTS.md + SYSTEM_ARCHITECTURE: GamePlugin 11 Methoden, SongsOfSyxPlugin 23 Methoden, RimWorldPlugin 24 Methoden.
+  Live grep Methoden-Definitionen: GamePlugin 12, SongsOfSyxPlugin 35, RimWorldPlugin 28.
+
+🧬 URSACHE
+  SongsOfSyxPlugin wurde massiv erweitert (Ollama-Cloud, BridgeCore, Export-Stage2, diverse Fixes), RimWorldPlugin bekam zusätzliche Format-Hooks. Keine automatische Methoden-Zählung — Zahlen wurden einmal geschätzt und nie aktualisiert.
+
+🛠️ LANGZEITLÖSUNG
+  AGENTS.md und SYSTEM_ARCHITECTURE auf korrekte Zahlen aktualisiert. Methoden-Zählung in npm run stats aufnehmen. AGENTS.md TEIL 13 durch Verweis auf SYSTEM_ARCHITECTURE ersetzen (SSOT-Prinzip) damit Zahlen nur an EINER Stelle gepflegt werden.
+
+💡 NUTZEN + BEGRÜNDUNG
+  Falsche Methodenzahlen → falsche Testabdeckung-Beurteilung. 12 Methoden die nicht in der Doku stehen, existieren nicht in der mentalen Landkarte des Entwicklers — werden bei Code-Review und Testplanung übersehen.
+
+---
+
+### 🔀 DD-007 — MASTER_DOC Stand 24.06 — 2 Tage veraltet
+
+🔀 DIVERGENZ
+  MASTER_DOC.md:3 — "Stand: 24.06.2026".
+  AGENTS.md, SYSTEM_ARCHITECTURE, SOS_FORMAT_SPEC, LIVE_INDEX, PREFLIGHT_LATEST — alle 2026-06-25 oder neuer.
+
+🧬 URSACHE
+  MASTER_DOC wurde am 24.06. zuletzt aktualisiert (DB-Reset-Doku), danach kamen am 25.06. mehrere Commits und Doc-Updates. Kein Pflicht-Check ob MASTER_DOC Datum mit letztem Commit-Datum übereinstimmt.
+
+🛠️ LANGZEITLÖSUNG
+  Datum auf 26.06.2026 korrigiert. Pre-Commit-Hook: MASTER_DOC.md "Stand:"-Datum ≤ 24h von git log -1 --format=%ai? Bei Abweichung Warnung (kein Block, nicht jeder Commit braucht Doc-Updates).
+
+💡 NUTZEN + BEGRÜNDUNG
+  2 Tage altes MASTER_DOC signalisiert "nicht aktuell" — Leser überspringen es und vertrauen auf veraltete FREEZE-Dokumente. MASTER_DOC ist die SSOT — wenn es veraltet aussieht, hat das Projekt keine vertrauenswürdige SSOT.
+
+---
+
 *📚 FREEZE INDEX 2 — Fortsetzung ab 2026-06-20*
 *Vorgänger: FREEZE_INDEX_v0.20.0_archived.md (142 Einträge, 16.06.–20.06.2026)*
-*Gesamt: 142 (archiviert) + 93 (dieses Dokument) = **235 Buch-Einträge**.*
+*Gesamt: 142 (archiviert) + 100 (dieses Dokument) = **242 Buch-Einträge**.*
 *CODE IST DIE EINZIGE WAHRHEIT.*
 
 ---

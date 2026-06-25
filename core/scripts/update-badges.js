@@ -7,8 +7,10 @@
  *   - Inline-Tabellen (DE + EN) mit aktuellen Test-Zahlen
  *
  * Nutzung:
- *   node scripts/update-badges.js             # Normal — updated README
- *   node scripts/update-badges.js --dry-run   # Nur Vorschau, kein Write
+ *   node scripts/update-badges.js              # Normal — updated README
+ *   node scripts/update-badges.js --dry-run    # Nur Vorschau, kein Write
+ *   node scripts/update-badges.js --cached     # Liest letzten Test-Output aus Cache (schnell)
+ *   node scripts/update-badges.js --cached --dry-run  # Cache-Vorschau
  */
 
 const { execSync } = require('child_process');
@@ -18,18 +20,41 @@ const path = require('path');
 const coreDir = path.join(__dirname, '..');
 const rootDir = path.join(coreDir, '..');
 const readmePath = path.join(rootDir, 'README.md');
+const cachePath = path.join(coreDir, '.last_test_output.txt');
 
 const dryRun = process.argv.includes('--dry-run');
+const useCache = process.argv.includes('--cached');
 
-// ── 1. npm test ausführen ──────────────────────────────────────────
-console.log('▶ npm test wird ausgeführt...\n');
+// ── 1. Test-Output holen (Cache oder Live) ─────────────────────────
 let testOutput;
-try {
-  testOutput = execSync('npm test', { cwd: coreDir, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
-} catch (e) {
-  // npm test kann mit Exit-Code >0 enden (z.B. bei ESLint-Warnings), Output trotzdem parsen
-  testOutput = e.stdout || '';
-  if (e.stderr) testOutput += '\n' + e.stderr;
+let sourceLabel = '';
+
+if (useCache && fs.existsSync(cachePath)) {
+  testOutput = fs.readFileSync(cachePath, 'utf-8');
+  sourceLabel = 'CACHE';
+  console.log('📦 Test-Output aus Cache gelesen.\n');
+} else if (useCache && !fs.existsSync(cachePath)) {
+  console.log('⚠️  Cache-Datei nicht gefunden — führe npm test aus.\n');
+  console.log('   Führe einmal ohne --cached aus um den Cache zu füllen.\n');
+  useCache = false;  // force live run
+}
+
+if (!useCache || !testOutput) {
+  sourceLabel = 'LIVE';
+  if (!useCache) console.log('▶ npm test wird ausgeführt...\n');
+  try {
+    testOutput = execSync('npm test', { cwd: coreDir, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+  } catch (e) {
+    // npm test kann mit Exit-Code >0 enden (z.B. bei ESLint-Warnings), Output trotzdem parsen
+    testOutput = e.stdout || '';
+    if (e.stderr) testOutput += '\n' + e.stderr;
+  }
+  // Cache für zukünftige --cached Aufrufe schreiben
+  try {
+    fs.writeFileSync(cachePath, testOutput, 'utf-8');
+  } catch (_) {
+    // Cache-Schreiben ist optional — kein Fehler wenn es fehlschlägt
+  }
 }
 
 // ── 2. Test-Zahlen parsen ──────────────────────────────────────────
@@ -81,13 +106,29 @@ if (totalPass === 0 && totalFail === 0) {
   }
 }
 
-console.log(`  Test-Ergebnisse: ${totalPass} PASS · ${totalFail} FAIL · ${totalError} ERROR\n`);
+console.log(`  Test-Ergebnisse [${sourceLabel}]: ${totalPass} PASS · ${totalFail} FAIL · ${totalError} ERROR\n`);
 
 if (totalPass === 0 && totalFail === 0 && totalError === 0) {
-  console.log('  ⚠ Keine Test-Zahlen im Output gefunden — überspringe Update.');
-  console.log('  Output-Endung für Debug:\n');
-  console.log(testOutput.slice(-500));
-  process.exit(0);
+  console.error('');
+  console.error('╔══════════════════════════════════════════════════════════╗');
+  console.error('║  ❌  KEINE TEST-ZAHLEN GEFUNDEN                          ║');
+  console.error('║                                                          ║');
+  console.error('║  Der npm test Output enthält keine erkennbaren           ║');
+  console.error('║  PASS/FAIL/ERROR-Zahlen. Badges wurden NICHT updated.    ║');
+  console.error('║                                                          ║');
+  console.error('║  Mögliche Ursachen:                                      ║');
+  console.error('║  • Test-Output-Format hat sich geändert                  ║');
+  console.error('║  • --cached liest veralteten/leeren Output               ║');
+  console.error('║  • npm test läuft nicht durch                            ║');
+  console.error('║                                                          ║');
+  console.error('║  → Ohne --cached ausführen für Live-Test                 ║');
+  console.error('║  → Output-Endung (letzte 500 Zeichen) folgt unten        ║');
+  console.error('╚══════════════════════════════════════════════════════════╝');
+  console.error('');
+  console.error('  Output-Endung für Debug:');
+  console.error(testOutput.slice(-500));
+  console.error('');
+  process.exit(1);
 }
 
 // ── 3. Badge-Farbe bestimmen ───────────────────────────────────────

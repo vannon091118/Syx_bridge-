@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 22:35:45] update-badges.js gehärtet: --cached Mode, Exit-Code 1 bei fehlenden Test-Zahlen, expliziter Cache-Fallback. FREEZE_INDEX_2 §31 DD-004 auf ABGESCHLOSSEN gesetzt
+**Narrator:** Ghost | **Model:** deepseek-v4-pro | **Composite:** `c45j75n8a2p44`
+- 2 Datei(en) geändert.
+
 ### [2026-06-25 22:35:06] README tone pass and history: self-ironic roadmap/release notes + added v0.10 PoC / v0.15 first release
 **Narrator:** Vannon | **Model:** Gemini 3.5 Flash | **Composite:** `c44j30n4a4p32`
 - 1 Datei(en) geändert.

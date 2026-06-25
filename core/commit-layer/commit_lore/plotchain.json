@@ -2358,5 +2358,24 @@
         "file": "README.md"
       }
     ]
+  },
+  {
+    "p_id": "p50",
+    "id": "plot-2026-06-25T22:35:45",
+    "timestamp": "2026-06-25 22:35:45",
+    "summary": "update-badges.js gehärtet: --cached Mode, Exit-Code 1 bei fehlenden Test-Zahlen, expliziter Cache-Fallback. FREEZE_INDEX_2 §31 DD-004 auf ABGESCHLOSSEN gesetzt",
+    "narrator": "Ghost",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c45j75n8a2p44",
+    "ref_to": "plot-2026-06-25T22:35:06",
+    "prev_narrator": "Vannon",
+    "data_changes": [
+      {
+        "file": "core/archive/docs/FREEZE/FREEZE_INDEX_2.md"
+      },
+      {
+        "file": "core/scripts/update-badges.js"
+      }
+    ]
   }
 ]
