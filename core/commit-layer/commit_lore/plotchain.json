@@ -2592,5 +2592,24 @@
         "file": "core/archive/docs/CHANGELOG.md"
       }
     ]
+  },
+  {
+    "p_id": "p59",
+    "id": "plot-2026-06-25T23:33:52",
+    "timestamp": "2026-06-25 23:33:52",
+    "summary": "config-runtime.js: 7 fetch*Models-Methoden zu generischer _fetchModels() vereinheitlicht. Key-Check, Auth-Typ (bearer/keyInUrl), preFilter+filterFn Pipeline, Fallback — alles in einer Hilfsfunktion. 6 Thin-Wrapper + 1 partielle Delegation (NVIDIA).",
+    "narrator": "Flux",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c54j67n13a3p54",
+    "ref_to": "plot-2026-06-25T23:29:00",
+    "prev_narrator": "Thinker",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/Translation/config/config-runtime.js"
+      }
+    ]
   }
 ]

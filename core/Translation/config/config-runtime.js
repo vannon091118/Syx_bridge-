@@ -165,102 +165,90 @@ class ConfigRuntime {
     }
   }
 
-  async fetchGeminiModels() {
+  // S-008: Generischer Model-Fetcher — abstrahiert Key-Check, Auth-Typ, Map/Filter/Sort, Fallback
+  // preFilter: applied BEFORE map on raw response items (z.B. Gemini supportedGenerationMethods)
+  // filterFn:  applied AFTER map on extracted IDs (z.B. OpenAI ft: exclusion, NVIDIA isUsableTextModel)
+  async _fetchModels({ provider, url, authType, responseField, mapFn, preFilter, filterFn, fallback, timeout, requireKey }) {
+    const key = provider ? this.getApiKey(provider) : null;
+    if (requireKey && !key) return fallback || [];
+
+    let finalUrl = url;
+    const headers = Object.create(null);
+
+    if (authType === 'keyInUrl' && key) finalUrl = `${url}?key=${key}`;
+    else if (authType === 'bearer' && key) headers.Authorization = `Bearer ${key}`;
+
     try {
-      const key = this.getApiKey('gemini');
-      if (!key) return [];
-      const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
-      const response = await axios.get(url, { timeout: 10000 });
-      const models = (response.data.models || [])
-        .filter(m => m.supportedGenerationMethods.includes('generateContent'))
-        .map(m => m.name.replace('models/', ''))
-        .sort();
-      return models;
+      const response = await axios.get(finalUrl, { headers, timeout: timeout || 10000 });
+      const data = responseField ? response.data[responseField] : (response.data.data || []);
+      let models = Array.isArray(data) ? [...data] : [];
+      if (preFilter) models = models.filter(preFilter);
+      models = models.map(mapFn || (m => m.id));
+      if (filterFn) models = models.filter(filterFn);
+      models = models.filter(Boolean).sort();
+      return models.length > 0 ? models : (fallback || []);
     } catch (e) {
-      return [];
+      return fallback || [];
     }
+  }
+
+  async fetchGeminiModels() {
+    return this._fetchModels({
+      provider: 'gemini', url: 'https://generativelanguage.googleapis.com/v1beta/models',
+      authType: 'keyInUrl', responseField: 'models', requireKey: true,
+      preFilter: m => m.supportedGenerationMethods?.includes('generateContent'),
+      mapFn: m => m.name.replace('models/', '')
+    });
   }
 
   async fetchGroqModels() {
-    const key = this.getApiKey('groq');
-    if (!key) return GROQ_FALLBACK_MODELS;
-    try {
-      const response = await axios.get('https://api.groq.com/openai/v1/models', {
-        headers: { Authorization: `Bearer ${key}` },
-        timeout: 20000
-      });
-      const models = (response.data.data || []).map(model => model.id).sort();
-      return models.length > 0 ? models : GROQ_FALLBACK_MODELS;
-    } catch (e) {
-      return GROQ_FALLBACK_MODELS;
-    }
+    return this._fetchModels({
+      provider: 'groq', url: 'https://api.groq.com/openai/v1/models',
+      authType: 'bearer', requireKey: true, fallback: GROQ_FALLBACK_MODELS, timeout: 20000
+    });
   }
 
   async fetchOllamaModels() {
-    try {
-      const response = await axios.get(`${this.config.OLLAMA_URL}/api/tags`, { timeout: 5000 });
-      return (response.data.models || []).map(m => m.name).sort();
-    } catch (e) {
-      return [];
-    }
+    return this._fetchModels({
+      url: `${this.config.OLLAMA_URL}/api/tags`,
+      responseField: 'models', mapFn: m => m.name, timeout: 5000
+    });
   }
 
   async fetchPlayer2Models() {
-    try {
-      const response = await axios.get(`${this.config.PLAYER2_URL}/models`, { timeout: 5000 });
-      return (response.data.data || []).map(m => m.id).sort();
-    } catch (e) {
-      return [];
-    }
+    return this._fetchModels({
+      url: `${this.config.PLAYER2_URL}/models`, timeout: 5000
+    });
   }
 
   async fetchOpenAIModels() {
-    const key = this.getApiKey('openai');
-    if (!key) return [];
-    try {
-      const url = `${this.config.OPENAI_URL || OPENAI_DEFAULT_URL}/models`;
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${key}` },
-        timeout: 10000
-      });
-      const models = (response.data.data || [])
-        .map(m => m.id)
-        .filter(id => id && !id.startsWith('ft:')) // exclude fine-tuned
-        .sort();
-      return models;
-    } catch (e) {
-      return ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo'];
-    }
+    return this._fetchModels({
+      provider: 'openai', url: `${this.config.OPENAI_URL || OPENAI_DEFAULT_URL}/models`,
+      authType: 'bearer', requireKey: true,
+      filterFn: id => id && !id.startsWith('ft:'),
+      fallback: ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo']
+    });
   }
 
   async fetchCustomApiModels() {
-    const url = this.config.CUSTOM_API_URL || CUSTOM_API_DEFAULT_URL;
-    const key = this.getApiKey('custom_api');
-    try {
-      const headers = key ? { Authorization: `Bearer ${key}` } : {};
-      const response = await axios.get(`${url}/models`, { headers, timeout: 5000 });
-      return (response.data.data || []).map(m => m.id).sort();
-    } catch (e) {
-      return [];
-    }
+    return this._fetchModels({
+      provider: 'custom_api', url: `${this.config.CUSTOM_API_URL || CUSTOM_API_DEFAULT_URL}/models`,
+      authType: 'bearer', requireKey: false, timeout: 5000
+    });
   }
 
   async fetchNvidiaModels() {
     const key = this.getApiKey('nvidia');
     if (key) {
-      try {
-        const response = await axios.get('https://integrate.api.nvidia.com/v1/models', {
-          headers: { Authorization: `Bearer ${key}` },
-          timeout: 10000
-        });
-        const models = (response.data.data || []).map(m => m.id).filter(isUsableTextModel).sort();
-        if (models.length > 0) {
-          setNvidiaFreeModels(models);
-          console.log(`[FREE-CACHE] ${models.length} NVIDIA-Modelle via /v1/models erkannt (alle implizit Free-Tier).`);
-          return models;
-        }
-      } catch (e) {
-        // fall through to static list
+      const models = await this._fetchModels({
+        provider: 'nvidia', url: 'https://integrate.api.nvidia.com/v1/models',
+        authType: 'bearer', requireKey: true,
+        filterFn: isUsableTextModel, fallback: []
+      });
+      if (models.length > 0) {
+        setNvidiaFreeModels(models);
+        console.log(`[FREE-CACHE] ${models.length} NVIDIA-Modelle via /v1/models erkannt (alle implizit Free-Tier).`);
+        return models;
       }
     }
     return [...NVIDIA_FALLBACK_MODELS];

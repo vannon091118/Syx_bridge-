@@ -1,7 +1,13 @@
-ANALYSE: ensureGroqModel() und ensureNvidiaModel() sind strukturell identische Kopien derselben Logik (Root Cause: Copy-Paste-Entscheidung bei der NVIDIA-Integration, ohne Refactoring auf gemeinsames Pattern). Beide Methoden folgen demselben Ablauf: Early-Return wenn Provider nicht als PRIMARY/AUDITOR/POLISHER aktiv, Models fetchen, NeedsReplacement-Check pro Rolle, Fallback aus statischer Liste.
+Vereinheitliche 7 fetch*Models()-Methoden zu einer generischen _fetchModels()-Hilfsfunktion.
 
-TRADE-OFF: _ensureProviderModel(providerName, displayName, fetchModelsFn, fallbackModels) abstrahiert das gemeinsame Pattern. Der Trade-off ist minimal -- ensureOllamaModel() bleibt unangetastet (hat abweichende findBestModel/ Fuzzy-Matching-Logik, die sich nicht generisch abbilden lässt ohne Over-Engineering).
+_g fetchModels({ provider, url, authType, responseField, mapFn, preFilter, filterFn, fallback, timeout, requireKey })
+  - authType: 'bearer' | 'keyInUrl' | null — abstrahiert Key-Handling pro Provider
+  - preFilter: applied BEFORE map on raw response items (z.B. Gemini supportedGenerationMethods)
+  - filterFn: applied AFTER map on extracted IDs (z.B. OpenAI ft:-Exclusion, NVIDIA isUsableTextModel)
+  - Pipeline: preFilter → map → filterFn → filter(Boolean) → sort → fallback
 
-FAZIT: 2 Thin-Wrapper (je 2 LOC) delegieren an die generische Methode. ~60 LOC copy-paste eliminiert, 0 Verhaltensänderung. Die Arrow-Functions in den Delegationsaufrufen capturen this korrekt aus dem Wrapper-Scope.
+6 Methoden zu Thin-Wrappern reduziert: fetchGeminiModels, fetchGroqModels, fetchOllamaModels, fetchPlayer2Models, fetchOpenAIModels, fetchCustomApiModels.
+fetchNvidiaModels nutzt _fetchModels partiell für den API-Call, behält aber side effect (setNvidiaFreeModels) und Fallthrough zu NVIDIA_FALLBACK_MODELS.
+fetchOpenRouterModels und fetchFcmModelRankings unverändert (komplexe Pricing-Filter/CLI-Fallback-Logik).
 
-EMPFEHLUNG: Das Pattern ist auf weitere Provider übertragbar, falls zukünftige Integrationen denselben ensure/auto-select-Flow benötigen.
+~45 LOC copy-paste eliminiert (6x ~8 LOC try/catch/key-check-Boilerplate), 1 zentrale try/catch-Stelle.

@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:33:52] config-runtime.js: 7 fetch*Models-Methoden zu generischer _fetchModels() vereinheitlicht. Key-Check, Auth-Typ (bearer/keyInUrl), preFilter+filterFn Pipeline, Fallback — alles in einer Hilfsfunktion. 6 Thin-Wrapper + 1 partielle Delegation (NVIDIA).
+**Narrator:** Flux | **Model:** deepseek-v4-pro | **Composite:** `c54j67n13a3p54`
+- 2 Datei(en) geändert.
+
 ### [2026-06-25 23:28:35] config-runtime.js: ensureGroqModel + ensureNvidiaModel zu generischem _ensureProviderModel() dedupliziert. 2x 32 LOC copy-paste entfernt, durch 28 LOC generische Methode + 2 thin wrappers ersetzt.
 **Narrator:** Thinker | **Model:** deepseek-v4-pro | **Composite:** `c53j79n3a4p37`
 - 2 Datei(en) geändert.
