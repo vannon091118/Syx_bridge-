@@ -219,6 +219,8 @@ let narratorName = `n${result.n}`;
 let narratorRole = '';
 let narratorVoice = '';
 let narratorRules = null;
+let toneBrief = '';
+let baseAttitudes = null;
 
 if (characterSheets && characterSheets.characters) {
   const nKey = String(result.n);
@@ -228,6 +230,18 @@ if (characterSheets && characterSheets.characters) {
     narratorRole = sheet.role;
     narratorVoice = sheet.voice_traits;
     narratorRules = sheet.verifier_rules || null;
+    toneBrief = sheet.tone_brief || '';
+    baseAttitudes = sheet.attitudes || null;
+  }
+}
+
+// ── Attitudes: Basis + Mood-Modifier → Finale Verhältnisse ─────
+let finalAttitudes = {};
+if (baseAttitudes) {
+  const mods = narrativeParams?.attitude_modifiers?.[result.mood] || {};
+  for (const [key, val] of Object.entries(baseAttitudes)) {
+    let finalVal = val + (mods[key] || 0);
+    finalAttitudes[key] = Math.max(0, Math.min(10, finalVal));
   }
 }
 
@@ -240,6 +254,7 @@ if (narrativeParams?.narrator_mood_combination?.examples) {
 
 console.log('  ── Erzähler (Narrator) ──');
 console.log(`  Charakter:  ${narratorName} (${narratorRole})`);
+if (toneBrief) console.log(`  Disposition: ${toneBrief}`);
 console.log(`  Stimme:     ${narratorVoice}`);
 console.log(`  Token:      [NARRATOR:${narratorName}]`);
 if (moodNarratorCombo) {
@@ -250,6 +265,19 @@ if (narratorRules) {
   if (narratorRules.must_contain_regex) {
     console.log(`  Pattern:    ${narratorRules.must_contain_regex}`);
   }
+}
+
+// ── Finale Verhältnisse (Attitudes) ausgeben ──────────────────
+if (Object.keys(finalAttitudes).length > 0) {
+  console.log('');
+  console.log('  ── Aktuelle Verhältnisse (Attitudes) ──');
+  console.log(`  Code-Liebe:         ${finalAttitudes.code_love}/10`);
+  console.log(`  Aufräum-Frust:      ${finalAttitudes.cleanup_resentment}/10`);
+  console.log(`  Doku-Genervtheit:   ${finalAttitudes.doku_irritation}/10`);
+  console.log(`  Kritik-Neigung:     ${finalAttitudes.criticism_tendency}/10`);
+  console.log(`  Lob-Neigung:        ${finalAttitudes.praise_tendency}/10`);
+  console.log(`  Wortschwall-Bias:   ${finalAttitudes.verbosity_bias}/10`);
+  console.log(`  Optimismus:         ${finalAttitudes.optimism}/10`);
 }
 console.log('');
 console.log('  ── Narrative Anweisung ──');

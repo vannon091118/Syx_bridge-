@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:18:40] Verhaeltnisse-System (Attitudes): alle 14 Narratoren bekommen individuelle Dispositionen (code_love, cleanup_resentment, doku_irritation, criticism_tendency, praise_tendency, verbosity_bias, optimism 0-10). Moods modifizieren mit Deltas. derive_composite.js berechnet finale Attitudes fuer LLM-Kontext
+**Narrator:** Glitch | **Model:** deepseek-v4-pro | **Composite:** `c50j53n10a4p25`
+- 5 Datei(en) geändert.
+
 ### [2026-06-25 23:08:38] app.js (1854→70 LOC) + server.js (667→120 LOC) modularisiert: 5 Domain-Module unter public/modules/, server-routes.js extrahiert, Bootstrap reduziert
 **Narrator:** Spark | **Model:** deepseek-v4-pro | **Composite:** `c49j90n9a2p19`
 - 12 Datei(en) geändert.

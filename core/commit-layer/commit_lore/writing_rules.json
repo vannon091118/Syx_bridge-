@@ -96,7 +96,13 @@
         "description": "Freiwaehlbar: Verweis auf den aktuellen Arc oder einen archivierten Arc. Wird jetzt ueber den Composite-Hash referenziert.",
         "required": false
       },
-      "cross_narrator_reference": {
+      "narrator_attitudes": {
+      "description": "Die Disposition (Verhältnisse) des Erzählers. Jeder Narrator hat persistente Basis-Werte (Attitudes 0-10) wie code_love, cleanup_resentment, doku_irritation, criticism_tendency, praise_tendency, verbosity_bias und optimism. Diese werden durch tagesaktuelle Mood-Deltas modifiziert. Die finalen Attitudes definieren, WAS den Charakter an diesem Commit stört oder freut — und damit den allgemeinen Ton der Message.",
+      "required": false,
+      "_note": "Prompt-Regel (kein Verifikations-Check in verify_commit_msg.js). Die Attitudes werden von derive_composite.js berechnet und als Kontext für das LLM ausgegeben.",
+      "source": "character_sheets.json → characters[n].attitudes + narrative_params.json → attitude_modifiers[mood]"
+    },
+    "cross_narrator_reference": {
         "description": "Jeder Commit MUSS mindestens einmal den vorherigen Narrator oder dessen Model namentlich erwaehnen. Bei Dialog-Struktur (j%5==3) muessen mindestens 2 Charaktere interagieren. Der PREV_NARRATOR-Name wird automatisch von derive_composite.js bereitgestellt.",
         "required": true,
         "min_mentions": 1,

@@ -62,6 +62,19 @@
       "Sage+neugierig": "Welches Prinzip steckt hinter diesem Muster? Lass uns lernen."
     }
   },
+  "attitude_modifiers": {
+    "description": "Modifikatoren (Deltas von -4 bis +4), die auf die Basis-Verhältnisse (Attitudes) des Narrators angewendet werden, abhängig vom aktuellen Mood. Werte werden auf 0-10 geclampt.",
+    "sachlich": { "verbosity_bias": -2, "praise_tendency": -2, "criticism_tendency": -2 },
+    "sarkastisch": { "criticism_tendency": 3, "praise_tendency": -3, "optimism": -3 },
+    "erschöpft": { "cleanup_resentment": 3, "optimism": -3, "verbosity_bias": -2, "doku_irritation": 2 },
+    "triumphierend": { "praise_tendency": 4, "optimism": 3, "criticism_tendency": -3, "code_love": 2 },
+    "selbstironisch": { "criticism_tendency": 2, "praise_tendency": -1, "optimism": -1 },
+    "neugierig": { "code_love": 2, "verbosity_bias": 2, "optimism": 1 },
+    "müde-zufrieden": { "optimism": 2, "praise_tendency": 1, "cleanup_resentment": -2, "verbosity_bias": -1 },
+    "alarmiert": { "verbosity_bias": -1, "optimism": -4, "criticism_tendency": 2 },
+    "trocken": { "verbosity_bias": -3, "praise_tendency": -2 },
+    "warm": { "praise_tendency": 2, "optimism": 2, "criticism_tendency": -2 }
+  },
   "decoding": {
     "tone": {
       "formula": "j % 10",

@@ -1,28 +1,40 @@
-## server.js (667 → 120 LOC)
-Alle 25+ Route-Handler nach `server-routes.js` extrahiert.
-GuiServer-Klasse bleibt als dünne Schale — importiert `registerRoutes`,
-delegiert sämtliches URL-Parsing und Event-Emitting an die externe Funktion.
-Datei ist jetzt lesbar: Konstruktor + start() + stop() — das war's.
+## Verhältnisse-System (Attitudes) für alle 14 Narratoren
 
-## app.js (1854 → 70 LOC)
-Fünf Domain-Module unter `public/modules/`:
+Jeder Commit-Erzähler hat jetzt individuelle Dispositionen — sieben Werte (0-10)
+die bestimmen, WAS ihn an diesem Commit stört oder freut:
 
-| Modul | LOC | Zuständigkeit |
-|-------|-----|---------------|
-| `state.js` | 80 | Alle shared-state `var`-Deklarationen, DOM-Refs, Konstanten |
-| `ui-core.js` | 250 | tick(), Pipeline, Provider-Stats, Health, Actions, Background-States |
-| `ui-settings.js` | 320 | Config, Mode, Provider-Change, Batch, Local Models, Ollama Cloud, Polling |
-| `ui-data.js` | 680 | DB-Browser, Revisions, Repair, Keys, FCM, Runtime-Score, Backups, Model-Status |
-| `ui-sse.js` | 80 | SSE-Verbindung + Log-Handling |
+| Dimension | Bedeutung |
+|-----------|----------|
+| code_love | Freude an sauberem Code |
+| cleanup_resentment | Genervtheit vom Hinterherräumen |
+| doku_irritation | Wie sehr Doku-Arbeit nervt |
+| criticism_tendency | Neigung zu kritisieren |
+| praise_tendency | Neigung zu loben |
+| verbosity_bias | Extra-Wortschwall-Tendenz |
+| optimism | Glas halbvoll vs. halbleer |
 
-`app.js` ist jetzt nur noch Bootstrap: Lifecycle-Init, Interval-Registrierung, Window-Exports.
+Beispiele: Buffy (code_love=8, criticism=8) liebt eleganten Code und meckert
+trotzdem. Spark (code_love=9, praise=9) findet ALLES super. Null (optimism=0,
+praise=0) glaubt an gar nichts. Argos (cleanup_resentment=9, criticism=9) hat
+es satt, anderer Leute Müll wegzuräumen.
 
-## Kompatibilität
-- Kein Bundler nötig — `index.html` lädt alle 6 Scripts in Abhängigkeitsreihenfolge
-- Alle `onclick`-Handler aus dem HTML funktionieren weiter (Function Declarations sind global)
-- `window.xxx`-Exports für dynamische Handler bleiben erhalten
-- ES5-kompatibel: `function(){}`, `var`, `Object.assign`, String-Concat, `.then()/.catch()`
+## Mood-Overlay (attitude_modifiers in narrative_params.json)
 
-## Nebenfunde
-- `checkAllKeys` in ui-data.js: kaputtes `setInterval`-Polling durch sequentielle Promise-Chain ersetzt
-- Unresolved-Placeholder in `sidejoke_pool.json` gefixt
+10 Moods modifizieren die Basis-Werte mit Deltas (-4 bis +4).
+Z.B. "triumphierend" boostet praise +4 und senkt criticism -3.
+"erschöpft" boostet cleanup_resentment +3 und senkt optimism -3.
+"alarmiert" senkt optimism um satte -4 (größter Einzel-Delta).
+
+Endwerte werden auf 0-10 geclampt — ein "triumphierender" Null erreicht
+trotzdem nur praise=4/10 (Basis 0 + 4 = 4).
+
+## derive_composite.js
+
+Berechnet finale Attitudes (Basis + Mood-Modifier) und gibt sie im
+Konsolen-Output aus — das LLM liest sie als Prompt-Kontext.
+
+## Code-Review-Fixes
+
+- Null: cleanup_resentment 2 → 4 (resigniert, aber nicht völlig gleichgültig)
+- Spark: criticism_tendency 1 → 2 (selbst der Neuling behält einen Hauch Kritik)
+- writing_rules.json: required: true → false + _note (Prompt-Regel, kein Verifikations-Check)

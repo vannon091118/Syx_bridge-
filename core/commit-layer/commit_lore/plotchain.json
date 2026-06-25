@@ -2489,5 +2489,33 @@
         "file": "core/commit-layer/commit_lore/build_pool.js"
       }
     ]
+  },
+  {
+    "p_id": "p55",
+    "id": "plot-2026-06-25T23:18:40",
+    "timestamp": "2026-06-25 23:18:40",
+    "summary": "Verhaeltnisse-System (Attitudes): alle 14 Narratoren bekommen individuelle Dispositionen (code_love, cleanup_resentment, doku_irritation, criticism_tendency, praise_tendency, verbosity_bias, optimism 0-10). Moods modifizieren mit Deltas. derive_composite.js berechnet finale Attitudes fuer LLM-Kontext",
+    "narrator": "Glitch",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c50j53n10a4p25",
+    "ref_to": "plot-2026-06-25T23:08:38",
+    "prev_narrator": "Spark",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/commit-layer/commit_lore/character_sheets.json"
+      },
+      {
+        "file": "core/commit-layer/commit_lore/derive_composite.js"
+      },
+      {
+        "file": "core/commit-layer/commit_lore/narrative_params.json"
+      },
+      {
+        "file": "core/commit-layer/commit_lore/writing_rules.json"
+      }
+    ]
   }
 ]
