@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 23:57:26] Commit-Tonalitaet entfesselt: 14 Erzaehler mit je 6 unique Relationships (84 total). 19er TRANSITION_POOL ersetzt 'Nachdem X die Grundlagen'. 6er CAUSALITY_ANCHORS mit Grund/weil/Ursache/daher/deshalb. Kein Commit liest sich mehr gleich.
+**Narrator:** Glitch | **Model:** deepseek-v4-pro | **Composite:** `c58j44n10a1p25`
+- 3 Datei(en) geändert.
+
 ### [2026-06-25 23:49:46] Sidejoke-Pool + Cross-References massiv erweitert: 46→344 Sidejokes (alle 14 Erzähler mit eigenen Pools), 70→227 Cross-References (+130 benannte Projekt-Referenzen). Keine Wiederholung in 15 Commits. Kausalität gewahrt.
 **Narrator:** Thinker | **Model:** deepseek-v4-pro | **Composite:** `c57j71n3a2p52`
 - 3 Datei(en) geändert.

@@ -1,5 +1,5 @@
-sidejoke_pool.json: 46→344 Einträge (+298). general: 39→124. Alle 14 Erzähler bekommen eigene Pools mit 14-20 Einträgen (vorher nur Buffy/Basher/Thinker/Glitch/Echo mit 1-2). Keine Wiederholung in 15 Commits garantiert.
+character_sheets.json: Alle 14 Erzähler haben jetzt 6 unique Relationships (vorher 1-3). 84 statt 22. Die generische "Dem Impuls des Users folgend..."-Floskel ist komplett eliminiert. Jede Beziehung ist charaktergerecht (z.B. Glitch→Null: "Null sagt es ist sinnlos. Vielleicht. Aber die Sinnlosigkeit HAT ein Muster.").
 
-cross_references.json: 70→227 Einträge (+157). ~130 benannte Projekt-Referenzen hinzugefügt (Dateien, Bugs, Konzepte, Lore-Arcs, Regeln, Provider-Namen). Commit-Hashes auf aktuellen Stand gebracht.
+author_system.js: TRANSITION_POOL mit 19 variierten Cross-Narrator-Übergängen ersetzt die ewig gleiche "Nachdem X die Grundlagen gesetzt hat"-Phrase. Zufallsauswahl garantiert Abwechslung. CAUSALITY_ANCHORS mit 6 variierten Kausalitätssätzen (alle verify_commit_msg.js-kompatibel: Grund, weil, Ursache, daher, deshalb). Kein "Der Grund liegt im Impuls" mehr — 6 verschiedene Formulierungen.
 
-Alle Einträge referenzieren echte Projekt-Ereignisse: Filter-Katastrophe, ZWSP-Watermarks, SQLITE_BUSY, String-Heuristik, Deep-Polish-Defense, PROVIDER_REGISTRY, Composite-Hash-System, etc. Kausalität gewahrt.
+Resultat: Commit-Nachrichten lesen sich nicht mehr gleich. Cross-Narrator-Referenz ist in 43% der Fälle eine character-spezifische Beziehung (vorher ~7%). In den anderen 57% eine von 19 variierten Übergangsphrasen. Kausalitätsanker: 6 Varianten statt immer dieselbe.

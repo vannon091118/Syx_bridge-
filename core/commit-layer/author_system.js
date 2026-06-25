@@ -257,21 +257,54 @@ if (joke) commitBody += `${joke}\n\n`;
 if (voiceIntro) commitBody += voiceIntro;
 
 // Cross-Narrator-Referenz einweben (Pflicht für verify_commit_msg.js Check 6)
+// Pool variabler Übergangsphrasen — kein generisches "Nachdem X die Grundlagen..." mehr.
+const TRANSITION_POOL = [
+  (prev) => `An der Stelle wo ${prev} aufgehört hat, setz ich an.`,
+  (prev) => `${prev}s Arbeit war die Vorlage. Hier ist die Ausführung.`,
+  (prev) => `Was ${prev} vorbereitet hat, wird hier vollendet.`,
+  (prev) => `${prev} hat den Staffelstab übergeben. Ich lauf die nächste Runde.`,
+  (prev) => `Der Faden von ${prev} wird hier weitergesponnen.`,
+  (prev) => `${prev} hat das Warum geliefert. Hier ist das Wie.`,
+  (prev) => `Von ${prev}s Fundament aus wird hier weitergebaut.`,
+  (prev) => `${prev} legte den ersten Stein. Hier kommt der nächste.`,
+  (prev) => `Die Session von ${prev} findet hier ihre logische Fortsetzung.`,
+  (prev) => `${prev} hat den Weg geebnet. Ich geh ihn zu Ende.`,
+  (prev) => `Ohne ${prev}s Vorarbeit wäre das hier nicht möglich gewesen.`,
+  (prev) => `${prev} hat die Bühne bereitet. Jetzt wird gespielt.`,
+  (prev) => `Direkt nach ${prev}: die nächste logische Eskalation.`,
+  (prev) => `${prev} öffnete die Tür. Ich geh durch.`,
+  (prev) => `Das Echo von ${prev}s letztem Commit verhallt. Hier ist die Antwort.`,
+  (prev) => `${prev} hat die Frage gestellt. Ich liefere die Antwort.`,
+  (prev) => `Die Brücke von ${prev} zu diesem Commit: logisch, notwendig, jetzt.`,
+  (prev) => `${prev}s Puzzleteil war das letzte das fehlte. Jetzt ist das Bild komplett.`,
+  (prev) => `Angeknüpft an ${prev}s Arbeit — der nächste Dominostein fällt.`,
+];
+
 if (prevNarratorName) {
   const rel = selectedNarrator.relationships ? selectedNarrator.relationships[prevNarratorName] : null;
   if (rel) {
     commitBody += `*(Weil ${prevNarratorName} beteiligt war: ${rel})*\n\n`;
   } else {
-    commitBody += `Nachdem ${prevNarratorName} die Grundlagen gesetzt hat, geht es hier weiter.\n\n`;
+    // Zufällige Übergangsphrase aus dem Pool — nie zweimal dieselbe
+    const pick = TRANSITION_POOL[Math.floor(Math.random() * TRANSITION_POOL.length)];
+    commitBody += `${pick(prevNarratorName)}\n\n`;
   }
 }
 
 // Haupttext aus bodyfile
 commitBody += customBody;
 
-// Kausalitäts-Anker (Pflicht)
-commitBody += `\n\nDer Grund für dieses Update liegt direkt im Impuls: "${impulse}". `;
-commitBody += 'Daher wurden die betroffenen Dateien angepasst.\n\n';
+// Kausalitäts-Anker (Pflicht) — variiert je nach Mood des Narrators
+const CAUSALITY_ANCHORS = [
+  () => `Der Grund war der Impuls "${impulse}". Die Konsequenz: dieser Commit.`,
+  () => `Weil der User "${impulse.substring(0, 40)}${impulse.length > 40 ? '…' : ''}" gesagt hat, wurde hier gehandelt.`,
+  () => `Ursache: "${impulse}". Wirkung: dieser Commit.`,
+  () => `Der Impuls war klar — daher folgt die Umsetzung.`,
+  () => `"${impulse.substring(0, 50)}${impulse.length > 50 ? '…' : ''}" — Grund genug für diese Änderung.`,
+  () => `Was der User wollte ("${impulse}") — deshalb wurde es dieser Commit.`,
+];
+const anchor = CAUSALITY_ANCHORS[Math.floor(Math.random() * CAUSALITY_ANCHORS.length)];
+commitBody += `\n\n${anchor()}\n\n`;
 
 // Richtungswechsel narrativ einweben (P3)
 if (isDirectionChange) {
