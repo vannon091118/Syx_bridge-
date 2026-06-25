@@ -332,7 +332,7 @@ exporter.js: writeTranslatedFile(path, content, replacements, translations, outp
 ```
 translation-runtime.js (Orchestrator)
     ├── dispatcher.js (Routing-Entscheidungen)
-    ├── router.js (Provider-Management, 9 Provider)
+    ├── router.js (Provider-Management, 10 Provider)
     ├── client-factory.js (HTTP-Clients pro Provider)
     ├── translation-phases.js (Pipeline-Phasen: cache→native→translate→qa→polish)
     ├── translation-db.js (DB-Operationen: save, cache, glossary)
@@ -366,7 +366,7 @@ translation-runtime.js (Orchestrator)
 
 ### 8.3 router.js — Provider-Management
 
-**8 Provider im PROVIDER_REGISTRY (seit v0.23 — Player2 entfernt, Ollama Cloud Toggle hinzugefügt):**
+**10 Provider im PROVIDER_REGISTRY (v0.23 — openai + custom_api hinzugefügt, Player2 beibehalten):**
 
 | Provider | Type | Default Model | Cost | Caps |
 |----------|------|--------------|------|------|
@@ -556,7 +556,7 @@ Jeder Charakter hat: `voice_traits`, `verifier_rules` (min_words, max_words, mus
 index.js
 ├── Translation/plugin-registry.js → plugins/SongsOfSyxPlugin.js → plugins/GamePlugin.js → adapters/GameAdapter.js
 ├── Translation/config/config-runtime.js → config/config-discovery.js, config/config-persist.js, config/config-keys.js
-├── Translation/router.js (8 Provider, Routing-Logik)
+├── Translation/router.js (10 Provider, Routing-Logik)
 ├── DB/db.js (better-sqlite3 Wrapper)
 ├── Translation/planner.js (Scan-Phase)
 ├── Translation/runtime-ops.js (Translate-Mod, Native/Patch Mode)
@@ -627,17 +627,18 @@ index.js
 
 | Metrik | Wert |
 |--------|------|
-| Quellcode (LOC) | ~8.500 |
-| Dateien (JS) | ~90 |
+| Quellcode (LOC) | ~30.000 |
+| Dateien (JS) | ~108 |
 | Tabellen (DB) | 12 |
-| Provider | 8 |
+| Provider | 10 |
 | Commit-Narrative | 14 |
 | Plugin-Methoden (GameAdapter) | 16 |
 | Plugin-Methoden (GamePlugin) | 11 |
-| Tests | 100+ (plugin-boundary, validator, parser, e2e) |
+| Tests | 100+ (plugin-boundary, validator, parser, e2e, 15 Test-Dateien) |
 | GUI-Endpoints | 25+ |
 | Komposit-Chain-Einträge | 38 |
 
 ---
 
 *Erstellt 2026-06-25 — Basierend auf vollständiger Codebase-Analyse.*
+*Aktualisiert 2026-06-26 — Doku-Divergenz-Audit: Providerzahl, LOC, Dateizahl korrigiert.*

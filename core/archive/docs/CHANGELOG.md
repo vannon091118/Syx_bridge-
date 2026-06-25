@@ -1,5 +1,13 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-25 22:13:25] Release-Prep v0.23.0: Eye-Catcher Banner ohne Versionsnummer (banner-main.jpg), AGENTS.md Datum-Sync, author_system.js Lint-Fix, Doku-Sync MASTER_DOC und SYSTEM_ARCHITECTURE
+**Narrator:** Buffy | **Model:** Claude Sonnet 4.6 | **Composite:** `c42j47n1a2p1`
+- 10 Datei(en) geändert.
+
+### [2026-06-25 22:12:52] Release-Prep v0.23.0: Eye-Catcher Banner ohne Versionsnummer (banner-main.jpg), AGENTS.md Datum-Sync, author_system.js Lint-Fix, Doku-Sync MASTER_DOC und SYSTEM_ARCHITECTURE
+**Narrator:** Buffy | **Model:** Claude Sonnet 4.6 | **Composite:** `c42j47n1a2p1`
+- 9 Datei(en) geändert.
+
 ### [2026-06-25 22:07:27] Provider-Erweiterung: OpenAI (GPT) + Custom API (OpenAI-kompatibel) vollstaendig integriert. Ollama Cloud-Mode mit Remote-URL und _OLLAMA_URL_RAW Bugfix. writing_rules RESTRUCTURE/HOTFIX Kategorien. Cleanup: .kiro/specs und split_commits.js entfernt. README bilingual DE/EN mit Banner und GitHub-Features maximal ausgereizt
 **Narrator:** Devin | **Model:** Claude Sonnet 4.6 | **Composite:** `c41j100n6a2p40`
 - 21 Datei(en) geändert.

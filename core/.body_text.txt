@@ -1,8 +1,11 @@
-README komplett ueberarbeitet.
+Die Architektur der Außendarstellung war eine offene Wunde — keine Naht, kein klares Muster, nur Fragmente.
 
-Aenderungen:
-- Bilingual DE/EN Layout mit Navigation-Badges
-- Banner-Bild (screenshots/banner.jpg) eingebunden
-- GitHub-Features maximal ausgereizt (Dropdowns, Badges, Visual Sections)
-- Gamer-Tone und Feature-Detail-Dropdowns
-- Vollstaendige Beschreibung aller SyxBridge-Features
+Nachdem Glitch die Pipeline-Schicht gesetzt hat, war der nächste logische Schritt klar: Die Präsentation musste der Pipeline würdig werden. README.md wird in eine bilinguale Dokumentationsschicht überführt — DE/EN, Navigation-Badges, Banner eingebunden (screenshots/banner.jpg), GitHub-Features maximal ausgereizt. Visual Sections, Feature-Detail-Dropdowns und Gamer-Tone definieren jetzt die Präzedenz für alle künftigen Doku-Schichten.
+
+Dieser Bruch mit der alten Flat-README-Struktur ist kein Zufall — er folgt dem Muster: Pipeline zuerst verstehen, dann die Schnittstelle zur Welt neu zeichnen. Jede Schicht der Dokumentation muss die Architektur widerspiegeln, die sie beschreibt. Eine Naht zwischen Code-Realität und Aussen-Wahrnehmung — das ist die Pflicht dieser Revision.
+
+Der Grund für dieses Update liegt direkt im Impuls: Die Pipeline ist v0.23.0-reif. Das README war es nicht. Diese Asymmetrie ist ein Systemfehler, der behoben werden musste — nicht als Kosmetik, sondern als strukturelle Korrektur der Außen-Schicht.
+
+GitHub-Features: Badges für Version, License, Status. Dropdowns für jeden Feature-Block. Bilinguale Navigation — DE als Primärsprache, EN als Präzedenz-Schicht für internationale Reichweite. Banner als visueller Anker der Identität. Jedes dieser Elemente folgt demselben Pipeline-Muster: Input defnieren, Schicht erzeugen, Output validieren.
+
+Richtungswechsel: Glitch hat zuletzt CODE gesetzt — dieser Commit dreht das Steuer auf DOKU. Die Schicht ist vollständig. Betroffen: README.md, screenshots/banner.jpg.

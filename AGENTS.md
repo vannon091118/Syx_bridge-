@@ -1,5 +1,5 @@
 # AGENTS.md — SyxBridge Agenten-Regelwerk
-> **Version:** v0.23.0 | **Stand:** 2026-06-25
+> **Version:** v0.23.0 | **Stand:** 2026-06-26
 > **LIES DIE DOKUMENTATION:** core/archive/docs/ — IMMER zuerst lesen.
 > **Regel:** Keine Dependencies die wir selbst mit Code lösen können.
 
@@ -261,9 +261,9 @@ Schicht 3: FREEZE_INDEX.md
 konkrete Plugins überschreiben nur was spielspezifisch ist.
 
 **Ebene 3 — Konkrete Implementierungen:**
-- `SongsOfSyxPlugin.js` (~290 LOC, 23 Methoden) — Vollständig. SoS-Format (KEY:"value"),
+- `SongsOfSyxPlugin.js` (~377 LOC, 35 Methoden) — Vollständig. SoS-Format (KEY:"value"),
   Backslash-Escaping, V71-Dateien, _Info.txt-Metadaten, BridgeCore-Generierung.
-- `RimWorldPlugin.js` (~155 LOC, 24 Methoden) — **STUB.** Format-Hooks vollständig (11/11),
+- `RimWorldPlugin.js` (~221 LOC, 28 Methoden) — **STUB.** Format-Hooks vollständig (11/11),
   Adapter-Hooks werfen "not yet implemented" (13/13).
 
 **Factory — `plugin-registry.js`:** `createPlugin(gameName)` → instanziiert das richtige Plugin.
@@ -300,7 +300,7 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 
 ## 13.3 GUI-Architektur
 
-**Server — `GUI/server.js` (650 LOC):**
+**Server — `GUI/server.js` (667 LOC):**
 - `GuiServer extends EventEmitter` — HTTP-Server auf `localhost:3000`
 - SSE (Server-Sent Events) für Echtzeit-Logs, Status-Updates, DB-Samples, Payloads
 - 25+ REST-Endpoints: `/api/config`, `/api/system-health`, `/api/models/*`, `/api/db/*`,
@@ -310,7 +310,7 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 - Auto-Shutdown bei Inaktivität (1.5s nach letzter Session-Close)
 - Port-Fallback: EADDRINUSE → Port+1
 
-**Client — `GUI/public/app.js` (1517 LOC):**
+**Client — `GUI/public/app.js` (1854 LOC):**
 - `tick()` — requestAnimationFrame Hauptloop (60fps im Run, 4fps im Idle)
 - SSE-Verbindung: Echtzeit-Logs + Status-Updates + Provider-Stats + DB-Samples
 - Pipeline-Visualizer (4 Phasen: SCAN → LLM → QA → SAVE)
@@ -335,3 +335,4 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 ---
 
 *Restructuriert 2026-06-23 — User-Vorgaben getrennt von Agent-Regeln.*
+*Synchronisiert 2026-06-26 — Root↔Archive SSOT via Doku-Divergenz-Audit (DD-002).*

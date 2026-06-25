@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="screenshots/banner.jpg" alt="SyxBridge Banner" width="100%">
+<img src="screenshots/banner-main.jpg" alt="SyxBridge — Auto-Translate Your Mods with AI" width="100%">
 
 <br/>
 
@@ -42,7 +42,7 @@
 SyxBridge ist eine vollautomatische Mod-Übersetzungs-Pipeline für Strategiespiele. Du wirfst einen Mod-Ordner rein — raus kommt dieselbe Mod, auf Deutsch (oder jede andere Sprache). Keine manuelle Arbeit, keine zerstörten Lore-Begriffe, kein API-Rätselraten.
 
 > [!IMPORTANT]
-> **Das hier ist kein Wrapper um Google Translate.** Es ist eine vollständige Pipeline mit Placeholder-Schutz, Glossar-System, LLM-Audit-Pass, SQLite-Cache, Smart-Routing über 8 Provider und einem Web-Dashboard das live zeigt was passiert.
+> **Das hier ist kein Wrapper um Google Translate.** Es ist eine vollständige Pipeline mit Placeholder-Schutz, Glossar-System, LLM-Audit-Pass, SQLite-Cache, Smart-Routing über 10 Provider und einem Web-Dashboard das live zeigt was passiert.
 
 <details>
 <summary><b>🎯 Drei reale Use-Cases</b></summary>
@@ -73,7 +73,7 @@ Keine Black Box. Das Dashboard zeigt live welcher String gerade läuft, welcher 
 
 ---
 
-## ⚡ Smart Routing — 8 Provider
+## ⚡ Smart Routing — 10 Provider
 
 Das System hat eine interne Capability-Matrix. Du gibst Strings rein, es wählt automatisch den besten verfügbaren Provider. Automatische Key-Rotation gegen Rate-Limits. Keys liegen nur lokal in deiner `.env`.
 
@@ -83,8 +83,8 @@ Das System hat eine interne Capability-Matrix. Du gibst Strings rein, es wählt 
 |:---:|:---|:---|
 | 🟢 **Free** | Google Translate *(Built-in)*, FCM Daemon | Nix — läuft sofort |
 | 🟡 **Offline** | Argos Translate | Nix — lokale Modelle, kein Internet |
-| 🔵 **API** | Groq, OpenRouter, Gemini, NVIDIA NIM | API-Key in `.env` |
-| ⚡ **Local AI** | Ollama | Laufendes Ollama + GPU |
+| 🔵 **API** | Groq, OpenRouter, Gemini, NVIDIA NIM, OpenAI, Custom API | API-Key in `.env` |
+| ⚡ **Local AI** | Ollama, Player2 | Lokale KI + GPU |
 
 </div>
 
@@ -197,7 +197,7 @@ start.bat
 
 ## 🗺 Roadmap
 
-- [x] **Phase 1** — Songs of Syx: Vollständige Pipeline, Plugin-Architektur, Web-Dashboard, 8 Provider
+- [x] **Phase 1** — Songs of Syx: Vollständige Pipeline, Plugin-Architektur, Web-Dashboard, 10 Provider
 - [ ] **Phase 2** — RimWorld: Adapter-Hooks, Def-Parser, XML-Exporter, Mod-Folder-Scanner
 - [ ] **Phase 3** — Mod-Loader: DAG Load-Order, Conflict-Detection, SteamCMD Integration
 - [ ] **Phase 4** — Community: Kenshi, Stardew Valley, geteilte Glossar-Caches
@@ -232,7 +232,7 @@ start.bat
 SyxBridge is a fully automated mod translation pipeline for strategy games. Drop in a mod folder — out comes the same mod, in German (or any other language). No manual work, no destroyed lore terms, no API guesswork.
 
 > [!IMPORTANT]
-> **This is not a Google Translate wrapper.** It's a complete pipeline with placeholder protection, glossary system, LLM audit pass, SQLite cache, smart routing across 8 providers, and a web dashboard that shows you live what's happening.
+> **This is not a Google Translate wrapper.** It's a complete pipeline with placeholder protection, glossary system, LLM audit pass, SQLite cache, smart routing across 10 providers, and a web dashboard that shows you live what's happening.
 
 <details>
 <summary><b>🎯 Three real use-cases</b></summary>
@@ -248,7 +248,7 @@ SyxBridge is a fully automated mod translation pipeline for strategy games. Drop
 
 ---
 
-## ⚡ Smart Routing — 8 Providers
+## ⚡ Smart Routing — 10 Providers
 
 The system has an internal capability matrix. Feed it strings, it automatically picks the best available provider. Automatic key rotation against rate limits. Keys live only locally in your `.env`.
 
@@ -258,8 +258,8 @@ The system has an internal capability matrix. Feed it strings, it automatically 
 |:---:|:---|:---|
 | 🟢 **Free** | Google Translate *(Built-in)*, FCM Daemon | Nothing — works immediately |
 | 🟡 **Offline** | Argos Translate | Nothing — local models, no internet |
-| 🔵 **API** | Groq, OpenRouter, Gemini, NVIDIA NIM | API key in `.env` |
-| ⚡ **Local AI** | Ollama | Running Ollama instance + GPU |
+| 🔵 **API** | Groq, OpenRouter, Gemini, NVIDIA NIM, OpenAI, Custom API | API key in `.env` |
+| ⚡ **Local AI** | Ollama, Player2 | Local AI + GPU |
 
 </div>
 
@@ -329,7 +329,7 @@ start.bat
 
 ## 🗺 Roadmap
 
-- [x] **Phase 1** — Songs of Syx: Full pipeline, plugin architecture, web dashboard, 8 providers
+- [x] **Phase 1** — Songs of Syx: Full pipeline, plugin architecture, web dashboard, 10 providers
 - [ ] **Phase 2** — RimWorld: Adapter hooks, Def parser, XML exporter, mod folder scanner
 - [ ] **Phase 3** — Mod Loader: DAG load order, conflict detection, SteamCMD integration
 - [ ] **Phase 4** — Community: Kenshi, Stardew Valley, shared glossary caches

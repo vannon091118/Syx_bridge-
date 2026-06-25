@@ -1,7 +1,8 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 24.06.2026 | **Version:** v0.23.0 | **Autor:** Vannon & Sub-Agents
+**Stand:** 26.06.2026 | **Version:** v0.23.0 | **Autor:** Vannon & Sub-Agents
 **Destilliert aus:** MASTER_DOC.md (Basis), FREEZE_INDEX_2.md, CHANGELOG.md, CHANGELOG_1.md
+**Letzte Prüfung:** 2026-06-26 — Doku-Divergenz-Audit (DD-001–DD-007)
 
 ---
 
@@ -30,15 +31,17 @@
 Scan → Extract → Translate → Audit → Polish → Export
 ```
 
-### Provider Matrix (9 Stück)
+### Provider Matrix (10 Stück — Stand 2026-06-26)
 
 | Provider | Typ | Nutzung | CostClass |
 |---|---|---|---|
 | Groq | Cloud (Llama) | Primär-Provider | 4 |
 | OpenRouter | Cloud (Multi) | Polish/Audit | 4 |
+| OpenAI | Cloud (GPT) | Polish/Audit (neu v0.23) | 5 |
 | Gemini | Cloud (Google) | Übersetzung | 5 |
 | NVIDIA NIM | Cloud (NVIDIA) | Unlimitiert | 4 |
 | FCM | Lokal Proxy | Kostenloser Router | 1.5 |
+| Custom API | Cloud (Generic) | OpenAI-kompatibel (neu v0.23) | 3 |
 | Ollama | Lokal (LLM) | Fallback/Offline | 1 |
 | Player2 | Lokal (Desktop) | Optional (Opt-in) | 1 |
 | Argos Translate | Lokal (Offline) | UI-Strings | 10 |
@@ -104,15 +107,15 @@ Zwei kritische Methoden wurden von validator.js/text-core.js ins Plugin delegier
 
 ---
 
-## 5. DB-Stand (2026-06-24 — Fresh Reset)
+## 5. DB-Stand (2026-06-26 — Live)
 
 
-> **Live-DB Stand 2026-06-24:** **0 Einträge** — DB wurde am 24.06.2026 hart resettet (Commit `c35j3n1a5p21`).
-> Beim nächsten Start wird die DB frisch initialisiert. Alle alten Einträge gelöscht.
-> **Provider:** 9 aktive Provider — siehe §2 Provider Matrix.
-> **better-sqlite3 aktiv** — Schema-Version **6** mit try/catch-Fehleranleitung.
+> **Live-DB Stand 2026-06-26:** **3.797 Einträge** — DB wurde am 24.06.2026 hart resettet (Commit `c35j3n1a5p21`),
+> seitdem durch Übersetzungs-Runs wieder auf 3.797 Einträge angewachsen.
+> **Provider:** 10 aktive Provider — siehe §2 Provider Matrix.
+> **better-sqlite3 aktiv** — 13 Tabellen (12 user + sqlite_sequence).
 > Frühere DB-Resets: Snapshot 19 (1.508 → Reset), Doku-Clean (100 → Test), Fresh Reset (4.390 → 0).
-> **Runtime Score (vor Reset):** 90.1% (gewichteter Durchschnitt über 8 Personas).
+> **Runtime Score:** 90.1% (gewichteter Durchschnitt über 8 Personas, Stand v0.22 — seit Reset nicht neu berechnet).
 
 ---
 

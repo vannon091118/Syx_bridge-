@@ -189,7 +189,7 @@ commitBody += customBody;
 
 // Kausalitäts-Anker (Pflicht)
 commitBody += `\n\nDer Grund für dieses Update liegt direkt im Impuls: "${impulse}". `;
-commitBody += `Daher wurden die betroffenen Dateien angepasst.\n\n`;
+commitBody += 'Daher wurden die betroffenen Dateien angepasst.\n\n';
 
 // Richtungswechsel narrativ einweben (P3)
 if (isDirectionChange) {
@@ -292,7 +292,7 @@ console.log(`🔗 Composite Chain: seq ${chainEntries.length + 1} gespeichert.`)
 // --no-verify: Narrative Metadaten — kein Verifier-Lauf benötigt.
 try {
   execSync(`git add "${PATHS.plotchain}" "${PATHS.compositeChain}"`, { stdio: 'inherit' });
-  execSync(`git commit --amend --no-edit --no-verify`, { stdio: 'inherit' });
+  execSync('git commit --amend --no-edit --no-verify', { stdio: 'inherit' });
   console.log('\n✅ AUTHOR SYSTEM: Commit erfolgreich. Narrative aktualisiert.');
 } catch (e) {
   console.warn('⚠️  AUTHOR SYSTEM: Amend für Chain-Dateien fehlgeschlagen — Haupt-Commit ist aber korrekt committed.');

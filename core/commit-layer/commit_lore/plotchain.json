@@ -2274,5 +2274,48 @@
         "file": "screenshots/banner.jpg"
       }
     ]
+  },
+  {
+    "p_id": "p47",
+    "id": "plot-2026-06-25T22:13:25",
+    "timestamp": "2026-06-25 22:13:25",
+    "summary": "Release-Prep v0.23.0: Eye-Catcher Banner ohne Versionsnummer (banner-main.jpg), AGENTS.md Datum-Sync, author_system.js Lint-Fix, Doku-Sync MASTER_DOC und SYSTEM_ARCHITECTURE",
+    "narrator": "Buffy",
+    "model_id": "Claude Sonnet 4.6",
+    "composite": "c42j47n1a2p1",
+    "ref_to": "plot-2026-06-25T22:07:27",
+    "prev_narrator": "Devin",
+    "data_changes": [
+      {
+        "file": "AGENTS.md"
+      },
+      {
+        "file": "README.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/archive/docs/AGENTS.md"
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md"
+      },
+      {
+        "file": "core/archive/docs/MASTER_DOC.md"
+      },
+      {
+        "file": "core/archive/docs/SYSTEM_ARCHITECTURE.md"
+      },
+      {
+        "file": "core/commit-layer/author_system.js"
+      },
+      {
+        "file": "core/scripts/migrate_pools.js"
+      },
+      {
+        "file": "screenshots/banner-main.jpg"
+      }
+    ]
   }
 ]
