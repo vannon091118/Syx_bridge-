@@ -8,7 +8,6 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
 ├── .env                                 # [gitignore] Runtime-Config
 ├── .gitignore
 ├── AGENTS.md                            # Agenten-Regelwerk (SSOT)
-├── CHANGELOG.md                         # Versionshistorie
 ├── PLAN.md                              # Aktueller Plan
 ├── README.md                            # User-facing README
 ├── TUTORIAL.txt                         # Tutorial

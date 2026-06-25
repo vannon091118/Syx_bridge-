@@ -9,7 +9,7 @@
 
 | # | Dokument | Zweck | Typ |
 |---|----------|-------|-----|
-| 1 | `CHANGELOG.md` | Versionshistorie — Commits, Fixes, Features | Pflicht (persistent) |
+| 1 | `core/archive/docs/CHANGELOG.md` | Versionshistorie — Commits, Fixes, Features | Pflicht (persistent) |
 | 2 | `MASTER_DOC.md` | SSOT: aktueller Stand, Architektur, Roadmap | Pflicht |
 | 3 | `AGENTS.md` | SSOT: Agent-Regeln (Root-Sync) | Pflicht |
 | 4 | `KNOWN_BUGS_REPORT.md` | Bug-Triage — 5 aktive + 29 behobene Bugs | Pflicht |
@@ -74,9 +74,8 @@
 | # | Dokument | Zweck | Typ |
 |---|----------|-------|-----|
 | 1 | `AGENTS.md` | Agenten-Regelwerk (SSOT) | Pflicht |
-| 2 | `CHANGELOG.md` | Aktuelle Versionshistorie ab v0.22.0 | Pflicht (persistent) |
-| 3 | `CHANGELOG_1.md` | Archiv-Changelog v0.19–v0.21 | Pflicht |
-| 4 | `README.md` | Projektreadme (User-facing) | Pflicht |
+| 2 | `core/archive/docs/CHANGELOG.md` | Aktuelle Versionshistorie ab v0.22.0 | Pflicht (persistent) |
+| 3 | `README.md` | Projektreadme (User-facing) | Pflicht |
 | 5 | `PLAN.md` | Master-Plan v0.23.0 (22 Tasks, P0–P4, 86% done) | Pflicht |
 | 6 | `TUTORIAL.txt` | Peer-Review-Tutorial (DE/EN) | Pflicht |
 | 7 | `_Info.txt` | Mod-Metadaten (Laufzeit) | Pflicht |
