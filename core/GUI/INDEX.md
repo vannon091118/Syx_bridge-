@@ -1,18 +1,20 @@
-# 📖 INDEX — core/GUI/ (8 Dateien, ~2.300 LOC)
+# 📖 INDEX — core/GUI/ (10 Dateien, ~2.500 LOC)
 
-> **Generiert:** 2026-06-26 | **Version:** v0.23.0
+> **Generiert:** 2026-06-26 | **Version:** v0.24.0
 > **Zweck:** Referenzbuch für die GUI-Schicht (HTTP-Server + Client-Dashboard)
 > **CL-Refs:** Kanonische Quelle ist `../INDEX.md`. Lokale CL-Refs sind Kurzform. Bei Konflikt gilt `../INDEX.md`.
 
 ---
 
-## Struktur (modularisiert v0.23.0)
+## Struktur (modularisiert v0.24.0)
 
 ```
 core/GUI/
 ├── server.js              # GuiServer-Klasse (Infrastruktur: SSE, Sessions, Log-Watcher)
 ├── server-routes.js       # Alle 17 HTTP-Routen-Handler (extrahiert aus server.js)
-├── gui-handlers.js        # Backend-Event-Handler (unverändert)
+├── gui-handlers.js        # Backend-Event-Handler (~540 LOC, 2 Extraktionen)
+├── run-evaluation.js      # computeRunEvaluation() + RUN_CATEGORY_DESCRIPTIONS (extrahiert aus gui-handlers.js)
+├── backup-utils.js        # readDisplayName() + restoreBackup() + collectAllFiles() (extrahiert aus gui-handlers.js)
 ├── INDEX.md               # Dieses Dokument
 ├── public/
 │   ├── index.html         # Dashboard-Layout + CSS (lädt Module in Abhängigkeitsreihenfolge)
@@ -78,6 +80,31 @@ core/GUI/
 | `/api/revisions` | POST | `get-revisions` | Revision-History |
 | `/api/revisions/restore` | POST | `restore-revision` | Revision wiederherstellen |
 | `/api/logs` | GET | — | **SSE** — Logs + Status + Payloads + DB-Samples |
+
+---
+
+## run-evaluation.js (~110 LOC) — Run-Evaluierungs-Berechnung
+*Extrahiert aus gui-handlers.js (Commit c51j32n2a2p40). Pure Berechnungslogik, keine Abhängigkeiten.*
+
+| Inhalt | Beschreibung |
+|--------|--------------|
+| `RUN_CATEGORY_DESCRIPTIONS` | 8 Kategorie-Beschreibungen (cache-efficiency, translation-success, quality-depth, native-efficiency, shield-health, batch-stability, coverage, db-integrity) |
+| `computeRunEvaluation(stats)` | Berechnet Run-Qualitätsscore (0-100%) aus Provider-Stats — gewichteter Durchschnitt über 8 Kategorien |
+
+**Importiert von:** `gui-handlers.js` (via `require('./run-evaluation')`)
+
+---
+
+## backup-utils.js (~95 LOC) — Backup-Utility-Funktionen
+*Extrahiert aus gui-handlers.js (Commit c51j32n2a2p40). 3 reine Utility-Funktionen für Mod-Backups.*
+
+| Funktion | Beschreibung |
+|----------|--------------|
+| `readDisplayName(dirPath, adapter)` | Liest Mod-Namen aus _Info.txt oder Ordnerstruktur |
+| `restoreBackup(backupDir, targetDir)` | Stellt Backup via rekursivem Kopieren wieder her |
+| `collectAllFiles(dir, baseDir)` | Sammelt alle Dateien in einem Verzeichnis (rekursiv) |
+
+**Importiert von:** `gui-handlers.js`, `index.js`, `reset_now.js`
 
 ---
 
@@ -176,6 +203,6 @@ core/GUI/
 
 ---
 
-*📖 GUI-INDEX v0.23.0 — 8 Dateien, ~2.300 LOC, modularisiert in 5 Client-Module + server-routes.js*
+*📖 GUI-INDEX v0.24.0 — 10 Dateien, ~2.500 LOC. Extraktionen: server-routes.js, run-evaluation.js, backup-utils.js. Client: 5 Module + Bootstrap.*
 
-> **Letztes Update:** 2026-06-26 — Modularisierung: server.js → server.js + server-routes.js; app.js → 5 modules/ + bootstrap
+> **Letztes Update:** 2026-06-26 — run-evaluation.js + backup-utils.js aus gui-handlers.js extrahiert

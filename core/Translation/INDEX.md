@@ -1,7 +1,7 @@
-# 📖 INDEX — core/src/ (33 Dateien, ~10.050 LOC)
+# 📖 INDEX — core/Translation/ (34 Dateien, ~9.800 LOC)
 
-> **Generiert:** 2026-06-20 | **Version:** v0.22.0
-> **Zuletzt verifiziert:** 2026-06-23 (S-007/S-008/S-009 Extraktionen)
+> **Generiert:** 2026-06-26 | **Version:** v0.24.0
+> **Zuletzt verifiziert:** 2026-06-26 (config-wizard.js Extraktion, _ensureProviderModel/_fetchModels Deduplizierung)
 > **Zweck:** Referenzbuch — jeder Agent findet hier Funktionen + Zeilennummern OHNE den gesamten Code durchsuchen zu müssen.
 > **Format:** DATEI:ZEILE_START-ZEILE_ENDE: FUNKTION — Kurzbeschreibung
 > **CHANGELOG-Refs:** Jede Funktion die im CHANGELOG erwähnt wird, hat ein [CL:TAG] Verweis.
@@ -16,7 +16,8 @@
 | [config-keys.js](#config-keysjs) | 82 | 12 | Key-Management, Env-Flags, Provider-URLs (S-006) |
 | [config-discovery.js](#config-discoveryjs) | 141 | 11 | Model-Metriken, Ranking, Filtering (S-004) |
 | [config-persist.js](#config-persistjs) | 147 | 1 | .env-Persistenz Factory (S-005) |
-| [config-runtime.js](#config-runtimejs) | 763 | 29 | ConfigRuntime-Klasse, Re-Exports (S-004/005/006) |
+| [config-runtime.js](#config-runtimejs) | ~560 | 27 | ConfigRuntime-Klasse, Re-Exports. configure()→config-wizard.js, ensure+Deduplizierung, fetch+Deduplizierung (S-004/005/006/007/008) |
+| [config-wizard.js](#config-wizardjs) | ~113 | 1 | CLI-Wizard configureWizard() — extrahiert aus config-runtime.js (S-007) |
 | [context-packets.js](#context-packetsjs) | 190 | 6 | Risk-Scoring, Context-Enrichment |
 | [db.js](#dbjs) | 325 | 8 | SQLite Connection, Init, Migration |
 | [diagnostics.js](#diagnosticsjs) | 55 | 2 | System-Diagnose, Cache-Clear |
@@ -112,6 +113,21 @@
 
 ---
 
+## config-wizard.js (~113 LOC)
+*CLI-Konfigurations-Wizard. Extrahiert aus config-runtime.js (Commit c52j41n12a3p35).*
+
+| Zeile | Funktion | Beschreibung |
+|-------|----------|--------------|
+| 1 | `'use strict'` | Strict-Mode |
+| 3 | `const prompts = require('prompts')` | CLI-Prompt-Bibliothek |
+| 4 | `const { parseKeys }` | Key-Parsing aus config-keys |
+| 5 | `const { filterLLMs }` | Modell-Filter aus config-discovery |
+| 10 | `configureWizard(cr, persistConfigToEnv)` | **Hauptfunktion** — interaktiver CLI-Wizard für Provider/Modell/Sprache/Mode-Konfiguration. Nimmt ConfigRuntime-Instanz + Persistenz-Funktion entgegen |
+
+**Importiert von:** `config-runtime.js` (via `require('./config-wizard')`)
+
+---
+
 ## config-persist.js (147 LOC)
 *.env-Persistenz via Factory-Pattern. Extrahiert aus config-runtime.js (S-005).*
 
@@ -124,8 +140,8 @@
 
 ---
 
-## config-runtime.js (763 LOC)
-*ConfigRuntime-Klasse + Re-Exports aller config-* Module. Importiert von config-keys, config-discovery, config-persist.*
+## config-runtime.js (~560 LOC)
+*ConfigRuntime-Klasse + Re-Exports aller config-* Module. configure()→config-wizard.js, ensureGroq+Nvidia→_ensureProviderModel(), 7 fetch*→_fetchModels().*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -142,20 +158,26 @@
 | 84 | `getDefaultModelForProvider(provider)` | Default-Modell pro Provider |
 | 92 | `maskSecret(value)` | Key-Masking für Logs |
 | 98 | `class ConfigRuntime` | **Hauptklasse** — Config, Discovery, Persistenz |
-| 224 | `testApiKey(provider, key)` | API-Key-Validierung |
-| 243 | `fetchGeminiModels()` | Gemini Modell-Liste |
-| 258 | `fetchGroqModels()` | Groq Modell-Liste |
-| 273 | `fetchOllamaModels()` | Ollama Modell-Liste |
-| 282 | `fetchPlayer2Models()` | Player2 Modell-Liste |
-| 291 | `fetchNvidiaModels()` | NVIDIA Modell-Liste |
-| 316 | `fetchFcmModelRankings()` | FCM Rankings (Dual-Strategy) |
-| 387 | `fetchOpenRouterModels(freeOnly)` | OpenRouter Modell-Liste |
-| 400 | `checkCloudKey(provider, key, index)` | Cloud-Key-Validierung |
-| 472 | `checkLocalProvider(provider)` | Lokaler Provider-Check |
-| 500 | `withRetry(label, fn)` | Retry-Wrapper |
-| 518 | `ensureGroqModel()` | Groq-Modell sicherstellen |
-| 541 | `ensureOllamaModel()` | Ollama-Modell sicherstellen |
-| 589 | `ensurePrimaryModel()` | Primary-Modell sicherstellen |
+| 172 | `testApiKey(provider, key)` | API-Key-Validierung |
+| 190 | `_fetchModels(opts)` | **Generischer Model-Fetcher** — Key-Check, Auth (bearer/keyInUrl), preFilter→map→filterFn Pipeline, Fallback. Abstrahiert 7 fetch*Methods |
+| 195 | `fetchGeminiModels()` | Gemini → Thin-Wrapper auf _fetchModels (keyInUrl, preFilter+mapFn) |
+| 206 | `fetchGroqModels()` | Groq → Thin-Wrapper auf _fetchModels (bearer, fallback) |
+| 213 | `fetchOllamaModels()` | Ollama → Thin-Wrapper auf _fetchModels (no auth, responseField: models) |
+| 219 | `fetchPlayer2Models()` | Player2 → Thin-Wrapper auf _fetchModels (no auth) |
+| 225 | `fetchOpenAIModels()` | OpenAI → Thin-Wrapper auf _fetchModels (bearer, filterFn: ft: exclusion) |
+| 233 | `fetchCustomApiModels()` | CustomAPI → Thin-Wrapper auf _fetchModels (bearer-optional) |
+| 240 | `fetchNvidiaModels()` | NVIDIA → Partielle Delegation an _fetchModels + side effect (setNvidiaFreeModels) |
+| 255 | `fetchFcmModelRankings()` | FCM Rankings (Dual-Strategy, unverändert) |
+| 290 | `fetchOpenRouterModels(freeOnly)` | OpenRouter Modell-Liste (unverändert, Pricing-Filter) |
+| 315 | `checkCloudKey(provider, key, index)` | Cloud-Key-Validierung |
+| 387 | `checkLocalProvider(provider)` | Lokaler Provider-Check |
+| 415 | `withRetry(label, fn)` | Retry-Wrapper |
+| 435 | `_ensureProviderModel(name, displayName, fetchFn, fallback)` | **Generische ensure-Methode** — ersetzt ensureGroqModel+ensureNvidiaModel (Copy-Paste eliminiert) |
+| 463 | `ensureGroqModel()` | Groq → Thin-Wrapper auf _ensureProviderModel |
+| 467 | `ensureOllamaModel()` | Ollama-Modell sicherstellen (unverändert, Fuzzy-Matching) |
+| 506 | `ensureNvidiaModel()` | NVIDIA → Thin-Wrapper auf _ensureProviderModel |
+| 510 | `ensurePrimaryModel()` | Primary-Modell sicherstellen |
+| 542 | `configure()` | Thin-Delegation an configureWizard() in config-wizard.js |
 
 **CHANGELOG-Ref (8× config-runtime):**
 - [CL:0.15.2-patch] .env-Persistenz (persistConfigToEnv)

@@ -1,16 +1,11 @@
-Narrator-Voice-Injection in author_system.js — das fehlende Glied zwischen Verhältnisse-System und Commit-Nachrichten.
+Dokumentation nachgezogen für alle Extraktionen und Deduplizierungen dieser Session.
 
-Ursache: Die Verhältnisse (Attitudes) wurden in character_sheets.json definiert und in derive_composite.js berechnet, aber author_system.js hat sie nie in den Commit-Body injiziert. Alle Commits klangen gleich — der neutrale customBody dominierte.
+GUI/INDEX.md (v0.23→v0.24, 8→10 Dateien):
+- run-evaluation.js (~110 LOC): computeRunEvaluation() + RUN_CATEGORY_DESCRIPTIONS — extrahiert aus gui-handlers.js
+- backup-utils.js (~95 LOC): readDisplayName() + restoreBackup() + collectAllFiles() — extrahiert aus gui-handlers.js
+- Struktur-Diagramm aktualisiert, Import-Pfade dokumentiert
 
-Root Cause: author_system.js fehlte eine Funktion, die Attitudes in narratorspezifischen Text übersetzt.
-
-Fix — Section 4b (finale Attitudes): Basis-Attitudes aus selectedNarrator.attitudes + Mood-Deltas aus narrative_params.attitude_modifiers[derived.mood], geclampt 0-10.
-
-Fix — Section 4c (buildVoiceIntro): Template-basierte Voice-Generierung ohne LLM-Call:
-- Jeder Narrator bekommt 0-2 attitude-getriebene Sätze (nur die 2 extremsten Abweichungen von 5)
-- Verbosity steuert die Länge: Basher (0) = kein Intro, Vannon (1-2) = ein Satz, normal (3-5) = kurzes italic-Intro, Ghost/Sage/Flux (8-9) = langes Intro mit tone_brief + Mood-Kombo
-- Attitude-gesteuerte Sätze: code_love≥8 → "Genau mein Ding.", cleanup≥8 → "Schon wieder hinterherräumen.", doku≥8 → "Und jetzt auch noch Doku.", critic≥8 → "Das hätte man auch gleich richtig machen können.", praise≥8 → "Richtig gut geworden!", optimist≤1 → "Wird eh wieder kaputtgehen."
-
-Fix — Section 7: Voice-Intro wird VOR cross-narrator reference + customBody injiziert.
-
-Empfehlung: Die Voice-Regeln können später pro Narrator in character_sheets.json ausgelagert werden, aber der template-basierte Ansatz funktioniert bereits mit den existierenden Attitude-Scores.
+Translation/INDEX.md (v0.22→v0.24, 33→34 Dateien):
+- config-wizard.js (~113 LOC): configureWizard() — extrahiert aus config-runtime.js
+- config-runtime.js: 763→~560 LOC. Funktionstabelle aktualisiert mit _fetchModels() (generischer Fetcher), _ensureProviderModel() (generisches Ensure), Thin-Wrapper für alle fetch/ensure-Methoden
+- Inhaltsverzeichnis aktualisiert mit neuer Datei + korrigierten LOC-Angaben
