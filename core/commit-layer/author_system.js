@@ -233,14 +233,38 @@ const isDirectionChange = prevSummary && prevClass !== currClass;
 if (isDirectionChange) console.log(`↩️  Richtungswechsel: ${prevClass} → ${currClass} (${prevNarratorName || 'kein Vorgänger'} → ${selectedNarrator.name})`);
 
 // ─── 6. Sidejoke auswählen ────────────────────────────────────────────────
-// Filter: Keine Einträge mit unaufgelösten {PLACEHOLDER}-Templates —
-// verify_commit_msg.js blockiert sonst den Commit (CHECK: PLACEHOLDER).
+// Platzhalter-Auflösung VOR der Prüfung: {FILE}, {COUNT}, {HASH} etc.
+// werden mit echten Werten befüllt. Erst DANACH wird auf unresolved
+// Placeholder geprüft — so werden auch Template-Einträge nutzbar.
+function resolvePlaceholders(text, ctx) {
+  const file0 = ctx.stagedFiles.length > 0 ? path.basename(ctx.stagedFiles[0]) : 'dieser Datei';
+  const count = ctx.stagedFiles.length;
+  const hash  = ctx.commitHash || 'abc1234';
+  // Konkrete Werte — ersetze erst die präzisen, dann die generischen
+  return text
+    .replace(/\{FILE\}/g, file0)
+    .replace(/\{COUNT2?\}/g, String(count))
+    .replace(/\{HASH\}/g, hash)
+    .replace(/\{DATE\}/g, new Date().toISOString().substring(0, 10))
+    .replace(/\{TIME\}/g, new Date().toISOString().substring(11, 19))
+    .replace(/\{PASS\}/g, '0')
+    .replace(/\{FAIL\}/g, '0')
+    .replace(/\{STATUS\}/g, 'OK')
+    .replace(/\{ROWS\}/g, String(count))
+    .replace(/\{LOC\}/g, '?')
+    .replace(/\{TIME2?\}/g, new Date().toISOString().substring(11, 16))
+    // Generische Platzhalter → neutrale Wörter
+    .replace(/\{[A-Z][A-Z0-9_]+\}/g, 'X');
+}
+
 const HAS_PLACEHOLDER = /\{[A-Z][A-Z0-9_]+\}/;
 const jokeKey  = selectedNarrator.name.toLowerCase();
 const rawList = (sidejokePool[jokeKey] && sidejokePool[jokeKey].length > 0)
   ? sidejokePool[jokeKey]
   : (sidejokePool.general || []);
-const jokeList = rawList.filter(j => !HAS_PLACEHOLDER.test(j));
+// Erst auflösen, DANN filtern — nur noch wirklich unresolvede Placeholder blocken
+const resolvedList = rawList.map(j => resolvePlaceholders(j, { stagedFiles, commitHash }));
+const jokeList = resolvedList.filter(j => !HAS_PLACEHOLDER.test(j));
 const joke = jokeList.length > 0
   ? jokeList[Math.floor(Math.random() * jokeList.length)]
   : '';
@@ -327,8 +351,43 @@ if (stagedFiles.length > 15) commitBody += ` (+ ${stagedFiles.length - 15} nicht
 const skipToken = stagedFiles.length > 20 ? '\n[FILES:SKIP]' : '';
 const catToken  = category !== 'STANDARD' ? ` [CATEGORY:${category}]` : '';
 
-// Subject: "Name: Titel" — sauber, lesbar, kein Token-Müll
-const subjectLine = `${selectedNarrator.name}: ${impulse}`;
+// Subject: Kurzer, narratorspezifischer Titel (max ~72 Zeichen)
+// Jeder Erzähler hat einen eigenen Titelstil — kein generisches "Name: Impulse" mehr.
+function buildSubject(narrator, impulseText, mood, files) {
+  const name = narrator.name;
+  const nFiles = files.length;
+  // Impulse auf erste sinnvolle Phrase kürzen (max ~50 chars)
+  let short = impulseText.replace(/[:;,]\s*$/, '').trim();
+  if (short.length > 55) {
+    // Ab ersten Satzzeichen oder bei ~50 chars abschneiden
+    const cut = short.substring(0, 50);
+    const lastSpace = cut.lastIndexOf(' ');
+    short = (lastSpace > 30 ? cut.substring(0, lastSpace) : cut) + '…';
+  }
+  // Erzählerspezifische Titel-Phrasen
+  const styles = {
+    Buffy:   () => `${name}: ${short}`,
+    Basher:  () => `${name}: ${short} [${nFiles} files]`,
+    Vannon:  () => short.split(' ').slice(0, 4).join(' ') + (short.split(' ').length > 4 ? '…' : ''),
+    Ghost:   () => `${name} verzeichnet: ${short}`,
+    Glitch:  () => `${name} ermittelt: ${short}`,
+    Squizzle:() => `${name}s Fall: ${short}`,
+    Echo:    () => `${name} erinnert: ${short}`,
+    Thinker: () => `${name}: ${short}`,
+    Devin:   () => `${name}: ${short}`,
+    Spark:   () => `${name} entdeckt: ${short}`,
+    Argos:   () => `${name}: ${nFiles} Dateien — ${short.length > 30 ? short.substring(0, 30) + '…' : short}`,
+    Null:    () => `${name}: ${short.substring(0, 40)}${short.length > 40 ? '…' : ''}`,
+    Flux:    () => {
+      const words = short.split(' ').slice(0, 5).join(' ');
+      return `${name} — also — ${words}${short.split(' ').length > 5 ? '…' : ''}`;
+    },
+    Sage:    () => `${name} lehrt: ${short}`,
+  };
+  const fn = styles[name] || styles['Buffy'];
+  return fn ? fn() : `${name}: ${short}`;
+}
+const subjectLine = buildSubject(selectedNarrator, impulse, derived.mood, stagedFiles);
 
 // Metadata-Footer: Tokens für verify_commit_msg.js (CHECK 1–5)
 const metadataFooter = `\n---\n[NARRATOR:${selectedNarrator.name}] [MODEL:${model}] [IMPULSE:${impulse}] [COMPOSITE:${compositeHash}]${catToken}${skipToken}`;

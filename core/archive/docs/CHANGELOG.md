@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:02:18] buildSubject() mit 14 Erzaehler-Titelstilen. resolvePlaceholders() macht 55 Template-Eintraege nutzbar. Keine 150-Zeichen-Titel mehr, keine toten Sidejokes.
+**Narrator:** Basher | **Model:** deepseek-v4-pro | **Composite:** `c59j40n2a3p49`
+- 2 Datei(en) geändert.
+
 ### [2026-06-25 23:57:26] Commit-Tonalitaet entfesselt: 14 Erzaehler mit je 6 unique Relationships (84 total). 19er TRANSITION_POOL ersetzt 'Nachdem X die Grundlagen'. 6er CAUSALITY_ANCHORS mit Grund/weil/Ursache/daher/deshalb. Kein Commit liest sich mehr gleich.
 **Narrator:** Glitch | **Model:** deepseek-v4-pro | **Composite:** `c58j44n10a1p25`
 - 3 Datei(en) geändert.
