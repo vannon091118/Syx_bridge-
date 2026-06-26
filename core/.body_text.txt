@@ -1,8 +1,15 @@
-3 Quick-Wins aus client-factory.js extrahiert: provider-chat-config.js (80 LOC), argos-client.js (61 LOC), gemini-utils.js (19 LOC). 772 LOC auf 537 LOC reduziert. INDEX.md auf 4 Dateien aktualisiert.
+Voice-Templates in buildVoiceIntro() erweitert: 2-3 Varianten pro Attitude-Trigger statt einzelnem Satz.
 
-Details:
-- provider-chat-config.js: getProviderChatConfig(config) — 7-Provider-Chat-Config als Factory mit live config-Referenzen
-- argos-client.js: createArgosClient({ targetLang, langCodes, getAbortSignal }) — Argos Translate Batch-Client via async Python spawn
-- gemini-utils.js: buildGeminiSchema + buildGeminiRequest — reine Funktionen, null Dependencies
-- client-factory.js: 3 neue requires, exportierte Code-Blocks entfernt, nur Factory-Aufrufe verbleiben
-- INDEX.md: von 1 auf 4 Dateien aktualisiert, LOC-Tracking korrigiert
+Trigger mit neuen Varianten:
+- codeLove hoch (3): "Genau mein Ding" / "Endlich wieder Code" / "Das ist wofuer ich lebe"
+- codeLove niedrig (2): "Code. Egal" / "Syntax, Semantik — who cares"
+- cleanup hoch (3): "Schon wieder hinterherraeumen" / "Jedes Mal dasselbe" / "Aufraeumen. Immer ich"
+- cleanup niedrig (2): "Sauber. Aufgeraeumt" / "Kein Dreck. So mag ich das"
+- doku hoch (3): "Und jetzt auch noch Doku" / "Dokumentieren. Weil Code allein nicht reicht" / "Papierkram. Hasse ich"
+- doku niedrig (2): "Dokumentiert. Nachvollziehbar" / "Sauber dokumentiert"
+- critic hoch (3): "Das haette man auch gleich richtig machen koennen" / "Nicht schlecht. Aber auch nicht gut" / "Ich seh was das kaputtgehen wird"
+- praise hoch (2): "Richtig gut geworden" / "Saubere Arbeit — Respekt"
+- optimist hoch (3): "Wird schon halten" / "Laeuft. Und wenn nicht" / "Guter Commit. Keine Sorgen"
+- optimist niedrig (3): "Wird eh wieder kaputtgehen" / "Optimismus ist nur aufgeschobene Enttaeuschung" / "Das haelt nicht"
+
+Kein Trigger hat nur noch eine Variante. Durch rpick() wird pro Commit ein anderer Satz gezogen — selbst derselbe Erzaehler mit denselben Attitudes klingt nicht monoton.

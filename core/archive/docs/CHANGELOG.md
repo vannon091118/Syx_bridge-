@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:10:23] Voice-Templates erweitert: 2-3 Varianten pro Attitude-Trigger. Kein Trigger monoton.
+**Narrator:** Argos | **Model:** deepseek-v4-pro | **Composite:** `c61j14n7a1p60`
+- 2 Datei(en) geändert.
+
 ### [2026-06-26 00:07:28] Provider-Module extrahiert: provider-chat-config, argos-client, gemini-utils. 772 auf 537 LOC.
 **Narrator:** Sage | **Model:** deepseek-v4-pro | **Composite:** `c60j58n14a3p25`
 - 6 Datei(en) geändert.

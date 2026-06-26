@@ -159,28 +159,65 @@ function buildVoiceIntro(narrator, att, mood, combo, impulse) {
 
   // Attitude-getriebene Sätze — jeder Narrator pickt max 2 extremste (Abweichung von 5)
   const candidates = [];
+  const rpick = arr => arr[Math.floor(Math.random() * arr.length)];
 
-  // Code-Liebe / Code-Frust
-  if (codeLove >= 8) candidates.push({ dev: codeLove - 5, text: 'Genau mein Ding. ' });
-  else if (codeLove <= 2) candidates.push({ dev: 5 - codeLove, text: 'Code. Egal. ' });
+  // Code-Liebe / Code-Frust (2–3 Varianten pro Trigger)
+  if (codeLove >= 8) candidates.push({ dev: codeLove - 5, text: rpick([
+    'Genau mein Ding. ',
+    'Endlich wieder Code. ',
+    'Das hier — das ist, wofür ich lebe. ',
+  ]) });
+  else if (codeLove <= 2) candidates.push({ dev: 5 - codeLove, text: rpick([
+    'Code. Egal. ',
+    'Syntax, Semantik — who cares. ',
+  ]) });
 
-  // Aufräum-Frust
-  if (cleanup >= 8) candidates.push({ dev: cleanup - 5, text: 'Schon wieder hinterherräumen. ' });
-  else if (cleanup <= 2) candidates.push({ dev: 5 - cleanup, text: 'Sauber. Aufgeräumt. ' });
+  // Aufräum-Frust (2–3 Varianten pro Trigger)
+  if (cleanup >= 8) candidates.push({ dev: cleanup - 5, text: rpick([
+    'Schon wieder hinterherräumen. ',
+    'Jedes Mal dasselbe: jemand macht Dreck, ich wisch auf. ',
+    'Aufräumen. Immer ich. ',
+  ]) });
+  else if (cleanup <= 2) candidates.push({ dev: 5 - cleanup, text: rpick([
+    'Sauber. Aufgeräumt. ',
+    'Kein Dreck. So mag ich das. ',
+  ]) });
 
-  // Doku-Genervtheit
-  if (doku >= 8) candidates.push({ dev: doku - 5, text: 'Und jetzt auch noch Doku. Na toll. ' });
-  else if (doku <= 1) candidates.push({ dev: 5 - doku, text: 'Dokumentiert. Nachvollziehbar. ' });
+  // Doku-Genervtheit (2–3 Varianten pro Trigger)
+  if (doku >= 8) candidates.push({ dev: doku - 5, text: rpick([
+    'Und jetzt auch noch Doku. Na toll. ',
+    'Dokumentieren. Weil Code allein ja nicht reicht. ',
+    'Papierkram. Hasse ich. ',
+  ]) });
+  else if (doku <= 1) candidates.push({ dev: 5 - doku, text: rpick([
+    'Dokumentiert. Nachvollziehbar. ',
+    'Sauber dokumentiert — wie es sich gehört. ',
+  ]) });
 
-  // Kritik-Neigung
-  if (critic >= 8) candidates.push({ dev: critic - 5, text: 'Das hätte man auch gleich richtig machen können. ' });
+  // Kritik-Neigung (3 Varianten)
+  if (critic >= 8) candidates.push({ dev: critic - 5, text: rpick([
+    'Das hätte man auch gleich richtig machen können. ',
+    'Nicht schlecht. Aber auch nicht gut. ',
+    'Ich seh was, das kaputtgehen wird. ',
+  ]) });
 
-  // Lob-Neigung
-  if (praise >= 8) candidates.push({ dev: praise - 5, text: 'Richtig gut geworden! ' });
+  // Lob-Neigung (2 Varianten)
+  if (praise >= 8) candidates.push({ dev: praise - 5, text: rpick([
+    'Richtig gut geworden! ',
+    'Das ist saubere Arbeit — Respekt. ',
+  ]) });
 
-  // Optimismus
-  if (optimist >= 8) candidates.push({ dev: optimist - 5, text: 'Wird schon halten. ' });
-  else if (optimist <= 1) candidates.push({ dev: 5 - optimist, text: 'Wird eh wieder kaputtgehen. ' });
+  // Optimismus (2–3 Varianten pro Trigger)
+  if (optimist >= 8) candidates.push({ dev: optimist - 5, text: rpick([
+    'Wird schon halten. ',
+    'Läuft. Und wenn nicht — läuft\'s auch. ',
+    'Guter Commit. Keine Sorgen. ',
+  ]) });
+  else if (optimist <= 1) candidates.push({ dev: 5 - optimist, text: rpick([
+    'Wird eh wieder kaputtgehen. ',
+    'Optimismus ist nur aufgeschobene Enttäuschung. ',
+    'Ich sag\'s ungern: das hält nicht. ',
+  ]) });
 
   // Nur die 2 extremsten Attitude-Abweichungen behalten
   candidates.sort((a, b) => b.dev - a.dev);
