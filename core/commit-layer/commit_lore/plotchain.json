@@ -2875,5 +2875,48 @@
         "file": "core/commit-layer/commit_lore/narrative_params.json"
       }
     ]
+  },
+  {
+    "p_id": "p72",
+    "id": "plot-2026-06-26T00:32:36",
+    "timestamp": "2026-06-26 00:32:36",
+    "summary": "Watermarks komplett entfernt. Werden spaeter neu gebaut. 3 Dateien geloescht, 6 Dateien bereinigt.",
+    "narrator": "Flux",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c67j33n13a5p23",
+    "ref_to": "plot-2026-06-26T00:25:18",
+    "prev_narrator": "Sage",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/DB/db_repair.js"
+      },
+      {
+        "file": "core/DB/preflight.js"
+      },
+      {
+        "file": "core/DB/sanitize_watermarks.js"
+      },
+      {
+        "file": "core/TREE.md"
+      },
+      {
+        "file": "core/Translation/verify_watermark.js"
+      },
+      {
+        "file": "core/Translation/watermark-config.js"
+      },
+      {
+        "file": "core/package.json"
+      },
+      {
+        "file": "tests/fulltest_run.js"
+      },
+      {
+        "file": "tests/v21_p0_live_verify.js"
+      }
+    ]
   }
 ]

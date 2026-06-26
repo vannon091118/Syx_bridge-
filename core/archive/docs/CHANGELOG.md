@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:32:36] Watermarks komplett entfernt. Werden spaeter neu gebaut. 3 Dateien geloescht, 6 Dateien bereinigt.
+**Narrator:** Flux | **Model:** deepseek-v4-pro | **Composite:** `c67j33n13a5p23`
+- 10 Datei(en) geändert.
+
 ### [2026-06-26 00:25:18] Mood-Combos erweitert: 43 auf 85 Kombinationen. Jeder Erzaehler 6-7 Moods.
 **Narrator:** Sage | **Model:** deepseek-v4-pro | **Composite:** `c66j6n14a2p43`
 - 2 Datei(en) geändert.

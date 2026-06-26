@@ -84,10 +84,7 @@ function createPreflight(dbManager) {
     const issues = await countIssues();
     // EXCLUDED fields: DIAGNOSTIC (neverChecked, neverStressTested) + NATIVE_STALE
     // (native_runtime = proper nouns — expected behavior, no repair needed).
-    // Watermark-Felder sind ebenfalls informativ — sie werden via repairWatermarkSanitize
-    // repariert, zählen aber nicht als kritische Issues für die 5%-Schwelle.
-    const excludedKeys = new Set(['neverChecked', 'neverStressTested', 'nativeStale',
-      'watermarkSource', 'watermarkTrans', 'watermarkRevs']);
+    const excludedKeys = new Set(['neverChecked', 'neverStressTested', 'nativeStale']);
     const totalIssues = Object.entries(issues)
       .filter(([k]) => !excludedKeys.has(k))
       .reduce((sum, [, v]) => sum + v, 0);
@@ -199,22 +196,11 @@ function createPreflight(dbManager) {
       SUM(CASE WHEN (source_text LIKE '%view.sett%' OR source_text LIKE '%world.map%') AND flagged=0 THEN 1 ELSE 0 END) as javaNoise,
       SUM(CASE WHEN last_checked_at IS NULL THEN 1 ELSE 0 END) as neverChecked,
       SUM(CASE WHEN stress_tested_at IS NULL THEN 1 ELSE 0 END) as neverStressTested,
-      SUM(CASE WHEN source_text LIKE '%' || CHAR(0x200B) || '%' OR source_text LIKE '%' || CHAR(0x200C) || '%' THEN 1 ELSE 0 END) as watermarkSource,
-      SUM(CASE WHEN translation LIKE '%' || CHAR(0x200B) || '%' OR translation LIKE '%' || CHAR(0x200C) || '%' THEN 1 ELSE 0 END) as watermarkTrans
     FROM translations`);
 
     // Separate Query für orphanedRevisions (andere Tabelle)
     const orphanedRevs = await q1(
       'SELECT COUNT(*) as c FROM translation_revisions WHERE source_text NOT IN (SELECT source_text FROM translations)'
-    );
-
-    // Separate Query für watermarkRevs (andere Tabelle)
-    const watermarkRevs = await q1(
-      `SELECT COUNT(*) as c FROM translation_revisions
-       WHERE source_text LIKE '%' || CHAR(0x200B) || '%'
-          OR source_text LIKE '%' || CHAR(0x200C) || '%'
-          OR translation LIKE '%' || CHAR(0x200B) || '%'
-          OR translation LIKE '%' || CHAR(0x200C) || '%'`
     );
 
     return {
@@ -224,9 +210,6 @@ function createPreflight(dbManager) {
       lowScore: (agg && agg.lowScore) || 0,
       javaNoise: (agg && agg.javaNoise) || 0,
       orphanedRevisions: (orphanedRevs && orphanedRevs.c) || 0,
-      watermarkSource: (agg && agg.watermarkSource) || 0,
-      watermarkTrans: (agg && agg.watermarkTrans) || 0,
-      watermarkRevs: (watermarkRevs && watermarkRevs.c) || 0,
       neverChecked: (agg && agg.neverChecked) || 0,
       neverStressTested: (agg && agg.neverStressTested) || 0
     };
@@ -245,11 +228,6 @@ function createPreflight(dbManager) {
     if (issues.lowScore > 0)          results.lowScore = await dbRepair.repairLowScore(run);
     if (issues.javaNoise > 0)         results.javaNoise = await dbRepair.repairJavaNoise(run);
     if (issues.orphanedRevisions > 0) results.orphanedRevisions = await dbRepair.repairOrphanedRevisions(run);
-    // P1-3: Watermark-Sanitization — idempotent, kostet ~0ms wenn DB sauber ist
-    if (issues.watermarkSource > 0 || issues.watermarkTrans > 0 || issues.watermarkRevs > 0) {
-      results.watermarkSanitize = await dbRepair.repairWatermarkSanitize(run);
-    }
-
     return results;
   }
 
@@ -333,9 +311,6 @@ function createPreflight(dbManager) {
       '| Info | Count |',
       '|------|-------|',
       `| NATIVE_STALE (Proper Nouns — keine Übersetzung nötig) | ${report.issues.nativeStale || 0} |`,
-      `| WATERMARK_SOURCE (ZWSP/ZWNJ in source_text — P1-3 auto-cleaned) | ${report.issues.watermarkSource || 0} |`,
-      `| WATERMARK_TRANS (ZWSP/ZWNJ in translation — P1-3 auto-cleaned) | ${report.issues.watermarkTrans || 0} |`,
-      `| WATERMARK_REVS (ZWSP/ZWNJ in revisions — P1-3 auto-cleaned) | ${report.issues.watermarkRevs || 0} |`,
       '',
       '## Diagnostics',
       '',
@@ -353,11 +328,7 @@ function createPreflight(dbManager) {
       for (const cat of ['unflaggedStale', 'shieldLeaks', 'lowScore', 'javaNoise', 'orphanedRevisions']) {
         if (report.repairs[cat] > 0) lines.push(`| ${cat} | ${report.repairs[cat]} |`);
       }
-      if (report.repairs.watermarkSanitize) {
-        const wm = report.repairs.watermarkSanitize;
-        const wmTotal = (wm.sourceCleaned || 0) + (wm.transCleaned || 0) + (wm.revSrcCleaned || 0) + (wm.revTransCleaned || 0);
-        if (wmTotal > 0) lines.push(`| watermarkSanitize | ${wmTotal} (src:${wm.sourceCleaned || 0} trans:${wm.transCleaned || 0} rev:${(wm.revSrcCleaned || 0) + (wm.revTransCleaned || 0)}) |`);
-      }
+
     }
 
     // After-repair state

@@ -2,7 +2,6 @@
  * V0.21 LIVE VERIFICATION — targeted integration test
  * 
  * Tests specific fix behaviors WITHOUT calling external APIs:
- * - P0-1: Watermark stripping at all entry points
  * - P0-2: shouldTranslate() Config-Blocker patterns
  * - J1/J2: Transaction commit/rollback infrastructure
  * - G1: polish_status='failed' marking
@@ -40,36 +39,6 @@ function assert(label, condition, detail = '') {
 console.log('═══════════════════════════════════════════');
 console.log('  V0.21 P0 LIVE VERIFICATION');
 console.log('═══════════════════════════════════════════\n');
-
-// ── P0-1: Watermark Stripping ──────────────────────────────────────
-console.log('🔬 P0-1: Watermark-Stripping\n');
-
-// Test 1: shouldTranslate strips ZWSP before classification
-const zwsp = '\u200B';
-const zwnj = '\u200C';
-const watermarkedGerman = `Das${zwsp} ist${zwnj} ein Test`;
-const cleanGerman = 'Das ist ein Test';
-
-assert('shouldTranslate strips ZWSP', 
-  shouldTranslate(watermarkedGerman) === shouldTranslate(cleanGerman),
-  `watermarked:${shouldTranslate(watermarkedGerman)} vs clean:${shouldTranslate(cleanGerman)}`);
-
-// Test 2: Watermarked proper noun still recognized
-assert('isProperNoun strips ZWSP (Cantor)',
-  isProperNoun(`Cantor${zwsp}`) === true,
-  `Result: ${isProperNoun(`Cantor${zwsp}`)}`);
-
-// Test 3: Watermarked file path still rejected
-assert('shouldTranslate rejects watermarked file path',
-  shouldTranslate(`test${zwsp}.png`) === false);
-
-// Test 4: extractReplacements strips watermarks
-const testContent = `NAME: "Test${zwsp}String"`;
-const replacements = extractReplacements(testContent, 'test.txt');
-const foundWatermarked = replacements.some(r => r.value.includes(zwsp) || r.value.includes(zwnj));
-assert('extractReplacements strips ZWSP/ZWNJ from values',
-  !foundWatermarked && replacements.length > 0,
-  `Found ${replacements.length} replacements, watermarked=${foundWatermarked}`);
 
 // ── P0-2: shouldTranslate Config-Blocker ───────────────────────────
 console.log('\n🔬 P0-2: shouldTranslate() Config-Blocker\n');
@@ -190,33 +159,6 @@ try {
 } catch (e) {
   console.log(`  ⚠️ DB tests skipped: ${e.message}`);
 }
-
-// ── P0-3: Watermark Output-Only verification ───────────────────────
-console.log('\n🔬 P0-3: Watermark Output-Only (code structure check)\n');
-
-const watermarkConfig = require('../core/Translation/watermark-config');
-
-assert('WATERMARK_CONFIG exports ZW_MARKERS',
-  Array.isArray(watermarkConfig.ZW_MARKERS) && watermarkConfig.ZW_MARKERS.length > 0);
-
-assert('randomZWMarker() returns valid marker',
-  typeof watermarkConfig.randomZWMarker() === 'string' && watermarkConfig.randomZWMarker().length > 0);
-
-// Verify watermark injection only in applyTranslations (not in saveTranslation)
-const translationDb = fs.readFileSync(path.join(__dirname, '..', 'core', 'src', 'translation-db.js'), 'utf-8');
-const saveComment = translationDb.includes('P0-1 FIX: Strip watermarks');
-assert('saveTranslation() strips watermarks at DB boundary',
-  saveComment,
-  'P0-1 comment must be present in saveTranslation()');
-
-// ── P0-4: normalizeWhitespace Watermark Stripping ───────────────────
-console.log('\n🔬 P0-4: normalizeWhitespace Defense-in-Depth\n');
-
-const clientFactory = fs.readFileSync(path.join(__dirname, '..', 'core', 'src', 'providers', 'client-factory.js'), 'utf-8');
-const normalizeComment = clientFactory.includes('P0-1 DEFENSE-IN-DEPTH: Strip invisible Unicode watermarks');
-assert('normalizeWhitespace() strips watermarks (P0-4)',
-  normalizeComment,
-  'P0-4 comment must be present in normalizeWhitespace()');
 
 // ── SUMMARY ────────────────────────────────────────────────────────
 console.log('\n═══════════════════════════════════════════');

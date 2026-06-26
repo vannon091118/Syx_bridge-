@@ -1,10 +1,17 @@
-Mood-Combos in narrative_params.json massiv erweitert: von 43 auf 85 Kombinationen.
-Jeder der 14 Erzaehler hat jetzt 6-7 Moods definiert (vorher 2-4).
+Watermarks komplett entfernt — werden spaeter neu und besser aufgebaut.
 
-Neue Moods pro Erzaehler (die am haeufigsten fehlten):
-- sachlich: Buffy, Vannon, Ghost (neutral-factual, vorher nur Basher)
-- selbstironisch: alle 14 haben jetzt selbstironisch (vorher nur 3)
-- muede-zufrieden: 9 Erzaehler (vorher nur 1)
-- trocken: 10 Erzaehler (vorher nur 3)
+Geloeschte Dateien (3):
+- core/Translation/watermark-config.js
+- core/Translation/verify_watermark.js
+- core/DB/sanitize_watermarks.js
 
-Dadurch greift der moodNarratorCombo in buildVoiceIntro() jetzt fuer ~61% aller moeglichen Narrator+Mood-Kombinationen (85/140), statt vorher ~31% (43/140). Weniger leere comboLine-Faelle, mehr charakterliche Tiefe in Voice-Intros.
+Bereinigte Dateien (7):
+- core/DB/db_repair.js: Step 8 WATERMARK_SANITIZE + repairWatermarkSanitize() entfernt
+- core/DB/preflight.js: watermarkSource/Trans/Revs aus countIssues, excludedKeys, runRepairs, writeReport entfernt
+- core/package.json: verify-watermark script entfernt
+- core/TREE.md: 3 watermark Eintraege entfernt, DB count 10→9
+- tests/v21_p0_live_verify.js: P0-1 Watermark-Tests + P0-3/P0-4 Checks entfernt
+- tests/fulltest_run.js: WATERMARK_CONFIG import, countWatermarks, Phases 2/5 WM-Queries, Phase 6 Audit entfernt
+
+Behalten (absichtlich):
+- stripWatermarks() in extractor.js und alle Aufrufer — ZWSP/ZWNJ-Stripping ist eine Utility-Funktion, nicht das Watermark-System

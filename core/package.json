@@ -21,8 +21,7 @@
     "consistency": "node scripts/check_consistency.js",
     "package": "node scripts/package.js",
     "workshop": "node GUI/workshop_export.js",
-    "audit:db": "node DB/db_audit.js",
-    "verify-watermark": "node Translation/verify_watermark.js"
+    "audit:db": "node DB/db_audit.js"
   },
   "keywords": [
     "songs-of-syx",

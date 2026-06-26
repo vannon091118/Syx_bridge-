@@ -11,7 +11,6 @@
  * - Translation pipeline on all 3 mods
  * - DB snapshot AFTER run
  * - QA analysis: source vs output comparison
- * - Watermark audit
  * 
  * Run: node tests/fulltest_run.js
  */
@@ -29,8 +28,6 @@ const {
 } = require('../core/Translation/text-core');
 
 const { restorePlaceholders, getHash } = require('../core/Translation/extractor');
-
-const WATERMARK_CONFIG = require('../core/Translation/watermark-config');
 
 const TEST_MODS = [
   {
@@ -69,11 +66,6 @@ function assert(label, condition, detail = '') {
 
 function zwspFree(s) {
   return (s || '').replace(/[\u200B\u200C]/g, '');
-}
-
-function countWatermarks(s) {
-  const matches = (s || '').match(/[\u200B\u200C]/g);
-  return matches ? matches.length : 0;
 }
 
 // ── Main ────────────────────────────────────────────────────────────
@@ -156,19 +148,13 @@ async function main() {
       const failedPolish = db.prepare("SELECT COUNT(*) as c FROM translations WHERE polish_status = 'failed'").get();
       const maxRev = db.prepare("SELECT COUNT(*) as c FROM translations WHERE flag_reason = 'max_revisions_exceeded'").get();
       
-      // Watermark audit: count entries with ZWSP/ZWNJ
-      const wmSource = db.prepare("SELECT COUNT(*) as c FROM translations WHERE source_text LIKE '%' || CHAR(0x200B) || '%' OR source_text LIKE '%' || CHAR(0x200C) || '%'").get();
-      const wmTrans = db.prepare("SELECT COUNT(*) as c FROM translations WHERE translation LIKE '%' || CHAR(0x200B) || '%' OR translation LIKE '%' || CHAR(0x200C) || '%'").get();
-      
-      dbBefore = { total: total.c, stale: stale.c, flagged: flagged.c, failedPolish: failedPolish.c, maxRev: maxRev.c, wmSource: wmSource.c, wmTrans: wmTrans.c };
+      dbBefore = { total: total.c, stale: stale.c, flagged: flagged.c, failedPolish: failedPolish.c, maxRev: maxRev.c };
       
       console.log(`  Total entries:    ${total.c}`);
       console.log(`  Stale (src=tgt):  ${stale.c}`);
       console.log(`  Flagged:          ${flagged.c}`);
       console.log(`  polish_status='failed': ${failedPolish.c}`);
       console.log(`  max_revisions_exceeded: ${maxRev.c}`);
-      console.log(`  Watermarks (source): ${wmSource.c}`);
-      console.log(`  Watermarks (trans):  ${wmTrans.c}`);
       
       db.close();
     } else {
@@ -359,7 +345,6 @@ async function main() {
       console.log(`  Mod: ${mod.mod.name}`);
       let modTranslated = 0;
       let modStale = 0;
-      let modWatermarked = 0;
       
       for (const r of mod.replacements) {
         const key = zwspFree(r.value);
@@ -370,12 +355,11 @@ async function main() {
         if (translated !== undefined) {
           modTranslated++;
           if (translated === key || translated === r.value) modStale++;
-          if (countWatermarks(translated) > 0) modWatermarked++;
         }
       }
       
       const stalePct = modTranslated > 0 ? (modStale / modTranslated * 100).toFixed(1) : '0.0';
-      console.log(`    ${modTranslated} translated, ${modStale} stale (${stalePct}%), ${modWatermarked} watermarked in output`);
+      console.log(`    ${modTranslated} translated, ${modStale} stale (${stalePct}%)`);
     }
     
     // Detailed: show first 3 translations
@@ -411,18 +395,14 @@ async function main() {
       const flagged = db.prepare('SELECT COUNT(*) as c FROM translations WHERE flagged = 1').get();
       const failedPolish = db.prepare("SELECT COUNT(*) as c FROM translations WHERE polish_status = 'failed'").get();
       const maxRev = db.prepare("SELECT COUNT(*) as c FROM translations WHERE flag_reason = 'max_revisions_exceeded'").get();
-      const wmSource = db.prepare("SELECT COUNT(*) as c FROM translations WHERE source_text LIKE '%' || CHAR(0x200B) || '%' OR source_text LIKE '%' || CHAR(0x200C) || '%'").get();
-      const wmTrans = db.prepare("SELECT COUNT(*) as c FROM translations WHERE translation LIKE '%' || CHAR(0x200B) || '%' OR translation LIKE '%' || CHAR(0x200C) || '%'").get();
       
-      dbAfter = { total: total.c, stale: stale.c, flagged: flagged.c, failedPolish: failedPolish.c, maxRev: maxRev.c, wmSource: wmSource.c, wmTrans: wmTrans.c };
+      dbAfter = { total: total.c, stale: stale.c, flagged: flagged.c, failedPolish: failedPolish.c, maxRev: maxRev.c };
       
       console.log(`  Total entries:    ${total.c}`);
       console.log(`  Stale (src=tgt):  ${stale.c}`);
       console.log(`  Flagged:          ${flagged.c}`);
       console.log(`  polish_status='failed': ${failedPolish.c}`);
       console.log(`  max_revisions_exceeded: ${maxRev.c}`);
-      console.log(`  Watermarks (source): ${wmSource.c}`);
-      console.log(`  Watermarks (trans):  ${wmTrans.c}`);
       
       // DB Diff
       if (dbBefore) {
@@ -431,31 +411,12 @@ async function main() {
         console.log(`    Stale:          ${afterSign(stale.c - dbBefore.stale)}`);
         console.log(`    Flagged:        ${afterSign(flagged.c - dbBefore.flagged)}`);
         console.log(`    failed:         ${afterSign(failedPolish.c - dbBefore.failedPolish)}`);
-        console.log(`    Watermarks src: ${afterSign(wmSource.c - dbBefore.wmSource)}`);
-        console.log(`    Watermarks tgt: ${afterSign(wmTrans.c - dbBefore.wmTrans)}`);
       }
       
       db.close();
     }
   } catch (e) {
     console.log(`  ${WARN} DB snapshot skipped: ${e.message}`);
-  }
-
-  // ── PHASE 6: Watermark Audit (output files vs DB) ─────────────────
-  console.log('\n🛡️  PHASE 6: Watermark Audit\n');
-
-  // Check: are watermarks in the DB source_text? (should be 0)
-  if (dbAfter && dbAfter.wmSource > 0) {
-    console.log(`  ${FAIL} ${dbAfter.wmSource} watermarks in DB source_text — P0-1 defense breached!`);
-  } else if (dbAfter) {
-    console.log(`  ${PASS} 0 watermarks in DB source_text — P0-1 defense holds`);
-  }
-
-  // Check: are watermarks in the DB translation? (should be 0)
-  if (dbAfter && dbAfter.wmTrans > 0) {
-    console.log(`  ${FAIL} ${dbAfter.wmTrans} watermarks in DB translation — P0-3 defense breached!`);
-  } else if (dbAfter) {
-    console.log(`  ${PASS} 0 watermarks in DB translation — P0-3 defense holds`);
   }
 
   // ── SUMMARY ───────────────────────────────────────────────────────

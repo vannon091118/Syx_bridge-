@@ -19,7 +19,7 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
 └── core/                                # ═══ Anwendung ═══
     │
     ├── index.js                         # ⭐ ENTRY POINT — Orchestrator
-    ├── package.json                     # v0.23.0, Dependencies
+    ├── package.json                     # v0.22.0, Dependencies
     ├── package-lock.json
     ├── eslint.config.mjs                # ESLint-Konfiguration
     ├── LICENSE                          # MIT
@@ -38,7 +38,6 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
     │   ├── db_snapshot.js               # One-Click DB Snapshot & Trend-Report
     │   ├── audit_db.js                  # DB-Audit mit Metriken (CLI)
     │   ├── analyze_snapshots.js         # Snapshot-Analyse (sql.js)
-    │   ├── sanitize_watermarks.js       # Watermark-Bereinigung in DB
     │   └── cleanup_argos_stale.js       # Stale Argos-Einträge bereinigen
     │
     │   ═══════════════════════════════════════════════════════
@@ -96,7 +95,6 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
     │   ├── ui.js                        # Terminal-UI
     │   ├── runtime-ops.js               # Run-Orchestrator, Native Mode
     │   ├── sos-runtime.js               # SoS-Config, Launcher-Sync
-    │   ├── watermark-config.js          # Watermark-Konfiguration
     │   │
     │   │   ─── Dev-Tools (aus scripts/ migriert) ───
     │   ├── export_stage2.js             # Reiner Export-Run (DB→Dateien)
@@ -108,7 +106,6 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
     │   ├── live1_dryrun.js              # Live-Dry-Run
     │   ├── warm-model.js                # NMT Model-Warmup
     │   ├── verify_integrity.js          # Mod-Integritätsprüfung
-    │   ├── verify_watermark.js          # Watermark-Verifikation
     │   └── verify_flag_separation.js    # Flag-Separation-Verifikation
     │
     │   ═══════════════════════════════════════════════════════
@@ -223,7 +220,7 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
 
 | Domäne | Dateien | Zweck |
 |--------|---------|-------|
-| **DB/** | 10 | Datenbank: Schema, Repair, Audit, Snapshots |
+| **DB/** | 9 | Datenbank: Schema, Repair, Audit, Snapshots |
 | **Translation/** | 40 | Übersetzung: Pipeline, Plugins, Providers, Config |
 | **GUI/** | 5 | Web-Interface: Server, Handler, Frontend |
 | **commit-layer/** | 16 | Commit-Narrative: RNG, Charaktere, Plot |
