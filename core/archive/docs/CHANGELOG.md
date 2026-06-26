@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:25:18] Mood-Combos erweitert: 43 auf 85 Kombinationen. Jeder Erzaehler 6-7 Moods.
+**Narrator:** Sage | **Model:** deepseek-v4-pro | **Composite:** `c66j6n14a2p43`
+- 2 Datei(en) geändert.
+
 ### [2026-06-26 00:21:16] buildSubject Titelstile repariert: Buffy Thinker Devin Basher haben jetzt visuell unterscheidbare Formate
 **Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c65j71n6a3p51`
 - 2 Datei(en) geändert.

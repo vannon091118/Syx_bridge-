@@ -1,9 +1,10 @@
-buildSubject() Titelstile repariert: Buffy, Thinker, Devin und Basher hatten Formate die visuell identisch zum alten "Name: Text"-Format waren.
+Mood-Combos in narrative_params.json massiv erweitert: von 43 auf 85 Kombinationen.
+Jeder der 14 Erzaehler hat jetzt 6-7 Moods definiert (vorher 2-4).
 
-Neue Formate:
-- Buffy: [Buffy] Text (Bracket-Prefix statt Doppelpunkt)
-- Basher: Basher (N files): Text (Name+Count vorangestellt, Doppelpunkt am Ende)
-- Thinker: Text [Analyse: Thinker] (Name als Analyse-Tag am Ende)
-- Devin: Devin sagt: Text (verbale Zuschreibung)
+Neue Moods pro Erzaehler (die am haeufigsten fehlten):
+- sachlich: Buffy, Vannon, Ghost (neutral-factual, vorher nur Basher)
+- selbstironisch: alle 14 haben jetzt selbstironisch (vorher nur 3)
+- muede-zufrieden: 9 Erzaehler (vorher nur 1)
+- trocken: 10 Erzaehler (vorher nur 3)
 
-Jetzt sind ALLE 14 Erzaehler-Titel visuell unterscheidbar. Kein Titel liest sich mehr wie das alte "Name: Impulse"-Format.
+Dadurch greift der moodNarratorCombo in buildVoiceIntro() jetzt fuer ~61% aller moeglichen Narrator+Mood-Kombinationen (85/140), statt vorher ~31% (43/140). Weniger leere comboLine-Faelle, mehr charakterliche Tiefe in Voice-Intros.
