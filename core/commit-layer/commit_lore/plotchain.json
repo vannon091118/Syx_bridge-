@@ -2818,5 +2818,24 @@
         "file": "core/Translation/providers/INDEX.md"
       }
     ]
+  },
+  {
+    "p_id": "p69",
+    "id": "plot-2026-06-26T00:17:31",
+    "timestamp": "2026-06-26 00:17:31",
+    "summary": "Richtungswechsel-Templates: 14 Erzaehler mit je 2-3 eigenen DC_TEMPLATES. Kein statischer Text mehr.",
+    "narrator": "Basher",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c64j14n2a5p39",
+    "ref_to": "plot-2026-06-26T00:15:12",
+    "prev_narrator": "Vannon",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/commit-layer/author_system.js"
+      }
+    ]
   }
 ]

@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:17:31] Richtungswechsel-Templates: 14 Erzaehler mit je 2-3 eigenen DC_TEMPLATES. Kein statischer Text mehr.
+**Narrator:** Basher | **Model:** deepseek-v4-pro | **Composite:** `c64j14n2a5p39`
+- 2 Datei(en) geändert.
+
 ### [2026-06-26 00:15:12] Sub-INDEX-Versionen auf v0.23.0 korrigiert. Keine Drift ueber globaler Version.
 **Narrator:** Vannon | **Model:** deepseek-v4-pro | **Composite:** `c63j97n4a1p21`
 - 4 Datei(en) geändert.

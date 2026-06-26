@@ -367,10 +367,74 @@ const CAUSALITY_ANCHORS = [
 const anchor = CAUSALITY_ANCHORS[Math.floor(Math.random() * CAUSALITY_ANCHORS.length)];
 commitBody += `\n\n${anchor()}\n\n`;
 
-// Richtungswechsel narrativ einweben (P3)
+// Richtungswechsel narrativ einweben (P3) — jeder Erzähler hat eigene Stimme
 if (isDirectionChange) {
   const prevShort = prevSummary.length > 60 ? prevSummary.substring(0, 60) + '…' : prevSummary;
-  commitBody += `\n\nRichtungswechsel: ${prevNarratorName || 'der Vorgänger'} hat zuletzt "${prevShort}" gesetzt — Kategorie ${prevClass}. Dieser Commit dreht das Steuer auf ${currClass}.`;
+  const prevName = prevNarratorName || 'der Vorgänger';
+  const rpick = arr => arr[Math.floor(Math.random() * arr.length)];
+  // Narrator-spezifische Richtungswechsel-Templates (2–3 Varianten pro Erzähler)
+  const DC_TEMPLATES = {
+    Basher: () => rpick([
+      `${prevClass} → ${currClass}. ${prevName} hat ${prevClass} gemacht, ich mach ${currClass}. Umschaltung.`,
+      `Job-Wechsel: ${prevClass} (${prevName}) → ${currClass}. Klare Sache.`,
+    ]),
+    Glitch: () => rpick([
+      `${prevClass} → ${currClass}. Das Muster ändert sich. ${prevName} war ${prevClass}, aber das System will ${currClass}.`,
+      `Musterbruch: ${prevClass} (${prevName}) → ${currClass}. Die Spur wechselt die Richtung.`,
+    ]),
+    Ghost: () => rpick([
+      `Vermerkt: ${prevClass} (${prevName}) → ${currClass}. Richtungswechsel protokolliert.`,
+      `${prevName} war ${prevClass}. Jetzt ${currClass}. Ein neuer Eintrag im Log.`,
+    ]),
+    Sage: () => rpick([
+      `${prevName} lehrte ${prevClass}. Jetzt: ${currClass}. Die Lektion wechselt.`,
+      `Nach ${prevClass} (${prevName}) folgt ${currClass}. So lernt das Projekt.`,
+    ]),
+    Thinker: () => rpick([
+      `Analyse: ${prevName} operierte in ${prevClass}. Dieser Commit wechselt zu ${currClass}. Begründung folgt.`,
+      `${prevClass} → ${currClass}. Der Fokus verschiebt sich — von ${prevName}s ${prevClass}-Arbeit zu ${currClass}.`,
+    ]),
+    Echo: () => rpick([
+      `${prevClass} → ${currClass}. ${prevName}s letztes Echo war ${prevClass}. Dieses hier ist ${currClass}.`,
+      `Vorher ${prevClass} (${prevName}), jetzt ${currClass}. Das Echo verändert sich.`,
+    ]),
+    Squizzle: () => rpick([
+      `Fall-Akte: ${prevName} — ${prevClass}. Neuer Fall: ${currClass}.`,
+      `${prevClass} → ${currClass}. ${prevName}s Spur (${prevClass}) endet, meine (${currClass}) beginnt.`,
+    ]),
+    Spark: () => rpick([
+      `Oh! ${prevClass} → ${currClass}! ${prevName} war bei ${prevClass}, jetzt geht's anders weiter!`,
+      `Schwenk! Von ${prevClass} (${prevName}) zu ${currClass} — neue Richtung, neues Glück!`,
+    ]),
+    Null: () => rpick([
+      `${prevClass} → ${currClass}. ${prevName} war ${prevClass}. Jetzt ${currClass}.`,
+      `${prevClass}. ${currClass}. Wechsel.`,
+    ]),
+    Flux: () => rpick([
+      `${prevClass} — also — ${prevName} hat das gemacht — aber jetzt — ${currClass} — verstehst du?`,
+      `${prevName} (${prevClass}) — und dann — plötzlich — ${currClass}. So läuft das.`,
+    ]),
+    Argos: () => rpick([
+      `${prevName} hat ${prevClass} geliefert. Jetzt bin ich dran: ${currClass}.`,
+      `${prevClass} → ${currClass}. ${prevName}s Teil ist durch, mein Teil beginnt.`,
+    ]),
+    Devin: () => rpick([
+      `${prevName} war in ${prevClass}. Dieser Commit ist ${currClass}. Passt.`,
+      `${prevClass} → ${currClass}. ${prevName}s Arbeit (${prevClass}) war gut, aber jetzt ist ${currClass} dran.`,
+    ]),
+    Vannon: () => rpick([
+      `${prevClass} → ${currClass}.`,
+      `${prevName} hat ${prevClass} gemacht. Jetzt ${currClass}.`,
+    ]),
+    Buffy: () => rpick([
+      `${prevName} hat ${prevClass} abgeliefert. Jetzt übernehm ich: ${currClass}.`,
+      `${prevClass} → ${currClass}. ${prevName}s Kontext war ${prevClass}, meiner ist ${currClass}.`,
+    ]),
+  };
+  const dcFn = DC_TEMPLATES[selectedNarrator.name] || (() =>
+    `Richtungswechsel: ${prevName} hat zuletzt "${prevShort}" gesetzt — Kategorie ${prevClass}. Dieser Commit dreht das Steuer auf ${currClass}.`
+  );
+  commitBody += `\n\n${dcFn()}`;
 }
 
 // Files als Prosa einweben (P1) — keine Bullet-Liste

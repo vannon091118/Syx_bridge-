@@ -1,7 +1,12 @@
-Version in allen 3 Sub-INDEX-Dateien auf v0.23.0 zurueckgesetzt (globale Version):
+Richtungswechsel narrativ entfesselt: 14 Erzaehler mit je 2-3 eigenen DC_TEMPLATES statt dem immer gleichen "Richtungswechsel: X hat zuletzt...Dieser Commit dreht das Steuer auf Y."
 
-- core/GUI/INDEX.md: v0.25.0 → v0.23.0 (3 Stellen)
-- core/Translation/providers/INDEX.md: v0.25.0 → v0.23.0 (5 Stellen)
-- core/Translation/INDEX.md: v0.24.0 → v0.23.0 (Header)
+Jeder Erzaehler spricht Richtungswechsel jetzt anders:
+- Basher: "Job-Wechsel: BUILD (Ghost) → DOKU. Klare Sache."
+- Glitch: "Musterbruch: BUILD (Ghost) → DOKU. Die Spur wechselt die Richtung."
+- Ghost: "Vermerkt: BUILD (Ghost) → DOKU. Richtungswechsel protokolliert."
+- Sage: "Ghost lehrte BUILD. Jetzt: DOKU. Die Lektion wechselt."
+- Flux: "BUILD — also — Ghost hat das gemacht — aber jetzt — DOKU — verstehst du?"
+- Null: "BUILD. DOKU. Wechsel."
+- Spark: "Oh! BUILD → DOKU! Ghost war bei BUILD, jetzt geht's anders weiter!"
 
-Sub-INDEX-Versionen duerfen nie ueber die globale Version driften. v0.23.0 ist und bleibt die kanonische Version bis zum naechsten offiziellen Release.
+etc. — alle 14 Erzaehler mit je 2-3 Varianten via rpick(). Unbekannte Erzaehler fallen auf das originale generische Template zurueck.
