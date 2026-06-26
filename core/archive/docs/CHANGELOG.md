@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:21:16] buildSubject Titelstile repariert: Buffy Thinker Devin Basher haben jetzt visuell unterscheidbare Formate
+**Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c65j71n6a3p51`
+- 2 Datei(en) geändert.
+
 ### [2026-06-26 00:17:31] Richtungswechsel-Templates: 14 Erzaehler mit je 2-3 eigenen DC_TEMPLATES. Kein statischer Text mehr.
 **Narrator:** Basher | **Model:** deepseek-v4-pro | **Composite:** `c64j14n2a5p39`
 - 2 Datei(en) geändert.

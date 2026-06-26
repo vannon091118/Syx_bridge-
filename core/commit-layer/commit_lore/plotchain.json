@@ -2837,5 +2837,24 @@
         "file": "core/commit-layer/author_system.js"
       }
     ]
+  },
+  {
+    "p_id": "p70",
+    "id": "plot-2026-06-26T00:21:16",
+    "timestamp": "2026-06-26 00:21:16",
+    "summary": "buildSubject Titelstile repariert: Buffy Thinker Devin Basher haben jetzt visuell unterscheidbare Formate",
+    "narrator": "Devin",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c65j71n6a3p51",
+    "ref_to": "plot-2026-06-26T00:17:31",
+    "prev_narrator": "Basher",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/commit-layer/author_system.js"
+      }
+    ]
   }
 ]

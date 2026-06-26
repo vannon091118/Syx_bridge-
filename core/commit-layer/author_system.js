@@ -467,15 +467,15 @@ function buildSubject(narrator, impulseText, mood, files) {
   }
   // Erzählerspezifische Titel-Phrasen
   const styles = {
-    Buffy:   () => `${name}: ${short}`,
-    Basher:  () => `${name}: ${short} [${nFiles} files]`,
+    Buffy:   () => `[${name}] ${short}`,
+    Basher:  () => `${name} (${nFiles} files): ${short}`,
     Vannon:  () => short.split(' ').slice(0, 4).join(' ') + (short.split(' ').length > 4 ? '…' : ''),
+    Thinker: () => `${short} [Analyse: ${name}]`,
+    Devin:   () => `${name} sagt: ${short}`,
     Ghost:   () => `${name} verzeichnet: ${short}`,
     Glitch:  () => `${name} ermittelt: ${short}`,
     Squizzle:() => `${name}s Fall: ${short}`,
     Echo:    () => `${name} erinnert: ${short}`,
-    Thinker: () => `${name}: ${short}`,
-    Devin:   () => `${name}: ${short}`,
     Spark:   () => `${name} entdeckt: ${short}`,
     Argos:   () => `${name}: ${nFiles} Dateien — ${short.length > 30 ? short.substring(0, 30) + '…' : short}`,
     Null:    () => `${name}: ${short.substring(0, 40)}${short.length > 40 ? '…' : ''}`,

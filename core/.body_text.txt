@@ -1,12 +1,9 @@
-Richtungswechsel narrativ entfesselt: 14 Erzaehler mit je 2-3 eigenen DC_TEMPLATES statt dem immer gleichen "Richtungswechsel: X hat zuletzt...Dieser Commit dreht das Steuer auf Y."
+buildSubject() Titelstile repariert: Buffy, Thinker, Devin und Basher hatten Formate die visuell identisch zum alten "Name: Text"-Format waren.
 
-Jeder Erzaehler spricht Richtungswechsel jetzt anders:
-- Basher: "Job-Wechsel: BUILD (Ghost) → DOKU. Klare Sache."
-- Glitch: "Musterbruch: BUILD (Ghost) → DOKU. Die Spur wechselt die Richtung."
-- Ghost: "Vermerkt: BUILD (Ghost) → DOKU. Richtungswechsel protokolliert."
-- Sage: "Ghost lehrte BUILD. Jetzt: DOKU. Die Lektion wechselt."
-- Flux: "BUILD — also — Ghost hat das gemacht — aber jetzt — DOKU — verstehst du?"
-- Null: "BUILD. DOKU. Wechsel."
-- Spark: "Oh! BUILD → DOKU! Ghost war bei BUILD, jetzt geht's anders weiter!"
+Neue Formate:
+- Buffy: [Buffy] Text (Bracket-Prefix statt Doppelpunkt)
+- Basher: Basher (N files): Text (Name+Count vorangestellt, Doppelpunkt am Ende)
+- Thinker: Text [Analyse: Thinker] (Name als Analyse-Tag am Ende)
+- Devin: Devin sagt: Text (verbale Zuschreibung)
 
-etc. — alle 14 Erzaehler mit je 2-3 Varianten via rpick(). Unbekannte Erzaehler fallen auf das originale generische Template zurueck.
+Jetzt sind ALLE 14 Erzaehler-Titel visuell unterscheidbar. Kein Titel liest sich mehr wie das alte "Name: Impulse"-Format.
