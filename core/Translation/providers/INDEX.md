@@ -1,6 +1,6 @@
 # 📖 INDEX — core/src/providers/ (4 Dateien, ~690 LOC)
 
-> **Generiert:** 2026-06-19 | **Aktualisiert:** 2026-06-26 | **Version:** v0.25.0
+> **Generiert:** 2026-06-19 | **Aktualisiert:** 2026-06-26 | **Version:** v0.23.0
 > **Zweck:** Referenzbuch für die Provider-Schicht (zentrale callProvider-Dispatch)
 > **CL-Refs:** Kanonische Quelle ist `../INDEX.md`. Lokale CL-Refs sind Kurzform. Bei Konflikt gilt `../INDEX.md`.
 
@@ -8,7 +8,7 @@
 
 ## client-factory.js (~537 LOC)
 *Provider-Client-Factory: Zentraler callProvider-Dispatch + executeStageRequest*
-> **v0.25 Extraktion:** `PROVIDER_CHAT_CONFIG` → provider-chat-config.js, `callArgosBatch` → argos-client.js, `buildGeminiSchema`/`buildGeminiRequest` → gemini-utils.js
+> **v0.23 Extraktion:** `PROVIDER_CHAT_CONFIG` → provider-chat-config.js, `callArgosBatch` → argos-client.js, `buildGeminiSchema`/`buildGeminiRequest` → gemini-utils.js
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -37,7 +37,7 @@
 ---
 
 ## provider-chat-config.js (~80 LOC)
-*Extrahiert aus client-factory.js (v0.25) — 7-Provider-Chat-Config als Factory*
+*Extrahiert aus client-factory.js (v0.23) — 7-Provider-Chat-Config als Factory*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -46,7 +46,7 @@
 ---
 
 ## argos-client.js (~61 LOC)
-*Extrahiert aus client-factory.js (v0.25) — Argos Translate Batch-Client*
+*Extrahiert aus client-factory.js (v0.23) — Argos Translate Batch-Client*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -55,7 +55,7 @@
 ---
 
 ## gemini-utils.js (~19 LOC)
-*Extrahiert aus client-factory.js (v0.25) — Gemini Schema + Request Builder*
+*Extrahiert aus client-factory.js (v0.23) — Gemini Schema + Request Builder*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -64,4 +64,4 @@
 
 ---
 
-*📖 Provider-INDEX v0.25.0 — 4 Dateien, ~690 LOC, 15 Funktionen*
+*📖 Provider-INDEX v0.23.0 — 4 Dateien, ~690 LOC, 15 Funktionen*

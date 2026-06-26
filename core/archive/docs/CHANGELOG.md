@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-26 00:15:12] Sub-INDEX-Versionen auf v0.23.0 korrigiert. Keine Drift ueber globaler Version.
+**Narrator:** Vannon | **Model:** deepseek-v4-pro | **Composite:** `c63j97n4a1p21`
+- 4 Datei(en) geändert.
+
 ### [2026-06-26 00:13:52] GUI/INDEX.md aktualisiert: reset_now.js + workshop_export.js dokumentiert. Dateizahl + LOC korrigiert.
 **Narrator:** Sage | **Model:** deepseek-v4-pro | **Composite:** `c62j8n14a5p19`
 - 2 Datei(en) geändert.

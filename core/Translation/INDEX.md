@@ -1,6 +1,6 @@
 # 📖 INDEX — core/Translation/ (34 Dateien, ~9.800 LOC)
 
-> **Generiert:** 2026-06-26 | **Version:** v0.24.0
+> **Generiert:** 2026-06-26 | **Version:** v0.23.0
 > **Zuletzt verifiziert:** 2026-06-26 (config-wizard.js Extraktion, _ensureProviderModel/_fetchModels Deduplizierung)
 > **Zweck:** Referenzbuch — jeder Agent findet hier Funktionen + Zeilennummern OHNE den gesamten Code durchsuchen zu müssen.
 > **Format:** DATEI:ZEILE_START-ZEILE_ENDE: FUNKTION — Kurzbeschreibung

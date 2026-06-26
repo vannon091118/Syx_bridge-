@@ -1,5 +1,7 @@
-GUI/INDEX.md aktualisiert: reset_now.js (207 LOC, 5-Step-Reset) und workshop_export.js (55 LOC, Uploader-Export) dokumentiert. Dateizahl von 10 auf 15 (14 ohne INDEX) korrigiert. LOC-Schätzung von ~2.500 auf ~3.970 korrigiert. server-routes.js LOC von ~290 auf ~394 aktualisiert.
+Version in allen 3 Sub-INDEX-Dateien auf v0.23.0 zurueckgesetzt (globale Version):
 
-Neue Sektionen:
-- reset_now.js: restoreAllBackups → cleanGameModRoot → cleanLocalDirs → cleanLauncherSettings → cleanDbProcessedFiles
-- workshop_export.js: exportToWorkshop, ensureDir, copyRecursive — BridgeCore nach WorkshopContent
+- core/GUI/INDEX.md: v0.25.0 → v0.23.0 (3 Stellen)
+- core/Translation/providers/INDEX.md: v0.25.0 → v0.23.0 (5 Stellen)
+- core/Translation/INDEX.md: v0.24.0 → v0.23.0 (Header)
+
+Sub-INDEX-Versionen duerfen nie ueber die globale Version driften. v0.23.0 ist und bleibt die kanonische Version bis zum naechsten offiziellen Release.

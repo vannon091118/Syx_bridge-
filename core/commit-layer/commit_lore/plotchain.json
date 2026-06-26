@@ -2793,5 +2793,30 @@
         "file": "core/GUI/INDEX.md"
       }
     ]
+  },
+  {
+    "p_id": "p68",
+    "id": "plot-2026-06-26T00:15:12",
+    "timestamp": "2026-06-26 00:15:12",
+    "summary": "Sub-INDEX-Versionen auf v0.23.0 korrigiert. Keine Drift ueber globaler Version.",
+    "narrator": "Vannon",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c63j97n4a1p21",
+    "ref_to": "plot-2026-06-26T00:13:52",
+    "prev_narrator": "Sage",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/GUI/INDEX.md"
+      },
+      {
+        "file": "core/Translation/INDEX.md"
+      },
+      {
+        "file": "core/Translation/providers/INDEX.md"
+      }
+    ]
   }
 ]
