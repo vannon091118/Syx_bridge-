@@ -3004,5 +3004,84 @@
         "file": "core/index.js"
       }
     ]
+  },
+  {
+    "p_id": "p75",
+    "id": "plot-2026-06-29T20:54:42",
+    "timestamp": "2026-06-29 20:54:42",
+    "summary": "P4-Rest: S-010 diagnostics.js DI-Parameter statt globals. S-011 backup-utils.js Scan/Restore extrahiert (91 Zeilen aus gui-handlers.js). S-012 parseBatchResponseWithMaps-Wrapper eliminiert + GamePlugin.js dynamic-require fix.",
+    "narrator": "Flux",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c70j100n13a2p59",
+    "ref_to": "plot-2026-06-29T14:29:13",
+    "prev_narrator": "Ghost",
+    "data_changes": [
+      {
+        "file": "AGENTS.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/.last_test_output.txt"
+      },
+      {
+        "file": "core/GUI/backup-utils.js"
+      },
+      {
+        "file": "core/GUI/gui-handlers.js"
+      },
+      {
+        "file": "core/GUI/public/app.js"
+      },
+      {
+        "file": "core/GUI/public/index.html"
+      },
+      {
+        "file": "core/GUI/public/modules/lang-strings.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-core.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-data.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-settings.js"
+      },
+      {
+        "file": "core/Translation/.env.backup"
+      },
+      {
+        "file": "core/Translation/diagnostics.js"
+      },
+      {
+        "file": "core/Translation/plugins/GamePlugin.js"
+      },
+      {
+        "file": "core/Translation/providers/client-factory.js"
+      },
+      {
+        "file": "core/Translation/translation-runtime.js"
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md"
+      },
+      {
+        "file": "core/archive/docs/FREEZE/HANDSHAKE_2026-06-26.md"
+      },
+      {
+        "file": "core/archive/docs/MASTER_DOC.md"
+      },
+      {
+        "file": "core/archive/docs/SYSTEM_ARCHITECTURE.md"
+      },
+      {
+        "file": "core/index.js"
+      },
+      {
+        "file": "core/scripts/check_workshop_damage.ps1"
+      }
+    ]
   }
 ]

@@ -518,6 +518,23 @@
 
     <header>
         <div class="brand">SONGS OF SYX <span style="color:white">AI BRIDGE</span> <span style="font-family: 'Brush Script MT', cursive; font-size: 0.9rem; color: #ef6b60; margin-left: 10px; text-transform: none; text-shadow: 0 0 5px rgba(239, 107, 96, 0.3);">by Vannon</span>
+            <select id="ui-lang-select" onchange="onUiLangChange(this.value)" style="width:auto; margin-left:12px; padding:3px 8px; font-size:0.65rem; background:#000; color:var(--text); border:1px solid var(--border); border-radius:4px; cursor:pointer;" title="Dashboard-Sprache wechseln — unabhängig von der Übersetzungs-Zielsprache">
+                <option value="German">🇩🇪 DE</option>
+                <option value="English">🇬🇧 EN</option>
+                <option value="French">🇫🇷 FR</option>
+                <option value="Spanish">🇪🇸 ES</option>
+                <option value="Polish">🇵🇱 PL</option>
+                <option value="Russian">🇷🇺 RU</option>
+                <option value="Italian">🇮🇹 IT</option>
+                <option value="Portuguese">🇵🇹 PT</option>
+                <option value="Chinese">🇨🇳 ZH</option>
+                <option value="Japanese">🇯🇵 JA</option>
+                <option value="Korean">🇰🇷 KO</option>
+                <option value="Ukrainian">🇺🇦 UK</option>
+                <option value="Turkish">🇹🇷 TR</option>
+                <option value="Dutch">🇳🇱 NL</option>
+                <option value="Swedish">🇸🇪 SV</option>
+            </select>
             <button class="version-highlight-btn" onclick="openVersionHighlights()" title="Was ist neu in v0.22.0 — Versions-Highlights anzeigen">
                 <span class="new-dot"></span> v0.22.0
             </button>
@@ -953,6 +970,7 @@
 
     <!-- Modules loaded in dependency order: state → core → settings → data → sse → bootstrap -->
     <script src="/public/modules/state.js"></script>
+    <script src="/public/modules/lang-strings.js"></script>
     <script src="/public/modules/ui-core.js"></script>
     <script src="/public/modules/ui-settings.js"></script>
     <script src="/public/modules/ui-data.js"></script>

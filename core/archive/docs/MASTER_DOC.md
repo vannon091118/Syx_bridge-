@@ -31,7 +31,7 @@
 Scan → Extract → Translate → Audit → Polish → Export
 ```
 
-### Provider Matrix (10 Stück — Stand 2026-06-26)
+### Provider Matrix (11 Stück — Stand 2026-06-26)
 
 | Provider | Typ | Nutzung | CostClass |
 |---|---|---|---|

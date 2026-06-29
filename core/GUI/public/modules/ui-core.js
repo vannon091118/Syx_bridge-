@@ -31,12 +31,13 @@ function tick(now) {
   // Status Badge & Button Sync
   var badge = document.getElementById('bridge-status-badge');
   var runBtn = document.getElementById('main-run-btn');
+  var tk = (window.t || function(k){return k});
   if (badge) {
-    badge.textContent = liveStats.isRunning ? 'Running' : 'Idle';
+    badge.textContent = liveStats.isRunning ? tk('health.running') : tk('health.idle');
     badge.className = liveStats.isRunning ? 'status-badge active' : 'status-badge';
   }
   if (runBtn) {
-    runBtn.textContent = liveStats.isRunning ? 'STOP' : 'START';
+    runBtn.textContent = liveStats.isRunning ? tk('sidebar.stopBtn') : tk('sidebar.startBtn');
     runBtn.className = liveStats.isRunning ? 'stop-btn' : '';
   }
 
@@ -44,14 +45,15 @@ function tick(now) {
   var subPhaseEl = document.getElementById('ui-sub-phase');
   if (subPhaseEl) {
     if (liveStats.isRunning && liveStats.subPhase) {
+      var tk = (window.t || function(k){return k});
       var phaseLabels = {
-        caching: 'Cache prüfen...',
-        native: 'Native Entscheidungen...',
+        caching: tk('phaseLabels.caching'),
+        native: tk('phaseLabels.native'),
         translating: liveStats.totalBatches > 0
           ? 'LLM Batch ' + liveStats.batchN + '/' + liveStats.totalBatches + '...'
-          : 'LLM arbeitet...',
-        polishing: 'QA Optimierung...',
-        writing: 'Dateien schreiben...'
+          : tk('phaseLabels.translating'),
+        polishing: tk('phaseLabels.polishing'),
+        writing: tk('phaseLabels.writing')
       };
       subPhaseEl.textContent = phaseLabels[liveStats.subPhase] || '';
       subPhaseEl.style.display = 'block';
@@ -73,7 +75,7 @@ function tick(now) {
   var heartbeatAge = liveStats.lastHeartbeat ? (performance.now() - liveStats.lastHeartbeat) : 0;
   if (liveStats.isRunning && heartbeatAge > 8000) {
     if (subPhaseEl) {
-      subPhaseEl.textContent = '⏳ Warte auf Backend...';
+      subPhaseEl.textContent = (window.t || function(k){return k})('phaseLabels.waitingBackend');
       subPhaseEl.style.color = 'var(--danger)';
     }
   } else if (subPhaseEl) {
@@ -102,7 +104,7 @@ function tick(now) {
     var progressText = document.getElementById('ui-progress-text');
     if (progressText) {
       if (!liveStats.isRunning && current === 0) {
-        progressText.textContent = 'BEREIT';
+        progressText.textContent = (window.t || function(k){return k})('health.ready');
       } else {
         progressText.textContent = Math.round(displayPercent) + '% (' + current + ' / ' + (liveStats.totalFiles || 0) + ')';
       }
@@ -285,7 +287,7 @@ function triggerAction(action) {
     })
     .catch(function(e) {
       console.error('Trigger action failed', e);
-      alert('Aktion fehlgeschlagen: ' + e.message);
+      alert((window.t || function(k){return k})('alerts.actionFailed') + ' ' + e.message);
     });
 }
 

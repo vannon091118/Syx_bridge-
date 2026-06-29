@@ -23,7 +23,7 @@ function createProviderClients(ctx) {
     getAbortSignal,
     getModelForProvider, getGeminiModelName, getGrammarContext,
     stripJsonFence, restoreAndValidateTranslation, restorePlaceholders,
-    parseBatchResponseWithMaps,
+    parseBatchResponse,
     buildBatchPromptForCurrentConfig
   } = ctx;
 
@@ -262,7 +262,7 @@ function createProviderClients(ctx) {
     const raw = response.data.choices?.[0]?.message?.content ?? null;
     if (!raw) throw new Error(`${provider} returned no message content.`);
     logPayload(provider, 'RESPONSE', raw);
-    let parsed = parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+    let parsed = parseBatchResponse(raw, { expectedCount: items.length, shieldMaps });
 
     // JSON-Retry: some providers return markdown/truncated JSON
     if (pc.jsonRetry && parsed.length !== items.length) {
@@ -281,7 +281,7 @@ function createProviderClients(ctx) {
         const retryRaw = retryResp.data.choices?.[0]?.message?.content ?? null;
         if (retryRaw) {
           logPayload(provider, 'RESPONSE (Retry)', retryRaw);
-          parsed = parseBatchResponseWithMaps(retryRaw, items.length, strictPrompt.shieldMaps);
+          parsed = parseBatchResponse(retryRaw, { expectedCount: items.length, shieldMaps: strictPrompt.shieldMaps });
           console.log(`[${provider.toUpperCase()}] JSON-Retry: ${parsed.length}/${items.length} Eintraege.`);
         }
       } catch (retryErr) {
@@ -324,7 +324,7 @@ function createProviderClients(ctx) {
       if (configRuntime) configRuntime.markKeyStatus('gemini', true);
       const raw = (response.data.candidates?.[0]?.content?.parts || []).map(part => part.text || '').join('');
       logPayload('gemini', 'RESPONSE', raw);
-      return parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+      return parseBatchResponse(raw, { expectedCount: items.length, shieldMaps });
     } catch (e) {
       const status = e.response ? e.response.status : 0;
       if (status === 401 || status === 403) if (configRuntime) configRuntime.markKeyStatus('gemini', false);
@@ -404,7 +404,7 @@ function createProviderClients(ctx) {
       handleRateLimits('ollama', response.headers);
       const raw = response.data.message.content;
       logPayload('ollama', 'RESPONSE', raw);
-      return parseBatchResponseWithMaps(raw, items.length, shieldMaps);
+      return parseBatchResponse(raw, { expectedCount: items.length, shieldMaps });
     } catch (e) {
       const status = e.response ? e.response.status : 0;
       // P1-7: 503 = Ollama Queue voll → Batch halbieren, Key rotieren.
@@ -443,7 +443,7 @@ function createProviderClients(ctx) {
         if (!Array.isArray(flags)) throw new Error(`Ungueltige ${stage}-Antwort: kein Array.`);
         return flags.map(flag => !!flag);
       }
-      const parsed = parseBatchResponseWithMaps(raw, expectedCount, shieldMaps);
+      const parsed = parseBatchResponse(raw, { expectedCount, shieldMaps });
       if (expectedCount > 0 && parsed.length !== expectedCount) {
         throw new Error(`Ungueltige ${stage}-Antwort: ${parsed.length}/${expectedCount}.`);
       }

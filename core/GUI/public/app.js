@@ -4,6 +4,14 @@
 // This file wires up the lifecycle: init, intervals, and window exports.
 // =============================================================================
 
+// ── UI Language: sync dropdown to localStorage value ──────────────────
+(function() {
+  if (window.getUILanguage) {
+    var sel = document.getElementById('ui-lang-select');
+    if (sel) sel.value = window.getUILanguage();
+  }
+})();
+
 // ── Lifecycle: Always Active ──────────────────────────────────────────
 setInterval(fetchHealth, 5000);
 fetchHealth();
@@ -52,7 +60,7 @@ connectLogs();
 // (Most are set in their respective modules; these are the remaining ones)
 window.toggleSettings = function() {
   if (liveStats && liveStats.isRunning) {
-    alert("Einstellungen können während eines aktiven Laufs nicht geändert werden!");
+    alert((window.t || function(k){return k})('alerts.settingsLockedDuringRun'));
     return;
   }
   var dropdown = document.getElementById('settings-dropdown');

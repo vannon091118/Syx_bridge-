@@ -6,13 +6,7 @@
 // ── Patch Override ────────────────────────────────────────────────────
 function togglePatchOverride() {
   if (!currentConfig.PATCH_MODE_ENABLED) {
-    alert('⚠️ PATCH MODE IST NICHT AKTIVIERT.\n\n' +
-      'Das Spiel verwendet ein OVERRIDE-basiertes Mod-Ladessystem.\n' +
-      'Native Mode (Inplace-Überschreibung) ist der korrekte Ansatz.\n\n' +
-      'Patch Mode ist eine SyxBridge-Abstraktion die NICHT der\n' +
-      'Spiel-Architektur entspricht und zu unvollständigen Übersetzungen\n' +
-      'führen kann.\n\n' +
-      'Aktivierung: Setze PATCH_MODE_ENABLED=true in der .env.');
+    alert((window.t || function(k){return k})('alerts.patchModeNotActivated'));
     return;
   }
   
@@ -30,10 +24,7 @@ window.togglePatchOverride = togglePatchOverride;
 // ── Mode Toggle ───────────────────────────────────────────────────────
 function _toggleMode() {
   if (currentConfig.NATIVE_MODE && !currentConfig.PATCH_MODE_ENABLED) {
-    alert('⚠️ PATCH MODE IST NICHT AKTIVIERT.\n\n' +
-      'Das Spiel verwendet ein OVERRIDE-basiertes Mod-Ladessystem\n' +
-      '(keine .patch-Dateien). Native Mode ist der korrekte Ansatz.\n\n' +
-      'Patch Mode kann via PATCH_MODE_ENABLED=true aktiviert werden.');
+    alert((window.t || function(k){return k})('alerts.patchModeNotAvailable'));
     return;
   }
   currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
@@ -188,11 +179,11 @@ function saveConfig(silent) {
     body: JSON.stringify(currentConfig)
   })
     .then(function() {
-      if (!silent) alert('Konfiguration gespeichert.');
+      if (!silent) alert((window.t || function(k){return k})('alerts.configSaved'));
     })
     .catch(function(e) {
       console.error('Save config failed', e);
-      if (!silent) alert('Fehler beim Speichern.');
+      if (!silent) alert((window.t || function(k){return k})('alerts.configSaveError'));
     });
 }
 window.saveConfig = saveConfig;
@@ -314,7 +305,16 @@ function updateOllamaCloudUI() {
   }
 }
 
-// ── Settings Polling (lazy-load) ──────────────────────────────────────
+// ── UI Language Selector (ML-3) ───────────────────────────────────────
+window.onUiLangChange = function(lang) {
+  if (!lang || !window.setUILanguage) return;
+  window.setUILanguage(lang);
+  // Refresh visible UI elements that were rendered before language change
+  updateModeUI();
+  updateLocalModelsUI();
+  updateOllamaCloudUI();
+  if (window.updateBatchRecommendation) window.updateBatchRecommendation();
+};
 function startSettingsPolling() {
   if (_modelStatusInterval) return;
   fetchModelStatus();

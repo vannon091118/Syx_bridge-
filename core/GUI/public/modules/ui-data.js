@@ -67,7 +67,7 @@ function _saveDbEntry(idx) {
     })
     .catch(function() {
       input.style.borderColor = 'var(--danger)';
-      alert('Fehler beim Speichern in der Datenbank.');
+      alert((window.t || function(k){return k})('alerts.dbSaveError'));
     });
 }
 window.saveDbEntry = _saveDbEntry;
@@ -136,7 +136,7 @@ function fetchRevisions() {
 }
 
 function restoreRevision(revisionId) {
-  if (!confirm('Diese Revision als aktive Uebersetzung wiederherstellen? Die aktuelle Version wird als Revision archiviert.')) return;
+  if (!confirm((window.t || function(k){return k})('alerts.restoreRevisionConfirm'))) return;
   fetch('/api/revisions/restore', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -145,11 +145,11 @@ function restoreRevision(revisionId) {
     .then(function(res) { return res.json(); })
     .then(function(result) {
       if (result.success) {
-        alert(result.message || 'Revision wiederhergestellt.');
+        alert((window.t || function(k){return k})('alerts.revisionRestored'));
         fetchRevisions();
         searchDb();
       } else {
-        alert('Fehler: ' + (result.message || 'Unbekannter Fehler'));
+        alert((window.t || function(k){return k})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k})('alerts.revisionUnknownError')));
       }
     })
     .catch(function(e) { alert('Fehler bei der Wiederherstellung: ' + e.message); });
@@ -455,10 +455,10 @@ function renderModelStatus(status) {
 }
 
 function _installArgosFromUI() {
-  if (!confirm('Argos Translate jetzt installieren? (Python + Default-Sprachmodell)')) return;
+  if (!confirm((window.t || function(k){return k})('alerts.installArgosConfirm'))) return;
   fetch('/api/action/install-argos', { method: 'POST' })
-    .then(function() { alert('Argos-Installation gestartet. Seite wird in 10s aktualisiert.'); setTimeout(fetchModelStatus, 5000); })
-    .catch(function(e) { alert('Fehler: ' + e.message); });
+    .then(function() { alert((window.t || function(k){return k})('alerts.argosInstallStarted')); setTimeout(fetchModelStatus, 5000); })
+    .catch(function(e) { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + e.message); });
 }
 window.installArgosFromUI = _installArgosFromUI;
 
@@ -469,10 +469,10 @@ function _installArgosLanguageFromUI() {
   })
     .then(function(res) { return res.json(); })
     .then(function(result) {
-      if (result.ok) { alert('Sprachmodell installiert: ' + result.message); setTimeout(fetchModelStatus, 2000); }
-      else { alert('Fehler: ' + result.message); }
+      if (result.ok) { alert((window.t || function(k){return k})('alerts.langModelInstalled') + ' ' + result.message); setTimeout(fetchModelStatus, 2000); }
+      else { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + result.message); }
     })
-    .catch(function(e) { alert('Fehler: ' + e.message); });
+    .catch(function(e) { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + e.message); });
 }
 window.installArgosLanguageFromUI = _installArgosLanguageFromUI;
 
@@ -487,9 +487,9 @@ function _pullOllamaModel() {
     .then(function(res) { return res.json(); })
     .then(function(result) {
       if (result.ok) { input.value = ''; setTimeout(fetchModelStatus, 1000); }
-      else { alert('Fehler: ' + result.message); }
+      else { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + result.message); }
     })
-    .catch(function(e) { alert('Fehler: ' + e.message); });
+    .catch(function(e) { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + e.message); });
 }
 window.pullOllamaModel = _pullOllamaModel;
 
@@ -710,16 +710,17 @@ function loadBackups() {
 }
 
 function restoreBackup(modId) {
-  if (!confirm('Möchtest du das Backup für die Mod "' + modId + '" wirklich wiederherstellen? Dies überschreibt die aktuellen Übersetzungen dieser Mod.')) return;
+  var msg = (window.t || function(k){return k})('alerts.restoreBackupConfirm').replace('MOD_ID', modId);
+  if (!confirm(msg)) return;
   fetch('/api/backups/restore', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ modId: modId })
   })
     .then(function(res) { return res.json(); })
     .then(function(result) {
-      if (result.success) { alert(result.message || 'Wiederherstellung erfolgreich!'); loadBackups(); }
-      else { alert('Fehler: ' + (result.message || 'Unbekannter Fehler')); }
+      if (result.success) { alert(result.message || (window.t || function(k){return k})('alerts.restoreSuccess')); loadBackups(); }
+      else { alert((window.t || function(k){return k})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k})('alerts.revisionUnknownError'))); }
     })
-    .catch(function(e) { alert('Fehler bei der Wiederherstellung: ' + e.message); });
+    .catch(function(e) { alert((window.t || function(k){return k})('alerts.revisionRestoreError') + ' ' + e.message); });
 }
 window.restoreBackup = restoreBackup;
 

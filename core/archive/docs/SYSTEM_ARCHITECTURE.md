@@ -67,7 +67,7 @@ Geplant: **RimWorld** (XML-Format), weitere Spiele über das Plugin-System.
 
 ## 4. SCHICHT 1: Entry-Point + Configuration
 
-### 4.1 index.js (~600 LOC) — Der Orchestrator
+### 4.1 index.js (~962 LOC) — Der Orchestrator
 
 **Rolle:** Initialisiert alle Sub-Systeme, wired Dependencies, bietet CLI- und GUI-Modus.
 
@@ -332,7 +332,7 @@ exporter.js: writeTranslatedFile(path, content, replacements, translations, outp
 ```
 translation-runtime.js (Orchestrator)
     ├── dispatcher.js (Routing-Entscheidungen)
-    ├── router.js (Provider-Management, 10 Provider)
+    ├── router.js (Provider-Management, 11 Provider)
     ├── client-factory.js (HTTP-Clients pro Provider)
     ├── translation-phases.js (Pipeline-Phasen: cache→native→translate→qa→polish)
     ├── translation-db.js (DB-Operationen: save, cache, glossary)
@@ -366,7 +366,7 @@ translation-runtime.js (Orchestrator)
 
 ### 8.3 router.js — Provider-Management
 
-**10 Provider im PROVIDER_REGISTRY (v0.23 — openai + custom_api hinzugefügt, Player2 beibehalten):**
+**11 Provider im PROVIDER_REGISTRY (v0.23 — openai + custom_api hinzugefügt, Player2 beibehalten):**
 
 | Provider | Type | Default Model | Cost | Caps |
 |----------|------|--------------|------|------|
@@ -520,7 +520,7 @@ Jeder Charakter hat: `voice_traits`, `verifier_rules` (min_words, max_words, mus
 - Auto-Shutdown bei Inaktivität (1.5s nach letzter Session-Close)
 - Port-Fallback: EADDRINUSE → Port+1
 
-### 10.2 app.js — Client (1517 LOC)
+### 10.2 app.js — Client (1854 LOC)
 
 - `tick()` — requestAnimationFrame Hauptloop (60fps im Run, 4fps im Idle)
 - SSE-Verbindung: Echtzeit-Logs + Status-Updates + Provider-Stats
@@ -556,7 +556,7 @@ Jeder Charakter hat: `voice_traits`, `verifier_rules` (min_words, max_words, mus
 index.js
 ├── Translation/plugin-registry.js → plugins/SongsOfSyxPlugin.js → plugins/GamePlugin.js → adapters/GameAdapter.js
 ├── Translation/config/config-runtime.js → config/config-discovery.js, config/config-persist.js, config/config-keys.js
-├── Translation/router.js (10 Provider, Routing-Logik)
+├── Translation/router.js (11 Provider, Routing-Logik)
 ├── DB/db.js (better-sqlite3 Wrapper)
 ├── Translation/planner.js (Scan-Phase)
 ├── Translation/runtime-ops.js (Translate-Mod, Native/Patch Mode)
@@ -630,7 +630,7 @@ index.js
 | Quellcode (LOC) | ~30.000 |
 | Dateien (JS) | ~108 |
 | Tabellen (DB) | 12 |
-| Provider | 10 |
+| Provider | 11 |
 | Commit-Narrative | 14 |
 | Plugin-Methoden (GameAdapter) | 16 |
 | Plugin-Methoden (GamePlugin) | 11 |

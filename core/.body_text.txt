@@ -1,17 +1,18 @@
-Watermarks komplett entfernt — werden spaeter neu und besser aufgebaut.
+P4-Rest: S-010 DB-Access + S-011 gui-backup + S-012 Quick Wins
 
-Geloeschte Dateien (3):
-- core/Translation/watermark-config.js
-- core/Translation/verify_watermark.js
-- core/DB/sanitize_watermarks.js
+S-010 (DB-Access): diagnostics.js von global._adminDb/global._runMetricsDb auf DI-Parameter umgestellt. runDiagnostics(deps={runMetricsDb, adminDb}) und clearCache(lang, deps={adminDb}) akzeptieren jetzt explizite DAO-Parameter statt Globals zu lesen. Caller (index.js + gui-handlers.js) aktualisiert.
 
-Bereinigte Dateien (7):
-- core/DB/db_repair.js: Step 8 WATERMARK_SANITIZE + repairWatermarkSanitize() entfernt
-- core/DB/preflight.js: watermarkSource/Trans/Revs aus countIssues, excludedKeys, runRepairs, writeReport entfernt
-- core/package.json: verify-watermark script entfernt
-- core/TREE.md: 3 watermark Eintraege entfernt, DB count 10→9
-- tests/v21_p0_live_verify.js: P0-1 Watermark-Tests + P0-3/P0-4 Checks entfernt
-- tests/fulltest_run.js: WATERMARK_CONFIG import, countWatermarks, Phases 2/5 WM-Queries, Phase 6 Audit entfernt
+S-011 (gui-backup): scanModsForBackup(config) und restoreBackupForMod(modId, config, dbRun) aus gui-handlers.js in backup-utils.js extrahiert (91 Zeilen). get-backups Handler von 42 auf 8 Zeilen reduziert, restore-backup Handler von 45 auf 9 Zeilen reduziert.
 
-Behalten (absichtlich):
-- stripWatermarks() in extractor.js und alle Aufrufer — ZWSP/ZWNJ-Stripping ist eine Utility-Funktion, nicht das Watermark-System
+S-012 (Quick Wins):
+1. parseBatchResponseWithMaps-Thin-Wrapper in translation-runtime.js eliminiert. client-factory.js nutzt jetzt parseBatchResponse direkt mit Options-Objekt {expectedCount, shieldMaps}. 4 Call-Sites aktualisiert. 0 verbleibende Referenzen.
+2. GamePlugin.js: require('../extractor') aus Method-Bodies (serializeTranslation, extractTextValue) auf Top-Level-Import verschoben. Keine dynamic requires mehr in der Basisklasse.
+
+Geänderte Dateien (6):
+- core/Translation/diagnostics.js — DI-Parameter statt globals
+- core/Translation/plugins/GamePlugin.js — Top-Level-Import
+- core/Translation/translation-runtime.js — parseBatchResponseWithMaps entfernt
+- core/Translation/providers/client-factory.js — parseBatchResponse direkt
+- core/GUI/backup-utils.js — scanModsForBackup + restoreBackupForMod (neu)
+- core/GUI/gui-handlers.js — Backup-Handler verschlankt
+- core/index.js — runDiagnostics({runMetricsDb, adminDb})

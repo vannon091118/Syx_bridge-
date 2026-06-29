@@ -84,7 +84,7 @@ function createTranslationRuntime(options) {
     getApiKey, rotateApiKey, withRetry, sleep, isAborting, logPayload,
     getModelForProvider, getGeminiModelName, getGrammarContext,
     stripJsonFence, restoreAndValidateTranslation, restorePlaceholders,
-    parseBatchResponseWithMaps,
+    parseBatchResponse,
     buildBatchPromptForCurrentConfig,
     // BU-020: Pass AbortController signal to provider clients
     getAbortSignal
@@ -146,10 +146,6 @@ function createTranslationRuntime(options) {
   });
 
   // ── Helper Functions (stay in orchestrator) ──────────────────────────
-
-  function parseBatchResponseWithMaps(text, expectedCount, shieldMaps = []) {
-    return parseBatchResponse(text, { expectedCount, shieldMaps });
-  }
 
   async function buildBatchPromptForCurrentConfig(items) {
     const strictTerms = await getGuardedTerminology(items);
@@ -656,7 +652,6 @@ function createTranslationRuntime(options) {
     fixGrammarBatch,
     flagPotentialErrors,
     getBestAvailableQualityModel,
-    parseBatchResponseWithMaps,
     buildBatchPromptForCurrentConfig,
     runDeepPolishBatch: phases.runDeepPolishBatch,
     dispatcher

@@ -89,4 +89,108 @@ async function restoreBackup(backupDir, targetDir) {
   }
 }
 
-module.exports = { readDisplayName, restoreBackup, collectAllFiles };
+/**
+ * Scans MOD_ROOT and GAME_MOD_ROOT for mods eligible for backup/restore.
+ * Returns a list of { id, displayName, backupExists, backupPath } objects.
+ * Excludes active patches (ending with _TARGET_LANG) and BridgeCore.
+ *
+ * @param {object} config - { MOD_ROOT, GAME_MOD_ROOT, BACKUP_ROOT, TARGET_LANG, _adapter }
+ * @returns {Promise<Array<{id:string, displayName:string, backupExists:boolean, backupPath:string|null}>>}
+ */
+async function scanModsForBackup(config) {
+  const modsList = [];
+  const processedIds = new Set();
+
+  const scanDir = async (dirRoot) => {
+    if (!dirRoot || !fs.existsSync(dirRoot)) return;
+    const entries = await fsp.readdir(dirRoot, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory() && !entry.name.startsWith('.backup_')) {
+        // Exclude active patches or BridgeCore in GAME_MOD_ROOT
+        if (dirRoot === config.GAME_MOD_ROOT) {
+          if (entry.name.endsWith(`_${config.TARGET_LANG}`) || entry.name === 'BridgeCore') {
+            continue;
+          }
+        }
+        const modPath = path.join(dirRoot, entry.name);
+        const metaFile = config._adapter?.getMetadataFileName?.() ?? '_Info.txt';
+        if (fs.existsSync(path.join(modPath, metaFile))) {
+          const backupId = entry.name.replace(/[^a-z0-9_.-]/gi, '_');
+          if (processedIds.has(backupId)) continue;
+          processedIds.add(backupId);
+
+          const backupPath = path.join(config.BACKUP_ROOT, `.backup_${backupId}_ORIGINAL`);
+          const backupExists = fs.existsSync(backupPath);
+          const displayName = readDisplayName(modPath, config._adapter);
+
+          modsList.push({
+            id: entry.name,
+            displayName,
+            backupExists,
+            backupPath: backupExists ? backupPath : null
+          });
+        }
+      }
+    }
+  };
+
+  await scanDir(config.MOD_ROOT);
+  await scanDir(config.GAME_MOD_ROOT);
+
+  return modsList;
+}
+
+/**
+ * Restores a backup for a single mod. Locates the backup directory from
+ * BACKUP_ROOT, resolves the original target path from .backup_info.json
+ * (or reconstructs from MOD_ROOT), restores all files, and clears
+ * processed_files entries for the target.
+ *
+ * @param {string} modId - Original mod directory name
+ * @param {object} config - { MOD_ROOT, BACKUP_ROOT }
+ * @param {function} dbRun - DB run wrapper (sql, params)
+ * @returns {Promise<{success:boolean, message:string}>}
+ */
+async function restoreBackupForMod(modId, config, dbRun) {
+  const backupId = modId.replace(/[^a-z0-9_.-]/gi, '_');
+  const backupDir = path.join(config.BACKUP_ROOT, `.backup_${backupId}_ORIGINAL`);
+
+  if (!fs.existsSync(backupDir)) {
+    return { success: false, message: 'Backup-Ordner existiert nicht.' };
+  }
+
+  let targetDir = null;
+  const infoJsonPath = path.join(backupDir, '.backup_info.json');
+  if (fs.existsSync(infoJsonPath)) {
+    try {
+      const info = JSON.parse(await fsp.readFile(infoJsonPath, 'utf-8'));
+      if (info && info.originalPath) {
+        targetDir = info.originalPath;
+      }
+    } catch (e) {
+      console.warn(`[WARN] Fehler beim Lesen von .backup_info.json in ${backupId}: ${e.message}`);
+    }
+  }
+
+  if (!targetDir) {
+    targetDir = path.join(config.MOD_ROOT, modId);
+  }
+
+  if (!fs.existsSync(targetDir)) {
+    return { success: false, message: 'Originaler Mod-Ordner existiert nicht.' };
+  }
+
+  console.log(`[INFO] Restoriere Backup für Mod: ${modId} nach ${targetDir}...`);
+  await restoreBackup(backupDir, targetDir);
+  await fsp.rm(backupDir, { recursive: true, force: true });
+  console.log(`[INFO] Backup für Mod ${modId} erfolgreich restoriert.`);
+
+  // Clear processed_files entries for this mod
+  if (dbRun) {
+    await dbRun('DELETE FROM processed_files WHERE source_path LIKE ?', [`${targetDir}%`]);
+  }
+
+  return { success: true, message: 'Backup erfolgreich wiederhergestellt.' };
+}
+
+module.exports = { readDisplayName, restoreBackup, collectAllFiles, scanModsForBackup, restoreBackupForMod };

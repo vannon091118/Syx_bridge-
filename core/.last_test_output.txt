@@ -1,0 +1,390 @@
+
+> syx-bridge@0.22.0 test
+> npm run testline
+
+
+> syx-bridge@0.22.0 testline
+> npm run lint && npm run test:plugin-boundary && npm run test:e2e
+
+
+> syx-bridge@0.22.0 lint
+> eslint . --fix
+
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\DB\db_audit.js
+  30:7  warning  'ROOT_DIR' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\DB\db_query.js
+  26:7  warning  'isJson' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\DB\db_repair.js
+  236:9  warning  'q1' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\GUI\gui-handlers.js
+  179:5   warning  'parseSoSConfig' is assigned a value but never used. Allowed unused vars must match /^_/u      no-unused-vars
+  179:21  warning  'stringifySoSConfig' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  179:41  warning  'SETTINGS_PATH' is assigned a value but never used. Allowed unused vars must match /^_/u       no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\GUI\public\app.js
+  906:53  warning  'idx' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\adapters\GameAdapter.js
+   22:17  warning  'content' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+   29:18  warning  'infoObj' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+   41:22  warning  'bridgeVersion' is defined but never used. Allowed unused args must match /^_/u   no-unused-vars
+   49:27  warning  'infoObj' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+   49:36  warning  'targetLanguage' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+   65:26  warning  'originalName' is defined but never used. Allowed unused args must match /^_/u    no-unused-vars
+   68:21  warning  'dirName' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+   71:22  warning  'dirName' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+   80:21  warning  'versionDir' is defined but never used. Allowed unused args must match /^_/u      no-unused-vars
+   87:21  warning  'targetLanguage' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+   97:19  warning  'filePath' is defined but never used. Allowed unused args must match /^_/u        no-unused-vars
+  105:16  warning  'relativePath' is defined but never used. Allowed unused args must match /^_/u    no-unused-vars
+  113:22  warning  'relativePath' is defined but never used. Allowed unused args must match /^_/u    no-unused-vars
+  113:36  warning  'fileType' is defined but never used. Allowed unused args must match /^_/u        no-unused-vars
+  121:17  warning  'modDir' is defined but never used. Allowed unused args must match /^_/u          no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\config\config-runtime.js
+   1:7   warning  'fs' is assigned a value but never used. Allowed unused vars must match /^_/u                   no-unused-vars
+   2:7   warning  'path' is assigned a value but never used. Allowed unused vars must match /^_/u                 no-unused-vars
+  27:55  warning  'setGeminiFreeModels' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\export_stage2.js
+   41:7   warning  'exporter' is assigned a value but never used. Allowed unused vars must match /^_/u            no-unused-vars
+   49:46  warning  'parseSoSConfig' is assigned a value but never used. Allowed unused vars must match /^_/u      no-unused-vars
+   49:62  warning  'stringifySoSConfig' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+   49:82  warning  'SETTINGS_PATH' is assigned a value but never used. Allowed unused vars must match /^_/u       no-unused-vars
+  212:9   warning  'skipped' is assigned a value but never used. Allowed unused vars must match /^_/u             no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\model-registry.js
+  12:9  warning  'execSync' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  13:7  warning  'path' is assigned a value but never used. Allowed unused vars must match /^_/u      no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\plugins\GamePlugin.js
+   34:36  warning  'entry' is defined but never used. Allowed unused args must match /^_/u          no-unused-vars
+   68:23  warning  'source' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+   68:31  warning  'target' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  162:22  warning  'sourceContent' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  162:37  warning  'targetContent' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  194:17  warning  'filePath' is defined but never used. Allowed unused args must match /^_/u       no-unused-vars
+  194:27  warning  'version' is defined but never used. Allowed unused args must match /^_/u        no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\plugins\RimWorldPlugin.js
+  143:17  warning  'filePath' is defined but never used. Allowed unused args must match /^_/u        no-unused-vars
+  143:27  warning  'version' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  155:17  warning  'content' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  159:18  warning  'infoObj' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  167:22  warning  'bridgeVersion' is defined but never used. Allowed unused args must match /^_/u   no-unused-vars
+  171:27  warning  'infoObj' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  171:36  warning  'targetLanguage' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  179:26  warning  'originalName' is defined but never used. Allowed unused args must match /^_/u    no-unused-vars
+  183:21  warning  'dirName' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  187:22  warning  'dirName' is defined but never used. Allowed unused args must match /^_/u         no-unused-vars
+  191:21  warning  'versionDir' is defined but never used. Allowed unused args must match /^_/u      no-unused-vars
+  195:21  warning  'targetLanguage' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  216:17  warning  'modDir' is defined but never used. Allowed unused args must match /^_/u          no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\plugins\SongsOfSyxPlugin.js
+   14:7   warning  'os' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  117:21  warning  'versionDir' is defined but never used. Allowed unused args must match /^_/u   no-unused-vars
+  233:36  warning  'entry' is defined but never used. Allowed unused args must match /^_/u        no-unused-vars
+  370:17  warning  'filePath' is defined but never used. Allowed unused args must match /^_/u     no-unused-vars
+  370:27  warning  'version' is defined but never used. Allowed unused args must match /^_/u      no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\polish-arbiter.js
+  22:5  warning  'config' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\router.js
+  46:7  warning  'GROQ_FREE_MODELS' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\runtime-ops.js
+    3:9   warning  'isDryRun' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  318:19  warning  'source' is assigned a value but never used. Allowed unused vars must match /^_/u    no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\runtime_score.js
+  293:48  warning  'formulaExplicit' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+  311:55  warning  'formulaExplicit' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\sos-runtime.js
+  3:7  warning  'path' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  4:7  warning  'os' is assigned a value but never used. Allowed unused vars must match /^_/u    no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\text-core.js
+  10:45  warning  'checkStructure' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\translation-db.js
+  10:3  warning  'mergeEntryContexts' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\translation-quality.js
+  8:9  warning  'normalizeTranslationEntry' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\Translation\translation-runtime.js
+  8:35  warning  'NATIVE_RUNTIME_DEFAULT_QUALITY' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\commit-layer\author_system.js
+  28:17  warning  'decodeJ' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\commit-layer\commit_lore\derive_composite.js
+   33:26  warning  'selectMood' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+   56:7   warning  'prevSeq' is assigned a value but never used. Allowed unused vars must match /^_/u     no-unused-vars
+  288:23  warning  'key' is assigned a value but never used. Allowed unused vars must match /^_/u         no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\commit-layer\commit_lore\update_plot.js
+  228:5   warning  'narratorTag' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  232:21  warning  'key' is assigned a value but never used. Allowed unused vars must match /^_/u          no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\commit-layer\pre-commit.js
+   43:26  warning  'selectMood' is assigned a value but never used. Allowed unused vars must match /^_/u     no-unused-vars
+   50:7   warning  'changelogPath' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+   62:5   warning  'loreText' is assigned a value but never used. Allowed unused vars must match /^_/u       no-unused-vars
+  114:7   warning  'prevSeq' is assigned a value but never used. Allowed unused vars must match /^_/u        no-unused-vars
+  196:23  warning  'key' is assigned a value but never used. Allowed unused vars must match /^_/u            no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\index.js
+   63:30  warning  'readDisplayName' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  811:30  warning  'planner' is defined but never used. Allowed unused args must match /^_/u                   no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\check_argos.js
+  73:10  warning  'clearPythonCache' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\check_consistency.js
+  25:5  warning  'issueCount' is assigned a value but never used. Allowed unused vars must match /^_/u      no-unused-vars
+  95:9  warning  'versionPattern' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\check_vendor_drift.js
+  30:22  warning  'MOD_ASSET_DIRS' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  38:5   warning  'issueCount' is assigned a value but never used. Allowed unused vars must match /^_/u      no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\fresh-readme.js
+  83:7  warning  'tableRegex' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\gen-index.js
+  109:35  warning  'fileName' is defined but never used. Allowed unused args must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\sync-version.js
+  47:7  warning  'vShort' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  48:7  warning  'today' is assigned a value but never used. Allowed unused vars must match /^_/u   no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\scripts\vendor-sync.js
+   37:3   warning  'ROOT' is assigned a value but never used. Allowed unused vars must match /^_/u                no-unused-vars
+   37:9   warning  'CORE' is assigned a value but never used. Allowed unused vars must match /^_/u                no-unused-vars
+   38:3   warning  'ROOT_SOURCE_FILES' is assigned a value but never used. Allowed unused vars must match /^_/u   no-unused-vars
+   38:22  warning  'MOD_ASSET_DIRS' is assigned a value but never used. Allowed unused vars must match /^_/u      no-unused-vars
+   38:38  warning  'CORE_RUNTIME_FILES' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  202:9   warning  'hasManifest' is assigned a value but never used. Allowed unused vars must match /^_/u         no-unused-vars
+  343:9   warning  'totalActions' is assigned a value but never used. Allowed unused vars must match /^_/u        no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\tests\env-protection-smoke.js
+  7:7  warning  'os' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\tests\gate-counter-smoke.js
+  3:7  warning  'path' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\tests\item0a_auto_freeze_test.js
+  10:24  warning  'filterLLMs' is assigned a value but never used. Allowed unused vars must match /^_/u                  no-unused-vars
+  10:36  warning  'isUsableTextModel' is assigned a value but never used. Allowed unused vars must match /^_/u           no-unused-vars
+  10:55  warning  'getDefaultModelForProvider' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\tests\ollama_cloud_e2e.js
+   76:9  warning  'tmpEnv' is assigned a value but never used. Allowed unused vars must match /^_/u          no-unused-vars
+  121:9  warning  'origEnvContent' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\tests\runtime_score.test.js
+  87:9  warning  'rMin' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+C:\Users\Vannon\Desktop\SyxBridge_Live\core\tests\translation-runtime-smoke.js
+   19:7   warning  'fs' is assigned a value but never used. Allowed unused vars must match /^_/u              no-unused-vars
+   72:3   warning  'parseKeysFn' is assigned a value but never used. Allowed unused vars must match /^_/u     no-unused-vars
+   73:3   warning  'parseEnvFlagFn' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+   80:7   warning  'contextPackets' is assigned a value but never used. Allowed unused vars must match /^_/u  no-unused-vars
+  428:11  warning  'testPrefixes' is assigned a value but never used. Allowed unused vars must match /^_/u    no-unused-vars
+
+✖ 111 problems (0 errors, 111 warnings)
+
+
+> syx-bridge@0.22.0 test:plugin-boundary
+> node tests/plugin-boundary-contract.js
+
+╔══════════════════════════════════════════════════════════════╗
+║  PLUGIN BOUNDARY CONTRACT TEST — BU-023                     ║
+║  Dynamic Interface Discovery + Auto-Fail on New Methods     ║
+╚══════════════════════════════════════════════════════════════╝
+
+=== Contract Test: SongsOfSyxPlugin ===
+  Interface: 28 methods (16 GameAdapter + 12 GamePlugin)
+  Abstract: 16 methods MUST be overridden
+  Implemented on SongsOfSyxPlugin: 29 own methods
+
+  --- L1: Existence (28 checks) ---
+  [PASS] SongsOfSyxPlugin.applyPatchModifications() exists
+  [PASS] SongsOfSyxPlugin.classifyFile() exists
+  [PASS] SongsOfSyxPlugin.extractTextValue() exists
+  [PASS] SongsOfSyxPlugin.formatMetadata() exists
+  [PASS] SongsOfSyxPlugin.formatPatchNotice() exists
+  [PASS] SongsOfSyxPlugin.getBackupDirectoryName() exists
+  [PASS] SongsOfSyxPlugin.getCoreModFolderName() exists
+  [PASS] SongsOfSyxPlugin.getCoreModMetadata() exists
+  [PASS] SongsOfSyxPlugin.getFileHeader() exists
+  [PASS] SongsOfSyxPlugin.getGameTerms() exists
+  [PASS] SongsOfSyxPlugin.getLauncherSettingsPath() exists
+  [PASS] SongsOfSyxPlugin.getLoreTerms() exists
+  [PASS] SongsOfSyxPlugin.getMetadataFileName() exists
+  [PASS] SongsOfSyxPlugin.getOverrideHeader() exists
+  [PASS] SongsOfSyxPlugin.getParserFormat() exists
+  [PASS] SongsOfSyxPlugin.getPathRules() exists
+  [PASS] SongsOfSyxPlugin.getPlaceholderRegex() exists
+  [PASS] SongsOfSyxPlugin.getPromptContext() exists
+  [PASS] SongsOfSyxPlugin.getTranslationCredit() exists
+  [PASS] SongsOfSyxPlugin.getTranslationMetadataPattern() exists
+  [PASS] SongsOfSyxPlugin.isBackupDirectory() exists
+  [PASS] SongsOfSyxPlugin.isTranslatableFile() exists
+  [PASS] SongsOfSyxPlugin.isVersionDirectory() exists
+  [PASS] SongsOfSyxPlugin.parseMetadata() exists
+  [PASS] SongsOfSyxPlugin.scanMod() exists
+  [PASS] SongsOfSyxPlugin.serializeTranslation() exists
+  [PASS] SongsOfSyxPlugin.validateFileSyntax() exists
+  [PASS] SongsOfSyxPlugin.validateTranslation() exists
+
+  --- L2: Override (16 abstract methods) ---
+  [PASS] SongsOfSyxPlugin.getMetadataFileName() overrides abstract
+  [PASS] SongsOfSyxPlugin.parseMetadata() overrides abstract
+  [PASS] SongsOfSyxPlugin.formatMetadata() overrides abstract
+  [PASS] SongsOfSyxPlugin.getCoreModFolderName() overrides abstract
+  [PASS] SongsOfSyxPlugin.getCoreModMetadata() overrides abstract
+  [PASS] SongsOfSyxPlugin.applyPatchModifications() overrides abstract
+  [PASS] SongsOfSyxPlugin.getLauncherSettingsPath() overrides abstract
+  [PASS] SongsOfSyxPlugin.getBackupDirectoryName() overrides abstract
+  [PASS] SongsOfSyxPlugin.isBackupDirectory() overrides abstract
+  [PASS] SongsOfSyxPlugin.isVersionDirectory() overrides abstract
+  [PASS] SongsOfSyxPlugin.getOverrideHeader() overrides abstract
+  [PASS] SongsOfSyxPlugin.formatPatchNotice() overrides abstract
+  [PASS] SongsOfSyxPlugin.getParserFormat() overrides abstract
+  [PASS] SongsOfSyxPlugin.classifyFile() overrides abstract
+  [PASS] SongsOfSyxPlugin.isTranslatableFile() overrides abstract
+  [PASS] SongsOfSyxPlugin.scanMod() overrides abstract
+
+  --- L2b: Concrete Override (12 GamePlugin methods) ---
+  [PASS] SongsOfSyxPlugin overrides all 12 concrete GamePlugin methods
+
+  --- L3: Signature (parameter count for ALL overridden methods) ---
+  [PASS] SongsOfSyxPlugin.extractTextValue() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.getFileHeader() param count: 2 (expected 2)
+  [PASS] SongsOfSyxPlugin.getGameTerms() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getLoreTerms() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getPathRules() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getPlaceholderRegex() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getPromptContext() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getTranslationCredit() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getTranslationMetadataPattern() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.serializeTranslation() param count: 2 (expected 2)
+  [PASS] SongsOfSyxPlugin.validateFileSyntax() param count: 2 (expected 2)
+  [PASS] SongsOfSyxPlugin.validateTranslation() param count: 2 (expected 2)
+  [PASS] SongsOfSyxPlugin.applyPatchModifications() param count: 2 (expected 2)
+  [PASS] SongsOfSyxPlugin.classifyFile() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.formatMetadata() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.formatPatchNotice() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.getBackupDirectoryName() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.getCoreModFolderName() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getCoreModMetadata() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.getLauncherSettingsPath() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getMetadataFileName() param count: 0 (expected 0)
+  [PASS] SongsOfSyxPlugin.getOverrideHeader() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.getParserFormat() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.isBackupDirectory() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.isTranslatableFile() param count: 2 (expected 2)
+  [PASS] SongsOfSyxPlugin.isVersionDirectory() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.parseMetadata() param count: 1 (expected 1)
+  [PASS] SongsOfSyxPlugin.scanMod() param count: 1 (expected 1)
+
+=== Synthetic Test: Prove Auto-Detection Catches New Methods ===
+  [PASS] Synthetic: dummy method discovered in interface
+  [PASS] Synthetic: dummy method NOT implemented on SongsOfSyxPlugin
+  [PASS] Synthetic: dummy method removed from interface after cleanup
+  Synthetic auto-detection test complete — BU-023 requirement verified.
+
+=== Edge Cases ===
+  [PASS] validateTranslation(null, null) returns object
+  [PASS] serializeTranslation("", null) does not throw
+  [PASS] getLoreTerms() returns Array
+  [PASS] getGameTerms() returns Array
+  [PASS] getPathRules() returns Object (not null, not Array)
+  [PASS] getPromptContext() returns { gameName, styleGuide, rules }
+  [PASS] SongsOfSyxPlugin instanceof GamePlugin
+  [PASS] SongsOfSyxPlugin instanceof GameAdapter
+
+========================================
+  CONTRACT TEST RESULTS
+========================================
+  PASS: 84 | FAIL: 0
+
+[CONTRACT-TEST] PASS — All 84 contract checks passed.
+SongsOfSyxPlugin fully implements the GamePlugin + GameAdapter interface.
+Interface: 28 methods verified dynamically.
+
+> syx-bridge@0.22.0 test:e2e
+> node tests/e2e_bug1_native_mode.js
+
+========================================
+  Bug 1 E2E Test: Native Mode Abort
+========================================
+
+[T1] GUI mode (--gui): prompt must NOT fire, status must log
+──────────────────────────────────────────────────
+  [PASS] T1 — no prompts call fired — prompts was called 0 times
+  [PASS] T1 — "Native Mode aktiv" status logged
+  [PASS] T1 — implicit-confirm reason logged as "GUI-Mode"
+  [PASS] T1 — translateMod did not return early null — null = aborted at gate
+[T2] --auto flag: prompt must NOT fire
+──────────────────────────────────────────────────
+  [PASS] T2 — no prompts call fired
+  [PASS] T2 — implicit-confirm reason logged as "--auto"
+  [PASS] T2 — status line still logged
+[T3] Non-interactive stdin: prompt must NOT fire
+──────────────────────────────────────────────────
+  [PASS] T3 — no prompts call fired
+  [PASS] T3 — implicit-confirm reason logged as "non-interactive stdin"
+  [PASS] T3 — status line still logged
+[T4] Persisted flag file: prompt must NOT fire
+──────────────────────────────────────────────────
+  [PASS] T4 — no prompts call fired
+  [PASS] T4 — implicit-confirm reason logged as "persistent bestätigt"
+  [PASS] T4 — persisted flag NOT touched again after T4 (we already deleted it)
+[T5] First-time interactive + declined → abort
+──────────────────────────────────────────────────
+  [PASS] T5 — prompts() fired exactly once
+  [PASS] T5 — translateMod returned null
+  [PASS] T5 — "[ABBRUCH] Native Mode abgebrochen" logged
+  [PASS] T5 — status line was logged BEFORE the prompt
+  [PASS] T5 — persisted flag NOT created on decline
+[T6] First-time interactive + accepted → proceed + persist
+──────────────────────────────────────────────────
+  [PASS] T6 — prompts() fired exactly once
+  [PASS] T6 — translateMod did NOT return null (past the gate)
+  [PASS] T6 — session setHasConfirmedNative(true) was called
+  [PASS] T6 — persisted flag created on accept — expected C:\Users\Vannon\Desktop\SyxBridge_Live\core\.native_confirmed to exist
+  [PASS] T6 — "Native Mode bestätigt" logged
+  [PASS] T6.1 — second translateMod in same session does NOT call prompts
+[T7] Persisted flag (created in T6) is honored on a NEW process
+──────────────────────────────────────────────────
+  [PASS] T7 — prompts NOT called (persisted flag honored)
+  [PASS] T7 — implicit-confirm reason logged
+[T8] Patch mode (NATIVE_MODE=false): no status, no prompt
+──────────────────────────────────────────────────
+  [PASS] T8 — no prompts call
+  [PASS] T8 — no "Native Mode aktiv" status logged
+  [PASS] T8 — no persisted flag created
+[T9] Dry-run: Native Mode gate is skipped (dryRun=true)
+──────────────────────────────────────────────────
+  [PASS] T9 — no prompts call during dry-run
+  [PASS] T9 — no "Native Mode aktiv" status during dry-run
+  [PASS] T9 — no persisted flag created during dry-run
+[T10] Missing _Info.txt: early return without prompting
+──────────────────────────────────────────────────
+  [PASS] T10 — translateMod returned null on missing _Info.txt
+  [PASS] T10 — no prompts call fired
+  [PASS] T10 — NO "Native Mode aktiv" logged (we never reached the gate)
+
+========================================
+  Ergebnis: 35 PASS, 0 FAIL
+========================================

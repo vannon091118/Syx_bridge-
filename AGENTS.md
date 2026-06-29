@@ -254,7 +254,7 @@ Schicht 3: FREEZE_INDEX.md
 `classifyFile`, `isTranslatableFile`, `scanMod`.
 
 **Ebene 2 — `GamePlugin.js extends GameAdapter`:** Erweitert Adapter um Format-spezifische Hooks.
-11 Methoden: `serializeTranslation`, `extractTextValue`, `validateTranslation`,
+12 Methoden: `serializeTranslation`, `extractTextValue`, `validateTranslation`,
 `validateFileSyntax` (R-VAL Plugin-Delegation), `getPlaceholderRegex` (R-SHIELD Plugin-Delegation),
 `getPromptContext`, `getLoreTerms`, `getGameTerms`, `getPathRules`,
 `getTranslationMetadataPattern`, `getFileHeader`. Jede Methode hat sinnvolle Defaults —

@@ -2,7 +2,8 @@
  * diagnostics.js — DB Diagnostic Tool
  *
  * DB-Persistenz-Verteilung (v0.24): Nutzt admin-db.js + run-metrics-db.js
- * statt direktem db.js-Import. Fallback auf db.js wenn DAOs nicht verfuegbar.
+ * via Dependency Injection (deps-Parameter). Kein global._adminDb Zugriff mehr.
+ * Fallback auf db.js wenn DAOs nicht verfuegbar.
  */
 
 function _getDb() {
@@ -11,15 +12,16 @@ function _getDb() {
 
 /**
  * Runs a set of diagnostic checks on the database.
+ * @param {object} [deps] - { runMetricsDb, adminDb } (optional, fallback to raw db.js)
  */
-async function runDiagnostics() {
+async function runDiagnostics(deps = {}) {
   const db = _getDb();
 
   console.log('\n--- DATABASE DIAGNOSTICS ---');
 
-  // DB-Persistenz-Verteilung: Nutze Domain-DAOs wenn verfuegbar
-  const runMetricsDb = global._runMetricsDb || null;
-  const adminDb = global._adminDb || null;
+  // DB-Persistenz-Verteilung: Nutze Domain-DAOs wenn injected, sonst raw db.js
+  const runMetricsDb = deps.runMetricsDb || null;
+  const adminDb = deps.adminDb || null;
 
   // 1. Table Check
   const tables = runMetricsDb
@@ -65,9 +67,11 @@ async function runDiagnostics() {
 /**
  * Clears the translation cache for a specific language.
  * USE WITH CAUTION.
+ * @param {string} [lang='German']
+ * @param {object} [deps] - { adminDb } (optional)
  */
-async function clearCache(lang = 'German') {
-  const adminDb = global._adminDb || null;
+async function clearCache(lang = 'German', deps = {}) {
+  const adminDb = deps.adminDb || null;
   if (adminDb) {
     const deleted = await adminDb.clearTranslationCache(lang);
     console.log(`[OK] ${deleted} Eintraege geloescht.`);

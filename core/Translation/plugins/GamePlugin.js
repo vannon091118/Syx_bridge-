@@ -14,6 +14,7 @@
  */
 
 const GameAdapter = require('../adapters/GameAdapter');
+const { escapeTextValue, unescapeTextValue } = require('../extractor');
 
 class GamePlugin extends GameAdapter {
 
@@ -33,7 +34,6 @@ class GamePlugin extends GameAdapter {
    */
   serializeTranslation(translated, entry) {
     // Default: quoted value with backslash escaping (SoS-compatible)
-    const { escapeTextValue } = require('../extractor');
     return `"${escapeTextValue(translated)}"`;
   }
 
@@ -47,7 +47,6 @@ class GamePlugin extends GameAdapter {
    * @returns {string} Normalized text
    */
   extractTextValue(rawValue) {
-    const { unescapeTextValue } = require('../extractor');
     return unescapeTextValue(rawValue);
   }
 

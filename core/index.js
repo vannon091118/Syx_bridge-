@@ -973,7 +973,7 @@ async function main() {
     else if (menu.action === 'config') await configRuntime.configure();
     else if (menu.action === 'qa') {
       const { runDiagnostics } = require('./Translation/diagnostics');
-      await runDiagnostics();
+      await runDiagnostics({ runMetricsDb, adminDb });
     } else process.exit(0);
   }
 }

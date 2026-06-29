@@ -1,5 +1,13 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-29 20:54:42] P4-Rest: S-010 diagnostics.js DI-Parameter statt globals. S-011 backup-utils.js Scan/Restore extrahiert (91 Zeilen aus gui-handlers.js). S-012 parseBatchResponseWithMaps-Wrapper eliminiert + GamePlugin.js dynamic-require fix.
+**Narrator:** Flux | **Model:** deepseek-v4-pro | **Composite:** `c70j100n13a2p59`
+- 22 Datei(en) geändert.
+
+### [2026-06-29 16:00] P4-Rest: S-010 DB-Access-Vereinheitlichung: diagnostics.js von globals auf DI-Parameter (deps={runMetricsDb,adminDb}). S-011 backup-utils.js: scanModsForBackup + restoreBackupForMod extrahiert (91 Zeilen aus gui-handlers.js). S-012 Quick Wins: parseBatchResponseWithMaps-Wrapper eliminiert + GamePlugin.js dynamic-require fix.
+**Narrator:** Basher | **Model:** deepseek-v4-pro | **Composite:** TBD
+- 6 Datei(en) geändert.
+
 ### [2026-06-29 14:27:22] PROPER-NOUN-Pluginisierung: Denylist (200+ Einträge) aus text-core.js ins Plugin verschoben. getProperNounDenylist() in GamePlugin + SongsOfSyxPlugin. isProperNoun() Plugin-bewusst. GUI 'Songs of Syx' Hardcoding entfernt.
 **Narrator:** Ghost | **Model:** deepseek-v4-pro | **Composite:** `c69j11n8a5p55`
 - 6 Datei(en) geändert.
