@@ -2,6 +2,8 @@
 // MODULE: ui-data.js — DB browser, revisions, repair, keys, models, FCM, scores, backups
 // Depends on: state.js, ui-core.js, ui-settings.js
 // =============================================================================
+ 
+/* global dbSearchResults:writable, currentRevisionsSource:writable, currentRevisionsLang:writable, revisionResults:writable, liveStats:writable, currentConfig:writable, _preflightWarning:writable, _rsMinimized:writable, _runtimeScoreData:writable, RS_CATEGORY_DESCRIPTIONS:writable, _runEvalData:writable, RUN_EVAL_DESCRIPTIONS:writable, fetchProviderStatus:writable, saveConfig:writable, onProviderChange:writable, updateBatchRecommendation:writable, setBackgroundState:writable */
 
 // ===========================================================================
 // SECTION 1: DB Browser + Edit
@@ -29,7 +31,7 @@ function renderDbTable() {
       '<td>' + row.target_lang + '</td>' +
       '<td>' +
         '<button onclick="saveDbEntry(' + idx + ')" style="padding: 2px 6px; font-size: 0.6rem; width: auto; margin-bottom: 2px;">Save</button>' +
-        '<button onclick="openRevisions(\'' + row.source_text.replace(/'/g, "\\'").replace(/"/g, '&quot;') + '\', \'' + row.target_lang + '\')" style="padding: 2px 6px; font-size: 0.6rem; width: auto; background: #332d29; border: 1px solid #444; color: var(--muted);">Rev</button>' +
+        '<button onclick="openRevisions(\'' + row.source_text.replace(/'/g, '\\\'').replace(/"/g, '&quot;') + '\', \'' + row.target_lang + '\')" style="padding: 2px 6px; font-size: 0.6rem; width: auto; background: #332d29; border: 1px solid #444; color: var(--muted);">Rev</button>' +
       '</td></tr>';
   }).join('');
     
@@ -67,7 +69,7 @@ function _saveDbEntry(idx) {
     })
     .catch(function() {
       input.style.borderColor = 'var(--danger)';
-      alert((window.t || function(k){return k})('alerts.dbSaveError'));
+      alert((window.t || function(k){return k;})('alerts.dbSaveError'));
     });
 }
 window.saveDbEntry = _saveDbEntry;
@@ -136,7 +138,7 @@ function fetchRevisions() {
 }
 
 function restoreRevision(revisionId) {
-  if (!confirm((window.t || function(k){return k})('alerts.restoreRevisionConfirm'))) return;
+  if (!confirm((window.t || function(k){return k;})('alerts.restoreRevisionConfirm'))) return;
   fetch('/api/revisions/restore', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -145,11 +147,11 @@ function restoreRevision(revisionId) {
     .then(function(res) { return res.json(); })
     .then(function(result) {
       if (result.success) {
-        alert((window.t || function(k){return k})('alerts.revisionRestored'));
+        alert((window.t || function(k){return k;})('alerts.revisionRestored'));
         fetchRevisions();
         searchDb();
       } else {
-        alert((window.t || function(k){return k})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k})('alerts.revisionUnknownError')));
+        alert((window.t || function(k){return k;})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k;})('alerts.revisionUnknownError')));
       }
     })
     .catch(function(e) { alert('Fehler bei der Wiederherstellung: ' + e.message); });
@@ -455,10 +457,10 @@ function renderModelStatus(status) {
 }
 
 function _installArgosFromUI() {
-  if (!confirm((window.t || function(k){return k})('alerts.installArgosConfirm'))) return;
+  if (!confirm((window.t || function(k){return k;})('alerts.installArgosConfirm'))) return;
   fetch('/api/action/install-argos', { method: 'POST' })
-    .then(function() { alert((window.t || function(k){return k})('alerts.argosInstallStarted')); setTimeout(fetchModelStatus, 5000); })
-    .catch(function(e) { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + e.message); });
+    .then(function() { alert((window.t || function(k){return k;})('alerts.argosInstallStarted')); setTimeout(fetchModelStatus, 5000); })
+    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + e.message); });
 }
 window.installArgosFromUI = _installArgosFromUI;
 
@@ -469,10 +471,10 @@ function _installArgosLanguageFromUI() {
   })
     .then(function(res) { return res.json(); })
     .then(function(result) {
-      if (result.ok) { alert((window.t || function(k){return k})('alerts.langModelInstalled') + ' ' + result.message); setTimeout(fetchModelStatus, 2000); }
-      else { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + result.message); }
+      if (result.ok) { alert((window.t || function(k){return k;})('alerts.langModelInstalled') + ' ' + result.message); setTimeout(fetchModelStatus, 2000); }
+      else { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + result.message); }
     })
-    .catch(function(e) { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + e.message); });
+    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + e.message); });
 }
 window.installArgosLanguageFromUI = _installArgosLanguageFromUI;
 
@@ -487,9 +489,9 @@ function _pullOllamaModel() {
     .then(function(res) { return res.json(); })
     .then(function(result) {
       if (result.ok) { input.value = ''; setTimeout(fetchModelStatus, 1000); }
-      else { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + result.message); }
+      else { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + result.message); }
     })
-    .catch(function(e) { alert((window.t || function(k){return k})('alerts.argosError') + ' ' + e.message); });
+    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + e.message); });
 }
 window.pullOllamaModel = _pullOllamaModel;
 
@@ -542,7 +544,7 @@ function renderFcmRankings(rankings) {
       '<span style="flex:1; font-size:0.6rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + (m.label || m.id).substring(0, 28) + '</span>' +
       '<span style="color:var(--muted); font-size:0.55rem; min-width:30px; text-align:right;">' + pingLabel + '</span>' +
       '<span style="color:' + (authOk ? 'var(--success)' : 'var(--danger)') + '; font-size:0.55rem;">' + (authOk ? '✓' : (m.httpCode || '?')) + '</span>' +
-      '<button onclick="useModelFromFcm(\'' + m.id.replace(/'/g, "\\'") + '\')" style="padding:1px 5px; font-size:0.5rem; width:auto; background:rgba(216,151,60,0.1); border:1px solid rgba(216,151,60,0.3); color:var(--accent); flex-shrink:0;">USE</button></div>';
+      '<button onclick="useModelFromFcm(\'' + m.id.replace(/'/g, '\\\'') + '\')" style="padding:1px 5px; font-size:0.5rem; width:auto; background:rgba(216,151,60,0.1); border:1px solid rgba(216,151,60,0.3); color:var(--accent); flex-shrink:0;">USE</button></div>';
   }).join('') || '<div style="color:var(--muted); text-align:center;">Keine Modelle gefunden</div>';
 }
 
@@ -701,8 +703,8 @@ function loadBackups() {
             '<span style="font-weight: 500; color: var(--text);" title="' + mod.displayName + '">' + mod.displayName + '</span>' +
             '<div style="font-size: 0.65rem; color: var(--muted);">ID: ' + mod.id + '</div></div>' +
           '<div>' + (mod.backupExists 
-            ? '<button onclick="restoreBackup(\'' + mod.id + '\')" style="background: rgba(100, 213, 196, 0.15); color: var(--success); border: 1px solid rgba(100, 213, 196, 0.3); font-size: 0.65rem; padding: 3px 8px; width: auto;">Restore</button>'
-            : '<span style="font-size: 0.65rem; color: var(--muted); padding: 3px 8px; border: 1px solid transparent; display: inline-block;">Kein Backup</span>') +
+          ? '<button onclick="restoreBackup(\'' + mod.id + '\')" style="background: rgba(100, 213, 196, 0.15); color: var(--success); border: 1px solid rgba(100, 213, 196, 0.3); font-size: 0.65rem; padding: 3px 8px; width: auto;">Restore</button>'
+          : '<span style="font-size: 0.65rem; color: var(--muted); padding: 3px 8px; border: 1px solid transparent; display: inline-block;">Kein Backup</span>') +
           '</div></div>';
       }).join('');
     })
@@ -710,17 +712,17 @@ function loadBackups() {
 }
 
 function restoreBackup(modId) {
-  var msg = (window.t || function(k){return k})('alerts.restoreBackupConfirm').replace('MOD_ID', modId);
+  var msg = (window.t || function(k){return k;})('alerts.restoreBackupConfirm').replace('MOD_ID', modId);
   if (!confirm(msg)) return;
   fetch('/api/backups/restore', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ modId: modId })
   })
     .then(function(res) { return res.json(); })
     .then(function(result) {
-      if (result.success) { alert(result.message || (window.t || function(k){return k})('alerts.restoreSuccess')); loadBackups(); }
-      else { alert((window.t || function(k){return k})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k})('alerts.revisionUnknownError'))); }
+      if (result.success) { alert(result.message || (window.t || function(k){return k;})('alerts.restoreSuccess')); loadBackups(); }
+      else { alert((window.t || function(k){return k;})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k;})('alerts.revisionUnknownError'))); }
     })
-    .catch(function(e) { alert((window.t || function(k){return k})('alerts.revisionRestoreError') + ' ' + e.message); });
+    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.revisionRestoreError') + ' ' + e.message); });
 }
 window.restoreBackup = restoreBackup;
 

@@ -64,7 +64,7 @@ class GamePlugin extends GameAdapter {
    * @param {string} target - Translated text
    * @returns {{ ok: boolean, reason: string }}
    */
-  validateTranslation(source, target) {
+  validateTranslation(_source, _target) {
     return { ok: true, reason: '' };
   }
 
@@ -158,7 +158,7 @@ class GamePlugin extends GameAdapter {
    * @param {string} targetContent - Translated file content
    * @returns {{ valid: boolean, issues: string[], keyCount: {source: number, target: number} }}
    */
-  validateFileSyntax(sourceContent, targetContent) {
+  validateFileSyntax(_sourceContent, _targetContent) {
     // Default: no format-specific validation
     return { valid: true, issues: [], keyCount: { source: 0, target: 0 } };
   }
@@ -190,7 +190,7 @@ class GamePlugin extends GameAdapter {
    * @param {string} version  - Mod version (e.g. "V71")
    * @returns {string} Header string or empty string
    */
-  getFileHeader(filePath, version) {
+  getFileHeader(_filePath, _version) {
     return '';
   }
 

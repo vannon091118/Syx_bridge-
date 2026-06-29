@@ -58,8 +58,49 @@ function createTranslationQuality(options) {
       const lower = value.toLowerCase();
       const hits = (lower.match(/\b(el|la|los|las|un|una|y|no|con|para|es|son|en|de)\b/g) || []).length;
       if (hits >= 2) return true;
+    } else if (lang === 'Italian') {
+      if (/[àèéìòù]/i.test(value)) return true;
+      const lower = value.toLowerCase();
+      const hits = (lower.match(/\b(il|lo|la|i|gli|le|un|una|e|non|con|per|che|di|da|in|su|è|sono|ha|hanno)\b/g) || []).length;
+      if (hits >= 2) return true;
+    } else if (lang === 'Portuguese') {
+      if (/[ãõáéíóúâêôçà]/i.test(value)) return true;
+      const lower = value.toLowerCase();
+      const hits = (lower.match(/\b(o|a|os|as|um|uma|e|não|com|para|que|de|da|do|em|no|na|é|são|tem)\b/g) || []).length;
+      if (hits >= 2) return true;
+    } else if (lang === 'Polish') {
+      if (/[ąćęłńóśźż]/i.test(value)) return true;
+      const lower = value.toLowerCase();
+      const hits = (lower.match(/\b(i|w|z|na|do|się|nie|to|że|jest|są|dla|przez|po|przy|za)\b/g) || []).length;
+      if (hits >= 2) return true;
+    } else if (lang === 'Dutch') {
+      const lower = value.toLowerCase();
+      const hits = (lower.match(/\b(de|het|een|en|niet|met|voor|van|in|op|dat|die|zijn|is|wordt|heeft|kan)\b/g) || []).length;
+      if (hits >= 2) return true;
+    } else if (lang === 'Swedish') {
+      if (/[åäö]/i.test(value)) return true;
+      const lower = value.toLowerCase();
+      const hits = (lower.match(/\b(och|att|det|som|en|ett|i|på|är|för|med|till|av|den|de|inte|har|kan)\b/g) || []).length;
+      if (hits >= 2) return true;
+    } else if (lang === 'Turkish') {
+      if (/[ğışçöüİĞÜÖÇŞ]/u.test(value)) return true;
+      const lower = value.toLowerCase();
+      const hits = (lower.match(/\b(ve|bir|bu|da|de|ki|ile|için|değil|çok|daha|gibi|kadar|olarak|sonra)\b/g) || []).length;
+      if (hits >= 2) return true;
     } else if (lang === 'Russian' || lang === 'Ukrainian') {
-      if (/[а-яА-ЯёЁіІєЄґҐ]/.test(value)) return true;
+      if (/[а-яА-ЯёЁіІєЄґҐїЇ]/u.test(value)) return true;
+      return false;
+    } else if (lang === 'Chinese') {
+      // Simplified Chinese: CJK Unified Ideographs + full-width punctuation
+      if (/[\u4E00-\u9FFF]/.test(value)) return true;
+      return false;
+    } else if (lang === 'Japanese') {
+      // Japanese: Hiragana, Katakana, or CJK ideographs
+      if (/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(value)) return true;
+      return false;
+    } else if (lang === 'Korean') {
+      // Korean: Hangul syllables
+      if (/[\uAC00-\uD7A3]/.test(value)) return true;
       return false;
     }
 
@@ -70,9 +111,17 @@ function createTranslationQuality(options) {
     const tokens = lower.match(/[a-zÀ-ž]+/g) || [];
     if (tokens.length === 0) return false;
 
-    if (['German', 'French', 'Spanish', 'Italian', 'Portuguese'].includes(lang)) {
-      const morphologyHits = tokens.filter(token => /(ung|keit|heit|schaft|chen|lein|lich|isch|erei|tion|tions|te|ten|ter|tes|en|ment|age|ique|able|ante|amos|aron|iendo)$/i.test(token)).length;
-      return morphologyHits >= Math.max(1, Math.ceil(tokens.length * 0.5));
+    if (['German', 'French', 'Spanish', 'Italian', 'Portuguese', 'Polish', 'Dutch', 'Swedish', 'Turkish'].includes(lang)) {
+      // Germanic suffix patterns
+      const germanicHits = tokens.filter(token => /(ung|keit|heit|schaft|chen|lein|lich|isch|erei|eren|ig|zaam|baar|heid|ing|ning|else|tion|tie|tjes|kje|ska|isk|ande|ende|erne)$/i.test(token)).length;
+      // Romance suffix patterns
+      const romanceHits = tokens.filter(token => /(tion|tions|te|ten|ter|tes|en|ment|age|ique|able|ante|amos|aron|iendo|ado|ada|ito|ita|mente|ção|ões|inho|inha|zione|tà|ore|ire|ere)$/i.test(token)).length;
+      // Slavic suffix patterns (Polish)
+      const slavicHits = tokens.filter(token => /(ować|ywać|iwać|enie|anie|cie|owy|owa|owe|ego|iej|ich|ymi|ymi)$/i.test(token)).length;
+      // Turkic suffix patterns
+      const turkicHits = tokens.filter(token => /(mak|mek|lar|ler|dir|tir|dır|dur|dür|tır|tur|tür|yor|iyor|uyor|üyor|acak|ecek|mış|miş|muş|müş)$/i.test(token)).length;
+      const totalHits = germanicHits + romanceHits + slavicHits + turkicHits;
+      return totalHits >= Math.max(1, Math.ceil(tokens.length * 0.5));
     }
 
     return false;

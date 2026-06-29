@@ -97,14 +97,16 @@ core/GUI/
 
 ---
 
-## backup-utils.js (~95 LOC) — Backup-Utility-Funktionen
-*Extrahiert aus gui-handlers.js (Commit c51j32n2a2p40). 3 reine Utility-Funktionen für Mod-Backups.*
+## backup-utils.js (~186 LOC) — Backup-Utility-Funktionen
+*Extrahiert aus gui-handlers.js (Commit c51j32n2a2p40). 5 reine Utility-Funktionen für Mod-Backups.*
 
 | Funktion | Beschreibung |
 |----------|--------------|
 | `readDisplayName(dirPath, adapter)` | Liest Mod-Namen aus _Info.txt oder Ordnerstruktur |
 | `restoreBackup(backupDir, targetDir)` | Stellt Backup via rekursivem Kopieren wieder her |
 | `collectAllFiles(dir, baseDir)` | Sammelt alle Dateien in einem Verzeichnis (rekursiv) |
+| `scanModsForBackup(config)` | Scant MOD_ROOT + GAME_MOD_ROOT für backup-fähige Mods (neu v0.24) |
+| `restoreBackupForMod(modId, config, dbRun)` | Vollständige Mod-Wiederherstellung mit DB-Cleanup (neu v0.24) |
 
 **Importiert von:** `gui-handlers.js`, `index.js`, `reset_now.js`
 
@@ -237,4 +239,4 @@ core/GUI/
 
 *📖 GUI-INDEX v0.23.0 — 14 Dateien, ~3.970 LOC. Extraktionen: server-routes.js, run-evaluation.js, backup-utils.js. Client: 5 Module + Bootstrap. Neu: reset_now.js + workshop_export.js dokumentiert.*
 
-> **Letztes Update:** 2026-06-26 — reset_now.js + workshop_export.js in INDEX aufgenommen, Dateizahl/LOC korrigiert
+> **Letztes Update:** 2026-06-29 — backup-utils.js: scanModsForBackup + restoreBackupForMod dokumentiert

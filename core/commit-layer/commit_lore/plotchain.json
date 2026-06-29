@@ -3083,5 +3083,93 @@
         "file": "core/scripts/check_workshop_damage.ps1"
       }
     ]
+  },
+  {
+    "p_id": "p76",
+    "id": "plot-2026-06-29T22:05:02",
+    "timestamp": "2026-06-29 22:05:02",
+    "summary": "ESLint-Hardening: 7669 auf 96 Issues reduziert (98.7%). Realer Bug dbManager gefixt. GUI Cross-Module Globals gelöst.",
+    "narrator": "Ghost",
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c71j67n8a5p26",
+    "ref_to": "plot-2026-06-29T20:54:42",
+    "prev_narrator": "Flux",
+    "data_changes": [
+      {
+        "file": ".gitignore"
+      },
+      {
+        "file": "core/DB/admin-db.js"
+      },
+      {
+        "file": "core/GUI/INDEX.md"
+      },
+      {
+        "file": "core/GUI/gui-handlers.js"
+      },
+      {
+        "file": "core/GUI/public/app.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang-strings.js"
+      },
+      {
+        "file": "core/GUI/public/modules/state.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-core.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-data.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-settings.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-sse.js"
+      },
+      {
+        "file": "core/Translation/INDEX.md"
+      },
+      {
+        "file": "core/Translation/adapters/GameAdapter.js"
+      },
+      {
+        "file": "core/Translation/diagnostics.js"
+      },
+      {
+        "file": "core/Translation/planner.js"
+      },
+      {
+        "file": "core/Translation/plugins/GamePlugin.js"
+      },
+      {
+        "file": "core/Translation/text-prompts.js"
+      },
+      {
+        "file": "core/Translation/translation-quality.js"
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md"
+      },
+      {
+        "file": "core/archive/docs/LIVE_INDEX.md"
+      },
+      {
+        "file": "core/archive/docs/MASTER_DOC.md"
+      },
+      {
+        "file": "core/archive/docs/SYSTEM_ARCHITECTURE.md"
+      },
+      {
+        "file": "core/eslint.config.mjs"
+      },
+      {
+        "file": "core/index.js"
+      },
+      {
+        "file": "core/scripts/update-badges.js"
+      }
+    ]
   }
 ]

@@ -61,7 +61,14 @@ function summarizeGrammarContext(grammarContext) {
     .map(line => line.trim())
     .filter(Boolean);
 
-  const keepSections = new Set(['SPRACHE UND STIL:', 'BEGRIFFE:', 'GRAMMATIK:', 'PLATZHALTER-SCHUTZ:', 'TAGS UND MARKUP:']);
+  // Bilingual section headers: German (backward-compat) + English (multi-language grammar contexts).
+  const keepSections = new Set([
+    'SPRACHE UND STIL:', 'LANGUAGE & STYLE:',
+    'BEGRIFFE:', 'TERMS:', 'TERMINOLOGY:',
+    'GRAMMATIK:', 'GRAMMAR:',
+    'PLATZHALTER-SCHUTZ:', 'PLACEHOLDER PROTECTION:',
+    'TAGS UND MARKUP:', 'TAGS & MARKUP:'
+  ]);
   const result = [];
   let currentSection = '';
 
@@ -159,7 +166,7 @@ function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = 
   };
 }
 
-function buildProofreadPrompt(items, targetLang = 'German', grammarContext = '', strictTerms = []) {
+function buildProofreadPrompt(items, targetLang, grammarContext = '', strictTerms = []) {
   const condensedContext = summarizeGrammarContext(grammarContext);
   const shieldMaps = [];
   const protectedItems = items.map(item => {

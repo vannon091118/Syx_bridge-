@@ -2,11 +2,14 @@
 // MODULE: ui-settings.js — Config, mode, batch, local models, ollama cloud
 // Depends on: state.js
 // =============================================================================
+ 
+/* global currentConfig:writable, patchOverrideEnabled:writable, _modelStatusInterval:writable, _providerStatusInterval:writable, _fcmRankingsInterval:writable, liveStats:writable, fetchModelStatus:writable, fetchProviderStatus:writable, refreshFcmRankings:writable, openKeyModal:writable */
+/* exported updateBatchRecommendation, onProviderChange, saveConfig, loadInitialConfig, startSettingsPolling, stopSettingsPolling */
 
 // ── Patch Override ────────────────────────────────────────────────────
 function togglePatchOverride() {
   if (!currentConfig.PATCH_MODE_ENABLED) {
-    alert((window.t || function(k){return k})('alerts.patchModeNotActivated'));
+    alert((window.t || function(k){return k;})('alerts.patchModeNotActivated'));
     return;
   }
   
@@ -24,7 +27,7 @@ window.togglePatchOverride = togglePatchOverride;
 // ── Mode Toggle ───────────────────────────────────────────────────────
 function _toggleMode() {
   if (currentConfig.NATIVE_MODE && !currentConfig.PATCH_MODE_ENABLED) {
-    alert((window.t || function(k){return k})('alerts.patchModeNotAvailable'));
+    alert((window.t || function(k){return k;})('alerts.patchModeNotAvailable'));
     return;
   }
   currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
@@ -179,11 +182,11 @@ function saveConfig(silent) {
     body: JSON.stringify(currentConfig)
   })
     .then(function() {
-      if (!silent) alert((window.t || function(k){return k})('alerts.configSaved'));
+      if (!silent) alert((window.t || function(k){return k;})('alerts.configSaved'));
     })
     .catch(function(e) {
       console.error('Save config failed', e);
-      if (!silent) alert((window.t || function(k){return k})('alerts.configSaveError'));
+      if (!silent) alert((window.t || function(k){return k;})('alerts.configSaveError'));
     });
 }
 window.saveConfig = saveConfig;

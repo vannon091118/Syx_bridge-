@@ -928,7 +928,7 @@ async function main() {
   if (isGui) {
     const result = registerGuiHandlers({
       GuiServer, config: CONFIG, configRuntime, planner,
-      dbGet, dbAll, dbAllReadOnly, dbRun,
+      dbManager, dbGet, dbAll, dbAllReadOnly, dbRun,
       filterLLMs,
       parseSoSConfig, stringifySoSConfig, SETTINGS_PATH,
       MAX_PARALLEL_FILES,

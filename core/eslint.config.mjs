@@ -28,9 +28,13 @@ export default [
   {
     files: ['GUI/public/**/*.js'],
     languageOptions: {
+      sourceType: 'script',
       globals: {
         ...globals.browser
       }
+    },
+    rules: {
+      'no-unused-vars': 'off'
     }
   }
 ];

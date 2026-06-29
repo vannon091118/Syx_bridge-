@@ -1,14 +1,12 @@
 'use strict';
 
-const fs = require('fs');
-const fsp = require('fs').promises;
 const path = require('path');
 
 // ── Extrahiert nach backup-utils.js (v0.23.0 Modularisierung) ─────
-const { readDisplayName, restoreBackup, scanModsForBackup, restoreBackupForMod } = require('./backup-utils');
+const { scanModsForBackup, restoreBackupForMod } = require('./backup-utils');
 
 // ── Extrahiert nach run-evaluation.js (v0.23.0 Modularisierung) ───
-const { computeRunEvaluation } = require('./run-evaluation');
+const computeRunEvaluation = require('./run-evaluation').computeRunEvaluation;
 
 /**
  * Starts the broadcast interval for GUI stats (CPU, RAM, planner stats).
@@ -72,6 +70,7 @@ function startStatsBroadcast(ctx) {
  *   - planner           {object}    - Planner instance
  *   - getIsAborting     {function}  - Returns current isAborting value
  *   - setIsAborting     {function}  - Sets isAborting value
+ *   - dbManager        {object}    - DB manager instance (for adminDb creation)
  *   - dbGet, dbAll, dbAllReadOnly, dbRun {function} - DB wrappers
  *   - filterLLMs        {function}  - LLM filter
  *   - parseSoSConfig, stringifySoSConfig {function} - SoS config helpers
@@ -99,7 +98,7 @@ function startStatsBroadcast(ctx) {
 function registerGuiHandlers(ctx) {
   const {
     GuiServer, config, configRuntime, planner,
-    dbGet, dbAll, dbAllReadOnly, dbRun,
+    dbManager, dbGet, dbAll, dbAllReadOnly, dbRun,
     filterLLMs,
     parseSoSConfig, stringifySoSConfig, SETTINGS_PATH,
     MAX_PARALLEL_FILES,

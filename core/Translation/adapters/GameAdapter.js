@@ -19,14 +19,14 @@ class GameAdapter {
    * @param {string} content Raw file content
    * @returns {Object}
    */
-  parseMetadata(content) { throw new Error('Not implemented: parseMetadata'); }
+  parseMetadata(_content) { throw new Error('Not implemented: parseMetadata'); }
 
   /**
    * Serialize a metadata object back to the game's file format.
    * @param {Object} infoObj
    * @returns {string}
    */
-  formatMetadata(infoObj) { throw new Error('Not implemented: formatMetadata'); }
+  formatMetadata(_infoObj) { throw new Error('Not implemented: formatMetadata'); }
 
   // ── Core Mod (Bridge) ───────────────────────────────────────────────────
 
@@ -38,7 +38,7 @@ class GameAdapter {
    * @param {string} bridgeVersion
    * @returns {string}
    */
-  getCoreModMetadata(bridgeVersion) { throw new Error('Not implemented: getCoreModMetadata'); }
+  getCoreModMetadata(_bridgeVersion) { throw new Error('Not implemented: getCoreModMetadata'); }
 
   /**
    * Apply patch-mode modifications to a mod's metadata (e.g. append language
@@ -46,7 +46,7 @@ class GameAdapter {
    * @param {Object} infoObj Parsed metadata object (mutated in place)
    * @param {string} targetLanguage e.g. 'German'
    */
-  applyPatchModifications(infoObj, targetLanguage) { throw new Error('Not implemented: applyPatchModifications'); }
+  applyPatchModifications(_infoObj, _targetLanguage) { throw new Error('Not implemented: applyPatchModifications'); }
 
   // ── File System & Structure ─────────────────────────────────────────────
 
@@ -62,13 +62,13 @@ class GameAdapter {
    * @param {string} originalName Original mod folder name
    * @returns {string} Backup directory name
    */
-  getBackupDirectoryName(originalName) { throw new Error('Not implemented: getBackupDirectoryName'); }
+  getBackupDirectoryName(_originalName) { throw new Error('Not implemented: getBackupDirectoryName'); }
 
   /** @param {string} dirName @returns {boolean} */
-  isBackupDirectory(dirName) { throw new Error('Not implemented: isBackupDirectory'); }
+  isBackupDirectory(_dirName) { throw new Error('Not implemented: isBackupDirectory'); }
 
   /** @param {string} dirName @returns {boolean} */
-  isVersionDirectory(dirName) { throw new Error('Not implemented: isVersionDirectory'); }
+  isVersionDirectory(_dirName) { throw new Error('Not implemented: isVersionDirectory'); }
 
   // ── Export / Packaging ──────────────────────────────────────────────────
 
@@ -77,14 +77,14 @@ class GameAdapter {
    * @param {string} versionDir e.g. 'V71'
    * @returns {string} Header string or empty string
    */
-  getOverrideHeader(versionDir) { throw new Error('Not implemented: getOverrideHeader'); }
+  getOverrideHeader(_versionDir) { throw new Error('Not implemented: getOverrideHeader'); }
 
   /**
    * Format a translation patch notice for the mod description.
    * @param {string} targetLanguage
    * @returns {string}
    */
-  formatPatchNotice(targetLanguage) { throw new Error('Not implemented: formatPatchNotice'); }
+  formatPatchNotice(_targetLanguage) { throw new Error('Not implemented: formatPatchNotice'); }
 
   // ── Parser / Scanner Control ────────────────────────────────────────────
 
@@ -102,7 +102,7 @@ class GameAdapter {
    * @param {string} relativePath  Path relative to the mod root
    * @returns {string} File type (e.g. 'TEXT_FILE', 'ASSET', 'INFO_FILE')
    */
-  classifyFile(relativePath) { throw new Error('Not implemented: classifyFile'); }
+  classifyFile(_relativePath) { throw new Error('Not implemented: classifyFile'); }
 
   /**
    * Determine whether a file should be processed for translation.
@@ -110,7 +110,7 @@ class GameAdapter {
    * @param {string} fileType  Result of classifyFile()
    * @returns {boolean}
    */
-  isTranslatableFile(relativePath, fileType) { throw new Error('Not implemented: isTranslatableFile'); }
+  isTranslatableFile(_relativePath, _fileType) { throw new Error('Not implemented: isTranslatableFile'); }
 
   /**
    * Check whether a directory entry looks like a valid mod root.
@@ -118,7 +118,7 @@ class GameAdapter {
    * @param {string} modDir  Absolute path to the directory
    * @returns {Promise<object|null>}  Mod info object or null if not a mod
    */
-  async scanMod(modDir) { throw new Error('Not implemented: scanMod'); }
+  async scanMod(_modDir) { throw new Error('Not implemented: scanMod'); }
 }
 
 module.exports = GameAdapter;

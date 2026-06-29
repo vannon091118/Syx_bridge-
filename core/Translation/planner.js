@@ -206,9 +206,9 @@ class Planner {
     const rows = this.modTrackerDb
       ? await this.modTrackerDb.getFilesByModId(mod.id)
       : await require('../DB/db').all(
-          'SELECT id, relative_path, source_hash FROM files WHERE mod_id = ?',
-          [mod.id]
-        );
+        'SELECT id, relative_path, source_hash FROM files WHERE mod_id = ?',
+        [mod.id]
+      );
     const dbFileMap = new Map();
     for (const f of rows || []) {
       dbFileMap.set(f.relative_path, f);
@@ -227,11 +227,11 @@ class Planner {
     const dbFile = dbFileMap
       ? dbFileMap.get(file.relativePath)
       : (this.modTrackerDb
-          ? await this.modTrackerDb.getFileByPath(mod.id, file.relativePath)
-          : await require('../DB/db').get(
-              'SELECT id, source_hash FROM files WHERE mod_id = ? AND relative_path = ?',
-              [mod.id, file.relativePath]
-            ));
+        ? await this.modTrackerDb.getFileByPath(mod.id, file.relativePath)
+        : await require('../DB/db').get(
+          'SELECT id, source_hash FROM files WHERE mod_id = ? AND relative_path = ?',
+          [mod.id, file.relativePath]
+        ));
 
     if (dbFile && dbFile.source_hash === fileHash && mode !== 'force') {
       this.stats.cacheHits++;

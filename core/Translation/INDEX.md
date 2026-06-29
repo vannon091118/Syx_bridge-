@@ -237,13 +237,13 @@
 
 ---
 
-## diagnostics.js (55 LOC)
-*System-Diagnose und Cache-Clear*
+## diagnostics.js (~55 LOC)
+*System-Diagnose und Cache-Clear (DI-Parameter statt globals v0.24)*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
-| 6 | `runDiagnostics()` | Komplette System-Diagnose |
-| 42 | `clearCache(lang)` | Cache leeren |
+| 6 | `runDiagnostics(deps)` | Komplette System-Diagnose — deps={runMetricsDb, adminDb} |
+| 42 | `clearCache(lang, deps)` | Cache leeren — deps={adminDb} |
 
 ---
 
@@ -339,8 +339,8 @@
 
 ---
 
-## gui-handlers.js (663 LOC)
-*GUI-Event-Handler, Stats-Broadcast, Backup-Restore*
+## gui-handlers.js (~540 LOC)
+*GUI-Event-Handler, Stats-Broadcast, Backup-Handler (verschlankt via backup-utils.js v0.24)*
 
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
@@ -669,7 +669,7 @@
 | Zeile | Funktion | Beschreibung |
 |-------|----------|--------------|
 | 15 | `createTranslationRuntime(options)` | **Factory** — initialisiert Runtime + Phasen-Modul |
-| 113 | `parseBatchResponseWithMaps(...)` | Response-Parsing mit Maps |
+| 113 | `parseBatchResponse(text, options)` | Response-Parsing (direkt via text-core.js, wrapper eliminiert v0.24) |
 | 118 | `buildBatchPromptForCurrentConfig(...)` | Config-aware Prompt |
 | 130 | `googleFreePreflight(...)` | Google-Free Stress-Test mit DNT-Shielding |
 | 180 | `translateBatch(...)` | **Haupt-Translation** — 3-Tier Accept/Reject |

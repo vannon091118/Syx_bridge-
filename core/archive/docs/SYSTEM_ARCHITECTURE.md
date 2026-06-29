@@ -1,6 +1,6 @@
 # SYSTEM_ARCHITECTURE.md — SyxBridge Architektur-Referenz
 
-> **Version:** v0.23.0 | **Stand:** 2026-06-25
+> **Version:** v0.24.0 | **Stand:** 2026-06-29
 > **Zweck:** Vollständige Architekturerklärung mit Dependencies, Entscheidungsbegründungen und Datenflüssen.
 > **Für:** Neue Entwickler, Architektur-Reviews, Plugin-Entwicklung für neue Spiele.
 
@@ -167,7 +167,7 @@ PRAGMA temp_store = MEMORY;        -- Temp-Tabellen im RAM
 ```
 GameAdapter.js (16 Methoden) — Abstraktes Interface
     ↓ extends
-GamePlugin.js (11 Methoden) — Format-spezifische Hooks mit Defaults
+GamePlugin.js (12 Methoden) — Format-spezifische Hooks mit Defaults
     ↓ extends
 SongsOfSyxPlugin.js (23 Methoden) — Vollständige SoS-Implementierung
 RimWorldPlugin.js (24 Methoden) — Format-Hooks fertig, Adapter-Stubs
@@ -633,7 +633,7 @@ index.js
 | Provider | 11 |
 | Commit-Narrative | 14 |
 | Plugin-Methoden (GameAdapter) | 16 |
-| Plugin-Methoden (GamePlugin) | 11 |
+| Plugin-Methoden (GamePlugin) | 12 |
 | Tests | 100+ (plugin-boundary, validator, parser, e2e, 15 Test-Dateien) |
 | GUI-Endpoints | 25+ |
 | Komposit-Chain-Einträge | 38 |
@@ -641,4 +641,4 @@ index.js
 ---
 
 *Erstellt 2026-06-25 — Basierend auf vollständiger Codebase-Analyse.*
-*Aktualisiert 2026-06-26 — Doku-Divergenz-Audit: Providerzahl, LOC, Dateizahl korrigiert.*
+*Aktualisiert 2026-06-29 — P4-Rest: diagnostics.js DI, backup-utils erweitert, parseBatchResponseWithMaps eliminiert.*

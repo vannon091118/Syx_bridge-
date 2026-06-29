@@ -2,6 +2,9 @@
 // MODULE: ui-sse.js — SSE connection + log handling + DB samples
 // Depends on: state.js, ui-core.js
 // =============================================================================
+ 
+/* global evtSource:writable, providerStats:writable, liveStats:writable, logContainer:writable, dbSamplesContainer:writable, termReq:writable, reqProvider:writable, termRes:writable, resTime:writable, setBackgroundState:writable, updatePipeline:writable */
+/* exported connectLogs */
 
 function connectLogs() {
   if (evtSource) {

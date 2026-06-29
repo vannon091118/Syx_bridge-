@@ -22,6 +22,7 @@ VISION.md
 archive/docs/VISION.md
 core/.env.e2e-live-backup
 core/.env.backup
+core/Translation/.env.backup
 
 # Dev-Tools (internal only, removed from GitHub)
 core/scripts/

@@ -2,6 +2,9 @@
 // MODULE: ui-core.js — Main render loop, pipeline, provider stats, health, actions
 // Depends on: state.js
 // =============================================================================
+ 
+/* global frameCount:writable, lastFrameTime:writable, _fps:writable, uiPhase:writable, liveStats:writable, uiModName:writable, statScanned:writable, statCached:writable, statTranslated:writable, statFailed:writable, uiProgress:writable, displayPercent:writable, lastTickTarget:writable, dbSamplesContainer:writable, lastSampleRotation:writable, lastRunningState:writable, statusTimeout:writable, providerStats:writable, apiProviderStatus:writable, currentConfig:writable, stages:writable, connectors:writable, dotArgos:writable, dotOllama:writable, logContainer:writable, _streamViewIsLLM:writable */
+/* exported tick, setBackgroundState, updatePipeline, renderProviderStats, fetchProviderStatus, triggerAction, fetchHealth, toggleStreamView */
 
 function tick(now) {
   frameCount++;
@@ -31,7 +34,7 @@ function tick(now) {
   // Status Badge & Button Sync
   var badge = document.getElementById('bridge-status-badge');
   var runBtn = document.getElementById('main-run-btn');
-  var tk = (window.t || function(k){return k});
+  var tk = (window.t || function(k){return k;});
   if (badge) {
     badge.textContent = liveStats.isRunning ? tk('health.running') : tk('health.idle');
     badge.className = liveStats.isRunning ? 'status-badge active' : 'status-badge';
@@ -45,7 +48,7 @@ function tick(now) {
   var subPhaseEl = document.getElementById('ui-sub-phase');
   if (subPhaseEl) {
     if (liveStats.isRunning && liveStats.subPhase) {
-      var tk = (window.t || function(k){return k});
+      tk = (window.t || function(k){return k;});
       var phaseLabels = {
         caching: tk('phaseLabels.caching'),
         native: tk('phaseLabels.native'),
@@ -75,7 +78,7 @@ function tick(now) {
   var heartbeatAge = liveStats.lastHeartbeat ? (performance.now() - liveStats.lastHeartbeat) : 0;
   if (liveStats.isRunning && heartbeatAge > 8000) {
     if (subPhaseEl) {
-      subPhaseEl.textContent = (window.t || function(k){return k})('phaseLabels.waitingBackend');
+      subPhaseEl.textContent = (window.t || function(k){return k;})('phaseLabels.waitingBackend');
       subPhaseEl.style.color = 'var(--danger)';
     }
   } else if (subPhaseEl) {
@@ -104,7 +107,7 @@ function tick(now) {
     var progressText = document.getElementById('ui-progress-text');
     if (progressText) {
       if (!liveStats.isRunning && current === 0) {
-        progressText.textContent = (window.t || function(k){return k})('health.ready');
+        progressText.textContent = (window.t || function(k){return k;})('health.ready');
       } else {
         progressText.textContent = Math.round(displayPercent) + '% (' + current + ' / ' + (liveStats.totalFiles || 0) + ')';
       }
@@ -287,7 +290,7 @@ function triggerAction(action) {
     })
     .catch(function(e) {
       console.error('Trigger action failed', e);
-      alert((window.t || function(k){return k})('alerts.actionFailed') + ' ' + e.message);
+      alert((window.t || function(k){return k;})('alerts.actionFailed') + ' ' + e.message);
     });
 }
 

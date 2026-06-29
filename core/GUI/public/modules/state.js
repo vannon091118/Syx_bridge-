@@ -2,6 +2,9 @@
 // MODULE: state.js — Shared state + DOM element references
 // Load FIRST — all other modules depend on these globals.
 // =============================================================================
+ 
+ 
+/* exported logContainer, uiPhase, uiModName, uiProgress, statScanned, statCached, statTranslated, statFailed, termReq, termRes, reqProvider, resTime, dbSamplesContainer, dotArgos, dotOllama, stages, connectors, currentConfig, providerStats, apiProviderStatus, dbSearchResults, currentRevisionsSource, currentRevisionsLang, revisionResults, liveStats, lastRunningState, statusTimeout, patchOverrideEnabled, _fps, lastFrameTime, frameCount, lastSampleRotation, displayPercent, lastTickTarget, sessionId, evtSource, _modelStatusInterval, _providerStatusInterval, _fcmRankingsInterval, _preflightWarning, _runtimeScoreData, _runEvalData, _rsMinimized, _streamViewIsLLM, RS_CATEGORY_DESCRIPTIONS, RUN_EVAL_DESCRIPTIONS */
 
 // DOM Elements
 var logContainer = document.getElementById('log');

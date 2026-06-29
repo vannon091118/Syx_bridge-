@@ -8,6 +8,7 @@
  * Alle Funktionen nehmen dbRun/dbGet/dbAll als Parameter oder nutzen dbManager.
  */
 
+/* eslint-disable no-unused-vars -- imported for potential future use in diagnostic functions */
 const { getHash, classifyString } = require('../Translation/extractor');
 const { shouldTranslate } = require('../Translation/text-core');
 
@@ -158,14 +159,14 @@ function createAdminDb(dbManager) {
 
   async function getPendingPolishCount() {
     const row = await dbManager.get(
-      "SELECT COUNT(*) as c FROM translations WHERE polish_status = 'pending'"
+      'SELECT COUNT(*) as c FROM translations WHERE polish_status = \'pending\''
     );
     return row ? row.c : 0;
   }
 
   async function getFailedPolishCount() {
     const row = await dbManager.get(
-      "SELECT COUNT(*) as c FROM translations WHERE polish_status = 'failed'"
+      'SELECT COUNT(*) as c FROM translations WHERE polish_status = \'failed\''
     );
     return row ? row.c : 0;
   }
@@ -179,14 +180,14 @@ function createAdminDb(dbManager) {
 
   async function getShieldLeakCount() {
     const row = await dbManager.get(
-      "SELECT COUNT(*) as c FROM translations WHERE flag_reason = 'shield_leak'"
+      'SELECT COUNT(*) as c FROM translations WHERE flag_reason = \'shield_leak\''
     );
     return row ? row.c : 0;
   }
 
   async function getCriticalRejectCount() {
     const row = await dbManager.get(
-      "SELECT COUNT(*) as c FROM translations WHERE flag_reason = 'critical_reject'"
+      'SELECT COUNT(*) as c FROM translations WHERE flag_reason = \'critical_reject\''
     );
     return row ? row.c : 0;
   }

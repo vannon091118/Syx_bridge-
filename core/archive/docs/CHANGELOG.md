@@ -1,5 +1,20 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-06-29 22:05:02] ESLint-Hardening: 7669 auf 96 Issues reduziert (98.7%). Realer Bug dbManager gefixt. GUI Cross-Module Globals gelöst.
+**Narrator:** Ghost | **Model:** mimo-v2.5-pro | **Composite:** `c71j67n8a5p26`
+- 25 Datei(en) geändert.
+
+### [2026-06-29] ESLINT-HARDENING: 7669→96 Issues (98.7% Reduktion). Realer Bug- Fix: dbManager fehlte in registerGuiHandlers ctx. GUI Cross-Module Globals gelöst. 19 Dateien bereinigt.
+- **ESLint --fix:** 7196 auto-fixbare Issues (quotes, semi, indent) in ~30 Dateien.
+- **ESLint-Config:** sourceType 'script' + browser globals fuer GUI/public/*.js (6 Dateien).
+- **Bug Fix (KRITISCH):** `dbManager` fehlte im registerGuiHandlers ctx → `createAdminDb(dbManager)` in gui-handlers.js:410 crashte. Fix: dbManager zu ctx in index.js + gui-handlers.js hinzugefuegt.
+- **no-redeclare:** var tk → tk in ui-core.js, fetchModelStatus/refreshFcmRankings aus ui-data.js global entfernt (lokal definiert).
+- **no-const-assign:** const → let in update-badges.js:39.
+- **no-unused-vars:** _-Prefixes fuer Stub-Parameter (GameAdapter.js, GamePlugin.js), tote Imports entfernt (gui-handlers.js: fs, fsp, readDisplayName, restoreBackup).
+- **GUI/public modules:** /* global :writable */ fuer Cross-Module-Variablen (state.js, app.js, ui-core.js, ui-data.js, ui-settings.js, ui-sse.js).
+- 94 verbleibende Warnings (no-unused-vars in Non-GUI Dateien) — Folge-Session.
+- 19 Datei(en) geaendert.
+
 ### [2026-06-29 20:54:42] P4-Rest: S-010 diagnostics.js DI-Parameter statt globals. S-011 backup-utils.js Scan/Restore extrahiert (91 Zeilen aus gui-handlers.js). S-012 parseBatchResponseWithMaps-Wrapper eliminiert + GamePlugin.js dynamic-require fix.
 **Narrator:** Flux | **Model:** deepseek-v4-pro | **Composite:** `c70j100n13a2p59`
 - 22 Datei(en) geändert.

@@ -1,9 +1,9 @@
 # 📖 LIVE INDEX — SyxBridge Dokumentation
 
-> **Stand:** 2026-06-25 | **Version:** v0.23.0
+> **Stand:** 2026-06-29 | **Version:** v0.24.0
 > **Status:** 5 LIVE + 20 FREEZE + 13 PLAN + 7 Root + 8 INDEX
 > **Regel:** Nur Pflicht-Dokus bleiben. Alle Einmal-Audits, HANDSHAKEs und Specs vollarchiviert.
-> **Letzter Doku-Audit:** 2026-06-25 — PLAN_RIMWORLD.md erstellt, PLAN.md aktualisiert, AGENTS.md Regel 4.
+> **Letzter Doku-Audit:** 2026-06-29 — P4-Rest: S-010 diagnostics.js DI, S-011 backup-utils Extraktion, S-012 Quick Wins.
 
 ## LIVE-Dokumente (5)
 
@@ -151,4 +151,4 @@
 
 ---
 
-*LIVE INDEX aktualisiert 2026-06-25 — PLAN_RIMWORLD.md erstellt, Pläne-Audit, AGENTS.md Regel 4.*
+*LIVE INDEX aktualisiert 2026-06-29 — P4-Rest: Doku nachgezogen, Version v0.24.0.*

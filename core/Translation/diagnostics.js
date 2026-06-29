@@ -26,7 +26,7 @@ async function runDiagnostics(deps = {}) {
   // 1. Table Check
   const tables = runMetricsDb
     ? await runMetricsDb.getSchemaInfo()
-    : await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+    : await db.all('SELECT name FROM sqlite_master WHERE type=\'table\'');
   console.log('Tables:', tables.map(t => t.name).join(', '));
 
   // 2. Translation Counts

@@ -3,6 +3,7 @@
 // All domain logic is in modules/ — loaded via <script> tags in index.html.
 // This file wires up the lifecycle: init, intervals, and window exports.
 // =============================================================================
+/* global liveStats:writable, sessionId:writable, fetchHealth:writable, fetchPreflightStatus:writable, tick:writable, loadInitialConfig:writable, searchDb:writable, refreshFcmRankings:writable, loadBackups:writable, fetchRuntimeScore:writable, fetchRunEvaluation:writable, connectLogs:writable, updateBatchRecommendation:writable, triggerAction:writable */
 
 // ── UI Language: sync dropdown to localStorage value ──────────────────
 (function() {
@@ -60,7 +61,7 @@ connectLogs();
 // (Most are set in their respective modules; these are the remaining ones)
 window.toggleSettings = function() {
   if (liveStats && liveStats.isRunning) {
-    alert((window.t || function(k){return k})('alerts.settingsLockedDuringRun'));
+    alert((window.t || function(k){return k;})('alerts.settingsLockedDuringRun'));
     return;
   }
   var dropdown = document.getElementById('settings-dropdown');

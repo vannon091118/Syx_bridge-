@@ -1,6 +1,6 @@
 # SyxBridge – Master-Dokumentation (Destillat)
 
-**Stand:** 26.06.2026 | **Version:** v0.23.0 | **Autor:** Vannon & Sub-Agents
+**Stand:** 29.06.2026 | **Version:** v0.24.0 | **Autor:** Vannon & Sub-Agents
 **Destilliert aus:** MASTER_DOC.md (Basis), FREEZE_INDEX_2.md, CHANGELOG.md, CHANGELOG_1.md
 **Letzte Prüfung:** 2026-06-26 — Doku-Divergenz-Audit (DD-001–DD-007)
 
@@ -71,7 +71,7 @@ Scan → Extract → Translate → Audit → Polish → Export
 | Ebene | Datei | LOC | Methoden | Status |
 |-------|-------|-----|----------|--------|
 | 1 — Adapter | `adapters/GameAdapter.js` | ~150 | 16 | Abstraktes Base-Interface |
-| 2 — Plugin | `plugins/GamePlugin.js` | ~165 | 11 | Format-Hooks mit Defaults |
+| 2 — Plugin | `plugins/GamePlugin.js` | ~165 | 12 | Format-Hooks mit Defaults |
 | 3 — SoS | `plugins/SongsOfSyxPlugin.js` | ~290 | 23 | ✅ Voll integriert |
 | 3 — RimWorld | `plugins/RimWorldPlugin.js` | ~155 | 24 (11 fertig) | 🟡 STUB — Format-Hooks fertig, Adapter fehlt |
 | — | `plugin-registry.js` | ~30 | 1 Factory | ✅ `createPlugin(gameName)` |

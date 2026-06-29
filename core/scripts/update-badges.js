@@ -23,7 +23,7 @@ const readmePath = path.join(rootDir, 'README.md');
 const cachePath = path.join(coreDir, '.last_test_output.txt');
 
 const dryRun = process.argv.includes('--dry-run');
-const useCache = process.argv.includes('--cached');
+let useCache = process.argv.includes('--cached');
 
 // ── 1. Test-Output holen (Cache oder Live) ─────────────────────────
 let testOutput;
