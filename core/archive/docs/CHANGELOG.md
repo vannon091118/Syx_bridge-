@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-01 23:42:44] API-Kosten-Optimierung und Entkopplung des automatischen Deep-Polish
+**Narrator:** Vannon | **Model:** Gemini 3.5 Flash | **Composite:** `c80j43n4a3p16`
+- 2 Datei(en) geändert.
+
 ### [2026-07-01 23:16:31] GUI Rebuild, i18n-System, E2E-Tests, Polish & Debug (Konsolidierter Tages-Commit)
 **Narrator:** Buffy | **Model:** Gemini 3.5 Flash | **Composite:** `c79j56n1a5p52`
 - 55 Datei(en) geändert.

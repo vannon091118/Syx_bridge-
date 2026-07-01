@@ -373,7 +373,11 @@ function createTranslationPhases(deps) {
 
     const polishQueue = [...ctx.translations.keys()].filter(k => {
       const cached = ctx.cachedData.get(k) || {};
-      return (cached.flagged || (cached.polishLevel || 0) < 2) && k.length > 5 && /[a-zA-Z]/.test(k);
+      const isFresh = ctx.missing.includes(k);
+      // Kostenspar-Schutz: Frisch übersetzte Texte im selben Run nur polishen, wenn sie flagged sind.
+      // Bereits im Cache liegende unfertige Übersetzungen werden weiterhin gepolisht.
+      const eligible = isFresh ? cached.flagged : (cached.flagged || (cached.polishLevel || 0) < 2);
+      return eligible && k.length > 5 && /[a-zA-Z]/.test(k);
     }).sort((a, b) => {
       const riskA = (ctx.contextBySource.get(a) || {}).riskScore || 0;
       const riskB = (ctx.contextBySource.get(b) || {}).riskScore || 0;
@@ -527,6 +531,12 @@ function createTranslationPhases(deps) {
 
   async function deepPolishPhase(_ctx) {
     if (isAborting()) return;
+
+    // Kosten sparen: Deep Polish der DB nur ausführen, wenn explizit gewünscht (forcePolish oder runDeepPolish).
+    // Verhindert, dass kleine Mod-Updates unerwartet Hunderte alte DB-Einträge via API reparieren.
+    if (!_ctx.options.forcePolish && !_ctx.options.runDeepPolish) {
+      return;
+    }
 
     try {
       const deepPolishCount = await _dbGet(

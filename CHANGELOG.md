@@ -1,5 +1,11 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02] API-Kosten-Optimierung & Pipeline-Bereinigung — v0.26.0-alpha
+**Narrator:** Argos | **Model:** Gemini 3.5 Flash (Medium) | **Composite:** `c73j32n14a4p11`
+- **Cost-Saving (translation-phases.js):** Frisch übersetzte Texte (`isFresh`) werden in `qaPhase` nur noch dann zur Korrektur zugelassen, wenn sie auch wirklich als `flagged` markiert wurden. Dies verhindert unnötige, teure LLM-Audits für bereits fehlerfreie Übersetzungen im selben Durchlauf.
+- **Deep-Polish-Auto-Trigger entkoppelt (translation-phases.js):** Die `deepPolishPhase` startet den datenbankweiten Reparatur-Batch nur noch bei expliziter Anforderung (`ctx.options.runDeepPolish === true` oder `ctx.options.forcePolish === true`), anstatt bei jedem Mod-Translation-Run unaufgefordert API-Kosten für Altlasten zu generieren.
+- 1 Datei(en) geändert.
+
 ### [2026-07-02] GUI-Rework Polish & Debug — v0.26.0-alpha
 **Narrator:** Flux | **Model:** Gemini 3.5 Flash | **Composite:** `c73j32n13a4p10`
 - **BE-01 Action Normalisierung (server-routes.js):** Action-Handler normalisiert nun Hyphen zu Underscores (z.B. `kill-all` -> `kill_all`), um Konsistenz zwischen API-Routen und Event-Emitter zu wahren.

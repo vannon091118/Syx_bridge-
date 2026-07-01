@@ -3647,5 +3647,24 @@
         "file": "core/tests/e2e_multi_language.js"
       }
     ]
+  },
+  {
+    "p_id": "p85",
+    "id": "plot-2026-07-01T23:42:44",
+    "timestamp": "2026-07-01 23:42:44",
+    "summary": "API-Kosten-Optimierung und Entkopplung des automatischen Deep-Polish",
+    "narrator": "Vannon",
+    "model_id": "Gemini 3.5 Flash",
+    "composite": "c80j43n4a3p16",
+    "ref_to": "plot-2026-07-01T23:16:53",
+    "prev_narrator": "Buffy",
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md"
+      },
+      {
+        "file": "core/Translation/translation-phases.js"
+      }
+    ]
   }
 ]
