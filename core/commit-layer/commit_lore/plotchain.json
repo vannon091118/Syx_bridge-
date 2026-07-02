@@ -3967,5 +3967,24 @@
         "file": "core/Translation/sos-runtime.js"
       }
     ]
+  },
+  {
+    "p_id": "p90",
+    "id": "plot-2026-07-02T00:52:06",
+    "timestamp": "2026-07-02 00:52:06",
+    "summary": "P8-4: SQLITE_BUSY Retry with exponential backoff (100-250-500ms) in db.js",
+    "narrator": "Devin",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c85j92n6a4p32",
+    "ref_to": "plot-2026-07-02T00:48:34",
+    "prev_narrator": "Thinker",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/DB/db.js"
+      }
+    ]
   }
 ]

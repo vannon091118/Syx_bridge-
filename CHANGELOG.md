@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 00:52:06] P8-4: SQLITE_BUSY Retry with exponential backoff (100-250-500ms) in db.js
+**Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c85j92n6a4p32`
+- 2 Datei(en) geändert.
+
 ### [2026-07-02 00:48:34] PLAN.md Sprint Block 1: P8-3 DB-Indizes (3 indices), P8-5 Snapshot-Cleanup (keep 10), P4 SOS-RUNTIME (SoS config moved to plugin)
 **Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c84j71n6a1p13`
 - 6 Datei(en) geändert.

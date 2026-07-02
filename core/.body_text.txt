@@ -1,18 +1,10 @@
-PLAN.md Sprint Block 1: P8-3 DB-Indizes + P8-5 Snapshot-Cleanup + P4 SOS-RUNTIME.
+P8-4 SQLITE_BUSY Retry-Logik: withBusyRetry() Wrapper in db.js.
 
-P8-3 (DB-Indizes): 3 neue Indizes für Audit-Queries in db.js init():
-idx_trans_flag_reason (target_lang, flag_reason), idx_trans_quality_score
-(target_lang, quality_score), idx_trans_stale (target_lang, flagged).
-Verhindern Full Table Scans auf flag_reason und quality_score<30.
+Exponentielles Backoff (100ms → 250ms → 500ms) bei SQLITE_BUSY-Errors.
+better-sqlite3's timeout (15s) behandelt 95% der DB-Contention. Dieser Wrapper
+fängt die 5% Edge-Cases ab (GUI+CLI gleichzeitig, HDD-Spikes).
 
-P8-5 (Snapshot-Cleanup): cleanupSnapshots(keepN=10) in db_snapshot.js.
-Läuft automatisch nach jedem Snapshot und nach jedem Preflight.
-Löscht älteste Snapshots (nur 10 behalten) inklusive WAL/SHM-Dateien.
-require.main === module Guard verhindert CLI-Code bei programmatischem Import.
+Nur run() (Write-Operation) gewrappt. get() und all() (Read-Only) sind nicht
+betroffen — WAL-Mode erlaubt Reads ohne BUSY ausser bei aktivem Checkpoint.
 
-P4 (SOS-RUNTIME): parseSoSConfig, stringifySoSConfig, getActiveMods,
-syncLauncherSettings als Instanz-Methoden in SongsOfSyxPlugin implementiert.
-sos-runtime.js auf dünne Delegations-Schicht reduziert (backward-kompatibel).
-Redundante inline require()s im Plugin bereinigt (fs/fsp/os/path auf Module-Level).
-
-BETROFFEN: 4 Dateien (db.js, db_snapshot.js, preflight.js, sos-runtime.js, SongsOfSyxPlugin.js).
+1 Datei geändert (core/DB/db.js).

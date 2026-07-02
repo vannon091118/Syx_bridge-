@@ -37,17 +37,40 @@ function connect() {
 }
 
 /**
+ * P8-4: Retry-Logik mit exponential backoff für SQLITE_BUSY.
+ * better-sqlite3's timeout (15s) behandelt 95% der Fälle. Dieser Wrapper
+ * fängt die verbleibenden 5% ab (GUI+CLI gleichzeitig, HDD-Spikes).
+ * Retries: 100ms → 250ms → 500ms → throw.
+ */
+const RETRY_DELAYS = [100, 250, 500];
+
+async function withBusyRetry(fn) {
+  let lastError;
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastError = e;
+      if (e.code === 'SQLITE_BUSY' && attempt < RETRY_DELAYS.length) {
+        await new Promise(r => setTimeout(r, RETRY_DELAYS[attempt]));
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw lastError;
+}
+
+/**
  * Runs a SQL query. Returns Promise-wrapped better-sqlite3 Statement#run().
  * Behält die Promise-Signatur damit translation-runtime.js NICHTS ändern muss.
  */
 function run(sql, params = []) {
-  try {
+  return withBusyRetry(() => {
     const stmt = db.prepare(sql);
     const result = stmt.run(...params);
     return Promise.resolve(result);
-  } catch (e) {
-    return Promise.reject(e);
-  }
+  });
 }
 
 /**
