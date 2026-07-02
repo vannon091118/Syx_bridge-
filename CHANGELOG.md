@@ -1,8 +1,19 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 02:59:18] checkAllKeys DOM-Polling eliminiert. checkSingleKey gibt jetzt Promise zurück, checkAllKeys chained direkt statt setInterval-Text-Polling. Defensive .catch() pro Key. Code-Review approved.
+**Narrator:** Ghost | **Model:** mimo-v2.5-pro | **Composite:** `c96j39n8a5p99`
+- 3 Datei(en) geändert.
+
 ### [2026-07-02 02:54:36] DOM-Cache: tickDomCache in state.js — 8 getElementById + 1 querySelector aus tick() eliminiert. ~540 DOM-Lookups/Sekunde eingespart. Code-Review approved.
 **Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c95j81n1a3p42`
 - 4 Datei(en) geändert.
+
+### [2026-07-02] checkAllKeys DOM-Polling eliminiert — checkSingleKey gibt jetzt Promise zurück, checkAllKeys chained direkt statt setInterval-Text-Polling
+**Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`
+- **Problem:** checkAllKeys() pollte alle 100ms via setInterval den Button-Text auf spezifische Strings ("✓ OK", "✗ FAIL", "ERR", "?"). Brach bei i18n-Override still, Race-Condition bei schnellen API-Antworten (<100ms) und 8s Reset-Timer.
+- **Fix:** checkSingleKey() gibt jetzt seine Promise-Kette zurück (return apiClient(...).then(...).finally(...)). Frühe Exits geben Promise.resolve({ok:false}) zurück. checkAllKeys() chained direkt auf checkSingleKey().then(result => results.push(...)).catch(() => results.push({ok:false})) — kein DOM-Polling mehr. Backward-kompatibel: HTML onclick ignoriert den Rückgabewert.
+- **Verifikation:** Syntax 120/120 ✅ | Code-Review approved ✅
+- 1 Datei(en) geändert (ui-data.js).
 
 ### [2026-07-02] DOM-Cache: tickDomCache in state.js — 8 getElementById + 1 querySelector aus tick() eliminiert (~540 DOM-Lookups/Sekunde eingespart)
 **Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`

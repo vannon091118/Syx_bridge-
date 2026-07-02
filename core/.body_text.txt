@@ -1,3 +1,3 @@
-DOM-Cache: tickDomCache in state.js — 8 getElementById + 1 querySelectorAll aus tick() eliminiert. Bei 60fps im Run-Modus ~540 unnötige DOM-Lookups/Sekunde eingespart. settingsInputs lazy-gecached (erster Tick initialisiert, danach Cache-Hit). fetchHealth/toggleStreamView nicht geändert (nicht im Tick-Loop).
+checkAllKeys DOM-Polling eliminiert. checkSingleKey() gibt jetzt seine Promise-Kette zurück. checkAllKeys() chained direkt auf checkSingleKey().then(result => ...) statt setInterval-basiertes Button-Text-Polling alle 100ms. Defensive .catch() pro Key verhindert dass einzelne Fehler die gesamte Kette brechen. Backward-kompatibel: HTML onclick ignoriert Rückgabewert.
 
-Code-Review bestätigt: Null-Safety bewahrt, settingsInputs static NodeList (kein stale-Ref-Risiko), Style konsistent.
+Code-Review bestätigt: Promise-Chain korrekt, .finally() Reset nach .then() Capture, val-Capture vor async verhindert stale reads.

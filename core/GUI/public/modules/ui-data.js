@@ -303,11 +303,11 @@ window.saveKeysFromModal = _saveKeysFromModal;
 
 function checkSingleKey(provider, btnEl) {
   var row = btnEl.closest('.key-row');
-  if (!row) return;
+  if (!row) return Promise.resolve({ ok: false });
   var keyVal = row.querySelector('.key-val').value.trim();
-  if (!keyVal) { btnEl.textContent = '?'; btnEl.style.color = 'var(--muted)'; return; }
+  if (!keyVal) { btnEl.textContent = '?'; btnEl.style.color = 'var(--muted)'; return Promise.resolve({ ok: false }); }
   btnEl.textContent = '...'; btnEl.disabled = true;
-  apiClient('/api/key-check', {
+  return apiClient('/api/key-check', {
     body: { provider: provider, key: keyVal, index: 0 }
   })
     .then(function(result) {
@@ -316,6 +316,7 @@ function checkSingleKey(provider, btnEl) {
       btnEl.style.color = result.ok ? 'var(--success)' : 'var(--danger)';
       btnEl.style.borderColor = result.ok ? 'var(--success)' : 'var(--danger)';
       btnEl.title = result.detail || '';
+      return result;
     })
     .finally(function() {
       btnEl.disabled = false;
@@ -332,42 +333,21 @@ function checkAllKeys(provider) {
   if (rows.length === 0) { if (statusEl) statusEl.textContent = 'Keine Keys eingetragen.'; return; }
   if (statusEl) statusEl.innerHTML = '<span style="color:var(--accent)">Prüfe alle Keys...</span>';
 
-  // Sequentially check each key using promise chaining
+  // Sequentially check each key — checkSingleKey returns a Promise now
   var results = [];
   var chain = Promise.resolve();
   rows.forEach(function(row) {
     chain = chain.then(function() {
-      return new Promise(function(resolve) {
-        var btn = row.querySelector('button');
-        if (!btn) { resolve(); return; }
-        // Override checkSingleKey's setTimeout reset to capture result cleanly
-        var done = false;
-        var checkDone = function() {
-          if (done) return;
-          done = true;
-          var val = row.querySelector('.key-val').value.trim();
-          var ok = btn.textContent.includes('✓');
-          results.push({ val: val.substring(0, 8) + '...', ok: ok });
-          resolve();
-        };
-        // Poll for completion (checkSingleKey sets text to ✓ OK / ✗ FAIL / ERR, then resets to TEST after 8s)
-        var pollCount = 0;
-        var poll = setInterval(function() {
-          pollCount++;
-          var txt = btn.textContent;
-          if (txt === '✓ OK' || txt === '✗ FAIL' || txt === 'ERR' || txt === '?') {
-            clearInterval(poll);
-            checkDone();
-          } else if (pollCount > 100) {
-            // Timeout after ~10s
-            clearInterval(poll);
-            var val = row.querySelector('.key-val').value.trim();
-            results.push({ val: val.substring(0, 8) + '...', ok: false });
-            resolve();
-          }
-        }, 100);
-        checkSingleKey(provider, btn);
-      });
+      var btn = row.querySelector('button');
+      if (!btn) return;
+      var val = row.querySelector('.key-val').value.trim();
+      return checkSingleKey(provider, btn)
+        .then(function(result) {
+          results.push({ val: val.substring(0, 8) + '...', ok: !!(result && result.ok) });
+        })
+        .catch(function() {
+          results.push({ val: val.substring(0, 8) + '...', ok: false });
+        });
     });
   });
 
