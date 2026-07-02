@@ -261,22 +261,17 @@ function renderProviderStats() {
 }
 
 function fetchProviderStatus() {
-  fetch('/api/provider-status')
-    .then(function(res) { return res.json(); })
-    .then(function(data) { apiProviderStatus = data; })
-    .catch(function() {});
+  apiClient('/api/provider-status')
+    .then(function(data) { if (data) apiProviderStatus = data; });
 }
 
 // ── Actions ───────────────────────────────────────────────────────────
 function triggerAction(action) {
-  fetch('/api/action/' + action)
+  apiClient('/api/action/' + action, { raw: true })
     .then(function(res) {
-      if (!res.ok) throw new Error('Action ' + action + ' failed');
-      console.log('Action triggered: ' + action);
-    })
-    .catch(function(e) {
-      console.error('Trigger action failed', e);
-      alert((window.t || function(k){return k;})('alerts.actionFailed') + ' ' + e.message);
+      if (!res || !res.ok) {
+        alert((window.t || function(k){return k;})('alerts.actionFailed') + ' Action ' + action + ' failed');
+      }
     });
 }
 
@@ -291,12 +286,9 @@ window.toggleBridge = _toggleBridge;
 
 // ── Health ────────────────────────────────────────────────────────────
 function fetchHealth() {
-  fetch('/api/system-health')
-    .then(function(res) {
-      if (!res.ok) throw new Error('Health API error');
-      return res.json();
-    })
+  apiClient('/api/system-health')
     .then(function(health) {
+      if (!health) return;
       if (dotArgos) dotArgos.className = health.argos ? 'status-dot online' : 'status-dot';
       if (dotOllama) dotOllama.className = health.ollama ? 'status-dot online' : 'status-dot';
 
@@ -305,8 +297,7 @@ function fetchHealth() {
 
       var dbTotalEl = document.getElementById('stat-db-total');
       if (dbTotalEl) dbTotalEl.textContent = health.dbTotal || 0;
-    })
-    .catch(function() {});
+    });
 }
 
 // ── Stream View Toggle ────────────────────────────────────────────────

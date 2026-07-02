@@ -4273,5 +4273,39 @@
         "file": "core/Translation/translation-db.js"
       }
     ]
+  },
+  {
+    "p_id": "p99",
+    "id": "plot-2026-07-02T02:50:03",
+    "timestamp": "2026-07-02 02:50:03",
+    "summary": "GUI-Refactoring: Zentraler apiClient in state.js. 24 fetch→apiClient, 10 tote .catch entfernt, 2 POST-Method-Bugs gefixt (installArgos/runDbRepair). Code-Review approved.",
+    "narrator": "Spark",
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c94j25n9a5p27",
+    "ref_to": "plot-2026-07-02T02:34:14",
+    "prev_narrator": "Null",
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/GUI/public/app.js"
+      },
+      {
+        "file": "core/GUI/public/modules/state.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-core.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-data.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-settings.js"
+      }
+    ]
   }
 ]

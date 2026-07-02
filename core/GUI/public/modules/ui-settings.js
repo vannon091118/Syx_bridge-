@@ -3,7 +3,7 @@
 // Depends on: state.js
 // =============================================================================
  
-/* global currentConfig:writable, patchOverrideEnabled:writable, _modelStatusInterval:writable, _providerStatusInterval:writable, liveStats:writable, fetchModelStatus:writable, fetchProviderStatus:writable, openKeyModal:writable */
+/* global currentConfig:writable, patchOverrideEnabled:writable, _modelStatusInterval:writable, _providerStatusInterval:writable, liveStats:writable, fetchModelStatus:writable, fetchProviderStatus:writable, openKeyModal:writable, apiClient:writable */
 /* exported updateBatchRecommendation, onProviderChange, saveConfig, loadInitialConfig, startSettingsPolling, stopSettingsPolling */
 
 // ── Patch Override ────────────────────────────────────────────────────
@@ -16,11 +16,7 @@ function togglePatchOverride() {
   patchOverrideEnabled = !patchOverrideEnabled;
   currentConfig.NATIVE_MODE = !currentConfig.NATIVE_MODE;
   updateModeUI();
-  fetch('/api/config', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(Object.assign({}, currentConfig, { NATIVE_MODE: currentConfig.NATIVE_MODE }))
-  }).catch(function() {});
+  apiClient('/api/config', { body: Object.assign({}, currentConfig, { NATIVE_MODE: currentConfig.NATIVE_MODE }) });
 }
 window.togglePatchOverride = togglePatchOverride;
 
@@ -147,10 +143,10 @@ function onProviderChange() {
   var modelEl = document.getElementById('cfg-model');
   modelEl.innerHTML = '<option value="">Lade Modelle...</option>';
 
-  fetch('/api/models/' + provider)
-    .then(function(res) { return res.json(); })
+  apiClient('/api/models/' + provider)
     .then(function(models) {
       modelEl.innerHTML = '';
+      if (!models) { modelEl.innerHTML = '<option value="">Fehler beim Laden</option>'; return; }
       models.forEach(function(m) {
         var opt = document.createElement('option');
         opt.value = m;
@@ -158,9 +154,6 @@ function onProviderChange() {
         if (m === currentConfig.PRIMARY_MODEL) opt.selected = true;
         modelEl.appendChild(opt);
       });
-    })
-    .catch(function() {
-      modelEl.innerHTML = '<option value="">Fehler beim Laden</option>';
     });
 }
 window.onProviderChange = onProviderChange;
@@ -180,36 +173,28 @@ function saveConfig(silent) {
   if (cloudToggle) currentConfig.OLLAMA_CLOUD_ENABLED = cloudToggle.checked;
   if (cloudUrlInput) currentConfig.OLLAMA_CLOUD_URL = cloudUrlInput.value.trim();
 
-  fetch('/api/config', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(currentConfig)
-  })
-    .then(function() {
-      if (!silent) alert((window.t || function(k){return k;})('alerts.configSaved'));
-    })
-    .catch(function(e) {
-      console.error('Save config failed', e);
-      if (!silent) alert((window.t || function(k){return k;})('alerts.configSaveError'));
+  apiClient('/api/config', { body: currentConfig, raw: true })
+    .then(function(res) {
+      if (res && res.ok) {
+        if (!silent) alert((window.t || function(k){return k;})('alerts.configSaved'));
+      } else {
+        if (!silent) alert((window.t || function(k){return k;})('alerts.configSaveError'));
+      }
     });
 }
 window.saveConfig = saveConfig;
 
 // ── Load Initial Config ───────────────────────────────────────────────
 function loadInitialConfig() {
-  fetch('/api/config')
-    .then(function(res) { return res.json(); })
+  apiClient('/api/config')
     .then(function(config) {
+      if (!config) { console.error('Initial config load failed'); return; }
       currentConfig = config;
       
       if (!currentConfig.NATIVE_MODE && !currentConfig.PATCH_MODE_ENABLED) {
         console.warn('[GUI] Patch Mode ist deaktiviert — wechsle zu Native Mode.');
         currentConfig.NATIVE_MODE = true;
-        fetch('/api/config', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentConfig)
-        }).catch(function() {});
+        apiClient('/api/config', { body: currentConfig });
       }
       
       updateModeUI();
@@ -245,9 +230,6 @@ function loadInitialConfig() {
       var hasNvidiaKey = (currentConfig.NVIDIA_KEYS && currentConfig.NVIDIA_KEYS.length > 0);
       var dotNv = document.getElementById('dot-nvidia');
       if (dotNv) dotNv.className = hasNvidiaKey ? 'status-dot online' : 'status-dot';
-    })
-    .catch(function(e) {
-      console.error('Initial config load failed', e);
     });
 }
 

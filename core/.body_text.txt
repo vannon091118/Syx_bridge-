@@ -1,9 +1,3 @@
-Performance-Audit: 7 Claims verifiziert, 3 echte Fixes implementiert. cleanupLegacyFolders() in index.js von sequentiellem for-await auf Promise.allSettled() umgestellt — parallele I/O-Operationen, ein Fehler blockiert nicht mehr die anderen. saveStressTestResult() in translation-runtime.js: Fire-and-forget .catch() Pattern durch gesammelte Promises + await Promise.allSettled() ersetzt, keine verwaisten DB-Writes mehr bei Shutdown.
+GUI-Refactoring: 24 fetch()-Calls durch zentralen apiClient in state.js ersetzt. Zwei POST-Method-Bugs gefixt (installArgos, runDbRepair sendeten GET statt POST). 10 tote .catch()-Blöcke entfernt. apiClient gibt null bei Fehler zurück, raw-Modus für res.ok-Checks.
 
-Argos Warm-Server (argos-client.js): Per-call Python-Subprozess durch persistenten Warm-Worker mit JSON-Line-Protocol ersetzt. Cold-Start 6.5s → Warm 110ms = 60x Speedup. Drei Bugs während des Tests gefixt: Windows stdin-Buffering (Python -u Flag), Backtick-Template-Literal-Kollision, Race-Condition im Worker-Exit-Handler (workerRef Identity-Guard + Pending-Drain bei Respawn).
-
-Audit-Ergebnis: P8-3 DB-Indizes und Preflight-Optimierung waren bereits erledigt. Sequenzielle DB-Writes sind intentional für better-sqlite3. fixGrammarBatch Loops bereits durch strictTerms.length Guard geschützt.
-
-Benchmark-Verifikation abgeschlossen: 3 Calls, Cold-Start 6542ms, Warm 112ms, Warm 108ms. 60.5x Speedup bestätigt. Benchmark-Datei nach Verifikation entfernt.
-
-P8-1 Transaktionsgrenzen: saveTranslation() Revision-System + UPSERT + neue Revision jetzt atomar via SAVEPOINT. Nesting-safe für withTransaction() Batches. recordModelTaskMetric outside als non-critical Fire-and-Forget.
+Dateien: state.js (apiClient Utility), ui-core.js (3 Calls), ui-data.js (16 Calls), ui-settings.js (5 Calls), app.js (1 Call). Code-Review bestätigt: keine toten Ketten, Null-Checks ausreichend.

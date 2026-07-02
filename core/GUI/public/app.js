@@ -3,7 +3,7 @@
 // All domain logic is in modules/ — loaded via <script> tags in index.html.
 // This file wires up the lifecycle: init, intervals, and window exports.
 // =============================================================================
-/* global liveStats:writable, sessionId:writable, fetchHealth:writable, fetchPreflightStatus:writable, tick:writable, loadInitialConfig:writable, searchDb:writable, loadBackups:writable, fetchRuntimeScore:writable, fetchRunEvaluation:writable, connectLogs:writable, updateBatchRecommendation:writable, triggerAction:writable */
+/* global liveStats:writable, sessionId:writable, fetchHealth:writable, fetchPreflightStatus:writable, tick:writable, loadInitialConfig:writable, searchDb:writable, loadBackups:writable, fetchRuntimeScore:writable, fetchRunEvaluation:writable, connectLogs:writable, updateBatchRecommendation:writable, triggerAction:writable, apiClient:writable */
 
 // ── UI Language: sync dropdown to localStorage value ──────────────────
 (function() {
@@ -42,10 +42,7 @@ searchDb('');
 
 // Keep session alive
 setInterval(function() {
-  fetch('/api/session', {
-    method: 'POST',
-    body: JSON.stringify({ sessionId: sessionId })
-  }).catch(function() {});
+  apiClient('/api/session', { body: { sessionId: sessionId } });
 }, 30000);
 
 // ── Backups: deferred load ───────────────────────────────────────────

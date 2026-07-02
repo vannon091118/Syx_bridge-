@@ -3,20 +3,19 @@
 // Depends on: state.js, ui-core.js, ui-settings.js
 // =============================================================================
  
-/* global dbSearchResults:writable, currentRevisionsSource:writable, currentRevisionsLang:writable, revisionResults:writable, liveStats:writable, currentConfig:writable, _preflightWarning:writable, _rsMinimized:writable, _runtimeScoreData:writable, RS_CATEGORY_DESCRIPTIONS:writable, _runEvalData:writable, RUN_EVAL_DESCRIPTIONS:writable, fetchProviderStatus:writable, saveConfig:writable, onProviderChange:writable, updateBatchRecommendation:writable, setBackgroundState:writable */
+/* global dbSearchResults:writable, currentRevisionsSource:writable, currentRevisionsLang:writable, revisionResults:writable, liveStats:writable, currentConfig:writable, _preflightWarning:writable, _rsMinimized:writable, _runtimeScoreData:writable, RS_CATEGORY_DESCRIPTIONS:writable, _runEvalData:writable, RUN_EVAL_DESCRIPTIONS:writable, fetchProviderStatus:writable, saveConfig:writable, onProviderChange:writable, updateBatchRecommendation:writable, setBackgroundState:writable, apiClient:writable */
 
 // ===========================================================================
 // SECTION 1: DB Browser + Edit
 // ===========================================================================
 function searchDb() {
   var query = document.getElementById('db-search').value;
-  fetch('/api/db/search?q=' + encodeURIComponent(query))
-    .then(function(res) { return res.json(); })
+  apiClient('/api/db/search?q=' + encodeURIComponent(query))
     .then(function(data) {
+      if (!data) return;
       dbSearchResults = data;
       renderDbTable();
-    })
-    .catch(function(e) { console.error('DB Search failed', e); });
+    });
 }
 function renderDbTable() {
   var body = document.getElementById('db-table-body');
@@ -54,23 +53,19 @@ function _saveDbEntry(idx) {
   var newTranslation = input.value;
   if (newTranslation === row.translation) return;
 
-  fetch('/api/db/update', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ source_text: row.source_text, target_lang: row.target_lang, translation: newTranslation })
+  apiClient('/api/db/update', {
+    body: { source_text: row.source_text, target_lang: row.target_lang, translation: newTranslation },
+    raw: true
   })
     .then(function(res) {
-      if (res.ok) {
+      if (res && res.ok) {
         row.translation = newTranslation;
         input.style.borderColor = 'var(--success)';
         setTimeout(function() { input.style.borderColor = 'transparent'; }, 2000);
       } else {
-        throw new Error('Update failed');
+        input.style.borderColor = 'var(--danger)';
+        alert((window.t || function(k){return k;})('alerts.dbSaveError'));
       }
-    })
-    .catch(function() {
-      input.style.borderColor = 'var(--danger)';
-      alert((window.t || function(k){return k;})('alerts.dbSaveError'));
     });
 }
 window.saveDbEntry = _saveDbEntry;
@@ -102,13 +97,14 @@ function fetchRevisions() {
   var tk = window.t || function(k) { return k; };
   container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 10px;">' + tk('revisionModal.loading') + '</div>';
   
-  fetch('/api/revisions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ source_text: currentRevisionsSource, target_lang: currentRevisionsLang })
+  apiClient('/api/revisions', {
+    body: { source_text: currentRevisionsSource, target_lang: currentRevisionsLang }
   })
-    .then(function(res) { return res.json(); })
     .then(function(revisions) {
+      if (!revisions) {
+        container.innerHTML = '<div style="color: var(--danger); text-align: center; padding: 10px;">' + tk('revisionModal.loadError') + '</div>';
+        return;
+      }
       revisionResults = revisions;
       if (revisions.length === 0) {
         container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 10px;">' + tk('revisionModal.noRevisions') + '</div>';
@@ -135,21 +131,16 @@ function fetchRevisions() {
             (!rev.is_active ? '<button onclick="restoreRevision(' + rev.revision_id + ')" style="width: auto; padding: 3px 10px; font-size: 0.6rem; background: transparent; border: 1px solid var(--accent); color: var(--accent); flex-shrink: 0; margin-left: 8px;">' + tk('revisionModal.restoreBtn') + '</button>' : '') +
           '</div></div>';
       }).join('');
-    })
-    .catch(function() {
-      container.innerHTML = '<div style="color: var(--danger); text-align: center; padding: 10px;">' + tk('revisionModal.loadError') + '</div>';
     });
 }
 
 function restoreRevision(revisionId) {
   if (!confirm((window.t || function(k){return k;})('alerts.restoreRevisionConfirm'))) return;
-  fetch('/api/revisions/restore', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ revision_id: revisionId, source_text: currentRevisionsSource, target_lang: currentRevisionsLang })
+  apiClient('/api/revisions/restore', {
+    body: { revision_id: revisionId, source_text: currentRevisionsSource, target_lang: currentRevisionsLang }
   })
-    .then(function(res) { return res.json(); })
     .then(function(result) {
+      if (!result) { alert('Fehler bei der Wiederherstellung'); return; }
       if (result.success) {
         alert((window.t || function(k){return k;})('alerts.revisionRestored'));
         fetchRevisions();
@@ -157,8 +148,7 @@ function restoreRevision(revisionId) {
       } else {
         alert((window.t || function(k){return k;})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k;})('alerts.revisionUnknownError')));
       }
-    })
-    .catch(function(e) { alert('Fehler bei der Wiederherstellung: ' + e.message); });
+    });
 }
 window.restoreRevision = restoreRevision;
 
@@ -166,14 +156,9 @@ window.restoreRevision = restoreRevision;
 // SECTION 3: DB Repair / Preflight
 // ===========================================================================
 function fetchPreflightStatus() {
-  fetch('/api/preflight-status')
-    .then(function(res) { return res.json(); })
+  apiClient('/api/preflight-status')
     .then(function(warning) {
       _preflightWarning = warning;
-      updateDbRepairButton();
-    })
-    .catch(function() {
-      _preflightWarning = null;
       updateDbRepairButton();
     });
 }
@@ -205,9 +190,13 @@ function runDbRepair() {
   btn.style.animation = 'none'; btn.style.opacity = '1';
   btn.style.borderColor = 'var(--accent)'; btn.style.color = 'var(--accent)';
 
-  fetch('/api/db-repair', { method: 'POST' })
-    .then(function(res) { return res.json(); })
+  apiClient('/api/db-repair', { method: 'POST' })
     .then(function(result) {
+      if (!result) {
+        alert('❌ Reparatur fehlgeschlagen: Netzwerkfehler');
+        btn.textContent = '🔧 DB-REPARATUR'; btn.disabled = false; updateDbRepairButton();
+        return;
+      }
       if (result.ok) {
         _preflightWarning = null; btn.style.display = 'none';
         alert('✅ Reparatur erfolgreich!\n\n' + result.totalFixed + ' Einträge markiert:\n' +
@@ -217,10 +206,6 @@ function runDbRepair() {
         alert('❌ Reparatur fehlgeschlagen: ' + (result.error || 'Unbekannter Fehler'));
         btn.textContent = '🔧 DB-REPARATUR'; btn.disabled = false; updateDbRepairButton();
       }
-    })
-    .catch(function(e) {
-      alert('❌ Fehler: ' + e.message);
-      btn.textContent = '🔧 DB-REPARATUR'; btn.disabled = false; updateDbRepairButton();
     });
 }
 window.runDbRepair = runDbRepair;
@@ -322,19 +307,16 @@ function checkSingleKey(provider, btnEl) {
   var keyVal = row.querySelector('.key-val').value.trim();
   if (!keyVal) { btnEl.textContent = '?'; btnEl.style.color = 'var(--muted)'; return; }
   btnEl.textContent = '...'; btnEl.disabled = true;
-  fetch('/api/key-check', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ provider: provider, key: keyVal, index: 0 })
+  apiClient('/api/key-check', {
+    body: { provider: provider, key: keyVal, index: 0 }
   })
-    .then(function(res) { return res.json(); })
     .then(function(result) {
+      if (!result) result = { ok: false };
       btnEl.textContent = result.ok ? '✓ OK' : '✗ FAIL';
       btnEl.style.color = result.ok ? 'var(--success)' : 'var(--danger)';
       btnEl.style.borderColor = result.ok ? 'var(--success)' : 'var(--danger)';
       btnEl.title = result.detail || '';
     })
-    .catch(function() { btnEl.textContent = 'ERR'; btnEl.style.color = 'var(--danger)'; })
     .finally(function() {
       btnEl.disabled = false;
       setTimeout(function() { btnEl.textContent = 'TEST'; btnEl.style.color = 'var(--success)'; btnEl.style.borderColor = 'var(--success)'; }, 8000);
@@ -402,12 +384,13 @@ window.checkAllKeys = checkAllKeys;
 // SECTION 5: Model Status Panel
 // ===========================================================================
 function fetchModelStatus() {
-  fetch('/api/models/status')
-    .then(function(res) { if (!res.ok) return; return res.json(); })
-    .then(function(status) { if (status) renderModelStatus(status); })
-    .catch(function() {
-      var c = document.getElementById('model-status-container');
-      if (c) c.innerHTML = '<div style="color: var(--danger); padding: 6px 0;">Modell-Status nicht abrufbar.</div>';
+  apiClient('/api/models/status')
+    .then(function(status) {
+      if (status) renderModelStatus(status);
+      else {
+        var c = document.getElementById('model-status-container');
+        if (c) c.innerHTML = '<div style="color: var(--danger); padding: 6px 0;">Modell-Status nicht abrufbar.</div>';
+      }
     });
 }
 
@@ -462,23 +445,18 @@ function renderModelStatus(status) {
 
 function _installArgosFromUI() {
   if (!confirm((window.t || function(k){return k;})('alerts.installArgosConfirm'))) return;
-  fetch('/api/action/install-argos', { method: 'POST' })
-    .then(function() { alert((window.t || function(k){return k;})('alerts.argosInstallStarted')); setTimeout(fetchModelStatus, 5000); })
-    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + e.message); });
+  apiClient('/api/action/install-argos', { method: 'POST' })
+    .then(function() { alert((window.t || function(k){return k;})('alerts.argosInstallStarted')); setTimeout(fetchModelStatus, 5000); });
 }
 window.installArgosFromUI = _installArgosFromUI;
 
 function _installArgosLanguageFromUI() {
-  fetch('/api/models/install', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type: 'argos-language' })
-  })
-    .then(function(res) { return res.json(); })
+  apiClient('/api/models/install', { body: { type: 'argos-language' } })
     .then(function(result) {
+      if (!result) { alert((window.t || function(k){return k;})('alerts.argosError') + ' Netzwerkfehler'); return; }
       if (result.ok) { alert((window.t || function(k){return k;})('alerts.langModelInstalled') + ' ' + result.message); setTimeout(fetchModelStatus, 2000); }
       else { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + result.message); }
-    })
-    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + e.message); });
+    });
 }
 window.installArgosLanguageFromUI = _installArgosLanguageFromUI;
 
@@ -486,16 +464,12 @@ function _pullOllamaModel() {
   var input = document.getElementById('ollama-pull-input');
   if (!input || !input.value.trim()) return;
   var model = input.value.trim();
-  fetch('/api/models/ollama/pull', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: model })
-  })
-    .then(function(res) { return res.json(); })
+  apiClient('/api/models/ollama/pull', { body: { model: model } })
     .then(function(result) {
+      if (!result) { alert((window.t || function(k){return k;})('alerts.argosError') + ' Netzwerkfehler'); return; }
       if (result.ok) { input.value = ''; setTimeout(fetchModelStatus, 1000); }
       else { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + result.message); }
-    })
-    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.argosError') + ' ' + e.message); });
+    });
 }
 window.pullOllamaModel = _pullOllamaModel;
 
@@ -514,13 +488,17 @@ function toggleRuntimeScoreMin() {
 window.toggleRuntimeScoreMin = toggleRuntimeScoreMin;
 
 function fetchRuntimeScore() {
-  fetch('/api/runtime-score')
-    .then(function(res) {
-      if (!res.ok) { document.getElementById('rs-loading').style.display = 'none'; document.getElementById('rs-empty').style.display = 'block'; document.getElementById('rs-content').style.display = 'none'; return; }
-      return res.json();
-    })
+  apiClient('/api/runtime-score')
     .then(function(data) {
-      if (!data) return;
+      if (!data) {
+        var loadingEl = document.getElementById('rs-loading');
+        if (loadingEl) loadingEl.style.display = 'none';
+        var emptyEl = document.getElementById('rs-empty');
+        if (emptyEl) emptyEl.style.display = 'block';
+        var contentEl = document.getElementById('rs-content');
+        if (contentEl) contentEl.style.display = 'none';
+        return;
+      }
       if (data.error) {
         document.getElementById('rs-loading').style.display = 'none';
         var empty = document.getElementById('rs-empty'); empty.style.display = 'block'; empty.innerHTML = data.error;
@@ -529,8 +507,7 @@ function fetchRuntimeScore() {
       }
       _runtimeScoreData = data;
       renderRuntimeScore(data);
-    })
-    .catch(function() {});
+    });
 }
 
 function renderRuntimeScore(data) {
@@ -573,17 +550,12 @@ function renderRuntimeScore(data) {
 }
 
 function fetchRunEvaluation() {
-  fetch('/api/run-evaluation')
-    .then(function(res) {
-      if (!res.ok) { document.getElementById('re-section').style.display = 'none'; return; }
-      return res.json();
-    })
+  apiClient('/api/run-evaluation')
     .then(function(data) {
       if (!data || data.error || data.empty) { document.getElementById('re-section').style.display = 'none'; return; }
       _runEvalData = data;
       renderRunEvaluation(data);
-    })
-    .catch(function() {});
+    });
 }
 
 function renderRunEvaluation(data) {
@@ -625,9 +597,9 @@ function renderRunEvaluation(data) {
 function loadBackups() {
   var container = document.getElementById('backup-list');
   if (!container) return;
-  fetch('/api/backups')
-    .then(function(res) { if (!res.ok) throw new Error('Failed'); return res.json(); })
+  apiClient('/api/backups')
     .then(function(mods) {
+      if (!mods) { container.innerHTML = '<div style="color: var(--danger); text-align: center; padding: 10px;">Fehler beim Laden</div>'; return; }
       if (mods.length === 0) { container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 10px;">Keine Mods gefunden</div>'; return; }
       container.innerHTML = mods.map(function(mod) {
         return '<div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border);">' +
@@ -639,22 +611,18 @@ function loadBackups() {
           : '<span style="font-size: 0.65rem; color: var(--muted); padding: 3px 8px; border: 1px solid transparent; display: inline-block;">Kein Backup</span>') +
           '</div></div>';
       }).join('');
-    })
-    .catch(function() { container.innerHTML = '<div style="color: var(--danger); text-align: center; padding: 10px;">Fehler beim Laden</div>'; });
+    });
 }
 
 function restoreBackup(modId) {
   var msg = (window.t || function(k){return k;})('alerts.restoreBackupConfirm').replace('MOD_ID', modId);
   if (!confirm(msg)) return;
-  fetch('/api/backups/restore', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ modId: modId })
-  })
-    .then(function(res) { return res.json(); })
+  apiClient('/api/backups/restore', { body: { modId: modId } })
     .then(function(result) {
+      if (!result) { alert((window.t || function(k){return k;})('alerts.revisionRestoreError') + ' Netzwerkfehler'); return; }
       if (result.success) { alert(result.message || (window.t || function(k){return k;})('alerts.restoreSuccess')); loadBackups(); }
       else { alert((window.t || function(k){return k;})('alerts.revisionError') + ' ' + (result.message || (window.t || function(k){return k;})('alerts.revisionUnknownError'))); }
-    })
-    .catch(function(e) { alert((window.t || function(k){return k;})('alerts.revisionRestoreError') + ' ' + e.message); });
+    });
 }
 window.restoreBackup = restoreBackup;
 

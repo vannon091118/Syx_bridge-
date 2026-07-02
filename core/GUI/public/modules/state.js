@@ -114,3 +114,35 @@ var RUN_EVAL_DESCRIPTIONS = {
   'coverage': 'Strings gefunden vs. übersetzt',
   'db-integrity': 'Nicht-flagged Einträge in der DB'
 };
+
+// ── Centralized API Client ────────────────────────────────────────────
+// Eliminates repetitive fetch().then(r => r.json()).catch(...) boilerplate.
+//
+// Usage:
+//   var data = await apiClient('/api/config');
+//   var result = await apiClient('/api/config', { body: { key: 'val' } });
+//   var res  = await apiClient('/api/models/groq', { raw: true });
+//
+// Options:
+//   body    — POST with JSON body (auto-sets Content-Type, defaults method to POST)
+//   method  — explicit HTTP method (GET, POST, DELETE, etc.)
+//   raw     — if true, returns the raw Response object instead of parsed JSON
+//
+// Returns: parsed JSON on 200 OK, null on non-OK / error (unless raw:true).
+function apiClient(url, opts) {
+  opts = opts || {};
+  var fetchOpts = {};
+  if (opts.method) fetchOpts.method = opts.method;
+  if (opts.body) {
+    fetchOpts.method = fetchOpts.method || 'POST';
+    fetchOpts.headers = { 'Content-Type': 'application/json' };
+    fetchOpts.body = JSON.stringify(opts.body);
+  }
+  return fetch(url, fetchOpts)
+    .then(function(res) {
+      if (opts.raw) return res;
+      if (!res.ok) return null;
+      return res.json();
+    })
+    .catch(function() { return null; });
+}

@@ -1,5 +1,20 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 02:50:03] GUI-Refactoring: Zentraler apiClient in state.js. 24 fetch→apiClient, 10 tote .catch entfernt, 2 POST-Method-Bugs gefixt (installArgos/runDbRepair). Code-Review approved.
+**Narrator:** Spark | **Model:** mimo-v2.5-pro | **Composite:** `c94j25n9a5p27`
+- 7 Datei(en) geändert.
+
+### [2026-07-02] GUI-Refactoring: Zentraler apiClient in state.js — 24 fetch()-Calls durch apiClient() ersetzt, 10 tote .catch()-Blöcke entfernt, 2 POST-Method-Bugs gefixt
+**Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`
+- **apiClient Utility (state.js):** Zentralisierter fetch-Wrapper mit automatischem JSON-Parsing, Body-Serialisierung (→ POST), raw-Modus für res.ok-Checks. Gibt null bei Fehler/Non-OK zurück.
+- **ui-core.js:** 3 fetch→apiClient (fetchProviderStatus, triggerAction mit raw:true, fetchHealth)
+- **ui-data.js:** 16 fetch→apiClient (searchDb, saveDbEntry mit raw:true, fetchRevisions, restoreRevision, fetchPreflightStatus, runDbRepair mit explicit POST, checkSingleKey mit .finally(), fetchModelStatus, installArgos mit explicit POST, installArgosLanguage, pullOllamaModel, fetchRuntimeScore, fetchRunEvaluation, loadBackups, restoreBackup). 10 tote .catch()-Blöcke entfernt.
+- **ui-settings.js:** 5 fetch→apiClient (togglePatchOverride, onProviderChange, saveConfig mit raw:true, loadInitialConfig ×2). 1 tote .catch()-Blöcke entfernt.
+- **app.js:** 1 fetch→apiClient (session keepalive)
+- **Bug-Fix (Code-Reviewer):** `_installArgosFromUI` und `runDbRepair` sendeten nach Migration GET statt POST (kein Body → apiClient defaultet auf GET). Fix: explicit `{ method: 'POST' }`.
+- **Verifikation:** Syntax 120/120 ✅ | 0 tote .catch()-Blöcke ✅ | Code-Review approved ✅
+- 5 Datei(en) geändert (state.js, ui-core.js, ui-data.js, ui-settings.js, app.js).
+
 ### [2026-07-02 02:34:14] P8-1: Transaktionsgrenzen in saveTranslation() via SAVEPOINT. Revision-System + UPSERT + neue Revision atomar. Nesting-safe für withTransaction() Batches. Rollback mit Logging bei Fehlern. PLAN.md P8-1 als DONE markiert, Fortschritt DB-HÄRTUNG 4/8.
 **Narrator:** Null | **Model:** mimo-v2.5-pro | **Composite:** `c93j89n11a1p26`
 - 4 Datei(en) geändert.
