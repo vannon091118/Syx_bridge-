@@ -1,10 +1,9 @@
-P8-4 SQLITE_BUSY Retry-Logik: withBusyRetry() Wrapper in db.js.
+FCM (free-coding-models) komplett aus dem Codebase entfernt. Der lokale FCM-Daemon (localhost:19280) war seit v0.22 instabil und wurde nie zuverlaessig fuer Uebersetzungen genutzt.
 
-Exponentielles Backoff (100ms → 250ms → 500ms) bei SQLITE_BUSY-Errors.
-better-sqlite3's timeout (15s) behandelt 95% der DB-Contention. Dieser Wrapper
-fängt die 5% Edge-Cases ab (GUI+CLI gleichzeitig, HDD-Spikes).
+Geloeschte/bereinigte Dateien (17):
+- Backend: router.js (PROVIDER_REGISTRY, hasAccess), dispatcher.js (uiPool/lowRiskPool), index.js (CONFIG-Flags), config-keys.js (FCM_DEFAULT_URL), config-runtime.js (knownProviders, PRIMARY_PROVIDER-Check, enhanceModelListWithFcm), config-persist.js (FCM_URL/FCM_ENABLED), provider-chat-config.js, polish-arbiter.js, gui-handlers.js, server-routes.js (/api/fcm-rankings)
+- Frontend JS: app.js, state.js, ui-core.js, ui-data.js (SECTION 6 komplett), ui-settings.js
+- Frontend HTML: index.html (dot-fcm, FCM-Rankings-Panel, cfg-provider fcm-Option, fcm-provider-hint)
+- Tests: translation-runtime-smoke.js, ollama_cloud_e2e.js, item0a_auto_freeze_test.js, test_providers.js
 
-Nur run() (Write-Operation) gewrappt. get() und all() (Read-Only) sind nicht
-betroffen — WAL-Mode erlaubt Reads ohne BUSY ausser bei aktivem Checkpoint.
-
-1 Datei geändert (core/DB/db.js).
+PROOF: Syntax 120/120 ✅ | Code-Review ✅

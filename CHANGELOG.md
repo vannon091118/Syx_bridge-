@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 01:04:06] FCM komplett entfernt: Backend (router/dispatcher/config/providers), GUI Frontend (5 JS + HTML), Tests (4 Dateien)
+**Narrator:** Thinker | **Model:** deepseek-v4-pro | **Composite:** `c86j51n3a5p59`
+- 22 Datei(en) geändert.
+
 ### [2026-07-02 00:52:06] P8-4: SQLITE_BUSY Retry with exponential backoff (100-250-500ms) in db.js
 **Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c85j92n6a4p32`
 - 2 Datei(en) geändert.

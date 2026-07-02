@@ -162,8 +162,6 @@ let CONFIG = {
   OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
   OLLAMA_CLOUD_ENABLED: parseEnvFlag(process.env.OLLAMA_CLOUD_ENABLED, false),
   OLLAMA_CLOUD_URL: process.env.OLLAMA_CLOUD_URL || '',
-  FCM_URL: process.env.FCM_URL || 'http://localhost:19280/v1',
-  FCM_ENABLED: parseEnvFlag(process.env.FCM_ENABLED, true),
   GOOGLE_FREE_ENABLED: parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, true),
   PLAYER2_ENABLED: parseEnvFlag(process.env.PLAYER2_ENABLED, false),
   PLAYER2_URL: process.env.PLAYER2_URL || 'http://localhost:4315/v1',
@@ -430,8 +428,6 @@ function applyEnvToConfig() {
   } else {
     CONFIG.OLLAMA_URL = CONFIG._OLLAMA_URL_RAW;
   }
-  CONFIG.FCM_URL = envFirst('FCM_URL') || CONFIG.FCM_URL;
-  CONFIG.FCM_ENABLED = parseEnvFlag(process.env.FCM_ENABLED, CONFIG.FCM_ENABLED);
   CONFIG.GOOGLE_FREE_ENABLED = parseEnvFlag(process.env.GOOGLE_FREE_ENABLED, CONFIG.GOOGLE_FREE_ENABLED);
   CONFIG.OPENAI_ENABLED = parseEnvFlag(process.env.OPENAI_ENABLED, CONFIG.OPENAI_ENABLED !== false);
   CONFIG.CUSTOM_API_ENABLED = parseEnvFlag(process.env.CUSTOM_API_ENABLED, CONFIG.CUSTOM_API_ENABLED !== false);

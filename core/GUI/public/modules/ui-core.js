@@ -229,8 +229,7 @@ function renderProviderStats() {
     player2: 'Player2 — Lokaler KI-Client auf dem Desktop (optional).',
     openai: 'OpenAI — GPT-4o, GPT-4o-mini, etc. API-Key von platform.openai.com.',
     custom_api: 'Custom API — Beliebiger OpenAI-kompatibler Endpoint (LM Studio, vLLM, Oobabooga, etc.).',
-    nvidia: 'NVIDIA NIM — NeMo & Nemotron Modelle. nvapi-Key von build.nvidia.com.',
-    fcm: 'FCM (free-coding-models) — Live-Rankings von kostenlosen AI-APIs.'
+    nvidia: 'NVIDIA NIM — NeMo & Nemotron Modelle. nvapi-Key von build.nvidia.com.'
   };
 
   providers.forEach(function(provider) {
@@ -300,23 +299,6 @@ function fetchHealth() {
     .then(function(health) {
       if (dotArgos) dotArgos.className = health.argos ? 'status-dot online' : 'status-dot';
       if (dotOllama) dotOllama.className = health.ollama ? 'status-dot online' : 'status-dot';
-
-      var dotFcm = document.getElementById('dot-fcm');
-      if (dotFcm) {
-        if (window._fcmDaemonRunning) {
-          dotFcm.className = 'status-dot online';
-        } else {
-          fetch('http://localhost:19280/api/models', { signal: AbortSignal.timeout(2000) })
-            .then(function(r) { if (r.ok) { window._fcmDaemonRunning = true; dotFcm.className = 'status-dot online'; } })
-            .catch(function() { window._fcmDaemonRunning = false; dotFcm.className = 'status-dot'; });
-        }
-      }
-
-      var footerFcm = document.getElementById('fcm-status-dot');
-      if (footerFcm) {
-        footerFcm.style.background = window._fcmDaemonRunning ? 'var(--success)' : '#666';
-        footerFcm.title = window._fcmDaemonRunning ? 'FCM Daemon aktiv (localhost:19280)' : 'FCM Daemon offline';
-      }
 
       var dotNv = document.getElementById('dot-nvidia');
       if (dotNv) dotNv.className = (currentConfig.NVIDIA_KEYS && currentConfig.NVIDIA_KEYS.length > 0) ? 'status-dot online' : 'status-dot';

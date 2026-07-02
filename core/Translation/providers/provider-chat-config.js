@@ -6,7 +6,7 @@
  *
  * Eine Factory-Funktion die die Chat-Konfiguration für alle 7
  * OpenAI-kompatiblen Provider zurückgibt. Die drei config-abhängigen
- * URLs (FCM, Player2, OpenAI, Custom API) werden live aus config bezogen.
+ * URLs (Player2, OpenAI, Custom API) werden live aus config bezogen.
  */
 
 function getProviderChatConfig(config) {
@@ -38,16 +38,6 @@ function getProviderChatConfig(config) {
       handleRateLimits: true,
       markKeyStatus: true,
       jsonRetry: true
-    },
-    fcm: {
-      getUrl: () => `${config.FCM_URL || 'http://localhost:19280/v1'}/chat/completions`,
-      timeout: 90000,
-      requiresKey: false,
-      authType: 'none',
-      handleRateLimits: false,
-      markKeyStatus: true,
-      jsonRetry: true,
-      noKeyRotation: true
     },
     player2: {
       getUrl: () => `${config.PLAYER2_URL}/chat/completions`,

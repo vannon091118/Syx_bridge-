@@ -3,7 +3,7 @@
 // Depends on: state.js
 // =============================================================================
  
-/* global currentConfig:writable, patchOverrideEnabled:writable, _modelStatusInterval:writable, _providerStatusInterval:writable, _fcmRankingsInterval:writable, liveStats:writable, fetchModelStatus:writable, fetchProviderStatus:writable, refreshFcmRankings:writable, openKeyModal:writable */
+/* global currentConfig:writable, patchOverrideEnabled:writable, _modelStatusInterval:writable, _providerStatusInterval:writable, liveStats:writable, fetchModelStatus:writable, fetchProviderStatus:writable, openKeyModal:writable */
 /* exported updateBatchRecommendation, onProviderChange, saveConfig, loadInitialConfig, startSettingsPolling, stopSettingsPolling */
 
 // ── Patch Override ────────────────────────────────────────────────────
@@ -117,7 +117,7 @@ function updateBatchRecommendation() {
   var recEl = document.getElementById('batch-rec');
   if (!recEl) return;
 
-  var isFree  = (provider === 'ollama' || provider === 'player2' || provider === 'argos' || provider === 'google_free' || provider === 'fcm' || provider === 'groq' || provider === 'custom_api')
+  var isFree  = (provider === 'ollama' || provider === 'player2' || provider === 'argos' || provider === 'google_free' || provider === 'groq' || provider === 'custom_api')
     || modelVal.includes('/free') || modelVal.endsWith(':free') || modelVal === 'openrouter/free';
   var isLarge = modelVal.includes('70b') || modelVal.includes('pro') || modelVal.includes('sonnet') || modelVal.includes('opus') || modelVal.includes('405b') || modelVal.includes('nemotron');
 
@@ -135,7 +135,6 @@ function updateBatchRecommendation() {
   else if (provider === 'gemini') rec = 24;
   else if (provider === 'nvidia' && isLarge) rec = 28;
   else if (provider === 'nvidia') rec = 22;
-  else if (provider === 'fcm') rec = 20;
   else rec = 20;
 
   recEl.textContent = rec;
@@ -147,9 +146,6 @@ function onProviderChange() {
   var provider = document.getElementById('cfg-provider').value;
   var modelEl = document.getElementById('cfg-model');
   modelEl.innerHTML = '<option value="">Lade Modelle...</option>';
-
-  var fcmHint = document.getElementById('fcm-provider-hint');
-  if (fcmHint) fcmHint.style.display = provider === 'fcm' ? 'block' : 'none';
 
   fetch('/api/models/' + provider)
     .then(function(res) { return res.json(); })
@@ -410,16 +406,13 @@ function startSettingsPolling() {
   if (_modelStatusInterval) return;
   fetchModelStatus();
   fetchProviderStatus();
-  refreshFcmRankings();
   _modelStatusInterval = setInterval(fetchModelStatus, 10000);
   _providerStatusInterval = setInterval(fetchProviderStatus, 3000);
-  _fcmRankingsInterval = setInterval(refreshFcmRankings, 30000);
 }
 window.startSettingsPolling = startSettingsPolling;
 
 function stopSettingsPolling() {
   if (_modelStatusInterval) { clearInterval(_modelStatusInterval); _modelStatusInterval = null; }
   if (_providerStatusInterval) { clearInterval(_providerStatusInterval); _providerStatusInterval = null; }
-  if (_fcmRankingsInterval) { clearInterval(_fcmRankingsInterval); _fcmRankingsInterval = null; }
 }
 window.stopSettingsPolling = stopSettingsPolling;

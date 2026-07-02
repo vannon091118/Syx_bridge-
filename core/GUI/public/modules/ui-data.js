@@ -1,5 +1,5 @@
 // =============================================================================
-// MODULE: ui-data.js — DB browser, revisions, repair, keys, models, FCM, scores, backups
+// MODULE: ui-data.js — DB browser, revisions, repair, keys, models, scores, backups
 // Depends on: state.js, ui-core.js, ui-settings.js
 // =============================================================================
  
@@ -500,79 +500,7 @@ function _pullOllamaModel() {
 window.pullOllamaModel = _pullOllamaModel;
 
 // ===========================================================================
-// SECTION 6: FCM Rankings
-// ===========================================================================
-function refreshFcmRankings() {
-  var listEl = document.getElementById('fcm-rankings-list');
-  var badgeEl = document.getElementById('fcm-daemon-badge');
-  var btnEl = document.getElementById('fcm-refresh-btn');
-  if (btnEl) { btnEl.disabled = true; btnEl.textContent = '⌛'; }
-
-  fetch('/api/fcm-rankings')
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      window._fcmDaemonRunning = data.daemonRunning;
-      if (badgeEl) {
-        badgeEl.textContent = data.daemonRunning ? 'LIVE' : 'CLI';
-        badgeEl.style.background = data.daemonRunning ? 'rgba(100,213,196,0.2)' : 'rgba(216,151,60,0.2)';
-        badgeEl.style.color = data.daemonRunning ? 'var(--success)' : 'var(--accent)';
-        badgeEl.style.border = data.daemonRunning ? '1px solid rgba(100,213,196,0.3)' : '1px solid rgba(216,151,60,0.3)';
-      }
-      var dotFcm = document.getElementById('dot-fcm');
-      if (dotFcm) dotFcm.className = data.rankings.length > 0 ? 'status-dot online' : 'status-dot';
-      renderFcmRankings(data.rankings);
-    })
-    .catch(function() {
-      if (listEl) listEl.innerHTML = '<div style="color:var(--danger); text-align:center; padding:8px;">FCM nicht erreichbar</div>';
-      if (badgeEl) { badgeEl.textContent = 'OFFLINE'; badgeEl.style.background = '#333'; badgeEl.style.color = '#999'; }
-    })
-    .finally(function() { if (btnEl) { btnEl.disabled = false; btnEl.textContent = '↻'; } });
-}
-window.refreshFcmRankings = refreshFcmRankings;
-
-function renderFcmRankings(rankings) {
-  var listEl = document.getElementById('fcm-rankings-list');
-  if (!listEl) return;
-  if (!rankings || rankings.length === 0) {
-    listEl.innerHTML = '<div style="color:var(--muted); text-align:center; padding:10px;">Keine FCM-Daten verfügbar.<br><span style="font-size:0.6rem;">Starte den FCM-Daemon mit: <code style="color:var(--accent)">free-coding-models --daemon-bg</code></span></div>';
-    return;
-  }
-  var tierColors = { 'S+': '#7fff00', 'S': '#64d5c4', 'A+': '#d8973c', 'A': '#ffb961', 'B': '#a99b87', 'C': '#666' };
-
-  listEl.innerHTML = rankings.slice(0, 30).map(function(m) {
-    var tc = tierColors[m.tier] || '#666';
-    var authOk = m.status !== 'noauth' && m.httpCode !== '401';
-    var pingLabel = m.ping < 999 ? m.ping + 'ms' : '-';
-    return '<div style="display:flex; align-items:center; gap:6px; padding:3px 4px; border-radius:3px; margin-bottom:2px; background:rgba(255,255,255,0.02); ' + (authOk ? '' : 'opacity:0.5;') + '">' +
-      '<span style="color:' + tc + '; font-weight:bold; font-size:0.65rem; min-width:24px;">' + (m.tier || '?') + '</span>' +
-      '<span style="flex:1; font-size:0.6rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + (m.label || m.id).substring(0, 28) + '</span>' +
-      '<span style="color:var(--muted); font-size:0.55rem; min-width:30px; text-align:right;">' + pingLabel + '</span>' +
-      '<span style="color:' + (authOk ? 'var(--success)' : 'var(--danger)') + '; font-size:0.55rem;">' + (authOk ? '✓' : (m.httpCode || '?')) + '</span>' +
-      '<button onclick="useModelFromFcm(\'' + m.id.replace(/'/g, '\\\'') + '\')" style="padding:1px 5px; font-size:0.5rem; width:auto; background:rgba(216,151,60,0.1); border:1px solid rgba(216,151,60,0.3); color:var(--accent); flex-shrink:0;">USE</button></div>';
-  }).join('') || '<div style="color:var(--muted); text-align:center;">Keine Modelle gefunden</div>';
-}
-
-function useModelFromFcm(modelId) {
-  var provEl = document.getElementById('cfg-provider');
-  var modelEl = document.getElementById('cfg-model');
-  if (!provEl || !modelEl) return;
-  provEl.value = 'fcm';
-  onProviderChange();
-  setTimeout(function() {
-    var opt = Array.from(modelEl.options).find(function(o) { return o.value === modelId; });
-    if (opt) { opt.selected = true; }
-    else {
-      var newOpt = document.createElement('option');
-      newOpt.value = modelId; newOpt.textContent = modelId; newOpt.selected = true;
-      modelEl.appendChild(newOpt);
-    }
-    updateBatchRecommendation();
-  }, 500);
-}
-window.useModelFromFcm = useModelFromFcm;
-
-// ===========================================================================
-// SECTION 7: Runtime Score + Run Evaluation
+// SECTION 6: Runtime Score + Run Evaluation
 // ===========================================================================
 function toggleRuntimeScoreMin() {
   _rsMinimized = !_rsMinimized;

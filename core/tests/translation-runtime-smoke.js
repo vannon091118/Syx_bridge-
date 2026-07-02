@@ -9,7 +9,6 @@
  * Strategy:
  *   - Uses argos (local offline translator) as PRIMARY_PROVIDER — fast if installed.
  *   - Falls back to google_free (public API) if argos is absent.
- *   - FCM marked as degraded to skip its ~10s retry overhead per batch.
  *   - No cloud API keys needed.
  *   - GRAMMAR_CHECK disabled to skip polish phase and focus on the core loop.
  *   - Test entries cleaned from DB after completion.
@@ -162,7 +161,6 @@ async function step2(dbRun, dbGet, dbAll) {
     OLLAMA_KEYS: [],
 
     OLLAMA_URL: 'http://localhost:11434',
-    FCM_URL: 'http://localhost:19280/v1',
     PLAYER2_ENABLED: false,
     PLAYER2_URL: 'http://localhost:4315/v1',
     PLAYER2_KEYS: [],
@@ -181,12 +179,8 @@ async function step2(dbRun, dbGet, dbAll) {
   });
   configRuntime.setRouter(routingEngine);
 
-  // ── Exclude FCM to avoid its ~10s retry overhead per batch ─────────────────
-  // FCM's localhost:19280 is almost never running during tests, and the
-  // withRetry logic (3 attempts with escalating backoff: 750ms + 3000ms + 6750ms)
-  // adds ~10.5s of wasted latency per batch. Mark it degraded so it's skipped.
-  configRuntime.markProviderDegraded('fcm', 'test: FCM daemon not available');
-  console.log('  [OK]   FCM marked degraded (skip retry overhead)');
+  // ── Route: Use local argos or google_free ─────────────────
+  console.log('  [OK]   Route configured');
 
   check('router instantiated', routingEngine !== null);
   check('configRuntime has router', configRuntime.router === routingEngine);

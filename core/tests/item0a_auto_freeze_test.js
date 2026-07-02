@@ -25,14 +25,11 @@ function createMockedRuntime(overrides = {}) {
     OLLAMA_KEYS: [],
     KEY_INDICES: { gemini: 0, groq: 0, openrouter: 0, nvidia: 0, ollama: 0 },
     GOOGLE_FREE_ENABLED: false,
-    FCM_ENABLED: false,
-    LOCAL_MODELS_ENABLED: false,
     PLAYER2_ENABLED: false,
     BATCH_SIZE: 20,
     TARGET_LANG: 'German',
     OLLAMA_URL: 'http://localhost:11434',
     PLAYER2_URL: 'http://localhost:4315/v1',
-    FCM_URL: 'http://localhost:19280/v1',
   };
   const runtime = new ConfigRuntime(config);
   

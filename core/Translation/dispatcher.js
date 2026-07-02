@@ -106,7 +106,6 @@ function createDispatcher(options) {
         { provider: 'nvidia', model: 'auto' },
         { provider: 'openrouter', model: 'openrouter/free' },
         { provider: 'groq', model: 'auto' },
-        { provider: 'fcm', model: 'auto' },
         { provider: 'google_free', model: 'google-translate-free' },
         { provider: 'argos', model: 'argos-translate-local' }
       ].filter(Boolean);
@@ -136,7 +135,6 @@ function createDispatcher(options) {
         { provider: 'groq', model: 'auto' },
         { provider: 'ollama', model: 'auto' },
         { provider: 'player2', model: 'auto' },
-        { provider: 'fcm', model: 'auto' },
         { provider: 'argos', model: 'argos-translate-local' },
         { provider: 'google_free', model: 'google-translate-free' }
       ];

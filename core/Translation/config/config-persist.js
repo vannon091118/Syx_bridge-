@@ -11,7 +11,7 @@
  */
 
 const fs = require('fs');
-const { ENV_PATH, firstDefined, OLLAMA_DEFAULT_URL, FCM_DEFAULT_URL, PLAYER2_DEFAULT_URL, OPENAI_DEFAULT_URL, CUSTOM_API_DEFAULT_URL } = require('./config-keys');
+const { ENV_PATH, firstDefined, OLLAMA_DEFAULT_URL, OPENAI_DEFAULT_URL, CUSTOM_API_DEFAULT_URL } = require('./config-keys');
 
 /**
  * Factory: erstellt die Persistenz-Funktionen mit injected defaultGame.
@@ -45,8 +45,6 @@ function createConfigPersist(defaultGame) {
     ['OLLAMA_URL',            (c) => firstDefined(c._OLLAMA_URL_RAW, c.OLLAMA_URL, OLLAMA_DEFAULT_URL)],
     ['OLLAMA_CLOUD_ENABLED',  (c) => String(!!c.OLLAMA_CLOUD_ENABLED)],
     ['OLLAMA_CLOUD_URL',      (c) => firstDefined(c.OLLAMA_CLOUD_URL)],
-    ['FCM_URL',               (c) => firstDefined(c.FCM_URL, FCM_DEFAULT_URL)],
-    ['FCM_ENABLED',           (c) => String(!!c.FCM_ENABLED)],
     ['GOOGLE_FREE_ENABLED',   (c) => String(!!c.GOOGLE_FREE_ENABLED)],
     ['PLAYER2_KEY',           (c) => (c.PLAYER2_KEYS || []).join(',')],
     ['PLAYER2_ENABLED',       (c) => String(!!c.PLAYER2_ENABLED)],

@@ -295,25 +295,7 @@ function registerRoutes(server) {
       return;
     }
 
-    // ── 12. FCM Rankings ──────────────────────────────────────────────
-    if (url.pathname === '/api/fcm-rankings' && req.method === 'GET') {
-      let handled = false;
-      const timeout = setTimeout(() => {
-        if (handled) return;
-        handled = true;
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: false, rankings: [], daemonRunning: false }));
-      }, 25000);
-      server.emit('get-fcm-rankings', (data) => {
-        if (handled) return;
-        handled = true; clearTimeout(timeout);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(data));
-      });
-      return;
-    }
-
-    // ── 13. Runtime Score ─────────────────────────────────────────────
+    // ── 15. Runtime Score ─────────────────────────────────────────────
     if (url.pathname === '/api/runtime-score' && req.method === 'GET') {
       const scorePath = path.join(__dirname, '..', '..', 'data', 'current_score.json');
       try {

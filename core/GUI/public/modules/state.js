@@ -4,7 +4,7 @@
 // =============================================================================
  
  
-/* exported logContainer, uiPhase, uiModName, uiProgress, statScanned, statCached, statTranslated, statFailed, termReq, termRes, reqProvider, resTime, dbSamplesContainer, dotArgos, dotOllama, stages, connectors, currentConfig, providerStats, apiProviderStatus, dbSearchResults, currentRevisionsSource, currentRevisionsLang, revisionResults, liveStats, lastRunningState, statusTimeout, patchOverrideEnabled, _fps, lastFrameTime, frameCount, lastSampleRotation, displayPercent, lastTickTarget, sessionId, evtSource, _modelStatusInterval, _providerStatusInterval, _fcmRankingsInterval, _preflightWarning, _runtimeScoreData, _runEvalData, _rsMinimized, _streamViewIsLLM, RS_CATEGORY_DESCRIPTIONS, RUN_EVAL_DESCRIPTIONS */
+/* exported logContainer, uiPhase, uiModName, uiProgress, statScanned, statCached, statTranslated, statFailed, termReq, termRes, reqProvider, resTime, dbSamplesContainer, dotArgos, dotOllama, stages, connectors, currentConfig, providerStats, apiProviderStatus, dbSearchResults, currentRevisionsSource, currentRevisionsLang, revisionResults, liveStats, lastRunningState, statusTimeout, patchOverrideEnabled, _fps, lastFrameTime, frameCount, lastSampleRotation, displayPercent, lastTickTarget, sessionId, evtSource, _modelStatusInterval, _providerStatusInterval, _preflightWarning, _runtimeScoreData, _runEvalData, _rsMinimized, _streamViewIsLLM, RS_CATEGORY_DESCRIPTIONS, RUN_EVAL_DESCRIPTIONS */
 
 // DOM Elements
 var logContainer = document.getElementById('log');
@@ -80,7 +80,6 @@ var evtSource = null;
 // Settings polling
 var _modelStatusInterval = null;
 var _providerStatusInterval = null;
-var _fcmRankingsInterval = null;
 
 // Preflight / DB repair
 var _preflightWarning = null;
@@ -92,9 +91,6 @@ var _rsMinimized = true;
 
 // Stream view
 var _streamViewIsLLM = false;
-
-// FCM daemon state
-window._fcmDaemonRunning = false;
 
 // ── Constants ─────────────────────────────────────────────────────────
 var RS_CATEGORY_DESCRIPTIONS = {

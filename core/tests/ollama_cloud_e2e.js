@@ -104,8 +104,6 @@ console.log('\n═══ Test 2: persistConfig URL-Verifikation ═══');
     OPENROUTER_KEYS: [],
     NVIDIA_KEYS: [],
     OLLAMA_KEYS: [],
-    FCM_URL: 'http://localhost:19280/v1',
-    FCM_ENABLED: true,
     GOOGLE_FREE_ENABLED: true,
     PLAYER2_ENABLED: false,
     PLAYER2_URL: 'http://localhost:4315/v1',

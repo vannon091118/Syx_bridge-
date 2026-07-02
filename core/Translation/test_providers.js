@@ -43,7 +43,7 @@ USAGE:
 
 TESTET:
   Groq, Gemini, OpenRouter, NVIDIA, Ollama
-  (Google Free, Argos, Player2, FCM werden via SyxBridge-eigene Logik getestet)
+  (Google Free, Argos, Player2 werden via SyxBridge-eigene Logik getestet)
 `);
   process.exit(0);
 }

@@ -528,9 +528,8 @@ function createProviderClients(ctx) {
         const raw = response.data.message.content;
         logPayload(provider, `RESPONSE [${stage}]`, raw);
         return parseRaw(raw);
-      }
+      }       // ── P0-1: OpenAI-compatible providers (groq, openrouter, nvidia, player2) ──
 
-      // ── P0-1: OpenAI-compatible providers (groq, openrouter, nvidia, fcm, player2) ──
       // Nutzen _callProviderApi statt eigener if/else-Kette.
       // handleRateLimits, batchMultipliers, jsonRetry, Key-Rotation sind jetzt
       // für Polish/Audit GENAUSO aktiv wie für Translate.

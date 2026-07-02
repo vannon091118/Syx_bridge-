@@ -516,9 +516,6 @@
         #stream-llm-req-content { color: var(--text); white-space: pre-wrap; word-break: break-word; max-height: 100px; overflow-y: auto; }
         #stream-llm-res-content { color: var(--success); white-space: pre-wrap; word-break: break-word; max-height: 100px; overflow-y: auto; }
 
-        /* ─── FCM Rankings ─── */
-        #fcm-rankings-list { font-family: var(--mono); font-size: 0.68rem; }
-
         /* Small toggle btn */
         .micro-btn {
             background: transparent;
@@ -1206,9 +1203,6 @@
                     <span class="health-name"><span class="status-dot" id="dot-ollama"></span>Ollama</span>
                 </div>
                 <div class="health-row">
-                    <span class="health-name"><span class="status-dot" id="dot-fcm"></span>FCM</span>
-                </div>
-                <div class="health-row">
                     <span class="health-name"><span class="status-dot" id="dot-nvidia"></span>NVIDIA</span>
                 </div>
             </div>
@@ -1303,27 +1297,21 @@
                         </div>
                     </div>
 
-                    <!-- Right: FCM Rankings + Backups -->
+                    <!-- Right: Provider Stats + Backups -->
                     <div class="dash-panel">
-                        <!-- FCM Rankings -->
+                        <!-- Provider Stats -->
                         <div class="dash-panel-header">
                             <div class="dash-panel-title" style="color:var(--success);">
-                                ⚡ FCM Rankings
-                            </div>
-                            <div style="display:flex;gap:6px;align-items:center;">
-                                <span id="fcm-daemon-badge" class="status-badge">OFFLINE</span>
-                                <button onclick="refreshFcmRankings()" class="micro-btn" id="fcm-refresh-btn">↻</button>
+                                📊 Provider Stats
                             </div>
                         </div>
                         <div class="dash-panel-body" style="display:flex;flex-direction:column;gap:12px; overflow-y:auto;">
-                            <div id="fcm-rankings-list">
-                                <div class="txt-muted txt-sm" style="text-align:center;padding:10px 0;">FCM-Rankings werden geladen...</div>
-                            </div>
+                            <div id="provider-stats-container"></div>
 
                             <!-- Backups -->
                             <div style="border-top:1px solid var(--border); padding-top:12px;">
                                 <div class="dash-panel-title" style="margin-bottom:8px;">📦 Mod Backups</div>
-                                <div id="backup-list" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;">
+                                <div id="backup-list" style="display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto;">
                                     <div class="txt-muted txt-sm" data-i18n="sidebar.loading">Backups laden...</div>
                                 </div>
                             </div>
@@ -1465,7 +1453,6 @@
             <option value="nvidia">NVIDIA NIM (NeMo)</option>
             <option value="openai">OpenAI (GPT)</option>
             <option value="custom_api">Custom API (OpenAI-kompatibel)</option>
-            <option value="fcm">FCM (Free Code Models)</option>
             <option value="ollama">Ollama (Lokal)</option>
             <option value="player2">Player2 (Desktop)</option>
         </select>
@@ -1474,10 +1461,6 @@
         <select id="cfg-model">
             <option value="" data-i18n="settings.loadModels">Modelle werden abgefragt...</option>
         </select>
-
-        <div id="fcm-provider-hint" style="display:none; background:var(--success-dim); border:1px solid rgba(61,214,140,0.2); border-radius:6px; padding:8px; margin-bottom:10px; font-size:0.7rem; color:var(--success); line-height:1.4;" data-i18n="settings.fcmProxyHint">
-            ⚡ <strong>FCM Proxy-Modus:</strong> Routet automatisch über den lokalen FCM-Daemon (Port 19280). Kein Key erforderlich.
-        </div>
 
         <label class="field-label">
             <span data-i18n="settings.batchSize">Batch Größe</span>

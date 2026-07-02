@@ -12,7 +12,6 @@ const path = require('path');
 // ── Provider-URL-Konstanten ─────────────────────────────────────────
 const OLLAMA_DEFAULT_URL      = 'http://localhost:11434';
 const PLAYER2_DEFAULT_URL     = 'http://localhost:4315/v1';
-const FCM_DEFAULT_URL         = 'http://localhost:19280/v1';
 const OPENAI_DEFAULT_URL      = 'https://api.openai.com/v1';
 const CUSTOM_API_DEFAULT_URL  = 'http://localhost:8080/v1';
 
@@ -86,8 +85,6 @@ function resolveOllamaUrl(config) {
 module.exports = {
   ENV_PATH,
   OLLAMA_DEFAULT_URL,
-  PLAYER2_DEFAULT_URL,
-  FCM_DEFAULT_URL,
   OPENAI_DEFAULT_URL,
   CUSTOM_API_DEFAULT_URL,
   firstDefined,

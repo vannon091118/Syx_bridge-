@@ -3986,5 +3986,87 @@
         "file": "core/DB/db.js"
       }
     ]
+  },
+  {
+    "p_id": "p91",
+    "id": "plot-2026-07-02T01:04:35",
+    "timestamp": "2026-07-02 01:04:35",
+    "summary": "FCM komplett entfernt: Backend (router/dispatcher/config/providers), GUI Frontend (5 JS + HTML), Tests (4 Dateien)",
+    "narrator": "Thinker",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c86j51n3a5p59",
+    "ref_to": "plot-2026-07-02T00:52:06",
+    "prev_narrator": "Devin",
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/GUI/gui-handlers.js"
+      },
+      {
+        "file": "core/GUI/public/app.js"
+      },
+      {
+        "file": "core/GUI/public/index.html"
+      },
+      {
+        "file": "core/GUI/public/modules/state.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-core.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-data.js"
+      },
+      {
+        "file": "core/GUI/public/modules/ui-settings.js"
+      },
+      {
+        "file": "core/GUI/server-routes.js"
+      },
+      {
+        "file": "core/Translation/config/config-keys.js"
+      },
+      {
+        "file": "core/Translation/config/config-persist.js"
+      },
+      {
+        "file": "core/Translation/config/config-runtime.js"
+      },
+      {
+        "file": "core/Translation/dispatcher.js"
+      },
+      {
+        "file": "core/Translation/polish-arbiter.js"
+      },
+      {
+        "file": "core/Translation/providers/client-factory.js"
+      },
+      {
+        "file": "core/Translation/providers/provider-chat-config.js"
+      },
+      {
+        "file": "core/Translation/router.js"
+      },
+      {
+        "file": "core/Translation/test_providers.js"
+      },
+      {
+        "file": "core/index.js"
+      },
+      {
+        "file": "core/tests/item0a_auto_freeze_test.js"
+      },
+      {
+        "file": "core/tests/ollama_cloud_e2e.js"
+      },
+      {
+        "file": "core/tests/translation-runtime-smoke.js"
+      }
+    ]
   }
 ]

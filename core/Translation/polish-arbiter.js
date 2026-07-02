@@ -55,7 +55,7 @@ function createPolishArbiter(deps = {}) {
   function selectDiverseProviders(plan) {
     const families = {};
     for (const route of plan) {
-      const family = ['gemini', 'groq', 'openrouter', 'nvidia', 'fcm', 'ollama', 'player2'].includes(route.provider)
+      const family = ['gemini', 'groq', 'openrouter', 'nvidia', 'ollama', 'player2'].includes(route.provider)
         ? route.provider
         : 'other';
       if (!families[family]) families[family] = [];
@@ -63,7 +63,7 @@ function createPolishArbiter(deps = {}) {
     }
 
     const selected = [];
-    const familyOrder = ['gemini', 'groq', 'openrouter', 'nvidia', 'fcm', 'ollama', 'player2'];
+    const familyOrder = ['gemini', 'groq', 'openrouter', 'nvidia', 'ollama', 'player2'];
 
     // Pick first from each available family
     for (const family of familyOrder) {

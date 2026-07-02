@@ -301,15 +301,6 @@ function registerGuiHandlers(ctx) {
     } catch (e) { callback([]); }
   });
 
-  global.guiServer.on('get-fcm-rankings', async (callback) => {
-    try {
-      const rankings = await configRuntime.fetchFcmModelRankings();
-      callback({ ok: true, rankings, daemonRunning: rankings.length > 0 });
-    } catch (e) {
-      callback({ ok: false, rankings: [], daemonRunning: false, error: e.message });
-    }
-  });
-
   global.guiServer.on('check-api-key', async (data, callback) => {
     try {
       const { provider, key, index = 0 } = data || {};

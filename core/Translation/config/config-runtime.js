@@ -5,7 +5,6 @@ const { exec, execSync } = require('child_process');
 
 // ── S-006: Key-Management & Utilities aus config-keys.js ────────────
 const {
-  ENV_PATH, OLLAMA_DEFAULT_URL, PLAYER2_DEFAULT_URL, FCM_DEFAULT_URL, OPENAI_DEFAULT_URL, CUSTOM_API_DEFAULT_URL,
   firstDefined, parseEnvFlag, parseDryRunFlag, isDryRun, resetDryRunCache,
   getGateCounterOpts, parseKeys, maskSecret,
 } = require('./config-keys');
@@ -58,7 +57,7 @@ class ConfigRuntime {
 
   getProviderStatus() {
     const routerStats = this.router ? this.router.getAllProviderStatuses() : {};
-    const knownProviders = ['gemini', 'groq', 'openrouter', 'ollama', 'player2', 'nvidia', 'fcm', 'openai', 'custom_api'];
+    const knownProviders = ['gemini', 'groq', 'openrouter', 'ollama', 'player2', 'nvidia', 'openai', 'custom_api'];
     const configProviders = Object.keys(this.config)
       .filter(k => k.endsWith('_KEYS') && Array.isArray(this.config[k]) && this.config[k].length > 0)
       .map(k => k.replace('_KEYS', '').toLowerCase());
@@ -254,68 +253,7 @@ class ConfigRuntime {
     return [...NVIDIA_FALLBACK_MODELS];
   }
 
-  async fetchFcmModelRankings() {
-    try {
-      const response = await axios.get('http://localhost:19280/api/models', { timeout: 3000 });
-      const data = response.data;
-      const list = Array.isArray(data) ? data : (data.models || data.data || []);
-      if (list.length > 0) {
-        return this._normalizeFcmModels(list);
-      }
-    } catch (e) {
-      // Daemon not running — try CLI
-    }
-    try {
-      try { execSync('where free-coding-models', { timeout: 2000, stdio: 'ignore' }); }
-      catch { return []; }
-      const raw = await new Promise((resolve, reject) => {
-        exec('free-coding-models --json --best', { timeout: 20000, encoding: 'utf8' }, (err, stdout) => {
-          if (err) reject(err); else resolve(stdout);
-        });
-      });
-      const match = raw.match(/(\[\s*\{[\s\S]*\])/m);
-      if (!match) return [];
-      const models = JSON.parse(match[1]);
-      if (!Array.isArray(models)) return [];
-      return this._normalizeFcmModels(models);
-    } catch (e) {
-      return [];
-    }
-  }
 
-  _normalizeFcmModels(list) {
-    return list.map(m => ({
-      id: m.modelId || m.model || m.id || '',
-      label: m.label || m.modelId || m.id || '',
-      tier: m.tier || '',
-      ping: m.latestPing || m.avgPing || m.ping || m.avg || 999,
-      avgPing: m.avgPing || m.ping || 999,
-      stability: typeof m.stability === 'number' ? m.stability : (m.uptime || 0),
-      uptime: m.uptime || 0,
-      provider: m.provider || m.origin || '',
-      condition: m.condition || '',
-      verdict: m.verdict || '',
-      sweScore: m.sweScore || '',
-      context: m.context || '',
-      status: m.status || 'ok',
-      httpCode: m.httpCode || ''
-    })).filter(m => m.id);
-  }
-
-  enhanceModelListWithFcm(modelList, fcmRankings) {
-    if (!fcmRankings || fcmRankings.length === 0) return modelList;
-    const fcmMap = new Map(fcmRankings.map(r => [r.id, r]));
-    const tierWeight = { 'S+': 100, 'S': 80, 'A+': 60, 'A': 50, 'B': 30, 'C': 10 };
-    return [...new Set(modelList)].sort((a, b) => {
-      const fa = fcmMap.get(a) || {};
-      const fb = fcmMap.get(b) || {};
-      const ta = tierWeight[fa.tier] || 0;
-      const tb = tierWeight[fb.tier] || 0;
-      if (ta !== tb) return tb - ta;
-      if ((fa.ping || 999) !== (fb.ping || 999)) return (fa.ping || 999) - (fb.ping || 999);
-      return rankModel(b, fb.provider || '') - rankModel(a, fa.provider || '');
-    });
-  }
 
   async fetchOpenRouterModels(freeOnly = false) {
     try {
@@ -582,9 +520,6 @@ class ConfigRuntime {
     if (!reg) throw new Error(`Unbekannter Provider: ${provider}`);
     if (!reg.fetchMethod) return [];
     const result = await this[reg.fetchMethod](freeOnly);
-    if (provider === 'fcm' && Array.isArray(result) && result.length > 0 && typeof result[0] === 'object') {
-      return result.map(r => r.id);
-    }
     return result;
   }
 
@@ -622,7 +557,7 @@ class ConfigRuntime {
   }
 
   async checkConfig() {
-    if (this.config.GEMINI_KEYS.length === 0 && this.config.GROQ_KEYS.length === 0 && this.config.OPENROUTER_KEYS.length === 0 && this.config.NVIDIA_KEYS.length === 0 && this.config.OPENAI_KEYS.length === 0 && !['ollama', 'player2', 'fcm', 'custom_api'].includes(this.config.PRIMARY_PROVIDER)) {
+    if (this.config.GEMINI_KEYS.length === 0 && this.config.GROQ_KEYS.length === 0 && this.config.OPENROUTER_KEYS.length === 0 && this.config.NVIDIA_KEYS.length === 0 && this.config.OPENAI_KEYS.length === 0 && !['ollama', 'player2', 'custom_api'].includes(this.config.PRIMARY_PROVIDER)) {
       await this.configure();
     } else {
       await this.ensureGroqModel();
@@ -704,6 +639,5 @@ module.exports = {
   ENV_PATH,
   OLLAMA_DEFAULT_URL,
   PLAYER2_DEFAULT_URL,
-  FCM_DEFAULT_URL,
   firstDefined,
 };

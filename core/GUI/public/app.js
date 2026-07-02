@@ -3,7 +3,7 @@
 // All domain logic is in modules/ — loaded via <script> tags in index.html.
 // This file wires up the lifecycle: init, intervals, and window exports.
 // =============================================================================
-/* global liveStats:writable, sessionId:writable, fetchHealth:writable, fetchPreflightStatus:writable, tick:writable, loadInitialConfig:writable, searchDb:writable, refreshFcmRankings:writable, loadBackups:writable, fetchRuntimeScore:writable, fetchRunEvaluation:writable, connectLogs:writable, updateBatchRecommendation:writable, triggerAction:writable */
+/* global liveStats:writable, sessionId:writable, fetchHealth:writable, fetchPreflightStatus:writable, tick:writable, loadInitialConfig:writable, searchDb:writable, loadBackups:writable, fetchRuntimeScore:writable, fetchRunEvaluation:writable, connectLogs:writable, updateBatchRecommendation:writable, triggerAction:writable */
 
 // ── UI Language: sync dropdown to localStorage value ──────────────────
 (function() {
@@ -47,10 +47,6 @@ setInterval(function() {
     body: JSON.stringify({ sessionId: sessionId })
   }).catch(function() {});
 }, 30000);
-
-// ── FCM: Initial load (delayed) + auto-refresh ───────────────────────
-setTimeout(refreshFcmRankings, 4000);
-setInterval(refreshFcmRankings, 60000);
 
 // ── Backups: deferred load ───────────────────────────────────────────
 setTimeout(function() {
