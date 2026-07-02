@@ -4068,5 +4068,30 @@
         "file": "core/tests/translation-runtime-smoke.js"
       }
     ]
+  },
+  {
+    "p_id": "p92",
+    "id": "plot-2026-07-02T01:09:48",
+    "timestamp": "2026-07-02 01:09:48",
+    "summary": "Commit-Layer Fix: Geschweifte Klammern in Sidejokes werden jetzt vollstaendig aufgeloest + Doku-im-Code-Commit Regel",
+    "narrator": "Flux",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c87j48n13a3p35",
+    "ref_to": "plot-2026-07-02T01:04:35",
+    "prev_narrator": "Thinker",
+    "data_changes": [
+      {
+        "file": "AGENTS.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/commit-layer/author_system.js"
+      },
+      {
+        "file": "core/commit-layer/commit_lore/writing_rules.json"
+      }
+    ]
   }
 ]

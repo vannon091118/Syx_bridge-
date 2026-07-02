@@ -1,9 +1,11 @@
-FCM (free-coding-models) komplett aus dem Codebase entfernt. Der lokale FCM-Daemon (localhost:19280) war seit v0.22 instabil und wurde nie zuverlaessig fuer Uebersetzungen genutzt.
+Commit-Layer Fix: Geschweifte Klammern in Sidejokes werden jetzt vollstaendig aufgeloest.
 
-Geloeschte/bereinigte Dateien (17):
-- Backend: router.js (PROVIDER_REGISTRY, hasAccess), dispatcher.js (uiPool/lowRiskPool), index.js (CONFIG-Flags), config-keys.js (FCM_DEFAULT_URL), config-runtime.js (knownProviders, PRIMARY_PROVIDER-Check, enhanceModelListWithFcm), config-persist.js (FCM_URL/FCM_ENABLED), provider-chat-config.js, polish-arbiter.js, gui-handlers.js, server-routes.js (/api/fcm-rankings)
-- Frontend JS: app.js, state.js, ui-core.js, ui-data.js (SECTION 6 komplett), ui-settings.js
-- Frontend HTML: index.html (dot-fcm, FCM-Rankings-Panel, cfg-provider fcm-Option, fcm-provider-hint)
-- Tests: translation-runtime-smoke.js, ollama_cloud_e2e.js, item0a_auto_freeze_test.js, test_providers.js
+Root Cause: resolvePlaceholders() Regex /{[A-Z][A-Z0-9_]+}/ erforderte mindestens 2 Grossbuchstaben. Einzelbuchstaben-Platzhalter wie {N}, {M}, {H} aus sidejoke_pool.json wurden NICHT erfasst → sichtbare Klammern im Commit-Text.
 
-PROOF: Syntax 120/120 ✅ | Code-Review ✅
+Fix (author_system.js):
+- Neue Regex-Stufe /{([A-Z])}/ VOR dem generischen Fallback — matched {N}→File-Count, {M}→0, {H}→?
+- HAS_PLACEHOLDER von [A-Z][A-Z0-9_]+ auf [A-Z][A-Z0-9_]* geaendert (Einzelbuchstaben jetzt erkannt)
+
+Regel-Updates:
+- writing_rules.json: docu_in_code_commit Regel — Doku immer Teil des Code-Commits, nie eigener Commit
+- AGENTS.md U-1 um Doku-Regel erweitert, FCM-Referenzen aus §13.3 entfernt

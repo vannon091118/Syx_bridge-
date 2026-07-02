@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 01:09:48] Commit-Layer Fix: Geschweifte Klammern in Sidejokes werden jetzt vollstaendig aufgeloest + Doku-im-Code-Commit Regel
+**Narrator:** Flux | **Model:** deepseek-v4-pro | **Composite:** `c87j48n13a3p35`
+- 4 Datei(en) geändert.
+
 ### [2026-07-02 01:04:06] FCM komplett entfernt: Backend (router/dispatcher/config/providers), GUI Frontend (5 JS + HTML), Tests (4 Dateien)
 **Narrator:** Thinker | **Model:** deepseek-v4-pro | **Composite:** `c86j51n3a5p59`
 - 22 Datei(en) geändert.

@@ -1,5 +1,10 @@
 {
   "rules": {
+    "docu_in_code_commit": {
+      "description": "Dokumentation (CHANGELOG.md, AGENTS.md, PLAN.md, INDEX.md, HANDSHAKE.md, README.md, _Info.txt) ist IMMER Teil des Code-Commits — nie ein eigener Commit. Der author_system.js-Workflow staged CHANGELOG.md automatisch mit. Root-Markdown-Dateien werden mit den Code-Änderungen committed die sie dokumentieren. Reine Doku-Commits sind verboten. Fokus liegt auf Code-Anpassungen.",
+      "required": true,
+      "enforcement": "author_system.js: CHANGELOG.md wird automatisch in den Commit aufgenommen (git add CHANGELOG.md vor git commit). AGENTS.md §U-2: CHANGELOG-PERSISTENZ. Kein separater Doku-Commit erlaubt."
+    },
     "workplace_tone": {
       "description": "Jeder Commit ist ein Arbeitstag im Repo. Beschreibe was gemacht wurde, warum, und was als naechstes kommt. Klar, praezise, menschlich. Kein Theater, keine vorgeschriebenen Toene. Das Repo ist ein Arbeitsplatz — die Commits fuehren Tagebuch ueber die Arbeit.",
       "required": true

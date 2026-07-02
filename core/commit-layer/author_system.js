@@ -290,11 +290,18 @@ function resolvePlaceholders(text, ctx) {
     .replace(/\{ROWS\}/g, String(count))
     .replace(/\{LOC\}/g, '?')
     .replace(/\{TIME2?\}/g, new Date().toISOString().substring(11, 16))
+    // Einzelbuchstaben-Platzhalter: {N}, {M}, {H} etc. (häufig in Sidejokes)
+    .replace(/\{([A-Z])\}/g, (_, c) => {
+      const map = { N: String(count), M: '?', H: '?' };
+      return map[c] || '?';
+    })
     // Generische Platzhalter → neutrale Wörter
-    .replace(/\{[A-Z][A-Z0-9_]+\}/g, 'X');
+    .replace(/\{[A-Z][A-Z0-9_]*\}/g, 'X');
 }
 
-const HAS_PLACEHOLDER = /\{[A-Z][A-Z0-9_]+\}/;
+// v0.25.1-FIX: [A-Z][A-Z0-9_]* statt [A-Z][A-Z0-9_]+ —
+// Einzelbuchstaben-Platzhalter wie {N}, {M}, {H} müssen ebenfalls erkannt werden.
+const HAS_PLACEHOLDER = /\{[A-Z][A-Z0-9_]*\}/;
 const jokeKey  = selectedNarrator.name.toLowerCase();
 const rawList = (sidejokePool[jokeKey] && sidejokePool[jokeKey].length > 0)
   ? sidejokePool[jokeKey]

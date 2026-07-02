@@ -39,9 +39,12 @@ SOBALD DU DIE REGEL GELESEN HAST BIST DU VERPFLICHTET MIT
 
 > Diese Regeln kommen vom User. Sie haben IMMER Vorrang vor Agent-Entscheidungen.
 
-## U-1: COMMIT-PFLICHT
+## U-1: COMMIT-PFLICHT (Doku immer im Code-Commit)
 Nach JEDER Code-Anpassung: Commit + Push auf den aktiven Branch (main).
 Kein Code bleibt uncommitted. Kein Push ohne Review.
+Dokumentation (CHANGELOG, AGENTS, PLAN, INDEX, HANDSHAKE, README) wird IMMER
+zusammen mit den Code-Änderungen committed — nie als eigener Commit.
+Reine Doku-Commits sind verboten. Fokus liegt auf Code-Anpassungen.
 
 ## U-2: CHANGELOG-PERSISTENZ
 Nach jedem Task MUSS das CHANGELOG.md weitergeführt werden.
@@ -305,7 +308,7 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 - SSE (Server-Sent Events) für Echtzeit-Logs, Status-Updates, DB-Samples, Payloads
 - 25+ REST-Endpoints: `/api/config`, `/api/system-health`, `/api/models/*`, `/api/db/*`,
   `/api/action/*`, `/api/backups/*`, `/api/preflight-status`, `/api/db-repair`,
-  `/api/fcm-rankings`, `/api/key-check`, `/api/revisions/*`, `/api/runtime-score`,
+  `/api/key-check`, `/api/revisions/*`, `/api/runtime-score`,
   `/api/run-evaluation`, `/api/provider-status`, `/api/session`
 - Auto-Shutdown bei Inaktivität (1.5s nach letzter Session-Close)
 - Port-Fallback: EADDRINUSE → Port+1
@@ -317,7 +320,7 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 - DB-Browser: Suche, Edit (Mehrzeilen), Save, Revisionen
 - Settings-Dropdown: Provider/Modell/Language/Batch-Size live konfigurierbar
 - API-Key-Modal: Keys verwalten + testen pro Provider
-- FCM Live Rankings: Modell-Tiers, Ping, Stabilität, USE-Button
+- FCM Live Rankings: Modell-Tiers, Ping, Stabilität, USE-Button (ENTFERNT v0.25.0-alpha)
 - Runtime Score Floating Panel (standardmäßig minimiert)
 - Run Self-Evaluation (Echtzeit-Qualitätsmetriken nach jedem Sync)
 - DB-Repair-Button: 4 Blink-Tiers je nach kritischem DB-Zustand
@@ -326,7 +329,7 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 
 **Frontend — `GUI/public/index.html`:**
 - Dark-Theme mit CSS-Variablen (--bg, --accent, --success, --danger)
-- 3-Spalten-Layout: Sidebar (Status + Pipeline + Aktionen) | Center (Terminal/DB-Browser + Logs) | Right (Stats + Backups + DB-Stream + FCM)
+- 3-Spalten-Layout: Sidebar (Status + Pipeline + Aktionen) | Center (Terminal/DB-Browser + Logs) | Right (Stats + Backups + DB-Stream)
 - Neon-Progress-Border via SVG (animiert bei laufendem Sync)
 - State-abhängige Hintergründe (running=Gelb, success=Grün, error=Rot-Blink)
 - Version-Highlights-Modal (v0.25.0-alpha, 10 Einträge)
