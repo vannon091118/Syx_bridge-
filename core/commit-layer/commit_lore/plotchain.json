@@ -4229,5 +4229,24 @@
         "file": "core/tests/argos_warm_benchmark.js"
       }
     ]
+  },
+  {
+    "p_id": "p97",
+    "id": "plot-2026-07-02T02:15:31",
+    "timestamp": "2026-07-02 02:15:31",
+    "summary": "Benchmark-Datei nach Verifikation entfernt. 60x Speedup bestätigt, Test-Tool nicht mehr benötigt.",
+    "narrator": "Buffy",
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c92j61n1a1p59",
+    "ref_to": "plot-2026-07-02T02:14:03",
+    "prev_narrator": "Echo",
+    "data_changes": [
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/tests/argos_warm_benchmark.js"
+      }
+    ]
   }
 ]

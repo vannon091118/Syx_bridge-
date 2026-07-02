@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 02:15:31] Benchmark-Datei nach Verifikation entfernt. 60x Speedup bestätigt, Test-Tool nicht mehr benötigt.
+**Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c92j61n1a1p59`
+- 2 Datei(en) geändert.
+
 ### [2026-07-02 02:13:21] PERF-1/2/3: cleanupLegacyFolders parallelisiert, saveStressTestResult Batching, Argos Warm-Server mit 60x Speedup (Cold 6.5s → Warm 110ms). Windows stdin-buffering Fix (-u Flag). Audit verifiziert: P8-3/Preflight bereits erledigt.
 **Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c91j10n1a1p78`
 - 7 Datei(en) geändert.

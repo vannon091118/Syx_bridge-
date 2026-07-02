@@ -4,4 +4,4 @@ Argos Warm-Server (argos-client.js): Per-call Python-Subprozess durch persistent
 
 Audit-Ergebnis: P8-3 DB-Indizes und Preflight-Optimierung waren bereits erledigt. Sequenzielle DB-Writes sind intentional für better-sqlite3. fixGrammarBatch Loops bereits durch strictTerms.length Guard geschützt.
 
-Benchmark-Verifikation in core/tests/argos_warm_benchmark.js: 3 Calls, Cold-Start 6542ms, Warm 112ms, Warm 108ms. 60.5x Speedup bestätigt.
+Benchmark-Verifikation abgeschlossen: 3 Calls, Cold-Start 6542ms, Warm 112ms, Warm 108ms. 60.5x Speedup bestätigt. Benchmark-Datei nach Verifikation entfernt.
