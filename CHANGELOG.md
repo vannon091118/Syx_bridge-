@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 00:48:34] PLAN.md Sprint Block 1: P8-3 DB-Indizes (3 indices), P8-5 Snapshot-Cleanup (keep 10), P4 SOS-RUNTIME (SoS config moved to plugin)
+**Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c84j71n6a1p13`
+- 6 Datei(en) geändert.
+
 ### [2026-07-02 00:39:08] Bug-Triage Sprint BT-1: BU-004 reclassified BEHOBEN (File-Mutex exists), BU-022 fixed (_dbGet→dbGet rename 5 files), BU-019 reclassified TEILWEISE, KNOWN_BUGS_REPORT.md updated
 **Narrator:** Devin | **Model:** deepseek-v4-pro | **Composite:** `c83j29n6a1p39`
 - 7 Datei(en) geändert.

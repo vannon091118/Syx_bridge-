@@ -10,6 +10,8 @@
 
 const GamePlugin = require('./GamePlugin');
 const { escapeTextValue, unescapeTextValue } = require('../extractor');
+const fs = require('fs');
+const fsp = require('fs').promises;
 const path = require('path');
 const os = require('os');
 
@@ -98,8 +100,6 @@ class SongsOfSyxPlugin extends GamePlugin {
   // ═══ GameAdapter methods (inherited from SongsOfSyxAdapter pattern) ═══
 
   getLauncherSettingsPath() {
-    const os = require('os');
-    const path = require('path');
     return process.platform === 'win32'
       ? path.join(process.env.APPDATA || '', 'songsofsyx', 'settings', 'LauncherSettings.txt')
       : path.join(os.homedir(), '.local', 'share', 'songsofsyx', 'settings', 'LauncherSettings.txt');
@@ -465,6 +465,75 @@ class SongsOfSyxPlugin extends GamePlugin {
    */
   getProperNounDenylist() {
     return PROPER_NOUN_DENYLIST;
+  }
+
+  // ═══ P4 SOS-RUNTIME: SoS-Konfiguration ins Plugin verschoben ═════════
+
+  /**
+   * Parses Songs of Syx LauncherSettings.txt MODS array.
+   */
+  parseSoSConfig(content) {
+    const modsMatch = content.match(/MODS:\s*\[([\s\S]*?)\]/);
+    if (!modsMatch) return { mods: [], raw: content };
+    const mods = modsMatch[1].split(',')
+      .map(s => s.trim().replace(/"/g, ''))
+      .filter(Boolean);
+    return { mods, raw: content };
+  }
+
+  /**
+   * Stringifies launcher config MODS array.
+   */
+  stringifySoSConfig(originalContent, mods) {
+    const modsList = mods.map(m => `\t"${m}",`).join('\n');
+    return originalContent.replace(/MODS:\s*\[([\s\S]*?)\]/, `MODS: [\n${modsList}\n]`);
+  }
+
+  /**
+   * Reads active mods from LauncherSettings.txt.
+   */
+  async getActiveMods(settingsPath = null) {
+    const resolvedPath = settingsPath || this.getLauncherSettingsPath();
+    if (!fs.existsSync(resolvedPath)) return [];
+    try {
+      const content = await fsp.readFile(resolvedPath, 'utf-8');
+      return this.parseSoSConfig(content).mods;
+    } catch (e) {
+      console.error(`[!] Fehler beim Lesen von LauncherSettings: ${e.message}`);
+      return [];
+    }
+  }
+
+  /**
+   * Updates LauncherSettings.txt to enable/disable BridgeCore.
+   */
+  async syncLauncherSettings(options) {
+    const { activePatchesCount, targetLang, nativeMode, settingsPath } = options;
+    const resolvedPath = settingsPath || this.getLauncherSettingsPath();
+    if (!fs.existsSync(resolvedPath)) return;
+
+    try {
+      const content = await fsp.readFile(resolvedPath, 'utf-8');
+      const { mods } = this.parseSoSConfig(content);
+      const cleanMods = mods.filter(m =>
+        !m.endsWith(`_${targetLang}`) &&
+        !m.startsWith('.backup_') &&
+        m !== 'syx-bridge'
+      );
+
+      const newMods = [...cleanMods];
+      if (activePatchesCount > 0 && !nativeMode) {
+        if (!newMods.includes('BridgeCore')) {
+          newMods.push('BridgeCore');
+        }
+      }
+
+      const newContent = this.stringifySoSConfig(content, newMods);
+      await fsp.writeFile(resolvedPath, newContent, 'utf-8');
+      console.log(`[INFO] LauncherSettings.txt wurde aktualisiert (${activePatchesCount > 0 && !nativeMode ? 'BridgeCore aktiv' : 'BridgeCore entfernt'}).`);
+    } catch (e) {
+      console.error(`[!] Fehler beim Aktualisieren von LauncherSettings: ${e.message}`);
+    }
   }
 }
 

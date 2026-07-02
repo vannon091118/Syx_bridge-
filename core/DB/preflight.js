@@ -178,6 +178,15 @@ function createPreflight(dbManager) {
     }
 
     console.log(`[PREFLIGHT] Analysis complete in ${elapsed}ms.`);
+
+    // P8-5: Snapshot-Cleanup nach jedem Preflight
+    try {
+      const { cleanupSnapshots } = require('./db_snapshot');
+      cleanupSnapshots(10);
+    } catch (e) {
+      // Non-critical — Cleanup ist optional
+    }
+
     return { ok: true, report };
   }
 

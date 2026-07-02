@@ -172,6 +172,10 @@ async function init() {
   await addColumnIfMissing('translations', 'stress_tested_at', 'TEXT');
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_hash ON translations(target_lang, source_hash)');
   await run('CREATE INDEX IF NOT EXISTS idx_translations_lang_flagged ON translations(target_lang, flagged, audit_stage)');
+  // P8-3: Audit-Query-Indizes — verhindern Full Table Scans auf flag_reason, quality_score
+  await run('CREATE INDEX IF NOT EXISTS idx_trans_flag_reason ON translations(target_lang, flag_reason)');
+  await run('CREATE INDEX IF NOT EXISTS idx_trans_quality_score ON translations(target_lang, quality_score)');
+  await run('CREATE INDEX IF NOT EXISTS idx_trans_stale ON translations(target_lang, flagged)');
 
   // --- v0.19.8 Deep Polish / Preserve-Content-First Flags ---
   await addColumnIfMissing('translations', 'polish_status', 'TEXT NOT NULL DEFAULT \'completed\'');

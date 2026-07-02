@@ -1,7 +1,11 @@
-const fs = require('fs');
-const fsp = require('fs').promises;
-const path = require('path');
-const os = require('os');
+/**
+ * sos-runtime.js — Thin delegation layer for SoS launcher config.
+ *
+ * P4 SOS-RUNTIME: parseSoSConfig, stringifySoSConfig, syncLauncherSettings,
+ * and getActiveMods were moved into SongsOfSyxPlugin. This module now
+ * delegates to the plugin instance (backward-compatible API).
+ */
+
 const { createPlugin, DEFAULT_GAME } = require('./plugin-registry');
 
 let _activePlugin = null;
@@ -12,74 +16,20 @@ function getActivePlugin() {
   return _activePlugin;
 }
 
-/**
- * Parses the Songs of Syx LauncherSettings.txt content.
- */
 function parseSoSConfig(content) {
-  const modsMatch = content.match(/MODS:\s*\[([\s\S]*?)\]/);
-  if (!modsMatch) return { mods: [], raw: content };
-    
-  const mods = modsMatch[1].split(',')
-    .map(s => s.trim().replace(/"/g, ''))
-    .filter(Boolean);
-    
-  return { mods, raw: content };
+  return getActivePlugin().parseSoSConfig(content);
 }
 
-/**
- * Stringifies the Songs of Syx LauncherSettings.txt content with updated mods.
- */
 function stringifySoSConfig(originalContent, mods) {
-  const modsList = mods.map(m => `\t"${m}",`).join('\n');
-  return originalContent.replace(/MODS:\s*\[([\s\S]*?)\]/, `MODS: [\n${modsList}\n]`);
+  return getActivePlugin().stringifySoSConfig(originalContent, mods);
 }
 
-/**
- * Reads the active mods from LauncherSettings.txt.
- */
 async function getActiveMods(settingsPath = null) {
-  const resolvedPath = settingsPath || getActivePlugin().getLauncherSettingsPath();
-  if (!fs.existsSync(resolvedPath)) return [];
-  try {
-    const content = await fsp.readFile(resolvedPath, 'utf-8');
-    return parseSoSConfig(content).mods;
-  } catch (e) {
-    console.error(`[!] Fehler beim Lesen von LauncherSettings: ${e.message}`);
-    return [];
-  }
+  return getActivePlugin().getActiveMods(settingsPath);
 }
 
-/**
- * Updates LauncherSettings.txt to enable/disable BridgeCore and clean up patches.
- */
 async function syncLauncherSettings(options) {
-  const { activePatchesCount, targetLang, nativeMode } = options;
-  const resolvedPath = options.settingsPath || getActivePlugin().getLauncherSettingsPath();
-  if (!fs.existsSync(resolvedPath)) return;
-
-  try {
-    const content = await fsp.readFile(resolvedPath, 'utf-8');
-    const { mods } = parseSoSConfig(content);
-    // Clean up old patch mod formats and backups
-    const cleanMods = mods.filter(m => 
-      !m.endsWith(`_${targetLang}`) && 
-      !m.startsWith('.backup_') &&
-      m !== 'syx-bridge'
-    );
-
-    const newMods = [...cleanMods];
-    if (activePatchesCount > 0 && !nativeMode) {
-      if (!newMods.includes('BridgeCore')) {
-        newMods.push('BridgeCore');
-      }
-    }
-        
-    const newContent = stringifySoSConfig(content, newMods);
-    await fsp.writeFile(resolvedPath, newContent, 'utf-8');
-    console.log(`[INFO] LauncherSettings.txt wurde aktualisiert (${activePatchesCount > 0 && !nativeMode ? 'BridgeCore aktiv' : 'BridgeCore entfernt'}).`);
-  } catch (e) {
-    console.error(`[!] Fehler beim Aktualisieren von LauncherSettings: ${e.message}`);
-  }
+  return getActivePlugin().syncLauncherSettings(options);
 }
 
 module.exports = {

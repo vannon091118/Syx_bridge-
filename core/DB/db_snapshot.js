@@ -22,8 +22,16 @@ const DB_SRC = path.join(ROOT, 'translations.db');
 const DBOLD_DIR = path.join(ROOT, 'archive', 'dbold');
 const TREND_REPORT = path.join(DBOLD_DIR, 'DB_TREND_REPORT.md');
 
-// ── CLI ─────────────────────────────────────────────────────────────────────
+// ── CLI (only when run directly, not when required) ────────────────────────
 const args = process.argv.slice(2);
+const isCLI = require.main === module;
+
+// Export for programmatic use (preflight.js calls cleanupSnapshots)
+module.exports = { cleanupSnapshots };
+
+if (!isCLI) return;  // Stop here when require()d — don't run CLI code
+
+// ── CLI Logic ──────────────────────────────────────────────────────────────
 const isHelp   = args.includes('--help') || args.includes('-h');
 const isTrend  = args.includes('--trend');
 const isDryRun = args.includes('--dry-run');
@@ -218,6 +226,69 @@ if (isTrend) {
 }
 
 console.log('✅ Fertig.');
+
+// P8-5: Auto-Cleanup — nur die letzten 10 Snapshots behalten
+_cleanupOldSnapshots();
+
+// ── P8-5: Snapshot-Cleanup — nur die letzten 10 Snapshots behalten ────────────
+// Läuft automatisch nach jedem Snapshot. Snapshots werden nach Dateiname
+// (chronologisch wegen YYYY-MM-DD_HHMMSS Prefix) sortiert — die ältesten
+// 10+ werden gelöscht, ihre WAL/SHM-Dateien ebenfalls.
+function cleanupSnapshots(keepN = 10) {
+  if (!fs.existsSync(DBOLD_DIR)) return;
+
+  const snapshots = fs.readdirSync(DBOLD_DIR)
+    .filter(f => f.startsWith('translations_') && f.endsWith('.db'))
+    .sort();  // chronologisch wegen ISO-Datums-Präfix
+
+  if (snapshots.length <= keepN) {
+    if (snapshots.length > 0) {
+      console.log(`📁 ${snapshots.length} Snapshots (≤ ${keepN}, keine Bereinigung nötig).`);
+    }
+    return;
+  }
+
+  const toDelete = snapshots.slice(0, snapshots.length - keepN);
+  let deleted = 0;
+  let freedBytes = 0;
+
+  for (const snap of toDelete) {
+    const snapPath = path.join(DBOLD_DIR, snap);
+    try {
+      const stat = fs.statSync(snapPath);
+      freedBytes += stat.size;
+      fs.unlinkSync(snapPath);
+      deleted++;
+
+      // Auch WAL/SHM-Dateien löschen falls vorhanden
+      for (const ext of ['-wal', '-shm']) {
+        const auxPath = snapPath + ext;
+        if (fs.existsSync(auxPath)) {
+          freedBytes += fs.statSync(auxPath).size;
+          fs.unlinkSync(auxPath);
+        }
+      }
+    } catch (e) {
+      console.warn(`[SNAPSHOT-CLEANUP] Konnte ${snap} nicht löschen: ${e.message}`);
+    }
+  }
+
+  if (deleted > 0) {
+    console.log(`🧹 Snapshot-Cleanup: ${deleted} alte Snapshots gelöscht (${(freedBytes / (1024 * 1024)).toFixed(1)} MB frei).`);
+    console.log(`📁 ${snapshots.length - deleted} Snapshots verbleiben (max ${keepN}).`);
+  }
+}
+
+// Interne Helper für automatischen Cleanup nach jedem Snapshot
+function _cleanupOldSnapshots() {
+  try {
+    cleanupSnapshots(10);
+  } catch (e) {
+    // Non-critical — Snapshot wurde trotzdem erstellt
+    console.warn(`[SNAPSHOT-CLEANUP] Fehler: ${e.message}`);
+  }
+}
+
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function _findNextSnapshotNumber() {

@@ -1,19 +1,18 @@
-Bug-Triage Sprint BT-1 (2026-07-02): KNOWN_BUGS_REPORT.md Durchlauf.
+PLAN.md Sprint Block 1: P8-3 DB-Indizes + P8-5 Snapshot-Cleanup + P4 SOS-RUNTIME.
 
-BU-004 (Backup Race-Condition): Reklassifiziert von TEILWEISE zu BEHOBEN.
-Der File-Mutex in runtime-ops.js (acquireBackupLock mit O_EXCL/wx,
-PID-Tracking, Stale-Detection >5min, Double-Checked Locking,
-releaseBackupLock in finally) ist eine vollständige Implementierung.
-Kein teilweiser Fix — der Code existiert seit v0.20 und funktioniert.
+P8-3 (DB-Indizes): 3 neue Indizes für Audit-Queries in db.js init():
+idx_trans_flag_reason (target_lang, flag_reason), idx_trans_quality_score
+(target_lang, quality_score), idx_trans_stale (target_lang, flagged).
+Verhindern Full Table Scans auf flag_reason und quality_score<30.
 
-BU-022 (_dbGet Alias): BEHOBEN. _dbGet → dbGet in 5 Dateien umbenannt
-(index.js, translation-runtime.js, translation-db.js, translation-phases.js,
-translation-runtime-smoke.js). 7 Call-Sites + 5 Destructurings. Zero remaining
-_dbGet in Source-Code. Syntax 120/120 PASS.
+P8-5 (Snapshot-Cleanup): cleanupSnapshots(keepN=10) in db_snapshot.js.
+Läuft automatisch nach jedem Snapshot und nach jedem Preflight.
+Löscht älteste Snapshots (nur 10 behalten) inklusive WAL/SHM-Dateien.
+require.main === module Guard verhindert CLI-Code bei programmatischem Import.
 
-BU-019 (consecutiveGrammarFailures): Von OFFEN zu TEILWEISE. Der Primitive→Ref-Objekt
-Fix ({current: 0} in createTranslationRuntime) ist done. Per-Call-Scoping fehlt,
-aber als P3 klassifiziert (Risiko minimal bei Node Single-Thread).
+P4 (SOS-RUNTIME): parseSoSConfig, stringifySoSConfig, getActiveMods,
+syncLauncherSettings als Instanz-Methoden in SongsOfSyxPlugin implementiert.
+sos-runtime.js auf dünne Delegations-Schicht reduziert (backward-kompatibel).
+Redundante inline require()s im Plugin bereinigt (fs/fsp/os/path auf Module-Level).
 
-BEHOBEN: 2 (BU-004, BU-022). AKTIV: 3 P3 (BU-019 TEILWEISE, BU-026, BU-030).
-ARCHITEKTUR: 1 P2 (BU-025 Vendor-Sync Drift — kein Code-Fix, Release-Workflow).
+BETROFFEN: 4 Dateien (db.js, db_snapshot.js, preflight.js, sos-runtime.js, SongsOfSyxPlugin.js).
