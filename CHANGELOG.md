@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 03:12:28] P8-2: Foreign Key Cascades. ON DELETE CASCADE fuer alle 5 FKs + BEFORE DELETE Triggers als Polyfill fuer existierende DBs. Schema v7→v8. Zero-daten-migration. PLAN.md P8-2 als DONE markiert.
+**Narrator:** Argos | **Model:** mimo-v2.5-pro | **Composite:** `c98j54n7a4p64`
+- 4 Datei(en) geändert.
+
 ### [2026-07-02 03:06:30] CI-1: GitHub Actions Workflow eingerichtet. .github/workflows/ci.yml mit 5 Steps (lint:check informational, test:syntax, consistency, plugin-boundary, jest). lint:check Script in package.json. Node 20, ubuntu-latest, npm ci mit Caching.
 **Narrator:** Echo | **Model:** mimo-v2.5-pro | **Composite:** `c97j68n12a2p78`
 - 4 Datei(en) geändert.
@@ -11,6 +15,14 @@
 ### [2026-07-02 02:54:36] DOM-Cache: tickDomCache in state.js — 8 getElementById + 1 querySelector aus tick() eliminiert. ~540 DOM-Lookups/Sekunde eingespart. Code-Review approved.
 **Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c95j81n1a3p42`
 - 4 Datei(en) geändert.
+
+### [2026-07-02] P8-2: Foreign Key Cascades — ON DELETE CASCADE für alle 5 FKs + BEFORE DELETE Triggers als Polyfill für existierende DBs. Schema v7→v8.
+**Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`
+- **Problem:** 5 FOREIGN KEYs ohne ON DELETE CASCADE → orphans wachsen über Zeit (files→mods, strings→mods, strings→files, tasks→runs, translation_revisions→translations).
+- **Fix (Approach B+C):** ON DELETE CASCADE in CREATE TABLE IF NOT EXISTS (neue DBs bekommen native Cascades). 5 BEFORE DELETE Triggers als Polyfill für existierende DBs (keine Tabellen-Neuerstellung, keine Daten-Kopie, zero-downtime). Schema-Version 7→8.
+- **Trigger-Logik:** BEFORE DELETE → Kindzeilen löschen → FK-Check findet keine Orphans → Elternzeile wird gelöscht. Doppel-Löschung harmlos (DELETE 0 rows).
+- **Verifikation:** Syntax 120/120 ✅ | Code-Review approved ✅
+- 1 Datei(en) geändert (core/DB/db.js).
 
 ### [2026-07-02] CI-1: GitHub Actions Workflow eingerichtet — lint:syntax, consistency, jest, plugin-boundary auf jedem Push/PR
 **Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`

@@ -13,8 +13,8 @@
 
 | # | Task | Phase | Aufwand | ROI | Prio | Status |
 |---|------|-------|---------|-----|------|--------|
-| 1 | **P8-1: Transaktionsgrenzen saveTranslation()** | DB-HÄRTUNG | 2h | 🔴 Datenverlust | P0 | 🟡 |
-| 2 | **P8-2: Foreign Key Cascades** | DB-HÄRTUNG | 4h | 🔴 Waisen-Daten | P0 | 🟡 |
+| 1 | **P8-1: Transaktionsgrenzen saveTranslation()** | DB-HÄRTUNG | 2h | 🔴 Datenverlust | P0 | ✅ |
+| 2 | **P8-2: Foreign Key Cascades** | DB-HÄRTUNG | 4h | 🔴 Waisen-Daten | P0 | ✅ |
 | 3 | **BU-025: Vendor-Sync Drift** | SOS-POLISH | 3h | 🔴 Release-Blocker | P0 | 🟡 |
 | 4 | P8-6: WAL-Checkpointing | DB-HÄRTUNG | 1h | 🟡 Performance | P2 | 🟡 |
 | 5 | P8-7: DB-Stats im GUI | DB-HÄRTUNG | 2h | 🟢 Monitoring | P2 | 🟡 |
@@ -35,9 +35,9 @@
 - **Fix:** SAVEPOINT/RELEASE/ROLLBACK TO wrappt Revision-System + UPSERT + neue Revision. Nesting-safe (funktioniert inside withTransaction() batches). recordModelTaskMetric bleibt outside (non-critical).
 - **Betroffen:** `core/Translation/translation-db.js`
 
-#### [ ] P8-2: Foreign Key Cascades (Migration) ⏱️ 4h 🔴
+#### [x] P8-2: Foreign Key Cascades ⏱️ 4h 🔴 ✅ 2026-07-02
 - **Problem:** FKs ohne `ON DELETE CASCADE` → orphans wachsen über Zeit
-- **Fix:** Tabellen-Neuerstellung mit CASCADE
+- **Fix:** ON DELETE CASCADE in CREATE TABLE (neue DBs) + BEFORE DELETE Triggers als Polyfill (existierende DBs). Schema v7→v8. Keine Tabellen-Neuerstellung nötig — Triggers sind zero-data-migration.
 - **Betroffen:** `core/DB/db.js`
 
 ### P2 — Wichtig
@@ -117,10 +117,10 @@ RW-17..RW-19 — Plugin-Boundary, E2E-Test, Dokumentation
 
 | Phase | Tasks | Erledigt | Offen | Status |
 |-------|-------|----------|-------|--------|
-| DB-HÄRTUNG (P0–P2) | 8 | 4 | 4 | 🔴 v0.26 |
+| DB-HÄRTUNG (P0–P2) | 8 | 5 | 3 | 🔴 v0.26 |
 | SOS-POLISH | 1 | 0 | 1 | 🟡 v0.26 |
 | RIMWORLD | 19 | 0 | 19 | 🟢 v0.27–v0.30a |
-| **TOTAL** | **28** | **~28+** | **25** | **~53%** |
+| **TOTAL** | **28** | **~29+** | **24** | **~55%** |
 
 ---
 
@@ -220,11 +220,11 @@ RW-17..RW-19 — Plugin-Boundary, E2E-Test, Dokumentation
 
 | Phase | Tasks | Erledigt | Offen | Status |
 |-------|-------|----------|-------|--------|
-| DB-HÄRTUNG (P0–P2) | 8 | 4 | 4 | 🔴 v0.26 |
+| DB-HÄRTUNG (P0–P2) | 8 | 5 | 3 | 🔴 v0.26 |
 | SOS-POLISH | 1 | 0 | 1 | 🟡 v0.26 |
 | RIMWORLD | 19 | 0 | 19 | 🟢 v0.27–v0.30a |
 | CODE-QUALITÄT (CI-1–CI-7) | 7 | 4 | 7 | 🔵 Backlog |
-| **TOTAL** | **35** | **~32** | **32** | **~50%** |
+| **TOTAL** | **35** | **~33** | **31** | **~52%** |
 
 ---
 

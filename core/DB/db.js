@@ -127,7 +127,7 @@ async function addColumnIfMissing(table, column, type) {
 // Schema-Version — inkrementieren wenn neue Migrationen/Spalten hinzukommen.
 // Jeder init()-Aufruf prüft diese Version. Bei Match → alle addColumnIfMissing
 // und Bulk-UPDATE-Migrationen werden übersprungen. Spart 2-5s auf HDD.
-const CURRENT_SCHEMA_VERSION = '7';
+const CURRENT_SCHEMA_VERSION = '8';
 
 /**
  * Initializes the database schema and performs migrations.
@@ -242,7 +242,7 @@ async function init() {
         file_type TEXT,
         source_hash TEXT,
         last_scan TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(mod_id) REFERENCES mods(id)
+        FOREIGN KEY(mod_id) REFERENCES mods(id) ON DELETE CASCADE
     )`);
   await run('CREATE UNIQUE INDEX IF NOT EXISTS idx_files_mod_relpath ON files(mod_id, relative_path)');
 
@@ -257,8 +257,8 @@ async function init() {
         source_hash TEXT,
         context_type TEXT,
         translatable BOOLEAN,
-        FOREIGN KEY(mod_id) REFERENCES mods(id),
-        FOREIGN KEY(file_id) REFERENCES files(id)
+        FOREIGN KEY(mod_id) REFERENCES mods(id) ON DELETE CASCADE,
+        FOREIGN KEY(file_id) REFERENCES files(id) ON DELETE CASCADE
     )`);
   await run('CREATE INDEX IF NOT EXISTS idx_strings_hash ON strings(source_hash)');
   await run('CREATE INDEX IF NOT EXISTS idx_strings_mod_file ON strings(mod_id, file_id)');
@@ -282,7 +282,7 @@ async function init() {
         progress_current INTEGER,
         progress_total INTEGER,
         message TEXT,
-        FOREIGN KEY(run_id) REFERENCES runs(id)
+        FOREIGN KEY(run_id) REFERENCES runs(id) ON DELETE CASCADE
     )`);
 
   // 6. Logs (Database Logging)
@@ -330,7 +330,7 @@ async function init() {
         is_active INTEGER NOT NULL DEFAULT 0,
         is_reference INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(source_text, target_lang) REFERENCES translations(source_text, target_lang)
+        FOREIGN KEY(source_text, target_lang) REFERENCES translations(source_text, target_lang) ON DELETE CASCADE
     )`);
   await run('CREATE INDEX IF NOT EXISTS idx_revisions_lookup ON translation_revisions(source_text, target_lang, revision_id)');
 
@@ -388,6 +388,32 @@ async function init() {
   } catch (e) {
     console.warn('[DB] Auto-Guard-Migration fehlgeschlagen:', e.message);
   }
+
+  // --- P8-2: ON DELETE CASCADE polyfill via Triggers (existing databases) ---
+  // New databases get native CASCADE via CREATE TABLE above.
+  // Triggers ensure existing databases also cascade-delete child rows.
+  // SQLite executes BEFORE DELETE triggers before FK constraint checks.
+  await run(`CREATE TRIGGER IF NOT EXISTS fk_cascade_files_mods
+    BEFORE DELETE ON mods FOR EACH ROW BEGIN
+      DELETE FROM files WHERE mod_id = OLD.id;
+    END;`);
+  await run(`CREATE TRIGGER IF NOT EXISTS fk_cascade_strings_mods
+    BEFORE DELETE ON mods FOR EACH ROW BEGIN
+      DELETE FROM strings WHERE mod_id = OLD.id;
+    END;`);
+  await run(`CREATE TRIGGER IF NOT EXISTS fk_cascade_strings_files
+    BEFORE DELETE ON files FOR EACH ROW BEGIN
+      DELETE FROM strings WHERE file_id = OLD.id;
+    END;`);
+  await run(`CREATE TRIGGER IF NOT EXISTS fk_cascade_tasks_runs
+    BEFORE DELETE ON runs FOR EACH ROW BEGIN
+      DELETE FROM tasks WHERE run_id = OLD.id;
+    END;`);
+  await run(`CREATE TRIGGER IF NOT EXISTS fk_cascade_revisions_translations
+    BEFORE DELETE ON translations FOR EACH ROW BEGIN
+      DELETE FROM translation_revisions
+      WHERE source_text = OLD.source_text AND target_lang = OLD.target_lang;
+    END;`);
 
   // --- Schema-Version speichern (nach erfolgreichen Migrationen) ---
   db.prepare('INSERT OR REPLACE INTO _schema_meta (key, value) VALUES (\'schema_version\', ?)').run(CURRENT_SCHEMA_VERSION);
