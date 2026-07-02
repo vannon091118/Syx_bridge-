@@ -1,6 +1,6 @@
-# 📖 INDEX — core/GUI/ (14 Dateien, ~3.970 LOC)
+# 📖 INDEX — core/GUI/ (30 Dateien, ~6.450 LOC)
 
-> **Generiert:** 2026-07-01 | **Version:** v0.25.0-alpha
+> **Generiert:** 2026-07-02 | **Version:** v0.25.0-alpha
 > **Zweck:** Referenzbuch für die GUI-Schicht (HTTP-Server + Client-Dashboard)
 > **CL-Refs:** Kanonische Quelle ist `../INDEX.md`. Lokale CL-Refs sind Kurzform. Bei Konflikt gilt `../INDEX.md`.
 
@@ -19,10 +19,27 @@ core/GUI/
 ├── workshop_export.js     # Steam Workshop Uploader Export (BridgeCore → WorkshopContent)
 ├── INDEX.md               # Dieses Dokument
 ├── public/
-│   ├── index.html         # Dashboard-Layout + CSS (885 LOC, lädt Module in Abhängigkeitsreihenfolge)
+│   ├── index.html         # Dashboard-Layout + CSS (lädt Module in Abhängigkeitsreihenfolge)
 │   ├── app.js             # Bootstrap: Lifecycle-Init, Intervals, Window-Exports
 │   └── modules/
 │       ├── state.js       # Geteilter State + DOM-Refs + Konstanten
+│       ├── i18n.js        # Internationalisierung: t(), setUILanguage(), localizeDOM(), dynamisches Sprachladen
+│       ├── lang/          # Per-Language-Module (15 Dateien, ~13-20k je Datei)
+│       │   ├── de.js      # 🇩🇪 Deutsch (234 Keys)
+│       │   ├── en.js      # 🇬🇧 English — Fallback (immer geladen)
+│       │   ├── fr.js      # 🇫🇷 Français
+│       │   ├── es.js      # 🇪🇸 Español
+│       │   ├── pl.js      # 🇵🇱 Polski
+│       │   ├── ru.js      # 🇷🇺 Русский
+│       │   ├── it.js      # 🇮🇹 Italiano
+│       │   ├── pt.js      # 🇵🇹 Português
+│       │   ├── zh.js      # 🇨🇳 中文
+│       │   ├── ja.js      # 🇯🇵 日本語
+│       │   ├── ko.js      # 🇰🇷 한국어
+│       │   ├── uk.js      # 🇺🇦 Українська
+│       │   ├── tr.js      # 🇹🇷 Türkçe
+│       │   ├── nl.js      # 🇳🇱 Nederlands
+│       │   └── sv.js      # 🇸🇪 Svenska
 │       ├── ui-core.js     # Render-Loop, Pipeline, Provider-Stats, Health, Actions
 │       ├── ui-settings.js # Config, Mode, Batch, Provider, Lokale Modelle, Ollama Cloud
 │       ├── ui-data.js     # DB-Browser, Revisionen, Repair, Keys, Models, FCM, Scores, Backups
@@ -142,7 +159,7 @@ core/GUI/
 
 ---
 
-## public/modules/state.js (~100 LOC) — Geteilter State
+## public/modules/state.js (~120 LOC) — Geteilter State
 *Ladereihenfolge: 1. (erste) — alle anderen Module hängen davon ab*
 
 | Inhalt | Beschreibung |
@@ -156,8 +173,47 @@ core/GUI/
 
 ---
 
-## public/modules/ui-core.js (~220 LOC) — Render-Loop + Visualisierung
-*Ladereihenfolge: 2.*
+## public/modules/i18n.js (~220 LOC) — Internationalisierung Loader
+*Ladereihenfolge: 2. (nach state.js, vor ui-core.js) — ersetzt ehemals lang-strings.js Monolith*
+
+| Funktion | Beschreibung |
+|----------|--------------|
+| `t(key, lang)` | Übersetzung: aktive Sprache → English → German → `[[key]]` |
+| `setUILanguage(lang)` | Sprache wechseln: lädt Sprach-Script dynamisch, aktualisiert DOM |
+| `getUILanguage()` | Aktive Sprache abfragen |
+| `localizeDOM()` | DOM-Scan: `[data-i18n]`, `[data-i18n-title]`, `[data-i18n-placeholder]` |
+| `_loadLangScript(lang, cb)` | Dynamisches `<script>`-Tag-Injection für Sprachdateien |
+| Auto-Load | Lädt gespeicherte Sprache aus localStorage beim Start |
+
+**Architektur:** UMD-Pattern (Browser + Node.js). English immer geladen via `<script>`. Andere Sprachen on-demand. 89% weniger Bytes beim initialen Laden vs. alter Monolith.
+
+---
+
+## public/modules/lang/*.js (15 Dateien, ~13-20k je Datei) — Per-Language-Module
+*Ladereihenfolge: 2a. (en.js via `<script>`, andere via i18n.js dynamisch)*
+
+| Datei | Sprache | Keys | Beschreibung |
+|-------|---------|------|--------------|
+| de.js | 🇩🇪 Deutsch | 234 | UMD-Modul, registriert auf `window.SyxLang['German']` |
+| en.js | 🇬🇧 English | 234 | Fallback — immer via `<script>` geladen |
+| fr.js | 🇫🇷 Français | 234 | Dynamisch ladbar |
+| es.js | 🇪🇸 Español | 234 | Dynamisch ladbar |
+| pl.js | 🇵🇱 Polski | 234 | Dynamisch ladbar |
+| ru.js | 🇷🇺 Русский | 234 | Dynamisch ladbar |
+| it.js | 🇮🇹 Italiano | 234 | Dynamisch ladbar |
+| pt.js | 🇵🇹 Português | 234 | Dynamisch ladbar |
+| zh.js | 🇨🇳 中文 | 234 | Dynamisch ladbar |
+| ja.js | 🇯🇵 日本語 | 234 | Dynamisch ladbar |
+| ko.js | 🇰🇷 한국어 | 234 | Dynamisch ladbar |
+| uk.js | 🇺🇦 Українська | 234 | Dynamisch ladbar |
+| tr.js | 🇹🇷 Türkçe | 234 | Dynamisch ladbar |
+| nl.js | 🇳🇱 Nederlands | 234 | Dynamisch ladbar |
+| sv.js | 🇸🇪 Svenska | 234 | Dynamisch ladbar |
+
+---
+
+## public/modules/ui-core.js (~349 LOC) — Render-Loop + Visualisierung
+*Ladereihenfolge: 3.*
 
 | Funktion | Beschreibung |
 |----------|--------------|
@@ -174,8 +230,8 @@ core/GUI/
 
 ---
 
-## public/modules/ui-settings.js (~220 LOC) — Konfiguration
-*Ladereihenfolge: 3.*
+## public/modules/ui-settings.js (~425 LOC) — Konfiguration
+*Ladereihenfolge: 4.*
 
 | Funktion | Beschreibung |
 |----------|--------------|
@@ -194,8 +250,8 @@ core/GUI/
 
 ---
 
-## public/modules/ui-data.js (~700 LOC) — Daten & Panels
-*Ladereihenfolge: 4.*
+## public/modules/ui-data.js (~733 LOC) — Daten & Panels
+*Ladereihenfolge: 5.*
 
 | Sektion | Funktionen | Beschreibung |
 |---------|-----------|--------------|
@@ -212,8 +268,8 @@ core/GUI/
 
 ---
 
-## public/modules/ui-sse.js (~90 LOC) — SSE-Verbindung
-*Ladereihenfolge: 5.*
+## public/modules/ui-sse.js (~93 LOC) — SSE-Verbindung
+*Ladereihenfolge: 6.*
 
 | Funktion | Beschreibung |
 |----------|--------------|
@@ -221,8 +277,8 @@ core/GUI/
 
 ---
 
-## public/app.js (~80 LOC) — Bootstrap
-*Ladereihenfolge: 6. (letzte) — initialisiert alle Intervalle + Window-Exports*
+## public/app.js (~103 LOC) — Bootstrap
+*Ladereihenfolge: 7. (letzte) — initialisiert alle Intervalle + Window-Exports*
 
 | Aufgabe | Details |
 |---------|---------|
@@ -237,6 +293,6 @@ core/GUI/
 
 ---
 
-*📖 GUI-INDEX v0.25.0-alpha — 14 Dateien, ~3.970 LOC.*
+*📖 GUI-INDEX v0.25.0-alpha — 30 Dateien, ~6.450 LOC.*
 
-> **Letztes Update:** 2026-06-29 — backup-utils.js: scanModsForBackup + restoreBackupForMod dokumentiert
+> **Letztes Update:** 2026-07-02 — i18n Modularisierung: lang-strings.js Monolith (178k) → i18n.js + 15 Per-Language-Module. 89% weniger Bytes beim Laden. Sprachspezifische LLM-Prompts via grammar_context_*.txt.

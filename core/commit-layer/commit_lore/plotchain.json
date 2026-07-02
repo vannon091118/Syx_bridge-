@@ -3666,5 +3666,204 @@
         "file": "core/Translation/translation-phases.js"
       }
     ]
+  },
+  {
+    "p_id": "p86",
+    "id": "plot-2026-07-02T00:24:41",
+    "timestamp": "2026-07-02 00:24:41",
+    "summary": "P0-P3 v0.25 Release-Hardening: check_consistency repair (core/src paths), CHANGELOG split-brain (archive stub + sync-version), pre-push claim removal (AGENTS/PLAN/index), release.js drift WARN to BLOCK, testline expansion (consistency + e2e-ml), shouldTranslate Unicode fix, DB snapshot + archive old dbold + reset_now",
+    "narrator": "Squizzle",
+    "model_id": "deepseek-v4-pro",
+    "composite": "c81j65n5a1p20",
+    "ref_to": "plot-2026-07-01T23:42:44",
+    "prev_narrator": "Vannon",
+    "data_changes": [
+      {
+        "file": ".gitignore"
+      },
+      {
+        "file": "AGENTS.md"
+      },
+      {
+        "file": "CHANGELOG.md"
+      },
+      {
+        "file": "HANDSHAKE.md"
+      },
+      {
+        "file": "PLAN.md"
+      },
+      {
+        "file": "banner-main.jpg"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/GUI/INDEX.md"
+      },
+      {
+        "file": "core/GUI/public/index.html"
+      },
+      {
+        "file": "core/GUI/public/modules/i18n.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang-strings.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/de.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/en.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/es.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/fr.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/it.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/ja.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/ko.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/nl.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/pl.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/pt.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/ru.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/sv.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/tr.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/uk.js"
+      },
+      {
+        "file": "core/GUI/public/modules/lang/zh.js"
+      },
+      {
+        "file": "core/TREE.md"
+      },
+      {
+        "file": "core/Translation/INDEX.md"
+      },
+      {
+        "file": "core/Translation/cli-progress.js"
+      },
+      {
+        "file": "core/Translation/text-core.js"
+      },
+      {
+        "file": "core/Translation/text-prompts.js"
+      },
+      {
+        "file": "core/archive/docs/AGENTS.md"
+      },
+      {
+        "file": "core/archive/docs/CHANGELOG.md"
+      },
+      {
+        "file": "core/archive/docs/GUI_REWORK.md"
+      },
+      {
+        "file": "core/archive/docs/plans/PLAN_COMMIT_LAYER_RNG.md"
+      },
+      {
+        "file": "core/archive/docs/plans/PLAN_GLOBAL_SCORE.md"
+      },
+      {
+        "file": "core/commit-layer/author_system.js"
+      },
+      {
+        "file": "core/commit-layer/pre-commit.js"
+      },
+      {
+        "file": "core/commit-layer/verify_commit_msg.js"
+      },
+      {
+        "file": "core/grammar_context_Chinese.txt"
+      },
+      {
+        "file": "core/grammar_context_Dutch.txt"
+      },
+      {
+        "file": "core/grammar_context_French.txt"
+      },
+      {
+        "file": "core/grammar_context_German.txt"
+      },
+      {
+        "file": "core/grammar_context_Italian.txt"
+      },
+      {
+        "file": "core/grammar_context_Japanese.txt"
+      },
+      {
+        "file": "core/grammar_context_Korean.txt"
+      },
+      {
+        "file": "core/grammar_context_Polish.txt"
+      },
+      {
+        "file": "core/grammar_context_Portuguese.txt"
+      },
+      {
+        "file": "core/grammar_context_Russian.txt"
+      },
+      {
+        "file": "core/grammar_context_Spanish.txt"
+      },
+      {
+        "file": "core/grammar_context_Swedish.txt"
+      },
+      {
+        "file": "core/grammar_context_Turkish.txt"
+      },
+      {
+        "file": "core/grammar_context_Ukrainian.txt"
+      },
+      {
+        "file": "core/package-lock.json"
+      },
+      {
+        "file": "core/package.json"
+      },
+      {
+        "file": "core/scripts/build-review-base.js"
+      },
+      {
+        "file": "core/scripts/check_consistency.js"
+      },
+      {
+        "file": "core/scripts/gen-index.js"
+      },
+      {
+        "file": "core/scripts/release.js"
+      },
+      {
+        "file": "core/scripts/sync-version.js"
+      },
+      {
+        "file": "core/scripts/transform-lang-strings.js"
+      },
+      {
+        "file": "core/tests/INDEX.md"
+      }
+    ]
   }
 ]

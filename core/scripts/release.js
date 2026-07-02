@@ -19,10 +19,10 @@ try {
     console.log('[RELEASE] ✓ Kein Drift — Release kann gebaut werden.');
   }
 } catch (e) {
-  console.warn('[RELEASE] ⚠️  Vendor-Drift erkannt — Release trotzdem bauen?');
-  console.warn('[RELEASE]    → Führe "node scripts/check_vendor_drift.js" manuell aus.');
-  console.warn('[RELEASE]    → Drift-Details oben oder in der Konsole.');
-  // Warn but don't block — release continues
+  console.error('[RELEASE] 🔴 Vendor-Drift erkannt — Release BLOCKIERT.');
+  console.error('[RELEASE]    → Führe "node scripts/check_vendor_drift.js" manuell aus.');
+  console.error('[RELEASE]    → Drift beheben, dann Release erneut starten.');
+  process.exit(1);
 }
 
 // ── 1. Clean ─────────────────────────────────────────────────────────

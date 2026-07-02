@@ -247,7 +247,8 @@ SyxBridge_Live/                          # Root — Deployment-Verzeichnis
 | `npm run lint` | ESLint |
 | `npm test` | Full Pipeline (lint + plugin-boundary + e2e) |
 | `npm run warm-model` | NMT Model-Warmup |
-| `npm run workshop` | Steam-Workshop-Export |
+| `npm run consistency` | Konsistenz-Checks (Naming, Versionen, Marker) |
+| `npm run test:e2e-ml` | Multi-Language E2E (166 Checks, 5 Sprachen) |
 | `npm run audit:db` | DB-Qualitätsaudit |
 | `npm run release` | Release-Build |
 

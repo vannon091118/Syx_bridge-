@@ -45,11 +45,11 @@ const plotchainPath       = path.join(COMMIT_LORE_DIR, 'plotchain.json');
 const characterSheetsPath = path.join(COMMIT_LORE_DIR, 'character_sheets.json');
 const writingRulesPath    = path.join(COMMIT_LORE_DIR, 'writing_rules.json');
 const changelogPath = (() => {
-  const docs  = path.join(repoRoot, 'core/archive/docs/CHANGELOG.md');
   const root = path.join(repoRoot, 'CHANGELOG.md');
-  if (fs.existsSync(docs))  return docs;   // SSoT — existiert immer
-  if (fs.existsSync(root)) return root;    // optionales Root-Symlink
-  return docs; // fallback
+  const docs = path.join(repoRoot, 'core/archive/docs/CHANGELOG.md');
+  if (fs.existsSync(root)) return root;    // SSoT: Root hat IMMER Vorrang (AGENTS.md #4)
+  if (fs.existsSync(docs))  return docs;   // Fallback: Archive
+  return root; // fallback
 })();
 
 let characterSheets = null;
@@ -269,9 +269,9 @@ if (parsedComposite?.a && fs.existsSync(loreArcsPath)) {
 // CHANGELOG-Anker — prüft staged Content bevor Working Directory
 if (compositeMatch) {
   let changelogContent = '';
-  // Archive zuerst — existiert immer. Root nur als Fallback (optionales Symlink).
+  // Root zuerst — SSoT per AGENTS.md Regel #4. Archive nur als Fallback.
   // stdio:'pipe' unterdrückt das "fatal: path does not exist"-Stderr-Geräusch.
-  const stagePaths = ['core/archive/docs/CHANGELOG.md', 'CHANGELOG.md'];
+  const stagePaths = ['CHANGELOG.md', 'core/archive/docs/CHANGELOG.md'];
   for (const sp of stagePaths) {
     try {
       changelogContent = execSync(`git show :${sp}`, { encoding: 'utf8', stdio: 'pipe' });

@@ -727,6 +727,6 @@
 
 ---
 
-*📖 INDEX v0.20.0-pre-release — 2026-06-19*
+*📖 INDEX v0.25.0-alpha — 2026-07-02*
 *27 Dateien, ~10.089 LOC, 243 Function/Class-Definitionen (verifiziert via wc -l + grep).*
 *Generiert durch Buffy (Codebuff) — Built accidentally. Runs intentionally.*

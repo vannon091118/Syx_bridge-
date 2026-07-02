@@ -1,8 +1,3 @@
-Wir haben am heutigen Arbeitstag umfangreiche Überarbeitungen und Härtungsmaßnahmen an der Benutzeroberfläche sowie an der Übersetzungs-Pipeline vorgenommen, um das Gesamtsystem für das anstehende Release von v0.25.0-alpha optimal vorzubereiten.
-Dabei lag der primäre Fokus auf dem großen GUI-Rebuild und der korrekten Integration des i18n-Systems.
-Konkret wurden die Layout-Strukturen im Frontend poliert und die Datenbindungen in app.js, index.html, ui-core.js, ui-settings.js sowie in den Lokalisierungsdateien wie lang-strings.js stabilisiert.
-Auf der Server-Seite haben wir das Routing und das Configuration Mapping in server-routes.js sowie router.js grundlegend optimiert, um eine weitaus robustere Kommunikation zu gewährleisten.
-Zusätzlich wurden die Fehler bei der API-Schlüsselüberprüfung in client-factory.js behoben, um eine unterbrechungsfreie i18n-Anbindung zu garantieren.
-Für die Validierung der Kernfunktionalitäten haben wir neue E2E-Multi-Language-Tests (wie e2e_multi_language.js) implementiert und die Indizes in den Modulordnern aktualisiert.
-Des Weiteren wurden zahlreiche Dokumentationsdateien (darunter CHANGELOG.md, GUI_REWORK.md, HANDSHAKE.md und MASTER_DOC.md) vollständig synchronisiert und auf den aktuellen Stand gebracht, um die Nachvollziehbarkeit aller vorgenommenen Änderungen im Sinne unseres Kausalitäts-Regelwerks lückenlos zu gewährleisten.
-Dies bildet das stabile Fundament für die zukünftige Entwicklung und sichert die Zuverlässigkeit der gesamten SyxBridge-Anwendung.
+- Kosteneinsparung in translation-phases.js: Frisch übersetzte Texte werden in der qaPhase (polishQueue) nur noch dann poliert, wenn sie auch wirklich als flagged markiert sind, um redundante und teure LLM-Audits im selben Durchgang zu vermeiden.
+- Entkopplung der deepPolishPhase: Die datenbankweite Reparatur-Phase wird nur noch bei expliziter Anforderung (ctx.options.runDeepPolish === true oder ctx.options.forcePolish === true) ausgeführt. Dies verhindert unbeabsichtigte Kosten durch Altlasten bei einfachen Mod-Translation-Runs.
+- Dokumentation im CHANGELOG.md.

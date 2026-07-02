@@ -120,7 +120,7 @@ function generateIndex(dirPath, dirLabel) {
   if (files.length === 0) return '';
   
   let content = `# 📖 INDEX — ${dirLabel}\n\n`;
-  content += '> **Generiert:** 2026-06-19 | **Version:** v0.20.0-pre-release\n';
+  content += '> **Generiert:** ' + new Date().toISOString().slice(0,10) + ' | **Version:** v' + require('../package.json').version + '\n';
   content += '> **Zweck:** Referenzbuch — jede Funktion mit START+ENDE Zeilennummer. Kein Code-Durchsuchen nötig.\n';
   content += '> **CL-Refs:** Kanonische Quelle ist `core/archive/docs/CHANGELOG.md`. Lokale CL-Refs sind Kurzform.\n\n';
   

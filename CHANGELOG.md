@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 00:24:41] P0-P3 v0.25 Release-Hardening: check_consistency repair (core/src paths), CHANGELOG split-brain (archive stub + sync-version), pre-push claim removal (AGENTS/PLAN/index), release.js drift WARN to BLOCK, testline expansion (consistency + e2e-ml), shouldTranslate Unicode fix, DB snapshot + archive old dbold + reset_now
+**Narrator:** Squizzle | **Model:** deepseek-v4-pro | **Composite:** `c81j65n5a1p20`
+- 62 Datei(en) geändert.
+
 ### [2026-07-02] API-Kosten-Optimierung & Pipeline-Bereinigung — v0.26.0-alpha
 **Narrator:** Argos | **Model:** Gemini 3.5 Flash (Medium) | **Composite:** `c73j32n14a4p11`
 - **Cost-Saving (translation-phases.js):** Frisch übersetzte Texte (`isFresh`) werden in `qaPhase` nur noch dann zur Korrektur zugelassen, wenn sie auch wirklich als `flagged` markiert wurden. Dies verhindert unnötige, teure LLM-Audits für bereits fehlerfreie Übersetzungen im selben Durchlauf.
@@ -16,6 +20,25 @@
 - **P-03, P-05 i18n Optimierungen (index.html, lang-strings.js):** `backup.loading` (als `sidebar.loading`) und `stream.waiting` (als `stats.waiting`) Keys für alle 15 Sprachen hinzugefügt und data-i18n Attribute in index.html korrigiert.
 - **P-06 Onboarding (ui-settings.js):** openKeyModal Delay auf 300ms verkürzt.
 - 5 Datei(en) geändert (144 insertions, 98 deletions).
+
+### [2026-07-02] GUI-Rebuild: Enterprise-Grade Dashboard mit Tabs & Slide-in Settings
+**Narrator:** Flux | **Model:** Gemini 3.5 Flash | **Composite:** `gui-rebuild-001`
+- Rebuilt index.html mit modernem Inter Google Font und 3-Band-Layout (Header 56px, Tabs Main Content, Status Bar 36px)
+- Drei-Tab-Struktur implementiert: Dashboard, Terminal & Logs, und Database Browser
+- Settings-Dropdown in einen CSS-animierten Slide-in Panel (480px) von rechts überführt
+- Pipeline-Anzeige und Progress-Balken als kompakte Elemente in die Statusleiste integriert
+- Alle 67 DOM-IDs, onclick-Event-Bindings und i18n data-attributes exakt beibehalten
+- 1 Datei geändert (core/GUI/public/index.html).
+
+### [2026-07-01] v0.25.0-alpha — Debugging-Runde: Globaler Version-Bump, Workshop-Scan, Doku-Abgleich, EN→DE + EN→ES Test-Setup
+**Narrator:** Buffy | **Model:** deepseek-v4-pro | **Composite:** `audit-only`
+- **Version-Bump 0.23.0 → 0.25.0-alpha:** 15+ Dateien aktualisiert (package.json, _Info.txt, AGENTS.md, PLAN.md, README.md, TUTORIAL.txt, TREE.md, MASTER_DOC.md, KNOWN_BUGS_REPORT.md, SYSTEM_ARCHITECTURE.md, LIVE_INDEX.md, cli-progress.js, INDEX-Dateien). sync-version.js validiert.
+- **Workshop-Scan:** 50 Mods, 31 mit .txt-Dateien. Groesste: Easy Mod (822 txt), Vargen Race (178), Garthimi Expanded (68). Keine ES-Source-Mods.
+- **PREFLIGHT-Health:** 17/21 PASS. DB: 4.065 Eintraege, 0 Shield-Leaks, 0 Critical-Rejects. Syntax: 104/104 OK.
+- **Git-vs-Doku-Abgleich:** Letzte 15 Commits gegen CHANGELOG.md — alle Commits dokumentiert, alle Features referenziert. 0 Luecken.
+- **Test-Setup EN→DE:** Vargen Race (2918830792, 178 txt) → test_debug/v0.25a/Vargen_Race_EN/.
+- **Test-Setup EN→ES:** Garthimi Expanded (3686506720, 68 txt) → test_debug/v0.25a/Garthimi_Expanded_EN/.
+- 15 Datei(en) geaendert.
 
 ### [2026-07-02] GUI-Rebuild + i18n + ML-7 E2E Test + Fixes — v0.25.0-alpha
 **Narrator:** Echo | **Model:** Claude Sonnet 4.6 Thinking | **Composite:** `c72j31n12a3p9`

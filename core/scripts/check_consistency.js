@@ -42,10 +42,10 @@ function checkNaming() {
     path.join(ROOT, 'README.md'),
     path.join(CORE, 'package.json'),
     path.join(CORE, 'index.js'),
-    path.join(CORE, 'src', 'gui', 'server.js'),
-    path.join(CORE, 'src', 'gui', 'public', 'index.html'),
-    path.join(CORE, 'src', 'gui', 'public', 'app.js'),
-    path.join(CORE, 'src', 'cli-progress.js'),
+    path.join(CORE, 'GUI', 'server.js'),
+    path.join(CORE, 'GUI', 'public', 'index.html'),
+    path.join(CORE, 'GUI', 'public', 'app.js'),
+    path.join(CORE, 'Translation', 'cli-progress.js'),
   ];
 
   for (const file of publicFiles) {
@@ -96,12 +96,12 @@ function checkVersions() {
 
   // Files NOT covered by sync-version.js that might have stale versions
   const uncheckedFiles = [
-    path.join(CORE, 'src', 'text-core.js'),
-    path.join(CORE, 'src', 'dispatcher.js'),
-    path.join(CORE, 'src', 'router.js'),
-    path.join(CORE, 'src', 'db.js'),
-    path.join(CORE, 'src', 'exporter.js'),
-    path.join(CORE, 'src', 'validator.js'),
+    path.join(CORE, 'Translation', 'text-core.js'),
+    path.join(CORE, 'Translation', 'dispatcher.js'),
+    path.join(CORE, 'Translation', 'router.js'),
+    path.join(CORE, 'DB', 'db.js'),
+    path.join(CORE, 'Translation', 'exporter.js'),
+    path.join(CORE, 'Translation', 'validator.js'),
     path.join(CORE, 'index.js'),
     path.join(CORE, 'archive', 'docs', 'MASTER_DOC.md'),
     path.join(CORE, 'archive', 'docs', 'STATUS.md'),
@@ -152,8 +152,15 @@ function checkArchive() {
 
 // ── 5. Forgotten TODO/FIXME/HACK ────────────────────────────────────
 function checkForgottenMarkers() {
-  const srcDir = path.join(CORE, 'src');
-  const scriptsDir = path.join(CORE, 'scripts');
+  // Post-Restructuring: core/src/ no longer exists.
+  // Scan the actual source directories: Translation/, DB/, GUI/, commit-layer/
+  const sourceDirs = [
+    path.join(CORE, 'Translation'),
+    path.join(CORE, 'DB'),
+    path.join(CORE, 'GUI'),
+    path.join(CORE, 'commit-layer'),
+    path.join(CORE, 'scripts'),
+  ];
 
   function scanDir(dir) {
     if (!fs.existsSync(dir)) return;
@@ -182,8 +189,9 @@ function checkForgottenMarkers() {
     }
   }
 
-  scanDir(srcDir);
-  scanDir(scriptsDir);
+  for (const dir of sourceDirs) {
+    scanDir(dir);
+  }
   // Self-exclude this script from marker results (section headers contain the keywords)
   const selfPath = path.resolve(__filename);
   for (let i = issues.length - 1; i >= 0; i--) {

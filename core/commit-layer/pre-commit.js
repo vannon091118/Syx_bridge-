@@ -47,7 +47,7 @@ const loreArcsPath = path.join(COMMIT_LORE_DIR, 'lore_arcs.json');
 const plotchainPath = path.join(COMMIT_LORE_DIR, 'plotchain.json');
 const narrativeParamsPath = path.join(COMMIT_LORE_DIR, 'narrative_params.json');
 const characterSheetsPath = path.join(COMMIT_LORE_DIR, 'character_sheets.json');
-const changelogPath = path.join(repoRoot, 'CHANGELOG.md');
+const changelogPath = path.join(repoRoot, 'CHANGELOG.md'); // SSoT: Root (AGENTS.md #4)
 
 // ─── Argument-Parsing ──────────────────────────────────────────────
 const args = process.argv.slice(2);

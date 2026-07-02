@@ -2,7 +2,7 @@
 //  SyxBridge — REVIEW BASE Build (Inverse of Workshop release.js)
 // -----------------------------------------------------------------------------
 //  Zielgruppe: Code-Reviewer, Maintainer, Audits, Re-Reproduktion
-//  Label:      "REVIEW BASE (v0.20.0-pre-review-base)"
+//  Label:      "REVIEW BASE (v" + pkg.version + ")"
 //  Inkludiert: ALLE Dev-Tools, Tests, komplette Doku, TUTORIAL.txt, AGENTS.md
 //              Drift-Manifest (.build-manifest.json) zur F.A Drift-Detection.
 //  Ausgeschlossen: node_modules, .env, *.db/binaries, *.log, backups, patches,
@@ -21,7 +21,7 @@ const releaseDir = path.join(coreDir, 'release');
 const pkg = require(path.join(coreDir, 'package.json'));
 const version = pkg.releaseVersion || pkg.version;
 
-// REVIEW BASE Label: '0.20.0-pre-review-base'.
+// REVIEW BASE Label: derived from package.json version.
 // `version` aus package.json (= '0.20.0-pre-release') wird trailing '-release'
 // gestrippt, damit der finale Ordnername nicht 'pre-release-review-base' lautet
 // (Anomalie #015 — siehe HANDSHAKE_2026-06-19.md §4).

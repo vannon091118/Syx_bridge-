@@ -101,7 +101,7 @@ function shouldTranslate(text) {
   const value = stripWatermarks(text).trim();  // P0-1: Watermarks strippen vor Check
   if (!value) return false;
     
-  if (!/[a-zA-Z]/.test(value)) return false;
+  if (!/\p{L}/u.test(value)) return false;
   if (/^(true|false|null|none|yes|no)$/i.test(value)) return false;
   if (/^[\w.-]+\.(png|jpg|jpeg|webp|gif|dds|wav|ogg|mp3|json|xml|ini|txt)$/i.test(value)) return false;
   if (/^[a-z0-9_.:-]+$/i.test(value) && /[_./:-]/.test(value) && !/\s/.test(value)) return false;

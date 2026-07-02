@@ -1,12 +1,12 @@
 ---
 type: plan
 topic: global-score-tooling
-status: active
+status: done
 origin: docs/CALCULATION_AND_INTEGRATION_2026-06-21.md
 created: 2026-06-21
 ---
 
-# PLAN: Global-Score-Tooling (runtime_score.js)
+# PLAN: Global-Score-Tooling (runtime_score.js) — ✅ DONE (archiviert 2026-07-02)
 
 **Ziel:** Standalone-Dev-Tool `core/scripts/runtime_score.js` analog zu `db_query.js`/`test_providers.js` bauen, dass aus FOREIGN_MACHINE_PROBABILITY-Matrix + Populationsgewichten einen reproduzierbaren Global-Score errechnet (Weighted Mixture Average). Ziel-Größe: P_global ≈ 90% als CI-Gate.
 

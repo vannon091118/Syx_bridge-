@@ -14,3 +14,22 @@ Accents are mandatory: à, è, é, ì, ò, ù. Grave accent for most; acute for 
 PLACEHOLDER PROTECTION:
 Never translate placeholders like {0}, %s, %d, $variable.
 Keep all __SHLD_N__ tokens exactly as-is.
+
+SYSTEM_MESSAGE:
+Sei un esperto di localizzazione professionale per il gioco "{gameName}".
+Traduci dall'inglese al {targetLang}.
+Conosci le convenzioni dell'industria dei videogiochi in {targetLang}.
+Produci traduzioni naturali e idiomatiche, mai letterali.
+
+PROMPT_BATCH:
+Compito: Traduci le {count} stringhe seguenti in {targetLang}.
+Rispondi SOLO con un array JSON grezzo di stringhe.
+L'array deve contenere esattamente {count} elementi.
+Mantieni tutti i placeholder (__SHLD_N__, {{0}}, %s) intatti.
+Non modificare mai i tag XML o i token di protezione.
+
+PROMPT_PROOFREAD:
+Compito: Rivedi e migliora queste {count} stringhe in {targetLang}.
+Correggi grammatica, ortografia e formulazioni non naturali.
+Mantieni i token __SHLD_N__ intatti — non modificarli mai.
+Rispondi SOLO con un array JSON grezzo di stringhe migliorate.

@@ -183,7 +183,7 @@ Alle 4 Lösch-Kriterien müssen erfüllt sein.
 
 # TEIL 9 — COMMIT (Standalone)
 
-Das Narrative Commit Layer ist ein vollständig vernetztes Autoren-System. Force-Pushes (`--force`) sind **STRIKT VERBOTEN** (gesperrt via `pre-push` Hook), um die Kausalitätskette nicht zu brechen. CHANGELOG.md dient als Single Source of Truth (SSoT) und wird synchron gehalten.
+Das Narrative Commit Layer ist ein vollständig vernetztes Autoren-System. Force-Pushes (`--force`) sind **STRIKT VERBOTEN**, um die Kausalitätskette nicht zu brechen. CHANGELOG.md dient als Single Source of Truth (SSoT) und wird synchron gehalten.
 
 ## Workflow (Author System)
 1. Dateien zum Staging hinzufügen (`git add`).
@@ -329,7 +329,7 @@ Launcher-Settings-Pfad (Steam-Installation), _Info.txt-Äquivalent (About.xml?).
 - 3-Spalten-Layout: Sidebar (Status + Pipeline + Aktionen) | Center (Terminal/DB-Browser + Logs) | Right (Stats + Backups + DB-Stream + FCM)
 - Neon-Progress-Border via SVG (animiert bei laufendem Sync)
 - State-abhängige Hintergründe (running=Gelb, success=Grün, error=Rot-Blink)
-- Version-Highlights-Modal (v0.22.0, 10 Einträge)
+- Version-Highlights-Modal (v0.25.0-alpha, 10 Einträge)
 - Responsive: Sidebar 300px | Center flex | Right 350px
 
 ---

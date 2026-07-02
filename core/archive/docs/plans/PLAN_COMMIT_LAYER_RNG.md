@@ -1,6 +1,6 @@
 # PLAN_COMMIT_LAYER_RNG.md — Deterministischer Commit-Layer
 
-> **Stand:** 2026-06-23 | **Status:** Phase 1 — Implementierung
+> **Stand:** 2026-06-23 | **Status:** ✅ DONE (archiviert 2026-07-02)
 > **Ziel:** Commit-Layer als deterministisch verbundene, lebende Welt — ohne Math.random(), ohne Crypto.
 
 ---

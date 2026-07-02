@@ -72,3 +72,4 @@ SyxBridge_*.zip
 # Temp/Test-Files
 core/.test_commit_bad.txt
 test_debug/
+core/archive/dbold_archive_*.tar.gz

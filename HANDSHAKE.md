@@ -1,15 +1,15 @@
-# 🤝 HANDSHAKE — Session 2026-07-02
-> **Zweck:** Nahtlose Fortsetzung nach 429-Abbrüchen  
-> **Letzte Aktualisierung:** 2026-07-02 01:14  
+# 🤝 HANDSHAKE — Session 2026-07-02 (Nachmittag)
+> **Zweck:** Doku-Cleanup + Lang-Strings-Modularisierung + Code-Pattern-Check  
+> **Letzte Aktualisierung:** 2026-07-02 14:30  
 > **Aktiver Branch:** main
 
 ---
 
 ## 🎯 AKTIVER TASK
 
-**GUI_REWORK** — GUI Polish & Debug (v0.25.0-alpha → v0.26.0-alpha)  
-**Plan-Datei:** `GUI_REWORK.md` (Root)  
-**Status:** ✅ ERLEDIGT (Alle Bugs und Polish-Einträge behoben, Tests bestanden)
+**DOKU-CLEANUP + LANG-STRINGS-MODULARISIERUNG**  
+**Plan-Datei:** `PLAN.md` (P7)  
+**Status:** 🟡 IN ARBEIT — INDEX-Dateien + PLAN.md fertig, Code-Pattern-Check + Lang-Strings läuft
 
 ---
 
@@ -35,29 +35,20 @@ Working tree: CLEAN
 | DOKU: LIVE_INDEX + MASTER_DOC + SYSTEM_ARCHITECTURE | 0f69fd8 | ✅ |
 | GUI_REWORK.md Plan erstellt | — | ✅ |
 | HANDSHAKE.md erstellt | — | ✅ |
+| GUI_REWORK B-01 bis B-07 + BE-01 bis BE-03 + P-01 bis P-06 | (git diff) | ✅ |
+| MD-Audit: 62 .md Dateien geprüft (30 FERTIG, 27 ANGEGANGEN, 5 UNBERÜHRT) | — | ✅ |
+| INDEX-Update: scripts, tests, adapters, plugins auf v0.25.0-alpha | — | ✅ |
 
 ---
 
 ## ⏳ WAS NOCH AUSSTEHT
 
-### SOFORT (nächste Aktion):
-1. **Push abwarten** — Subagent 9b0e5149 läuft noch (Tests + git push)
-2. **GUI_REWORK.md committen** + **HANDSHAKE.md committen** (via author_system.js)
-
-### DANN (GUI_REWORK Plan abarbeiten):
-3. **B-01:** `ui-core.js:136-147` — tick() Tab-Override entfernen  
-4. **B-02:** `app.js:74-84` — toggleSettings() auf classList.toggle('open') umbauen  
-5. **B-03/B-08:** `index.html` — Version v0.22.0 → v0.25.0-alpha (3 Stellen)  
-6. **B-04:** Version-Modal Highlights auf v0.25.0-alpha aktualisieren  
-7. **B-05:** `ui-core.js:151` — dbSamplesContainer Null-Check  
-8. **B-06:** `index.html:786` + `ui-core.js:352` — stream-llm-view Style-Konflikt  
-9. **B-07:** CSS Regel für disabled Onboarding-Button  
-10. **BE-01:** `server-routes.js` — kill-all Routing normalisieren  
-11. **BE-02:** DB-Search LIMIT ergänzen  
-12. **BE-03:** SSE Client-Cleanup prüfen  
-13. **Polish P-01 bis P-06**  
-14. **Verifikation** — Syntax + Tests + Manuell  
-15. **Commit + Push** via author_system.js  
+### LAUFEND:
+1. **PLAN.md aktualisieren** — GUI_REWORK DONE + INDEX-Cleanup eintragen
+2. **Code-Pattern Global-Check** — Inkonsistenzen finden + reporten
+3. **Lang-Strings Modularisierung** — 191k Monolith analysieren
+4. **Alte Dokumente identifizieren** — Markieren, nicht löschen
+5. **Verifikation** — Syntax + Tests  
 
 ---
 
@@ -95,7 +86,7 @@ node core/commit-layer/author_system.js --impulse="..." --model="Claude Sonnet 4
 
 | ID | Rolle | Task | Status |
 |----|-------|------|--------|
-| 9b0e5149 | Push + Tests Runner | Tests + git push | ⏳ Läuft |
+| (none) | — | — | — |
 
 ---
 

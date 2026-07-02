@@ -51,9 +51,16 @@ function _protectPlaceholders(text) {
   };
 }
 
-function summarizeGrammarContext(grammarContext) {
+/**
+ * Parse a grammar_context file into structured sections.
+ * Supports both legacy format (LANGUAGE & STYLE, TERMS, GRAMMAR, etc.)
+ * and new prompt template sections (SYSTEM_MESSAGE, PROMPT_BATCH, PROMPT_PROOFREAD).
+ *
+ * Returns: { styleGuide: string, promptTemplates: { system, batch, proofread } }
+ */
+function parseGrammarContext(grammarContext) {
   const text = String(grammarContext || '').trim();
-  if (!text) return '';
+  if (!text) return { styleGuide: '', promptTemplates: {} };
 
   const lines = text
     .replace(/BEGIN_INPUT[\s\S]*$/i, '')
@@ -61,33 +68,76 @@ function summarizeGrammarContext(grammarContext) {
     .map(line => line.trim())
     .filter(Boolean);
 
-  // Bilingual section headers: German (backward-compat) + English (multi-language grammar contexts).
-  const keepSections = new Set([
+  // All recognized section headers (legacy + new prompt templates)
+  const styleSections = new Set([
     'SPRACHE UND STIL:', 'LANGUAGE & STYLE:',
     'BEGRIFFE:', 'TERMS:', 'TERMINOLOGY:',
     'GRAMMATIK:', 'GRAMMAR:',
     'PLATZHALTER-SCHUTZ:', 'PLACEHOLDER PROTECTION:',
     'TAGS UND MARKUP:', 'TAGS & MARKUP:'
   ]);
-  const result = [];
+  const templateSections = new Set([
+    'SYSTEM_MESSAGE:', 'PROMPT_BATCH:', 'PROMPT_PROOFREAD:'
+  ]);
+
+  const result = { styleGuide: '', promptTemplates: {} };
   let currentSection = '';
+  let currentIsTemplate = false;
+  let styleLines = [];
+  let templateLines = [];
 
   for (const line of lines) {
     if (line.endsWith(':') && line === line.toUpperCase()) {
-      currentSection = keepSections.has(line) ? line : '';
-      if (currentSection) result.push(line);
+      // Flush previous section
+      if (currentSection && currentIsTemplate) {
+        result.promptTemplates[currentSection.replace(/:$/, '').toLowerCase()] = templateLines.join('\n');
+        templateLines = [];
+      }
+
+      if (styleSections.has(line)) {
+        currentSection = line;
+        currentIsTemplate = false;
+      } else if (templateSections.has(line)) {
+        currentSection = line;
+        currentIsTemplate = true;
+      } else {
+        currentSection = '';
+        currentIsTemplate = false;
+      }
       continue;
     }
+
     if (!currentSection) continue;
-    if (result.length >= 28) break;
-    result.push(line);
+
+    if (currentIsTemplate) {
+      templateLines.push(line);
+    } else {
+      styleLines.push(line);
+    }
+  }
+  // Flush last section
+  if (currentSection && currentIsTemplate) {
+    result.promptTemplates[currentSection.replace(/:$/, '').toLowerCase()] = templateLines.join('\n');
   }
 
-  return result.join('\n');
+  // Cap style guide at 28 lines (legacy behavior)
+  result.styleGuide = styleLines.slice(0, 28).join('\n');
+
+  return result;
+}
+
+/**
+ * Legacy wrapper: returns just the condensed style guide string.
+ * For backward compatibility with callers that only need the style text.
+ */
+function summarizeGrammarContext(grammarContext) {
+  return parseGrammarContext(grammarContext).styleGuide;
 }
 
 function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = []) {
-  const condensedContext = summarizeGrammarContext(grammarContext);
+  const parsed = parseGrammarContext(grammarContext);
+  const condensedContext = parsed.styleGuide;
+  const templates = parsed.promptTemplates;
   const shieldMaps = [];
   const protectedItems = items.map(item => {
     const normalized = normalizePromptItem(item);
@@ -118,23 +168,33 @@ function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = 
   const ctx = (buildBatchPrompt._plugin?.getPromptContext?.())
     ?? { gameName: 'Game', styleGuide: '', rules: [] };
   if (!buildBatchPrompt._plugin) {
-    // Warn once so the developer knows a plugin should be wired up.
     if (!buildBatchPrompt._warnedNoPlugin) {
       buildBatchPrompt._warnedNoPlugin = true;
       console.warn('[text-prompts] buildBatchPrompt: kein Plugin gesetzt — generischer Fallback aktiv.');
     }
   }
 
+  // ── Language-specific prompt templates ────────────────────────────────────
+  // If grammar_context file contains SYSTEM_MESSAGE / PROMPT_BATCH sections,
+  // use them (with {gameName} and {count} placeholders). Otherwise fall back
+  // to the English default templates.
+  const systemMsg = (templates.system_message || '')
+    .replace(/\{gameName\}/g, ctx.gameName)
+    .replace(/\{targetLang\}/g, targetLang)
+    .replace(/\{count\}/g, String(items.length))
+    || `You are a professional localization expert for the game "${ctx.gameName}".`;
+
+  const taskMsg = (templates.prompt_batch || '')
+    .replace(/\{gameName\}/g, ctx.gameName)
+    .replace(/\{targetLang\}/g, targetLang)
+    .replace(/\{count\}/g, String(items.length))
+    || `Task: Translate the following ${items.length} strings into ${targetLang}.`;
+
   const lines = [
-    `You are a professional localization expert for the game "${ctx.gameName}".`,
-    `Task: Translate the following ${items.length} strings into ${targetLang}.`,
+    systemMsg,
+    taskMsg,
     '',
     'CRITICAL RULES:',
-    // SHIELD-PRESERVATION-FIX: Diese Regel MUSS IMMER als erste CRITICAL RULE stehen,
-    // auch wenn das Plugin eigene Regeln liefert (z.B. songs-of-syx getPromptContext rules).
-    // Ohne diese Regel entfernt die LLM __SHLD_N__-Tokens, weil sie keinen Grund hat
-    // sie zu erhalten — sie sind in keinem bekannten Sprach-Format. Die Folge: shield_leak
-    // in der DB und unbrauchbare Übersetzungen mit korrumpierten Platzhaltern.
     '1. PRESERVE SHIELD TOKENS: Tokens like __SHLD_0__, __SHLD_1__ MUST remain EXACTLY unchanged. Never translate, modify, or remove them.',
     ...ctx.rules.map((r, i) => `${i + 2}. ${r}`),
     `${ctx.rules.length + 2}. FORMAT: Respond ONLY with a raw JSON array of strings.`,
@@ -159,7 +219,7 @@ function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = 
 
   lines.push('STRINGS TO TRANSLATE:');
   lines.push(numbered);
-    
+
   return {
     prompt: lines.join('\n'),
     shieldMaps
@@ -167,7 +227,9 @@ function buildBatchPrompt(items, targetLang, grammarContext = '', strictTerms = 
 }
 
 function buildProofreadPrompt(items, targetLang, grammarContext = '', strictTerms = []) {
-  const condensedContext = summarizeGrammarContext(grammarContext);
+  const parsed = parseGrammarContext(grammarContext);
+  const condensedContext = parsed.styleGuide;
+  const templates = parsed.promptTemplates;
   const shieldMaps = [];
   const protectedItems = items.map(item => {
     const normalized = normalizePromptItem(item);
@@ -190,15 +252,9 @@ function buildProofreadPrompt(items, targetLang, grammarContext = '', strictTerm
     const meta = [];
     if (item.contextPacket) meta.push(`ctx:${item.contextPacket}`);
     const metaLine = meta.length > 0 ? ` [${meta.join(' | ')}]` : '';
-    // P1-Fix: Blind polishing. Wenn originalSource fehlt, hat der LLM keinen
-    // Anker fuer die urspruengliche Bedeutung und kann Meaning-Drift produzieren.
-    // Wir lassen die "Original English" Zeile weg (sicherer als item.source zu
-    // nutzen, was die aktuelle Uebersetzung waere und den LLM verwirren wuerde).
-    // Alle normalen Caller (ensureTranslations, Deep Polish) setzen originalSource.
     const hasExplicitOriginal = !!item.originalSource;
     if (!hasExplicitOriginal) {
-      // Kein Warning — fehlende Referenz ist normal bei Base-Translation.
-      // Echter Drift wäre: Übersetzung weicht signifikant VOM ORIGINAL ab.
+      // Missing reference is normal for base-translation.
     }
     const originalLine = item.originalSource ? `Original English: "${item.originalSource}"\n` : '';
     return `ID:${index + 1}${metaLine}\n${originalLine}Current ${targetLang}: "${item.protectedText}"\nImproved ${targetLang}:`;
@@ -207,19 +263,30 @@ function buildProofreadPrompt(items, targetLang, grammarContext = '', strictTerm
   // Plugin-delegated prompt context for proofread prompts (v0.20 H1).
   const proofCtx = (buildProofreadPrompt._plugin?.getPromptContext?.())
     ?? { gameName: 'Game', styleGuide: '', rules: [] };
+
+  // ── Language-specific proofread templates ───────────────────────────────
+  const proofSystemMsg = (templates.system_message || '')
+    .replace(/\{gameName\}/g, proofCtx.gameName)
+    .replace(/\{targetLang\}/g, targetLang)
+    .replace(/\{count\}/g, String(items.length))
+    || `You are a senior editor for "${proofCtx.gameName}" game localizations.`;
+
+  const proofTaskMsg = (templates.prompt_proofread || '')
+    .replace(/\{gameName\}/g, proofCtx.gameName)
+    .replace(/\{targetLang\}/g, targetLang)
+    .replace(/\{count\}/g, String(items.length))
+    || `Task: Proofread and polish these ${items.length} ${targetLang} strings.`;
+
   const consistencyNote = proofCtx.styleGuide
     ? `CONSISTENCY: ${proofCtx.styleGuide}`
     : 'CONSISTENCY: Maintain consistent terminology and tone.';
 
   const lines = [
-    `You are a senior editor for "${proofCtx.gameName}" game localizations.`,
-    `Task: Proofread and polish these ${items.length} ${targetLang} strings.`,
+    proofSystemMsg,
+    proofTaskMsg,
     '',
     'INSTRUCTIONS:',
     '1. FIX: Grammar, spelling, and unnatural phrasing.',
-    // SHIELD-PRESERVATION-FIX: Muss IMMER im Proofread-Prompt stehen, weil
-    // Deep Polish die SHIELD-geschützten Texte erneut durch die LLM schickt.
-    // Ohne diese Regel entfernt die LLM __SHLD_N__-Tokens auch hier.
     '2. PRESERVE SHIELD TOKENS: Tokens like __SHLD_0__, __SHLD_1__ MUST remain EXACTLY unchanged. Only fix grammar, never remove or modify these tokens.',
     `3. ${consistencyNote}`,
     '4. SAFETY: Only fix grammar and phrasing — do NOT add new placeholders, tags, or markup.',
@@ -243,7 +310,7 @@ function buildProofreadPrompt(items, targetLang, grammarContext = '', strictTerm
 
   lines.push('STRINGS TO POLISH:');
   lines.push(numbered);
-    
+
   return {
     prompt: lines.join('\n'),
     shieldMaps
@@ -252,6 +319,7 @@ function buildProofreadPrompt(items, targetLang, grammarContext = '', strictTerm
 
 module.exports = {
   normalizePromptItem,
+  parseGrammarContext,
   summarizeGrammarContext,
   buildBatchPrompt,
   buildProofreadPrompt

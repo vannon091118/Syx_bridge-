@@ -8,22 +8,22 @@
 
 ## Übersicht
 
-| Datei | LOC | Checks | Beschreibung |
-|-------|-----|--------|--------------|
-| e2e_multi_language.js | 581 | 166/166 | **NEU** E2E: Multi-Language (5 Sprachen × 7 Suiten) |
-| translation-runtime-smoke.js | 540 | — | Translation-Runtime Smoke |
-| e2e_bug1_native_mode.js | 412 | 35/35 | E2E: Native Mode Backup-Bug |
-| plugin-boundary-contract.js | 329 | 86/86 | **Contract-Test** — Dynamische Interface-Erkennung |
-| plugin-boundary-smoke.js | 320 | 100/100 | **Plugin-Boundary** — 35 Methoden, 9 Sektionen |
-| validator-smoke.js | 292 | 49/49 | **Validator** — 16 Tests, 49 Checks |
-| e2e_p5_sprachauswahl.js | 278 | 31/31 | E2E: P5 Sprachauswahl |
-| item0a_auto_freeze_test.js | 241 | 4/4 | **NEU** Auto-Modus Freeze-Test |
-| ollama_cloud_e2e.js | 200 | 11/11 | **NEU** Ollama Cloud-Mode E2E |
-| runtime_score.test.js | 185 | 13/13 | **Runtime-Score** Unit + Persona-Smoke |
-| gate-counter-smoke.js | 109 | — | Gate-Counter Telemetrie |
-| env-protection-smoke.js | 106 | 31/31 | .env-Protection-Test |
-| e2e_p3_risk_scoring.js | 73 | 29/29 | E2E: Risk Scoring |
-| parser_smoke.js | 67 | 26/26 | Parser (SoS, Raw, JSON) |
+| Datei | LOC | Checks | Auto | Beschreibung |
+|-------|-----|--------|------|--------------|
+| e2e_multi_language.js | 581 | 166/166 | ✅ testline | **NEU** E2E: Multi-Language (5 Sprachen × 7 Suiten) |
+| translation-runtime-smoke.js | 540 | — | 🔧 manuell | Translation-Runtime Smoke |
+| e2e_bug1_native_mode.js | 412 | 35/35 | ✅ testline | E2E: Native Mode Backup-Bug |
+| plugin-boundary-contract.js | 329 | 86/86 | ✅ testline | **Contract-Test** — Dynamische Interface-Erkennung |
+| plugin-boundary-smoke.js | 320 | 100/100 | 🔧 manuell | **Plugin-Boundary** — 35 Methoden, 9 Sektionen |
+| validator-smoke.js | 292 | 49/49 | 🔧 manuell | **Validator** — 16 Tests, 49 Checks |
+| e2e_p5_sprachauswahl.js | 278 | 31/31 | 🔧 manuell | E2E: P5 Sprachauswahl |
+| item0a_auto_freeze_test.js | 241 | 4/4 | 🔧 manuell | **NEU** Auto-Modus Freeze-Test |
+| ollama_cloud_e2e.js | 200 | 11/11 | 🔧 manuell | **NEU** Ollama Cloud-Mode E2E |
+| runtime_score.test.js | 185 | 13/13 | 🔧 manuell | **Runtime-Score** Unit + Persona-Smoke |
+| gate-counter-smoke.js | 109 | — | 🔧 manuell | Gate-Counter Telemetrie |
+| env-protection-smoke.js | 106 | 31/31 | 🔧 manuell | .env-Protection-Test |
+| e2e_p3_risk_scoring.js | 73 | 29/29 | 🔧 manuell | E2E: Risk Scoring |
+| parser_smoke.js | 67 | 26/26 | 🔧 manuell | Parser (SoS, Raw, JSON) |
 
 ---
 

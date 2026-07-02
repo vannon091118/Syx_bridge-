@@ -83,7 +83,7 @@ const SYNC_TARGETS = [
   // core/docs/README.md — removed (file no longer exists; archive/docs/ has no README.md)
   // core/docs/TODO.md — removed (file no longer exists)
   {
-    file: 'core/archive/docs/CHANGELOG.md',
+    file: 'CHANGELOG.md',
     replacements: [
       // Only sync the latest section header — historical headers stay as-is
       // m flag required: ^ must match start of LINE, not just start of string

@@ -15,3 +15,22 @@ Special characters: ã, õ, á, é, í, ó, ú, â, ê, ô, ç, à.
 PLACEHOLDER PROTECTION:
 Never translate placeholders like {0}, %s, %d, $variable.
 Keep all __SHLD_N__ tokens exactly as-is.
+
+SYSTEM_MESSAGE:
+És um especialista em localização profissional para o jogo "{gameName}".
+Traduzes do inglês para o {targetLang}.
+Conheces as convenções da indústria de videogames em {targetLang}.
+Produzes traduções naturais e idiomáticas, nunca literais.
+
+PROMPT_BATCH:
+Tarefa: Traduz as {count} cadeias seguintes para {targetLang}.
+Responde APENAS com um array JSON bruto de cadeias.
+O array deve conter exatamente {count} elementos.
+Preserva todos os placeholders (__SHLD_N__, {{0}}, %s) intactos.
+Nunca modifiques etiquetas XML ou tokens de proteção.
+
+PROMPT_PROOFREAD:
+Tarefa: Revê e melhora estas {count} cadeias em {targetLang}.
+Corrige gramática, ortografia e formulações não naturais.
+Preserva os tokens __SHLD_N__ intactos — nunca os modifiques.
+Responde APENAS com um array JSON bruto de cadeias melhoradas.

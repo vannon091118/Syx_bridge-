@@ -35,8 +35,8 @@ const PATHS = {
   compositeChain: path.join(LORE_DIR, 'composite_chain.json'),
   sidejokes:      path.join(LORE_DIR, 'sidejoke_pool.json'),
   loreArcs:       path.join(LORE_DIR, 'lore_arcs.json'),
-  // CHANGELOG is in docs/ — SSoT location
-  changelog:      path.join(REPO_ROOT, 'core/archive/docs/CHANGELOG.md'),
+  // CHANGELOG SSoT: Root hat IMMER Vorrang (AGENTS.md Regel #4 + #11)
+  changelog:      path.join(REPO_ROOT, 'CHANGELOG.md'),
   commitMsg:      path.join(REPO_ROOT, 'core/.commit_msg.txt'),
 };
 
