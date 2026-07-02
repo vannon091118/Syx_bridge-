@@ -4248,5 +4248,30 @@
         "file": "core/tests/argos_warm_benchmark.js"
       }
     ]
+  },
+  {
+    "p_id": "p98",
+    "id": "plot-2026-07-02T02:34:14",
+    "timestamp": "2026-07-02 02:34:14",
+    "summary": "P8-1: Transaktionsgrenzen in saveTranslation() via SAVEPOINT. Revision-System + UPSERT + neue Revision atomar. Nesting-safe für withTransaction() Batches. Rollback mit Logging bei Fehlern. PLAN.md P8-1 als DONE markiert, Fortschritt DB-HÄRTUNG 4/8.",
+    "narrator": "Null",
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c93j89n11a1p26",
+    "ref_to": "plot-2026-07-02T02:15:31",
+    "prev_narrator": "Buffy",
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md"
+      },
+      {
+        "file": "PLAN.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/Translation/translation-db.js"
+      }
+    ]
   }
 ]

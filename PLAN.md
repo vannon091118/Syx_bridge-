@@ -30,9 +30,9 @@
 
 ### P0 — Release-Blocker
 
-#### [ ] P8-1: Transaktionsgrenzen in `saveTranslation()` ⏱️ 2h 🔴
-- **Problem:** 3 separate `dbRun`-Aufrufe ohne Transaktionsgrenzen → Crash = verwaiste Revisionen
-- **Fix:** `db.beginTransaction()` / `db.commitTransaction()` wrappen
+#### [x] P8-1: Transaktionsgrenzen in `saveTranslation()` ⏱️ 2h 🔴 ✅ 2026-07-02
+- **Problem:** 4 separate DB-Operationen ohne Transaktionsgrenzen → Crash = verwaiste Revisionen
+- **Fix:** SAVEPOINT/RELEASE/ROLLBACK TO wrappt Revision-System + UPSERT + neue Revision. Nesting-safe (funktioniert inside withTransaction() batches). recordModelTaskMetric bleibt outside (non-critical).
 - **Betroffen:** `core/Translation/translation-db.js`
 
 #### [ ] P8-2: Foreign Key Cascades (Migration) ⏱️ 4h 🔴
@@ -117,7 +117,7 @@ RW-17..RW-19 — Plugin-Boundary, E2E-Test, Dokumentation
 
 | Phase | Tasks | Erledigt | Offen | Status |
 |-------|-------|----------|-------|--------|
-| DB-HÄRTUNG (P0–P2) | 8 | 3 | 5 | 🔴 v0.26 |
+| DB-HÄRTUNG (P0–P2) | 8 | 4 | 4 | 🔴 v0.26 |
 | SOS-POLISH | 1 | 0 | 1 | 🟡 v0.26 |
 | RIMWORLD | 19 | 0 | 19 | 🟢 v0.27–v0.30a |
 | **TOTAL** | **28** | **~28+** | **25** | **~53%** |
@@ -152,6 +152,79 @@ RW-17..RW-19 — Plugin-Boundary, E2E-Test, Dokumentation
 | `PLAN_STABILISIERUNG.md` | 7 | 🔵 Backlog |
 
 > **MAX-EFFORT-Entscheidung:** P9 (Hardening, ~25h) und P10 (Runtime, ~15h) sind als **Backlog** markiert. Kein aktiver Aufwand — erst nach RimWorld v0.30a relevant.
+
+---
+
+## 🔵 PHASE 4 — CODE-QUALITÄT & INFRASTRUKTUR (Backlog) ⏱️ ~8–10 Tage
+
+> **Ziel:** Langfristige Wartbarkeit, CI/CD-Automatisierung, Testabdeckung, Sicherheit.
+> **Status:** Backlog — wird nach v0.26 abgearbeitet, blockiert nichts.
+> **Maximal-Einsatz:** Alle 8 Items sind geplant, priorisiert nach ROI.
+
+### P1 — Höchster ROI
+
+#### [ ] CI-1: GitHub Actions Workflow ⏱️ 30min 🔵
+- **Problem:** Keine automatisierte CI. Tests laufen nur manuell.
+- **Fix:** `.github/workflows/ci.yml` — `npm run lint` + `npm run test` auf push/PR.
+- **Betroffen:** `.github/workflows/ci.yml` (NEU)
+- **Status:** ✅ i18n bereits erledigt (P6-GUI + I18N-MOD). CI fehlt.
+
+#### [ ] CI-2: Unit-Tests → Jest Migration ⏱️ ~1 Tag 🔵
+- **Problem:** Router, Parser, Export haben nur Smoke-Tests mit manuellen pass/fail-Zählern, nicht `describe/it/expect`.
+- **Fix:** Smoke-Tests zu Jest migrieren. Edge Cases hinzufügen (JSON-Parsing-Fehler, fehlende ENV-Variablen, leere Batches).
+- **Betroffen:** `core/tests/parser_smoke.js`, `core/tests/validator-smoke.js`, `core/tests/translation-runtime-smoke.js`
+- **Status:** runtime_score.test.js (13 Tests) bereits auf Jest ✅
+
+### P2 — Hoher ROI
+
+#### [ ] CI-3: Modulares Refactoring — index.js ⏱️ ~2 Tage 🔵
+- **Problem:** `core/index.js` ist 985 Zeilen und vermischt CLI, GUI, Sync und Config-Logik.
+- **Fix:** CLI-Controller (~200 Zeilen: Wizard, Menü, Polish) und Server-Controller (~150 Zeilen: GUI-Setup, registerGuiHandlers) extrahieren. `main()` bleibt als dünner Orchestrator.
+- **Betroffen:** `core/index.js`, neue Dateien `core/cli-controller.js`, `core/server-controller.js`
+- **Status:** S-001–S-012 Modularisierung bereits 12 Module extrahiert ✅
+
+#### [ ] CI-4: Security Hardening ⏱️ ~1 Tag 🔵
+- **Problem:** Kein `SECURITY.md`, keine CSP-Header, GUI-Server ohne Auth.
+- **Fix:** `SECURITY.md` (Reporting-Policy). CSP-Header in `server.js`. Optionales Token-Gate für GUI bei externer Exposition.
+- **Betroffen:** `SECURITY.md` (NEU), `core/GUI/server.js`
+- **Status:** npm audit 5→0 bereits erledigt (SEC-AUDIT, 2026-06-25) ✅
+
+### P3 — Wichtig
+
+#### [ ] CI-5: Git-Tracking Aufräumen ⏱️ 0.5 Tag 🔵
+- **Problem:** `core/archive/` hat ~50+ Doku-Dateien, potentiell stale. Prüfen ob `.jsonl`, `test_mods/`, Backup-Artefakte korrekt gitignored sind.
+- **Fix:** Audit + .gitignore-Erweiterung bei Bedarf.
+- **Betroffen:** `.gitignore`, `core/archive/`
+- **Status:** DB-FRESH-RESET + .gitignore-Cleanup bereits erledigt (2026-06-24) ✅
+
+#### [ ] CI-6: Dokumentation — SECURITY.md + API-Doku ⏱️ ~1 Tag 🔵
+- **Problem:** Keine SECURITY.md, keine API-Endpoint-Referenz.
+- **Fix:** SECURITY.md mit Reporting-Policy. API-Doku für 25+ REST-Endpunkte in `server-routes.js`.
+- **Betroffen:** `SECURITY.md` (NEU), `core/archive/docs/API_REFERENCE.md` (NEU)
+- **Status:** CHANGELOG.md + AGENTS.md + LICENSE existieren ✅
+
+### P4 — Nice-to-have
+
+#### [ ] CI-7: Cross-Platform CI Validation ⏱️ 0.5 Tag 🔵
+- **Problem:** better-sqlite3 prebuilt binaries nur lokal getestet.
+- **Fix:** GitHub Actions Matrix: Windows + Linux + macOS. Validiert better-sqlite3-Binaries + Python/Argos-Kompatibilität.
+- **Betroffen:** `.github/workflows/ci.yml`
+- **Status:** Prebuilt-Binary-Detection + Fehlermeldung in db.js bereits implementiert ✅
+
+### ✅ Bereits erledigt
+|i18n (14 Sprachen) ✅ | npm audit 5→0 ✅ | DB-FRESH-RESET ✅ | logger.js ✅ | LICENSE ✅ | Jest 30.4.2 ✅ | P8-3 Indizes ✅ | P8-4 Retry ✅ | PERF-3b Argos -u ✅ |
+
+---
+
+## 📊 Fortschritt (erweitert)
+
+| Phase | Tasks | Erledigt | Offen | Status |
+|-------|-------|----------|-------|--------|
+| DB-HÄRTUNG (P0–P2) | 8 | 4 | 4 | 🔴 v0.26 |
+| SOS-POLISH | 1 | 0 | 1 | 🟡 v0.26 |
+| RIMWORLD | 19 | 0 | 19 | 🟢 v0.27–v0.30a |
+| CODE-QUALITÄT (CI-1–CI-7) | 7 | 4 | 7 | 🔵 Backlog |
+| **TOTAL** | **35** | **~32** | **32** | **~50%** |
 
 ---
 

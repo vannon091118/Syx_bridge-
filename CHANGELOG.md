@@ -1,5 +1,16 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 02:34:14] P8-1: Transaktionsgrenzen in saveTranslation() via SAVEPOINT. Revision-System + UPSERT + neue Revision atomar. Nesting-safe für withTransaction() Batches. Rollback mit Logging bei Fehlern. PLAN.md P8-1 als DONE markiert, Fortschritt DB-HÄRTUNG 4/8.
+**Narrator:** Null | **Model:** mimo-v2.5-pro | **Composite:** `c93j89n11a1p26`
+- 4 Datei(en) geändert.
+
+### [2026-07-02] P8-1: Transaktionsgrenzen in saveTranslation() via SAVEPOINT — Revision-System + UPSERT atomar
+**Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`
+- **Problem:** 4 separate DB-Operationen in saveTranslation() (deactivate old revisions → archive old → main UPSERT → insert new active) ohne Transaktionsgrenzen. Bei Crash mid-way: verwaiste deaktivierte Revisionen ohne neuen aktiven Eintrag.
+- **Fix:** SAVEPOINT sp_save_translation wrapt alle 4 Operationen. Nesting-safe für withTransaction() Batches (translatePhase/qaPhase). recordModelTaskMetric + broadcastDbSample bleiben outside als non-critical Fire-and-Forget. Rollback mit Logging bei Fehlern.
+- **Verifikation:** Syntax 120/120 ✅ | Module loads OK ✅ | Code-Review approved ✅
+- 1 Datei(en) geändert (translation-db.js).
+
 ### [2026-07-02 02:15:31] Benchmark-Datei nach Verifikation entfernt. 60x Speedup bestätigt, Test-Tool nicht mehr benötigt.
 **Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c92j61n1a1p59`
 - 2 Datei(en) geändert.

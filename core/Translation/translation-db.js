@@ -335,7 +335,12 @@ function createTranslationDb(options) {
       // Non-critical — wenn Query fehlschlägt, Normal-Pfad fortsetzen
     }
 
-    // ── Revision System ──
+    // ── P8-1: Revision System + UPSERT in SAVEPOINT ──
+    // SAVEPOINT ensures atomicity: if a crash happens mid-revision (deactivate
+    // old → archive old → UPSERT → insert new active), the entire block is
+    // rolled back. Safe for nested use inside withTransaction() batches.
+    // recordModelTaskMetric stays OUTSIDE — non-critical fire-and-forget.
+    await dbRun('SAVEPOINT sp_save_translation');
     try {
       const existing = await dbGet(
         'SELECT translation, provider, quality_score, flagged, flag_reason FROM translations WHERE source_text = ? AND target_lang = ?',
@@ -357,60 +362,63 @@ function createTranslationDb(options) {
           [sourceText, config.TARGET_LANG, existing.translation, existing.provider || '', existing.quality_score || 0, existing.flagged || 0, existing.flag_reason || '', isReference]
         );
       }
-    } catch (e) {
-      console.warn(`[WARN] Revision-Speicherung fehlgeschlagen fuer "${sourceText.substring(0, 30)}": ${e.message}`);
-    }
 
-    // P3 Fix: skipReviewIncrement — bei Provider-Fehlern (Fail-Path) werden BEIDE
-    // Counter NICHT hochgezählt. Nur echte Übersetzungsversuche zählen als Revision.
-    // P4 Fix: shield_leak-Fehler zählen nur den Placeholder-Counter, nicht den Quality-Counter.
-    // P1-2 Fix: Non-native stale — wenn ein Nicht-native_runtime-Provider den
-    // Originaltext als "Übersetzung" zurückgibt (translation === sourceText), hat
-    // kein echter Übersetzungsversuch stattgefunden → review_count NICHT hochzählen.
-    // native_runtime ist AUSGESCHLOSSEN: Proper Nouns/Eigennamen mit
-    // translation=source sind erwartetes Verhalten, kein Fehler.
-    const isNonNativeStale = (typeof translation === 'string' && translation === sourceText && provider !== 'native_runtime');
-    const skipIncrement = meta.skipReviewIncrement || isNonNativeStale;
-    const reviewIncrement = skipIncrement ? 0 : (isPlaceholderError ? 0 : 1);
-    const placeholderIncrement = skipIncrement ? 0 : (isPlaceholderError ? 1 : 0);
+      // P3 Fix: skipReviewIncrement — bei Provider-Fehlern (Fail-Path) werden BEIDE
+      // Counter NICHT hochgezählt. Nur echte Übersetzungsversuche zählen als Revision.
+      // P4 Fix: shield_leak-Fehler zählen nur den Placeholder-Counter, nicht den Quality-Counter.
+      // P1-2 Fix: Non-native stale — wenn ein Nicht-native_runtime-Provider den
+      // Originaltext als "Übersetzung" zurückgibt (translation === sourceText), hat
+      // kein echter Übersetzungsversuch stattgefunden → review_count NICHT hochzählen.
+      // native_runtime ist AUSGESCHLOSSEN: Proper Nouns/Eigennamen mit
+      // translation=source sind erwartetes Verhalten, kein Fehler.
+      const isNonNativeStale = (typeof translation === 'string' && translation === sourceText && provider !== 'native_runtime');
+      const skipIncrement = meta.skipReviewIncrement || isNonNativeStale;
+      const reviewIncrement = skipIncrement ? 0 : (isPlaceholderError ? 0 : 1);
+      const placeholderIncrement = skipIncrement ? 0 : (isPlaceholderError ? 1 : 0);
 
-    await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, placeholder_review_count, updated_at, polish_status, requires_deep_polish, overwrite_fallback_used)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)
-            ON CONFLICT(source_text, target_lang)
-            DO UPDATE SET
-                translation = excluded.translation,
-                source_hash = COALESCE(excluded.source_hash, translations.source_hash),
-                audit_stage = MAX(translations.audit_stage, excluded.audit_stage),
-                provider = excluded.provider,
-                flagged = excluded.flagged,
-                flag_reason = excluded.flag_reason,
-                quality_score = excluded.quality_score,
-                last_checked_at = CURRENT_TIMESTAMP,
-                review_count = COALESCE(translations.review_count, 0) + ?,
-                placeholder_review_count = COALESCE(translations.placeholder_review_count, 0) + ?,
-                updated_at = CURRENT_TIMESTAMP,
-                polish_status = excluded.polish_status,
-                requires_deep_polish = excluded.requires_deep_polish,
-                overwrite_fallback_used = excluded.overwrite_fallback_used`,
-    // 11 INSERT params + 2 UPSERT params = 13 total
-    [sourceText, sourceHash, config.TARGET_LANG, translation, polishLevel, provider, flagged, flagReason, qualityScore, reviewIncrement, placeholderIncrement, polishStatus, requiresDeepPolish, overwriteFallbackUsed, reviewIncrement, placeholderIncrement]);
+      await dbRun(`INSERT INTO translations (source_text, source_hash, target_lang, translation, audit_stage, provider, flagged, flag_reason, quality_score, last_checked_at, review_count, placeholder_review_count, updated_at, polish_status, requires_deep_polish, overwrite_fallback_used)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)
+              ON CONFLICT(source_text, target_lang)
+              DO UPDATE SET
+                  translation = excluded.translation,
+                  source_hash = COALESCE(excluded.source_hash, translations.source_hash),
+                  audit_stage = MAX(translations.audit_stage, excluded.audit_stage),
+                  provider = excluded.provider,
+                  flagged = excluded.flagged,
+                  flag_reason = excluded.flag_reason,
+                  quality_score = excluded.quality_score,
+                  last_checked_at = CURRENT_TIMESTAMP,
+                  review_count = COALESCE(translations.review_count, 0) + ?,
+                  placeholder_review_count = COALESCE(translations.placeholder_review_count, 0) + ?,
+                  updated_at = CURRENT_TIMESTAMP,
+                  polish_status = excluded.polish_status,
+                  requires_deep_polish = excluded.requires_deep_polish,
+                  overwrite_fallback_used = excluded.overwrite_fallback_used`,
+      // 11 INSERT params + 2 UPSERT params = 13 total
+      [sourceText, sourceHash, config.TARGET_LANG, translation, polishLevel, provider, flagged, flagReason, qualityScore, reviewIncrement, placeholderIncrement, polishStatus, requiresDeepPolish, overwriteFallbackUsed, reviewIncrement, placeholderIncrement]);
 
-    // BUG-005 Fix: Also insert NEW version into revision_revisions with is_active=1
-    try {
+      // BUG-005 Fix: Also insert NEW version into translation_revisions with is_active=1
       await dbRun(
         `INSERT INTO translation_revisions (source_text, target_lang, translation, provider, quality_score, flagged, flag_reason, is_active, is_reference)
          VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0)`,
         [sourceText, config.TARGET_LANG, translation, provider, qualityScore, flagged, flagReason]
       );
+
+      // All 4 operations succeeded — release savepoint
+      await dbRun('RELEASE SAVEPOINT sp_save_translation');
     } catch (e) {
-      // Non-critical
+      // P8-1: Rollback all DB changes in this savepoint on any failure.
+      // Prevents orphaned deactivated revisions without a new active one.
+      try { await dbRun('ROLLBACK TO SAVEPOINT sp_save_translation'); } catch (re) { console.warn('[TRANSACTION] Rollback to savepoint failed:', re.message); }
+      console.warn(`[WARN] saveTranslation fehlgeschlagen fuer "${sourceText.substring(0, 30)}": ${e.message}`);
     }
 
     if (global.guiServer) {
       global.guiServer.broadcastDbSample(sourceText, translation);
     }
 
-    // Item 2: Model-Task-Metrik nach jedem Save aggregieren
+    // Item 2: Model-Task-Metrik nach jedem Save aggregieren (OUTSIDE savepoint —
+    // non-critical fire-and-forget, must not cause rollback of a successful save)
     if (provider && meta.model && meta.taskType) {
       recordModelTaskMetric(provider, meta.model, meta.taskType, qualityScore, config.TARGET_LANG).catch(() => {});
     }
