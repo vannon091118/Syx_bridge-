@@ -1,3 +1,1 @@
-checkAllKeys DOM-Polling eliminiert. checkSingleKey() gibt jetzt seine Promise-Kette zurück. checkAllKeys() chained direkt auf checkSingleKey().then(result => ...) statt setInterval-basiertes Button-Text-Polling alle 100ms. Defensive .catch() pro Key verhindert dass einzelne Fehler die gesamte Kette brechen. Backward-kompatibel: HTML onclick ignoriert Rückgabewert.
-
-Code-Review bestätigt: Promise-Chain korrekt, .finally() Reset nach .then() Capture, val-Capture vor async verhindert stale reads.
+CI-1: GitHub Actions Workflow eingerichtet. .github/workflows/ci.yml triggert auf push/PR zu main. 5 Steps: lint:check (informational, continue-on-error wegen 51 pre-existing ESLint Errors), test:syntax, consistency, plugin-boundary, jest. lint:check Script in package.json hinzugefügt (eslint . ohne --fix). Node 20, ubuntu-latest, npm ci mit Caching.

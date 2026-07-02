@@ -1,5 +1,9 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 03:06:30] CI-1: GitHub Actions Workflow eingerichtet. .github/workflows/ci.yml mit 5 Steps (lint:check informational, test:syntax, consistency, plugin-boundary, jest). lint:check Script in package.json. Node 20, ubuntu-latest, npm ci mit Caching.
+**Narrator:** Echo | **Model:** mimo-v2.5-pro | **Composite:** `c97j68n12a2p78`
+- 4 Datei(en) geändert.
+
 ### [2026-07-02 02:59:18] checkAllKeys DOM-Polling eliminiert. checkSingleKey gibt jetzt Promise zurück, checkAllKeys chained direkt statt setInterval-Text-Polling. Defensive .catch() pro Key. Code-Review approved.
 **Narrator:** Ghost | **Model:** mimo-v2.5-pro | **Composite:** `c96j39n8a5p99`
 - 3 Datei(en) geändert.
@@ -7,6 +11,14 @@
 ### [2026-07-02 02:54:36] DOM-Cache: tickDomCache in state.js — 8 getElementById + 1 querySelector aus tick() eliminiert. ~540 DOM-Lookups/Sekunde eingespart. Code-Review approved.
 **Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c95j81n1a3p42`
 - 4 Datei(en) geändert.
+
+### [2026-07-02] CI-1: GitHub Actions Workflow eingerichtet — lint:syntax, consistency, jest, plugin-boundary auf jedem Push/PR
+**Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`
+- **.github/workflows/ci.yml (NEU):** Triggert auf push/PR zu main. ubuntu-latest, Node 20, npm ci mit Caching. 5 Steps: lint:check (informational, continue-on-error), test:syntax (120 Dateien), consistency, plugin-boundary, jest.
+- **lint:check Script (core/package.json):** `eslint .` ohne --fix für CI. Lint hat 51 pre-existing Errors (Jest globals, no-undef) — therefore non-blocking. Cleanup als separates CI-2 geplant.
+- **eslint.config.mjs:** Keine Änderung (reverted nach Test — 51 Errors zu viele für CI-1 Scope).
+- **Verifikation:** lint:check funktioniert ✅ | CI-YAML valid ✅ | package-lock.json committed ✅
+- 3 Datei(en) geändert (.github/workflows/ci.yml NEU, core/package.json, core/eslint.config.mjs reverted).
 
 ### [2026-07-02] checkAllKeys DOM-Polling eliminiert — checkSingleKey gibt jetzt Promise zurück, checkAllKeys chained direkt statt setInterval-Text-Polling
 **Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`

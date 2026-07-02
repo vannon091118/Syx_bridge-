@@ -7,6 +7,7 @@
   "scripts": {
     "warm-model": "node Translation/warm-model.js",
     "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "test:syntax": "node scripts/check_syntax.js",
     "test:plugin-boundary": "node tests/plugin-boundary-contract.js",
     "test:e2e": "node tests/e2e_bug1_native_mode.js",
