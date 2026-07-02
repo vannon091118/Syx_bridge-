@@ -1,5 +1,19 @@
 # 📋 SyxBridge — Changelog
 
+### [2026-07-02 02:13:21] PERF-1/2/3: cleanupLegacyFolders parallelisiert, saveStressTestResult Batching, Argos Warm-Server mit 60x Speedup (Cold 6.5s → Warm 110ms). Windows stdin-buffering Fix (-u Flag). Audit verifiziert: P8-3/Preflight bereits erledigt.
+**Narrator:** Buffy | **Model:** mimo-v2.5-pro | **Composite:** `c91j10n1a1p78`
+- 7 Datei(en) geändert.
+
+### [2026-07-02] Performance Audit Fixes: cleanupLegacyFolders parallelized, saveStressTestResult batching, Argos warm-server pattern
+**Narrator:** TBD | **Model:** mimo-v2.5-pro | **Composite:** `tbd`
+- **PERF-1 — cleanupLegacyFolders parallelization (index.js):** Sequential `for...await` loop replaced with filtered entries + `Promise.allSettled()` for parallel I/O. Entry filtering and `mkdir` consolidated before parallel ops. One failure no longer blocks remaining entries.
+- **PERF-2 — saveStressTestResult batching (translation-runtime.js):** Two fire-and-forget `saveStressTestResult().catch()` call sites in `translateBatch()` replaced with collected promises + `await Promise.allSettled()`. No more orphaned DB writes on shutdown.
+- **PERF-3 — Argos warm-server pattern (argos-client.js):** Per-call Python subprocess spawn (cold-start 2–5s) replaced with persistent warm worker using JSON-line stdin/stdout protocol. Worker respawns on crash. `workerRef` identity guard on exit/error handlers prevents race condition (old worker's handler clearing new worker's pending queue). Pending drain in `ensureWorker()` on respawn. `rl.close()` cleanup prevents resource leaks.
+- **Audit verification:** 7 claims audited — 2 already fixed (P8-3 indices, preflight optimization), 1 misleading (sequential DB writes intentional for better-sqlite3), 1 non-issue (fixGrammarBatch loops already guarded by `strictTerms.length > 0`). 3 genuine issues fixed above.
+- **PERF-3b — Windows stdin-Buffering Fix (argos-client.js):** Python `-u` (unbuffered) Flag hinzugefügt. Ohne dieses Flag blockiert `readline()` auf Windows-Pipes endlos — die `for line in sys.stdin` Iterator- und `readline()`-Varianten sind beide betroffen. Benchmark: Cold-Start 6,542ms → Warm 112ms = **60.5x Speedup, 98.3% Verbesserung**.
+- **Verifikation:** Syntax 120/120 ✅ | Code-Review approved (4 iterations) ✅ | Argos Warm-Server Benchmark 3/3 Calls PASS ✅
+- 4 Datei(en) geändert (+1 neu: argos_warm_benchmark.js).
+
 ### [2026-07-02 01:42:55] MAX-EFFORT: PLAN.md P4-P10 zu 3 Phasen restrukturiert + Doku konsolidiert (ROADMAP LIVE_INDEX HANDSHAKE CHANGELOG)
 **Narrator:** Echo | **Model:** deepseek-v4-pro | **Composite:** `c90j34n12a2p92`
 - 6 Datei(en) geändert.

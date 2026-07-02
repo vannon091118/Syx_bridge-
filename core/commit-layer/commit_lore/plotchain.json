@@ -4195,5 +4195,39 @@
         "file": "core/archive/docs/LIVE_INDEX.md"
       }
     ]
+  },
+  {
+    "p_id": "p96",
+    "id": "plot-2026-07-02T02:14:03",
+    "timestamp": "2026-07-02 02:14:03",
+    "summary": "PERF-1/2/3: cleanupLegacyFolders parallelisiert, saveStressTestResult Batching, Argos Warm-Server mit 60x Speedup (Cold 6.5s → Warm 110ms). Windows stdin-buffering Fix (-u Flag). Audit verifiziert: P8-3/Preflight bereits erledigt.",
+    "narrator": "Buffy",
+    "model_id": "mimo-v2.5-pro",
+    "composite": "c91j10n1a1p78",
+    "ref_to": "plot-2026-07-02T01:43:54",
+    "prev_narrator": "Echo",
+    "data_changes": [
+      {
+        "file": "CHANGELOG.md"
+      },
+      {
+        "file": "PLAN.md"
+      },
+      {
+        "file": "core/.body_text.txt"
+      },
+      {
+        "file": "core/Translation/providers/argos-client.js"
+      },
+      {
+        "file": "core/Translation/translation-runtime.js"
+      },
+      {
+        "file": "core/index.js"
+      },
+      {
+        "file": "core/tests/argos_warm_benchmark.js"
+      }
+    ]
   }
 ]

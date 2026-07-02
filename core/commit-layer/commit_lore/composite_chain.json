@@ -769,6 +769,15 @@
       "narrator": "Echo",
       "model_id": "deepseek-v4-pro",
       "date": "2026-07-02 01:43:54"
+    },
+    {
+      "seq": 91,
+      "hash": "b5e6c91",
+      "composite": "c91j10n1a1p78",
+      "mood": "sachlich",
+      "narrator": "Buffy",
+      "model_id": "mimo-v2.5-pro",
+      "date": "2026-07-02 02:14:03"
     }
   ]
 }

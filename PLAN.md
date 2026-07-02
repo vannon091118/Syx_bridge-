@@ -107,6 +107,9 @@ RW-17..RW-19 — Plugin-Boundary, E2E-Test, Dokumentation
 | BT-2 | BU-019, BU-026, BU-030 (Shared-State, Jest, Scripts) | 2026-07-02 |
 | P8-3 | DB-Indizes | 2026-07-02 |
 | P4 | SOS config → Plugin | 2026-07-02 |
+| PERF-1 | cleanupLegacyFolders parallelisiert (Promise.allSettled) | 2026-07-02 |
+| PERF-2 | saveStressTestResult Batching (kein Fire-and-Forget mehr) | 2026-07-02 |
+| PERF-3 | Argos Warm-Server Pattern (Persistenter Python-Worker) | 2026-07-02 |
 
 ---
 
@@ -117,7 +120,7 @@ RW-17..RW-19 — Plugin-Boundary, E2E-Test, Dokumentation
 | DB-HÄRTUNG (P0–P2) | 8 | 3 | 5 | 🔴 v0.26 |
 | SOS-POLISH | 1 | 0 | 1 | 🟡 v0.26 |
 | RIMWORLD | 19 | 0 | 19 | 🟢 v0.27–v0.30a |
-| **TOTAL** | **28** | **~25+** | **25** | **~47%** |
+| **TOTAL** | **28** | **~28+** | **25** | **~53%** |
 
 ---
 

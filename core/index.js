@@ -754,25 +754,32 @@ async function fullReset() {
 async function cleanupLegacyFolders() {
   if (!fs.existsSync(CONFIG.GAME_MOD_ROOT)) return;
   const entries = await fsp.readdir(CONFIG.GAME_MOD_ROOT, { withFileTypes: true });
-  let cleaned = false;
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
+  const targets = entries.filter(e => e.isDirectory() && (e.name.startsWith('.backup_') || (e.name.endsWith(`_${CONFIG.TARGET_LANG}`) && e.name !== 'BridgeCore')));
+  if (targets.length === 0) return;
+
+  // Ensure target directories exist before parallel operations
+  const needsBackup = targets.some(e => e.name.startsWith('.backup_'));
+  const needsPatch = targets.some(e => !e.name.startsWith('.backup_'));
+  if (needsBackup && !fs.existsSync(CONFIG.BACKUP_ROOT)) await fsp.mkdir(CONFIG.BACKUP_ROOT, { recursive: true });
+  if (needsPatch && !fs.existsSync(CONFIG.PATCH_ROOT)) await fsp.mkdir(CONFIG.PATCH_ROOT, { recursive: true });
+
+  // Parallel I/O: each entry is independent (different source paths)
+  // Use allSettled so one failure doesn't block remaining entries
+  const results = await Promise.allSettled(targets.map(async (entry) => {
     const isBackup = entry.name.startsWith('.backup_');
-    const isPatch = entry.name.endsWith(`_${CONFIG.TARGET_LANG}`) && entry.name !== 'BridgeCore';
-    if (isBackup || isPatch) {
-      const targetRoot = isBackup ? CONFIG.BACKUP_ROOT : CONFIG.PATCH_ROOT;
-      if (!fs.existsSync(targetRoot)) await fsp.mkdir(targetRoot, { recursive: true });
-      const oldPath = path.join(CONFIG.GAME_MOD_ROOT, entry.name);
-      const newPath = path.join(targetRoot, entry.name);
-      if (fs.existsSync(newPath)) await fsp.rm(oldPath, { recursive: true, force: true });
-      else await fsp.rename(oldPath, newPath);
-      cleaned = true;
-    }
+    const targetRoot = isBackup ? CONFIG.BACKUP_ROOT : CONFIG.PATCH_ROOT;
+    const oldPath = path.join(CONFIG.GAME_MOD_ROOT, entry.name);
+    const newPath = path.join(targetRoot, entry.name);
+    if (fs.existsSync(newPath)) await fsp.rm(oldPath, { recursive: true, force: true });
+    else await fsp.rename(oldPath, newPath);
+  }));
+  const failures = results.filter(r => r.status === 'rejected');
+  if (failures.length > 0) {
+    console.warn(`[CLEANUP] ${failures.length}/${targets.length} Legacy-Ordner konnten nicht verschoben werden: ${failures[0].reason?.message || 'unknown'}`);
   }
-  if (cleaned) {
-    const coreExists = fs.existsSync(path.join(CONFIG.GAME_MOD_ROOT, 'BridgeCore'));
-    await syncLauncherSettings({ activePatchesCount: coreExists ? 1 : 0, targetLang: CONFIG.TARGET_LANG, nativeMode: CONFIG.NATIVE_MODE });
-  }
+
+  const coreExists = fs.existsSync(path.join(CONFIG.GAME_MOD_ROOT, 'BridgeCore'));
+  await syncLauncherSettings({ activePatchesCount: coreExists ? 1 : 0, targetLang: CONFIG.TARGET_LANG, nativeMode: CONFIG.NATIVE_MODE });
 }
 
 async function runIntegrityAudit() {

@@ -253,23 +253,32 @@ function createTranslationRuntime(options) {
           }
         }
 
+        // Batch all stress-test DB writes and await together (no fire-and-forget)
+        const stressSavePromises = [];
         for (const [source, result] of stressResult.stressResults) {
-          saveStressTestResult(source, result.passed).catch(e => {
-            console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
-          });
+          stressSavePromises.push(
+            saveStressTestResult(source, result.passed).catch(e => {
+              console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
+            })
+          );
         }
+        await Promise.allSettled(stressSavePromises);
 
         console.log(`[DISPATCH] ${stressPassedCount}/${entries.length} via Google Free, ${entries.length - stressPassedCount} via LLM-Pipeline.`);
       } else if (stressResult) {
         console.log(`[DISPATCH] Stress-Test marginal (${(stressResult.overallPassRate * 100).toFixed(0)}%). Eskaliere zu Qualitaets-Modell.`);
         const entryBySource = new Map(entries.map(e => [e.source, e]));
+        const marginalSavePromises = [];
         for (const [source, result] of stressResult.stressResults) {
           const entry = entryBySource.get(source);
           if (entry) entry.riskScore = result.dynamicRisk;
-          saveStressTestResult(source, result.passed).catch(e => {
-            console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
-          });
+          marginalSavePromises.push(
+            saveStressTestResult(source, result.passed).catch(e => {
+              console.warn(`[STRESS-TEST] saveStressTestResult fehlgeschlagen fuer "${(source || '').substring(0, 30)}": ${e.message}`);
+            })
+          );
         }
+        await Promise.allSettled(marginalSavePromises);
         const escalated = dispatcher.resolveTranslateRoute(entries);
         resolvedRoute.provider = escalated.provider;
         resolvedRoute.model = escalated.model;

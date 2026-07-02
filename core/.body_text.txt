@@ -1,5 +1,7 @@
-BU-019: Shared-State-Mutation in fixGrammarBatch() eliminiert. Der consecutiveGrammarFailuresRef wurde als {current:0}-Objekt per DI zwischen translation-runtime.js und translation-phases.js geteilt. Parallele ensureTranslations()-Calls konnten sich gegenseitig die Fehlerzähler überschreiben. Jetzt ist der Zähler ein Wert-Parameter von fixGrammarBatch(), der durch rekursive Calls durchgereicht wird — jede Aufrufkette hat ihren eigenen isolierten Counter.
+Performance-Audit: 7 Claims verifiziert, 3 echte Fixes implementiert. cleanupLegacyFolders() in index.js von sequentiellem for-await auf Promise.allSettled() umgestellt — parallele I/O-Operationen, ein Fehler blockiert nicht mehr die anderen. saveStressTestResult() in translation-runtime.js: Fire-and-forget .catch() Pattern durch gesammelte Promises + await Promise.allSettled() ersetzt, keine verwaisten DB-Writes mehr bei Shutdown.
 
-BU-026: Jest 30.4.2 als Test-Framework eingerichtet. runtime_score.test.js von manuellen pass/fail-Zählern auf describe/it/expect migriert. 13/13 Tests bestanden. Langfristige Basis für alle weiteren Tests.
+Argos Warm-Server (argos-client.js): Per-call Python-Subprozess durch persistenten Warm-Worker mit JSON-Line-Protocol ersetzt. Cold-Start 6.5s → Warm 110ms = 60x Speedup. Drei Bugs während des Tests gefixt: Windows stdin-Buffering (Python -u Flag), Backtick-Template-Literal-Kollision, Race-Condition im Worker-Exit-Handler (workerRef Identity-Guard + Pending-Drain bei Respawn).
 
-BU-030: check_syntax.js und check_consistency.js modularisiert. Globale Variablen durch reine Funktions-Rückgabewerte ersetzt. require.main === module Guards + module.exports für programmatische Wiederverwendung.
+Audit-Ergebnis: P8-3 DB-Indizes und Preflight-Optimierung waren bereits erledigt. Sequenzielle DB-Writes sind intentional für better-sqlite3. fixGrammarBatch Loops bereits durch strictTerms.length Guard geschützt.
+
+Benchmark-Verifikation in core/tests/argos_warm_benchmark.js: 3 Calls, Cold-Start 6542ms, Warm 112ms, Warm 108ms. 60.5x Speedup bestätigt.
